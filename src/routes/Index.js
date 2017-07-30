@@ -1,6 +1,6 @@
 // @flow
 import { Router, Request, Response, NextFunction } from 'express';
-import OSRM from 'osrm';
+import osrm from '../OSRM';
 
 class IndexRouter {
   router: Router;
@@ -11,7 +11,6 @@ class IndexRouter {
   }
 
   helloWorld (req: Request, res: Response, next: NextFunction) {
-    const osrm = new OSRM('map.osrm');
     const options = {
       coordinates: [
         [-76.499723, 42.44965],
