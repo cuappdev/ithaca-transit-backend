@@ -1,6 +1,7 @@
 // @flow
 import { Router, Request, Response, NextFunction } from 'express';
 import osrm from '../OSRM';
+import tcat from '../TCAT';
 
 class IndexRouter {
   router: Router;
@@ -27,7 +28,7 @@ class IndexRouter {
       console.log(response.destinations);
     });
 
-    res.json({ message: 'Hello, World' });
+    res.json(tcat.stops);
   }
 
   init () {
