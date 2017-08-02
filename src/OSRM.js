@@ -1,2 +1,2 @@
 import OSRM from 'osrm';
-export default new OSRM('map.osrm');
+export default new OSRM('osrm/map.osrm');

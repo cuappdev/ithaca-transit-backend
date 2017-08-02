@@ -8,15 +8,42 @@ type RouteJSON = {
   location: Array<number>
 };
 
-// Grab stops JSON
-const stopsJSONs: Array<RouteJSON> =
-  JSON.parse(fs.readFileSync('data/stops.json', 'utf8'));
+type BusTableJSON = {
+  times: Array<Array<string>>,
+  bound: string,
+  stops: Array<string>,
+  days: Array<number>,
+}
+
+type BusJSON = {
+  tables: Array<BusTableJSON>,
+};
+
+const stopsJSONs: Array<RouteJSON> = JSON.parse(
+  fs.readFileSync(
+    'data/stops.json',
+    'utf8'
+  )
+);
+
+const busesJSONs: Array<BusJSON> = JSON.parse(
+  fs.readFileSync(
+    'data/routes.json',
+    'utf8'
+  )
+);
 
 const stops = stopsJSONs.map(json => {
   const location = new Location(json.location[0], json.location[1]);
   return new Stop(json.name, location);
 });
 
+const buses = busesJSONs.map(json => {
+  // TODO make bus
+  return json;
+});
+
 export default {
-  stops
+  stops,
+  buses
 };
