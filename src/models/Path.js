@@ -50,16 +50,9 @@ class Path {
 
     // Range scan once we found the exact stop / boundary based on time
     const scanToFind = (stop: Stop, i: number): number => {
-      const firstStop = this.timedStops[i].stop;
-      // If we've found it
-      if (firstStop.equals(stop)) return i;
-      // Scan for it
-      let idx = i + 1;
+      let idx = i;
       while (idx < this.timedStops.length) {
-        // We found it
         if (this.timedStops[idx].stop.equals(stop)) return idx;
-        // We'll never find it
-        if (this.timedStops[idx].stop.equals(firstStop)) return -1;
         idx++;
       }
       return -1;
