@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import IndexRouter from './routes/Index';
+import BusRoutingRouter from './routes/BusRouting';
 
 class API {
   express: Object;
@@ -20,6 +21,7 @@ class API {
 
   routes (): void {
     this.express.use('/api/v1/', IndexRouter);
+    this.express.use('/api/v1/routing/', BusRoutingRouter);
   }
 }
 

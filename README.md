@@ -13,7 +13,11 @@ the routing library that is used to aid routing calculations.
 npm install
 node_modules/osrm/lib/binding/osrm-extract map.osm -p node_modules/osrm/profiles/car.lua
 node_modules/osrm/lib/binding/osrm-contract map.osrm
+mkdir osrm
+mv *.osm* ./osrm
+mv *.osrm* ./osrm
 npm start
 ````
+4. Scrape TCAT data via `tcat-scrape` repo and move the `data` folder to the root of this directory.
 
 Full `OSRM Node API` docs can be found [`here`](https://github.com/Project-OSRM/osrm-backend/blob/HEAD/docs/nodejs/api.md)
