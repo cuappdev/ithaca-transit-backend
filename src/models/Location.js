@@ -13,8 +13,10 @@ class Location {
   }
 
   equals (location: Location): boolean {
-    return (location.latitude === this.latitude &&
-      location.longitude === this.longitude);
+    return (
+      location.latitude === this.latitude &&
+      location.longitude === this.longitude
+    );
   }
 }
 
