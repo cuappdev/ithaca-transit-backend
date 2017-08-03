@@ -11,7 +11,10 @@ class Bus {
   paths: Array<Path>;
   lineNumber: number;
 
-  // TODO - functions + such
+  constructor (paths: Array<Path>, lineNumber: number) {
+    this.paths = paths;
+    this.lineNumber = lineNumber;
+  }
 }
 
 export default Bus;
