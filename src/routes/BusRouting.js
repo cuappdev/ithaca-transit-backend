@@ -18,9 +18,18 @@ class BusRoutingRouter {
     res.json(tcat.buses);
   }
 
+  distanceVectors (req: Request, res: Response, next: NextFunction): void {
+    tcat.distanceMatrix.then(response => {
+      res.json(response.durations);
+    }).catch(err => {
+      res.json(err);
+    });
+  }
+
   init () {
     this.router.get('/stops', this.stops);
     this.router.get('/buses', this.buses);
+    this.router.get('/vectors', this.distanceVectors);
   }
 }
 

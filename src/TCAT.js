@@ -1,5 +1,6 @@
 // @flow
 import Bus from './models/Bus';
+import OSRM from './OSRM';
 import Path from './models/Path';
 import Location from './models/Location';
 import Stop from './models/Stop';
@@ -84,7 +85,17 @@ const buses = busesJSONs.map(json => {
   return new Bus(paths, json.number);
 });
 
+const distanceMatrix: Promise<any> = (() => {
+  const options = {
+    coordinates: stops.map(s => {
+      return [s.location.longitude, s.location.latitude];
+    })
+  };
+  return OSRM.table(options);
+})();
+
 export default {
   stops,
-  buses
+  buses,
+  distanceMatrix
 };
