@@ -6,7 +6,7 @@ import Stop from './Stop';
  */
 class TimedStop {
   stop: Stop;
-  time: number; // 0 = 12:00AM, 60 = 1:00AM, etc.
+  time: number; // 0 = 12:00AM, 3600 = 1:00AM, etc.
 
   constructor (stop: Stop, time: number) {
     this.stop = stop;
