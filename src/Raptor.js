@@ -100,16 +100,22 @@ class Raptor {
     // TODO - foot-transfers
   }
 
-  run () {
-    // Memoization + book-keeping
-    let multiLabels = this._initStopMultiLabelContainer();
-    let routeBookKeeping = this._initRouteBookKeeping();
+  run (): Promise<any> {
+    return TCAT.distanceMatrix.then(response => {
+      const durations = response.durations;
+      // Memoization + book-keeping
+      let multiLabels = this._initStopMultiLabelContainer();
+      let routeBookKeeping = this._initRouteBookKeeping();
 
-    for (let k = 1; k <= this.N; k++) {
-      this._stageOne(multiLabels, k);
-      this._stageTwo(multiLabels, k, routeBookKeeping);
-      this._stageThree();
-    }
+      for (let k = 1; k <= this.N; k++) {
+        this._stageOne(multiLabels, k);
+        this._stageTwo(multiLabels, k, routeBookKeeping);
+        this._stageThree();
+      }
+
+      // TODO
+      return Promise.resolve(null);
+    });
   }
 }
 
