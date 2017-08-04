@@ -54,6 +54,14 @@ const nameToStop = (() => {
   return result;
 })();
 
+const stopNameToIndex = (() => {
+  let result = {};
+  for (let i = 0; i < stops.length; i++) {
+    result[stops[i].name] = i;
+  }
+  return result;
+})();
+
 const buses = busesJSONs.map(json => {
   const paths = [].concat.apply([], json.tables.map(table => {
     const days = {
@@ -88,7 +96,10 @@ const buses = busesJSONs.map(json => {
 const distanceMatrix: Promise<any> = (() => {
   const options = {
     coordinates: stops.map(s => {
-      return [s.location.longitude, s.location.latitude];
+      return [
+        s.location.longitude,
+        s.location.latitude
+      ];
     })
   };
   return OSRM.table(options);
@@ -96,6 +107,7 @@ const distanceMatrix: Promise<any> = (() => {
 
 export default {
   stops,
+  stopNameToIndex,
   buses,
   distanceMatrix
 };
