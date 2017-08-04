@@ -4,7 +4,9 @@ import Stop from './models/Stop';
 import TCAT from './TCAT';
 
 type BackTrack = {
-
+  time: number,
+  busNum: number,
+  stop: ?string
 };
 
 class Raptor {
@@ -27,14 +29,22 @@ class Raptor {
     this.N = N;
   }
 
-  _initStopMultiLabelContainer (): Object {
+  _initStopMultiLabelContainer (): { [string]: Array<BackTrack> } {
     let result = {};
     for (let i = 0; i < this.stops.length; i++) {
       const stop = this.stops[i];
       result[stop.name] =
-        new Array(this.N).fill((Number.MAX_VALUE, null));
+        new Array(this.N).fill({
+          time: Number.MAX_VALUE,
+          busNum: -1,
+          stop: null
+        });
     }
-    result[this.startStop.name] = (this.startTime, null);
+    result[this.startStop.name] = {
+      time: this.startTime,
+      busNum: -1,
+      stop: null
+    };
     return result;
   }
 
@@ -49,28 +59,41 @@ class Raptor {
     });
   }
 
-  _stageOne (multiLabels: Object, k: number): void {
+  _stageOne (
+    multiLabels: { [string]: Array<BackTrack> },
+    k: number
+  ): void {
     for (let key in multiLabels) {
       multiLabels[key][k] = multiLabels[key][k - 1];
     }
   }
 
   _stageTwo (
-    multiLabels: Object,
+    multiLabels: { [string]: Array<BackTrack> },
     k: number,
     routeBookKeeping: Array<Array<Array<Array<boolean>>>>
   ): void {
-    // Given a stop, survey routes for that stop with appropriate timeframe
+    for (let s = 0; s < this.stops.length; s++) {
+      // Stop + startTime at this stop
+      let stop = this.stops[s];
+      let startTime = multiLabels[stop.name][k - 1].time;
 
-    // Once find one with appropriate timeframe, progress along the path, marking off
-    // the stops as you hit them... if try and hit a stop that has already been hit, we
-    // can stop
+      for (let b = 0; b < this.buses.length; b++) {
+        for (let p = 0; p < this.buses[b].paths.length; p++) {
+          // Given a stop, survey routes for that stop with appropriate timeframe
 
-    // When you get to a stop, mark it with the bus #, the stop which we got on
-    // at in order to reach this stop, and the time we would get to this stop
+          // Once find one with appropriate timeframe, progress along the path, marking off
+          // the stops as you hit them... if try and hit a stop that has already been hit, we
+          // can stop
 
-    // Back-track from the final destination location to the start, grabbing
-    // start and end locations of trips, as well as the line that was taken for that trio
+          // When you get to a stop, mark it with the bus #, the stop which we got on
+          // at in order to reach this stop, and the time we would get to this stop
+
+          // Back-track from the final destination location to the start, grabbing
+          // start and end locations of trips, as well as the line that was taken for that trio
+        }
+      }
+    }
   }
 
   _stageThree (): void {
