@@ -85,7 +85,7 @@ const buses = busesJSONs.map(json => {
       }
       const startTime = timedStops.length > 0
         ? timedStops[0].time
-        : null;
+        : Number.MAX_VALUE;
       paths.push(new Path(days, timedStops, startTime));
     }
     return paths;

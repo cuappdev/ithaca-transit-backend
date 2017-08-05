@@ -13,12 +13,12 @@ type DaySequence = {
 class Path {
   days: DaySequence;
   timedStops: Array<TimedStop>;
-  startTime: ?number;
+  startTime: number;
 
   constructor (
     days: DaySequence,
     timedStops: Array<TimedStop>,
-    startTime: ?number,
+    startTime: number,
   ) {
     this.days = days;
     this.timedStops = timedStops;
