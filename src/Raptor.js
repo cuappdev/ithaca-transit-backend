@@ -71,7 +71,8 @@ class Raptor {
   _stageTwo (
     multiLabels: { [string]: Array<BackTrack> },
     k: number,
-    routeBookKeeping: Array<Array<Array<Array<boolean>>>>
+    routeBookKeeping: Array<Array<Array<Array<boolean>>>>,
+    durations: Array<Array<number>>,
   ): void {
     for (let s = 0; s < this.stops.length; s++) {
       // Stop + startTime at this stop
@@ -80,24 +81,70 @@ class Raptor {
 
       for (let b = 0; b < this.buses.length; b++) {
         for (let p = 0; p < this.buses[b].paths.length; p++) {
-          // Given a stop, survey routes for that stop with appropriate timeframe
+          const path = this.buses[b].paths[p];
+          // If we'll never reach this anyway
+          if (path.startTime < startTime) continue;
 
-          // Once find one with appropriate timeframe, progress along the path, marking off
-          // the stops as you hit them... if try and hit a stop that has already been hit, we
-          // can stop
+          let i = 0;
+          let foundRoute = false;
+          while (
+            i < path.timedStops.length &&
+            !routeBookKeeping[s][b][i][k] &&
+            path.timedStops[i].time > startTime
+          ) {
+            if (path.timedStops[i].stop.equals(stop)) {
+              foundRoute = true;
+              break;
+            }
+            i++;
+          }
 
-          // When you get to a stop, mark it with the bus #, the stop which we got on
-          // at in order to reach this stop, and the time we would get to this stop
-
-          // Back-track from the final destination location to the start, grabbing
-          // start and end locations of trips, as well as the line that was taken for that trio
+          if (foundRoute) {
+            i++;
+            while (
+              i < path.timedStops.length &&
+              !routeBookKeeping[s][b][i][k]
+            ) {
+              // Start stop information
+              const startRouteStop = path.timedStops[i - 1];
+              const startStopIndex =
+                TCAT.stopNameToIndex[startRouteStop.stop.name];
+              // End stop information
+              const endRouteStop = path.timedStops[i];
+              const endStopIndex =
+                TCAT.stopNameToIndex[endRouteStop.stop.name];
+              // Check this off as seen
+              routeBookKeeping[s][b][i][k] = true;
+              // Time information
+              const timeOfArrival =
+                startRouteStop.time + durations[startStopIndex][endStopIndex];
+              const kMinusOneArrival =
+                multiLabels[endRouteStop.stop.name][k - 1];
+              // Update
+              if (kMinusOneArrival.time < timeOfArrival) {
+                multiLabels[endRouteStop.stop.name][k] = kMinusOneArrival;
+              } else {
+                let bus = this.buses[b];
+                multiLabels[endRouteStop.stop.name][k] = {
+                  time: timeOfArrival,
+                  busNum: bus.lineNumber,
+                  stop: stop.name
+                };
+              }
+            }
+          }
         }
       }
     }
   }
 
   _stageThree (): void {
-    // TODO - foot-transfers
+    // TODO - can be no-op for now
+  }
+
+  _backTrack (multiLabels: { [string]: Array<BackTrack> }): Array<any> {
+    // TODO
+    return [];
   }
 
   run (): Promise<any> {
@@ -109,11 +156,11 @@ class Raptor {
 
       for (let k = 1; k <= this.N; k++) {
         this._stageOne(multiLabels, k);
-        this._stageTwo(multiLabels, k, routeBookKeeping);
+        this._stageTwo(multiLabels, k, routeBookKeeping, durations);
         this._stageThree();
       }
 
-      // TODO
+      this._backTrack(multiLabels);
       return Promise.resolve(null);
     });
   }
