@@ -6,16 +6,8 @@ import TCAT from './TCAT';
 type BackTrack = {
   time: number,
   busNum: number,
-  stop: ?string
-};
-
-// Helper function to check equality of enumerating back-tracking
-const backTrackEqual = (one: BackTrack, two: BackTrack): boolean => {
-  return (
-    one.time === two.time &&
-    one.busNum === two.busNum &&
-    one.stop === two.stop
-  );
+  stop: string,
+  round: number
 };
 
 class Raptor {
@@ -46,13 +38,15 @@ class Raptor {
         new Array(this.N + 1).fill({
           time: Number.MAX_VALUE,
           busNum: -1,
-          stop: null
+          stop: '',
+          round: -1
         });
     }
     result[this.startStop.name] = {
       time: this.startTime,
       busNum: -1,
-      stop: null
+      stop: '',
+      round: -1
     };
     return result;
   }
@@ -116,7 +110,8 @@ class Raptor {
               multiLabels[currTimedStop.stop.name][k] = {
                 time: currTimedStop.time,
                 busNum: bus.lineNumber,
-                stop: stop.name
+                stop: stop.name,
+                round: k
               };
             }
           }
@@ -134,19 +129,13 @@ class Raptor {
     // While-loop prep
     let currentStop = this.endStop;
     let i = this.N;
-    while (i >= 0 && !currentStop.equals(this.startStop)) {
-      // If this is the case, we already accounted for this
-      // backtrack value
-      if (
-        results.length > 0 &&
-        backTrackEqual(
-          multiLabels[currentStop.name][i],
-          results[results.length - 1]
-        )
-      ) continue;
+    while (i >= 0) {
+      const backTrack = multiLabels[currentStop.name][i];
+      results.push(backTrack);
 
-      results.push(multiLabels[currentStop.name][i]);
-      i--;
+      // Update variables
+      i = backTrack.round;
+      currentStop = TCAT.nameToStop[backTrack.stop];
     }
     return results.reverse();
   }
