@@ -19,11 +19,7 @@ class BusRoutingRouter {
   }
 
   distanceVectors (req: Request, res: Response, next: NextFunction): void {
-    tcat.distanceMatrix.then(response => {
-      res.json(response.durations);
-    }).catch(err => {
-      res.json(err);
-    });
+    res.json({});
   }
 
   init () {
