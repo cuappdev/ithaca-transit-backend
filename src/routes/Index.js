@@ -10,16 +10,11 @@ class IndexRouter {
     this.init();
   }
 
-  helloWorld (req: Request, res: Response, next: NextFunction): void {
-    res.json({ message: 'Hello, World!' });
-  }
-
   stops (req: Request, res: Response, next: NextFunction): void {
     res.json(TCAT.stops);
   }
 
   init () {
-    this.router.get('/hello', this.helloWorld);
     this.router.get('/stops', this.stops);
   }
 }
