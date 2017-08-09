@@ -27,10 +27,12 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.js?$/,
         loader: 'babel-loader',
         exclude: /(node_modules)/,
-        query: { presets: [ 'es2015', 'stage-2' ] }
+        query: {
+          presets: ['es2015', 'stage-2']
+        }
       }
     ]
   },

@@ -22,11 +22,15 @@ class Raptor {
   constructor (
     buses: Array<Bus>,
     stops: Array<Stop>,
+    startStop: Stop,
+    endStop: Stop,
     startTime: number,
     N: number
   ) {
     this.buses = buses;
     this.stops = stops;
+    this.startStop = startStop;
+    this.endStop = endStop;
     this.startTime = startTime;
     this.N = N;
   }
@@ -128,7 +132,7 @@ class Raptor {
   // TODO - factor in walking connections
   _stageThree (): void {}
 
-  _backTrack (multiLabels: { [string]: Array<BackTrack> }): Array<any> {
+  _backTrack (multiLabels: { [string]: Array<BackTrack> }): Array<BackTrack> {
     let results: Array<BackTrack> = [];
 
     // While-loop prep
@@ -156,8 +160,8 @@ class Raptor {
       this._stageThree();
     }
 
-    this._backTrack(multiLabels);
-    return Promise.resolve(null);
+    const result = this._backTrack(multiLabels);
+    return Promise.resolve(result);
   }
 }
 
