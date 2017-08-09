@@ -25,14 +25,13 @@ class Raptor {
     startStop: Stop,
     endStop: Stop,
     startTime: number,
-    N: number
   ) {
     this.buses = buses;
     this.stops = stops;
     this.startStop = startStop;
     this.endStop = endStop;
     this.startTime = startTime;
-    this.N = N;
+    this.N = 4;
   }
 
   _initStopMultiLabelContainer (): { [string]: Array<BackTrack> } {
@@ -41,13 +40,14 @@ class Raptor {
       const stop = this.stops[i];
       result[stop.name] =
         new Array(this.N + 1).fill({
-          time: Number.MAX_VALUE,
+          time: Number.MAX_VALUE - 30 * TCATConstants.DAY, // so no overflow occurs
           busNum: -1,
           stop: '',
           round: -1
         });
     }
-    result[this.startStop.name] = {
+    // Set first one accordingly
+    result[this.startStop.name][0] = {
       time: this.startTime,
       busNum: -1,
       stop: '',
@@ -91,13 +91,6 @@ class Raptor {
         for (let p = 0; p < this.buses[b].paths.length; p++) {
           const path = this.buses[b].paths[p];
 
-          if (
-            // If we'll never reach this anyway
-            path.startTime < startTime ||
-            // No one is waiting a day for a bus
-            path.startTime > startTime + TCATConstants.DAY
-          ) continue;
-
           // Lookup index
           const stopIndex = path.getStopIndex(stop);
 
@@ -106,14 +99,16 @@ class Raptor {
 
           for (let i = stopIndex; i < path.timedStops.length; i++) {
             const currTimedStop = path.timedStops[i];
-            const currStopIdx = TCAT.stopNameToIndex[currTimedStop.stop.name];
 
             // If true, we already processed this route
-            if (routeBookKeeping[b][i][currStopIdx][k]) break;
+            if (routeBookKeeping[b][p][i][k]) break;
+
+            // If it's impossible to reach
+            if (currTimedStop.time < startTime) continue;
 
             // Process
             const prevBestTime = multiLabels[currTimedStop.stop.name][k].time;
-            routeBookKeeping[b][i][currStopIdx][k] = true;
+            routeBookKeeping[b][p][i][k] = true;
             if (currTimedStop.time < prevBestTime) {
               let bus = this.buses[b];
               multiLabels[currTimedStop.stop.name][k] = {
@@ -137,8 +132,9 @@ class Raptor {
 
     // While-loop prep
     let currentStop = this.endStop;
+
     let i = this.N;
-    while (i >= 0) {
+    while (i > 1) {
       const backTrack = multiLabels[currentStop.name][i];
       results.push(backTrack);
 
