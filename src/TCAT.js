@@ -44,7 +44,7 @@ const stops = stopsJSONs.map(json => {
   return new Stop(json.name, location);
 });
 
-const nameToStop = (() => {
+const nameToStop: Object = (() => {
   let result = {};
   for (let i = 0; i < stops.length; i++) {
     const stop = stops[i];
@@ -82,10 +82,8 @@ const buses = busesJSONs.map(json => {
         const stop = nameToStop[table.stops[j]];
         timedStops.push(new TimedStop(stop, time));
       }
-      const startTime = timedStops.length > 0
-        ? timedStops[0].time
-        : Number.MAX_VALUE;
-      paths.push(new Path(days, timedStops, startTime));
+
+      paths.push(new Path(days, timedStops));
     }
     return paths;
   }));

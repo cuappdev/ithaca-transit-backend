@@ -12,14 +12,20 @@ class BusRoutingRouter {
   }
 
   routeMe (req: Request, res: Response, next: NextFunction): void {
+    const start = TCAT.nameToStop['Schwartz Performing Arts']; // TODO Parameterize
+    const stop = TCAT.nameToStop['Baker Flagpole']; // TODO Parameterize
+    const startTime = 3600 * 13; // TODO Parameterize
     const raptor = new Raptor(
       TCAT.buses,
       TCAT.stops,
-      TCAT.stops[0], // TODO Parameterize
-      TCAT.stops[5], // TODO Parameterize
-      3600 * 13, // TODO Parameterize
-      4 // TODO Parameterize
+      start,
+      stop,
+      startTime
     );
+
+    console.log('Start: ' + start.name);
+    console.log('Stop: ' + stop.name);
+    console.log('Start time: ' + startTime);
 
     // Respond with result
     raptor.run().then(result => {

@@ -14,8 +14,13 @@ class IndexRouter {
     res.json(TCAT.stops);
   }
 
+  buses (req: Request, res: Response, next: NextFunction): void {
+    res.json(TCAT.buses);
+  }
+
   init () {
     this.router.get('/stops', this.stops);
+    this.router.get('/buses', this.buses);
   }
 }
 

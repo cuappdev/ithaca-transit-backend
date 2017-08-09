@@ -24,15 +24,13 @@ class Bus {
         const days = {start: j, end: j};
         const augmentedTimedStops = path.timedStops.map(timedStop => {
           let timedStopClone = TimedStop.clone(timedStop);
-          timedStopClone.time = timedStop.time + j * TCATConstants.DAY;
+          timedStopClone.time = (j * TCATConstants.DAY) + timedStop.time;
           return timedStopClone;
         });
-        const augmentedStartTime = j * TCATConstants.DAY + path.startTime;
 
         this.paths.push(new Path(
           days,
-          augmentedTimedStops,
-          augmentedStartTime
+          augmentedTimedStops
         ));
       }
     }

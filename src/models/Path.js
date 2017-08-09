@@ -14,17 +14,14 @@ type DaySequence = {
 class Path {
   days: DaySequence;
   timedStops: Array<TimedStop>;
-  startTime: number;
   stopToIndex: { [string]: number } // For quick look-ups
 
   constructor (
     days: DaySequence,
     timedStops: Array<TimedStop>,
-    startTime: number,
   ) {
     this.days = days;
     this.timedStops = timedStops;
-    this.startTime = startTime;
     this.stopToIndex = {};
 
     for (let i = 0; i < this.timedStops.length; i++) {
