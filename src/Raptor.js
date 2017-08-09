@@ -2,6 +2,7 @@
 import Bus from './models/Bus';
 import Stop from './models/Stop';
 import TCAT from './TCAT';
+import TCATConstants from './utils/TCATConstants';
 
 type BackTrack = {
   time: number,
@@ -86,8 +87,12 @@ class Raptor {
         for (let p = 0; p < this.buses[b].paths.length; p++) {
           const path = this.buses[b].paths[p];
 
-          // If we'll never reach this anyway
-          if (path.startTime < startTime) continue;
+          if (
+            // If we'll never reach this anyway
+            path.startTime < startTime ||
+            // No one is waiting a day for a bus
+            path.startTime > startTime + TCATConstants.DAY
+          ) continue;
 
           // Lookup index
           const stopIndex = path.getStopIndex(stop);
