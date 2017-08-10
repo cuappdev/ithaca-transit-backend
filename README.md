@@ -11,8 +11,8 @@ the routing library that is used to aid routing calculations.
 3.
 ````bash
 npm install
-node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/car.lua
-node_modules/osrm/lib/binding/osrm-contract map.osrm
+node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/foot.lua
+node_modules/osrm/lib/binding/osrm-contract osrm/map.osrm
 mkdir osrm
 mv *.osm* ./osrm
 mv *.osrm* ./osrm
