@@ -125,15 +125,11 @@ class Raptor {
 
   _backTrack (multiLabels: { [string]: Array<BackTrack> }): Array<BackTrack> {
     let results: Array<BackTrack> = [];
-
-    // While-loop prep
     let currentStop = this.endStop;
-
     let i = this.N;
     while (i > 1) {
       const backTrack = multiLabels[currentStop.name][i];
       results.push(backTrack);
-
       // Update variables
       i = backTrack.round;
       currentStop = TCAT.nameToStop[backTrack.stop];
