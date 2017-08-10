@@ -1,5 +1,4 @@
 // @flow
-import Stop from './Stop';
 import TimedStop from './TimedStop';
 
 type DaySequence = {
@@ -14,7 +13,6 @@ type DaySequence = {
 class Path {
   days: DaySequence;
   timedStops: Array<TimedStop>;
-  stopToIndex: { [string]: number } // For quick look-ups
 
   constructor (
     days: DaySequence,
@@ -22,16 +20,6 @@ class Path {
   ) {
     this.days = days;
     this.timedStops = timedStops;
-    this.stopToIndex = {};
-
-    for (let i = 0; i < this.timedStops.length; i++) {
-      this.stopToIndex[this.timedStops[i].stop.name] = i;
-    }
-  }
-
-  getStopIndex (stop: Stop): number {
-    const i = this.stopToIndex[stop.name];
-    return i || -1;
   }
 
   runsOnDay (day: number) {

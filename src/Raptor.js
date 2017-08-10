@@ -90,7 +90,7 @@ class Raptor {
         const path = this.paths[p];
 
         // Lookup index
-        const stopIndex = path.getOriginalPath().getStopIndex(stop);
+        const stopIndex = path.getStopIndex(stop);
 
         // If we didn't find the stop at all
         if (stopIndex < 0) continue;
