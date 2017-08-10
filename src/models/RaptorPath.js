@@ -35,6 +35,7 @@ class RaptorPath {
 
   static fromPath (path: Path, day: number, tcatNum: number): RaptorPath {
     if (!path.runsOnDay(day % 7)) throw new Error('Invalid day given');
+
     const timedStops = path.timedStops.map(tStop => {
       // Clone + update time of running
       let clonedtStop = TimedStop.clone(tStop);
@@ -46,8 +47,9 @@ class RaptorPath {
   }
 
   getStopIndex (stop: Stop): number {
-    const i = this._stopToIndex[stop.name];
-    return i || -1;
+    return !(stop.name in this._stopToIndex)
+      ? -1
+      : this._stopToIndex[stop.name];
   }
 }
 
