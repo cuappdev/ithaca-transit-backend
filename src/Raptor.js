@@ -1,5 +1,5 @@
 // @flow
-import Bus from './models/Bus';
+import RaptorPath from './models/RaptorPath';
 import Stop from './models/Stop';
 import TCAT from './TCAT';
 import TCATConstants from './utils/TCATConstants';
@@ -12,7 +12,7 @@ type BackTrack = {
 };
 
 class Raptor {
-  buses: Array<Bus>;
+  paths: Array<RaptorPath>;
   stops: Array<Stop>;
   startStop: Stop;
   endStop: Stop;
@@ -20,18 +20,18 @@ class Raptor {
   N: number; // rounds of algo (max transfers is N - 1)
 
   constructor (
-    buses: Array<Bus>,
+    paths: Array<RaptorPath>,
     stops: Array<Stop>,
     startStop: Stop,
     endStop: Stop,
     startTime: number,
   ) {
-    this.buses = buses;
+    this.paths = paths;
     this.stops = stops;
     this.startStop = startStop;
     this.endStop = endStop;
     this.startTime = startTime;
-    this.N = 4;
+    this.N = TCATConstants.MAX_RAPTOR_ROUNDS;
   }
 
   _initStopMultiLabelContainer (): { [string]: Array<BackTrack> } {
@@ -40,7 +40,7 @@ class Raptor {
       const stop = this.stops[i];
       result[stop.name] =
         new Array(this.N + 1).fill({
-          time: Number.MAX_VALUE - 30 * TCATConstants.DAY, // so no overflow occurs
+          time: TCATConstants.INFINITY,
           busNum: -1,
           stop: '',
           round: -1
@@ -57,12 +57,10 @@ class Raptor {
   }
 
   // Array of buses with paths with stops with boolean arrays
-  _initRouteBookKeeping (): Array<Array<Array<Array<boolean>>>> {
-    return this.buses.map(bus => {
-      return bus.paths.map(path => {
-        return path.timedStops.map(tStop => {
-          return new Array(this.N + 1).fill(false);
-        });
+  _initRouteBookKeeping (): Array<Array<Array<boolean>>> {
+    return this.paths.map(path => {
+      return path.timedStops.map(tStop => {
+        return new Array(this.N + 1).fill(false);
       });
     });
   }
@@ -80,44 +78,42 @@ class Raptor {
   _stageTwo (
     multiLabels: { [string]: Array<BackTrack> },
     k: number,
-    routeBookKeeping: Array<Array<Array<Array<boolean>>>>,
+    routeBookKeeping: Array<Array<Array<boolean>>>,
   ): void {
     for (let s = 0; s < this.stops.length; s++) {
       // Stop + startTime at this stop
       let stop = this.stops[s];
       let startTime = multiLabels[stop.name][k - 1].time;
 
-      for (let b = 0; b < this.buses.length; b++) {
-        for (let p = 0; p < this.buses[b].paths.length; p++) {
-          const path = this.buses[b].paths[p];
+      // Go through all paths
+      for (let p = 0; p < this.paths.length; p++) {
+        const path = this.paths[p];
 
-          // Lookup index
-          const stopIndex = path.getStopIndex(stop);
+        // Lookup index
+        const stopIndex = path.getOriginalPath().getStopIndex(stop);
 
-          // If we didn't find the stop at all
-          if (stopIndex < 0) continue;
+        // If we didn't find the stop at all
+        if (stopIndex < 0) continue;
 
-          for (let i = stopIndex; i < path.timedStops.length; i++) {
-            const currTimedStop = path.timedStops[i];
+        for (let i = stopIndex; i < path.timedStops.length; i++) {
+          const currTimedStop = path.timedStops[i];
 
-            // If true, we already processed this route
-            if (routeBookKeeping[b][p][i][k]) break;
+          // If true, we already processed this route
+          if (routeBookKeeping[p][i][k]) break;
 
-            // If it's impossible to reach
-            if (currTimedStop.time < startTime) continue;
+          // If it's impossible to reach
+          if (currTimedStop.time < startTime) continue;
 
-            // Process
-            const prevBestTime = multiLabels[currTimedStop.stop.name][k].time;
-            routeBookKeeping[b][p][i][k] = true;
-            if (currTimedStop.time < prevBestTime) {
-              let bus = this.buses[b];
-              multiLabels[currTimedStop.stop.name][k] = {
-                time: currTimedStop.time,
-                busNum: bus.lineNumber,
-                stop: stop.name,
-                round: k
-              };
-            }
+          // Process
+          const prevBestTime = multiLabels[currTimedStop.stop.name][k].time;
+          routeBookKeeping[p][i][k] = true;
+          if (currTimedStop.time < prevBestTime) {
+            multiLabels[currTimedStop.stop.name][k] = {
+              time: currTimedStop.time,
+              busNum: path.tcatNum,
+              stop: stop.name,
+              round: k
+            };
           }
         }
       }

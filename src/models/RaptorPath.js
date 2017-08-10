@@ -14,13 +14,15 @@ import TimedStop from './TimedStop';
  * 4:03PM, 4:08PM, and 4:15PM).
  */
 class RaptorPath {
+  _path: Path;
   day: number;
   tcatNum: number;
   timedStops: Array<TimedStop>;
 
   constructor (path: Path, day: number, tcatNum: number) {
-    if (!path.runsOnDay(day)) throw new Error('Invalid day given');
+    if (!path.runsOnDay(day % 7)) throw new Error('Invalid day given');
 
+    this._path = path;
     this.day = day;
     this.tcatNum = tcatNum;
     this.timedStops = path.timedStops.map(tStop => {
@@ -29,6 +31,10 @@ class RaptorPath {
       clonedtStop.time = day * TCATConstants.DAY + tStop.time;
       return clonedtStop;
     });
+  }
+
+  getOriginalPath (): Path {
+    return this._path;
   }
 }
 

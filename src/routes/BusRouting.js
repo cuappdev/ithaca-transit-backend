@@ -1,6 +1,7 @@
 // @flow
 import { Router, Request, Response, NextFunction } from 'express';
 import Raptor from '../Raptor';
+import RaptorUtils from '../utils/RaptorUtils';
 import TCAT from '../TCAT';
 
 class BusRoutingRouter {
@@ -15,8 +16,12 @@ class BusRoutingRouter {
     const start = TCAT.nameToStop['Schwartz Performing Arts']; // TODO Parameterize
     const stop = TCAT.nameToStop['Baker Flagpole']; // TODO Parameterize
     const startTime = 3600 * 13; // TODO Parameterize
+
+    // Assuming startTime is in seconds
+    const raptorPaths = RaptorUtils.generateRaptorPaths(startTime);
+
     const raptor = new Raptor(
-      TCAT.buses,
+      raptorPaths,
       TCAT.stops,
       start,
       stop,
