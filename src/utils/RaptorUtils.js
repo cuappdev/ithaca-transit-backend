@@ -43,20 +43,27 @@ const walkingPaths = (start: Stop, end: Stop, startTime: number) => {
   return OSRM.table(options).then(response => {
     const {durations} = response;
     let raptorPaths = [];
+    const day = dayFromTimeInSecs(startTime);
+    const tcatNum = TCATConstants.WALKING_TCAT_NUMBER;
+
     for (let i = 0; i < TCAT.stops.length; i++) {
-      const travelTime = durations[0][i + 2];
-
-      const day = dayFromTimeInSecs(startTime);
-      const tcatNum = TCATConstants.WALKING_TCAT_NUMBER;
-      const timedStops = [
+      // From Start
+      const fromStartTravelTime = durations[0][i + 2];
+      const fromStartTimedStops = [
         new TimedStop(start, startTime),
-        new TimedStop(TCAT.stops[i], startTime + travelTime)
+        new TimedStop(TCAT.stops[i], startTime + fromStartTravelTime)
       ];
+      raptorPaths.push(new RaptorPath(day, tcatNum, fromStartTimedStops));
 
-      raptorPaths.push(new RaptorPath(day, tcatNum, timedStops));
+      // To End
+      const toEndTravelTime = durations[i + 2][1];
+      const toEndTimedStops = [
+        new TimedStop(TCAT.stops[i], TCATConstants.INFINITY),
+        new TimedStop(end, TCATConstants.INFINITY + toEndTravelTime)
+      ];
+      raptorPaths.push(new RaptorPath(day, tcatNum, toEndTimedStops));
     }
 
-    // TODO, stop-oriented ones
     return Promise.resolve(raptorPaths);
   });
 };
