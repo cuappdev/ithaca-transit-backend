@@ -33,7 +33,11 @@ const generateRaptorPaths = (startTime: number): Array<RaptorPath> => {
   return raptorPaths;
 };
 
-const walkingPaths = (start: Stop, end: Stop, startTime: number) => {
+const walkingPaths = (
+  start: Stop,
+  end: Stop,
+  startTime: number
+): Promise<any> => {
   const coordinates = [
     start.location.toArray(),
     end.location.toArray()
@@ -56,10 +60,14 @@ const walkingPaths = (start: Stop, end: Stop, startTime: number) => {
       raptorPaths.push(new RaptorPath(day, tcatNum, fromStartTimedStops));
 
       // To End
+      // NOTE: Put walking start time 30 days into the future to allow
+      // for all routing ops to be completed by then, so this is definitely
+      // the last leg of the journey to take
+      const baseEndTime = TCATConstants.DAY * 30;
       const toEndTravelTime = durations[i + 2][1];
       const toEndTimedStops = [
-        new TimedStop(TCAT.stops[i], TCATConstants.INFINITY),
-        new TimedStop(end, TCATConstants.INFINITY + toEndTravelTime)
+        new TimedStop(TCAT.stops[i], baseEndTime),
+        new TimedStop(end, baseEndTime + toEndTravelTime)
       ];
       raptorPaths.push(new RaptorPath(day, tcatNum, toEndTimedStops));
     }

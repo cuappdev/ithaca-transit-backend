@@ -1,7 +1,6 @@
 // @flow
 import RaptorPath from './models/RaptorPath';
 import Stop from './models/Stop';
-import TCAT from './TCAT';
 import TCATConstants from './utils/TCATConstants';
 
 type BackTrack = {
@@ -9,6 +8,13 @@ type BackTrack = {
   busNum: number,
   stop: string,
   round: number
+};
+
+type PlanElement = {
+  arrivalTime: number,
+  busNum: number,
+  endStop: Stop,
+  startStop: Stop
 };
 
 class Raptor {
@@ -32,6 +38,10 @@ class Raptor {
     this.endStop = endStop;
     this.startTime = startTime;
     this.N = TCATConstants.MAX_RAPTOR_ROUNDS;
+  }
+
+  _getStopFromName (name: string): Stop {
+    return this.stops.filter(s => s.name === name)[0];
   }
 
   _initStopMultiLabelContainer (): { [string]: Array<BackTrack> } {
@@ -123,16 +133,25 @@ class Raptor {
   // TODO - factor in walking connections
   _stageThree (): void {}
 
-  _backTrack (multiLabels: { [string]: Array<BackTrack> }): Array<BackTrack> {
-    let results: Array<BackTrack> = [];
+  _backTrack (multiLabels: { [string]: Array<BackTrack> }): Array<PlanElement> {
+    let results: Array<PlanElement> = [];
     let currentStop = this.endStop;
     let i = this.N;
-    while (i > 1) {
+    while (i > 0) {
+      // Grab info
       const backTrack = multiLabels[currentStop.name][i];
-      results.push(backTrack);
+      const endStop = currentStop;
       // Update variables
       i = backTrack.round;
-      currentStop = TCAT.nameToStop[backTrack.stop];
+      currentStop = this._getStopFromName(backTrack.stop);
+      // Populate array
+      let planEl = {
+        arrivalTime: backTrack.time,
+        busNum: backTrack.busNum,
+        endStop: endStop,
+        startStop: currentStop
+      };
+      results.push(planEl);
     }
     return results.reverse();
   }

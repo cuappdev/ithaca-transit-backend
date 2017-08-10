@@ -16,16 +16,16 @@ class BusRoutingRouter {
 
   routeMe (req: Request, res: Response, next: NextFunction): void {
     // TODO Parameterize
-    const start = new Stop('Walking Start', new Location(42.440613, -76.485177));
-    const end = new Stop('Walking End', new Location(42.448477, -76.479729));
+    const start = new Stop('WWWS', new Location(42.442279, -76.485267)); // CTB
+    const end = new Stop('WWWE', new Location(42.455262, -76.479368)); // Clara Dickson Hall
     const startTime = 3600 * 13;
 
     // Assuming startTime is in seconds
-    const allStops = TCAT.stops.concat([start, end]);
+    const allStops = [start, end].concat(TCAT.stops);
     RaptorUtils.walkingPaths(start, end, startTime)
       .then(walkingPaths => {
-        const raptorPaths =
-          RaptorUtils.generateRaptorPaths(startTime).concat(walkingPaths);
+        const raptorPaths = walkingPaths
+          .concat(RaptorUtils.generateRaptorPaths(startTime));
 
         const raptor = new Raptor(
           raptorPaths,
@@ -35,9 +35,6 @@ class BusRoutingRouter {
           startTime
         );
 
-        console.log('Start: ' + start.name);
-        console.log('Stop: ' + end.name);
-        console.log('Start time: ' + startTime);
         return raptor.run();
       })
       .then(result => {
