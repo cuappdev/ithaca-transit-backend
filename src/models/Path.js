@@ -33,6 +33,10 @@ class Path {
     const i = this.stopToIndex[stop.name];
     return i || -1;
   }
+
+  runsOnDay (day: number) {
+    return day >= this.days.start && day <= this.days.end;
+  }
 }
 
 export default Path;
