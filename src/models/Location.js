@@ -18,6 +18,10 @@ class Location {
       location.longitude === this.longitude
     );
   }
+
+  toArray (): Array<number> {
+    return [this.longitude, this.latitude];
+  }
 }
 
 export default Location;

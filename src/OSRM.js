@@ -1,3 +1,4 @@
+// NO FLOW b/c osrm library is not-well-typed according to our Flow version
 import OSRM from 'osrm';
 
 const osrm = new OSRM('osrm/map.osrm');

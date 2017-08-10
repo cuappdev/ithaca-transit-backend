@@ -1,5 +1,6 @@
 // @flow
 import Path from './Path';
+import Stop from './Stop';
 import TCATConstants from '../utils/TCATConstants';
 import TimedStop from './TimedStop';
 
@@ -14,27 +15,39 @@ import TimedStop from './TimedStop';
  * 4:03PM, 4:08PM, and 4:15PM).
  */
 class RaptorPath {
-  _path: Path;
   day: number;
   tcatNum: number;
   timedStops: Array<TimedStop>;
 
-  constructor (path: Path, day: number, tcatNum: number) {
-    if (!path.runsOnDay(day % 7)) throw new Error('Invalid day given');
+  _stopToIndex: { [string]: number } // For quick look-ups
 
-    this._path = path;
+  constructor (day: number, tcatNum: number, timedStops: Array<TimedStop>) {
     this.day = day;
     this.tcatNum = tcatNum;
-    this.timedStops = path.timedStops.map(tStop => {
+    this.timedStops = timedStops;
+
+    this._stopToIndex = {};
+
+    for (let i = 0; i < this.timedStops.length; i++) {
+      this._stopToIndex[this.timedStops[i].stop.name] = i;
+    }
+  }
+
+  static fromPath (path: Path, day: number, tcatNum: number): RaptorPath {
+    if (!path.runsOnDay(day % 7)) throw new Error('Invalid day given');
+    const timedStops = path.timedStops.map(tStop => {
       // Clone + update time of running
       let clonedtStop = TimedStop.clone(tStop);
       clonedtStop.time = day * TCATConstants.DAY + tStop.time;
       return clonedtStop;
     });
+
+    return new RaptorPath(day, tcatNum, timedStops);
   }
 
-  getOriginalPath (): Path {
-    return this._path;
+  getStopIndex (stop: Stop): number {
+    const i = this._stopToIndex[stop.name];
+    return i || -1;
   }
 }
 
