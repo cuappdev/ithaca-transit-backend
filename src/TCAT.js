@@ -2,6 +2,7 @@
 import Bus from './models/Bus';
 import Path from './models/Path';
 import Location from './models/Location';
+import Kml from './models/Kml';
 import Stop from './models/Stop';
 import TCATUtils from './utils/TCATUtils';
 import KmlUtils from './utils/KmlUtils';
