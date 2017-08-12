@@ -4,6 +4,7 @@ import Path from './models/Path';
 import Location from './models/Location';
 import Stop from './models/Stop';
 import TCATUtils from './utils/TCATUtils';
+import KmlUtils from './utils/KmlUtils';
 import TimedStop from './models/TimedStop';
 
 import fs from 'fs';
@@ -25,6 +26,11 @@ type BusJSON = {
   number: number,
 };
 
+type KmlJSON = {
+  number: number,
+  placemark: string
+}
+
 const stopsJSONs: Array<RouteJSON> = JSON.parse(
   fs.readFileSync(
     'data/stops.json',
@@ -35,6 +41,13 @@ const stopsJSONs: Array<RouteJSON> = JSON.parse(
 const busesJSONs: Array<BusJSON> = JSON.parse(
   fs.readFileSync(
     'data/routes.json',
+    'utf8'
+  )
+);
+
+const kmlJSONs:  Array<KmlJSON> = JSON.parse(
+  fs.readFileSync(
+    'data/kml.json',
     'utf8'
   )
 );
@@ -89,6 +102,16 @@ const buses = busesJSONs.map(json => {
   }));
   return new Bus(paths, json.number);
 });
+
+const busNumberToKml = (() => {
+  let result = {};
+  for (let i = 0; i < kmlJSONs.length; i++) {
+    var placemark = kmlJSONs[i].placemark;
+    KmlUtils.locationsFromPlacemark(placemark);
+    result[kmlJSONs[i].number] = kmlJSONs[i];
+  }
+  return result;
+})();
 
 export default {
   nameToStop,
