@@ -107,8 +107,8 @@ const busNumberToKml = (() => {
   let result = {};
   for (let i = 0; i < kmlJSONs.length; i++) {
     var placemark = kmlJSONs[i].placemark;
-    KmlUtils.locationsFromPlacemark(placemark);
     result[kmlJSONs[i].number] = kmlJSONs[i];
+    result[kmlJSONs[i].number].locations = KmlUtils.locationsFromPlacemark(placemark);
   }
   return result;
 })();
