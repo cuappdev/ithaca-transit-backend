@@ -12,6 +12,7 @@ fs.readdirSync('node_modules')
   });
 
 module.exports = {
+  devtool: 'eval',
   entry: [path.join(__dirname, 'src/server.js')],
   context: __dirname,
   node: {
