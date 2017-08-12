@@ -19,6 +19,13 @@ class Location {
     );
   }
 
+  distance (location: Location): number {
+    return (
+      (this.latitude - location.latitude) * (this.latitude - location.latitude) +
+      (this.longitude - location.longitude) * (this.longitude - location.longitude)
+      );
+  }
+
   toArray (): Array<number> {
     return [this.longitude, this.latitude];
   }

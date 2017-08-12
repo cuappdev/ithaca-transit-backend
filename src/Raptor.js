@@ -28,6 +28,7 @@ class Raptor {
   constructor (
     paths: Array<RaptorPath>,
     stops: Array<Stop>,
+    busNumberToKml,
     startStop: Stop,
     endStop: Stop,
     startTime: number,
@@ -145,6 +146,9 @@ class Raptor {
       i = backTrack.round;
       currentStop = this._getStopFromName(backTrack.stop);
       // Populate array
+      
+
+
       let planEl = {
         arrivalTime: backTrack.time,
         busNum: backTrack.busNum,
