@@ -44,17 +44,20 @@ class Kml {
 
   placemarkFromStartEndStops (start: Stop, end: Stop) {
     var startIndex = this.locations
-      .map(a => a.distance(start))
+      .map(a => a.distance(start.location))
       .reduce((icur, x, i, arr) => x < arr[icur] ? i : icur, 0);
     var endIndex = this.locations
-      .map(a => a.distance(end))
+      .map(a => a.distance(end.location))
       .reduce((icur, x, i, arr) => x < arr[icur] ? i : icur, 0);
     
+    console.log(startIndex);
+    console.log(endIndex);
+
     // rotate locations so that start stops is at index 0
     var locationsRotated = KmlUtils.rotatedArray(this.locations, startIndex);
     
     // compute the number of locations to include in placemark
-    var length = startIndex - endIndex;
+    var length = endIndex - startIndex;
     length = length < 0 ? length + this.locations.length : length;
     
     var locationsString = this.locations
