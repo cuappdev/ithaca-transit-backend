@@ -107,9 +107,9 @@ const buses = busesJSONs.map(json => {
 const busNumberToKml = (() => {
   let result = {};
   for (let i = 0; i < kmlJSONs.length; i++) {
+    var number = kmlJSONs[i].number;
     var placemark = kmlJSONs[i].placemark;
-    result[kmlJSONs[i].number] = kmlJSONs[i];
-    result[kmlJSONs[i].number].locations = KmlUtils.locationsFromPlacemark(placemark);
+    result[number] = new Kml(number, placemark);
   }
   return result;
 })();
@@ -118,5 +118,6 @@ export default {
   nameToStop,
   stops,
   stopNameToIndex,
-  buses
+  buses,
+  busNumberToKml
 };
