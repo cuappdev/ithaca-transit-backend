@@ -1,3 +1,4 @@
+// @flow
 
 import Location from '../models/Location';
 import Stop from '../models/Stop';

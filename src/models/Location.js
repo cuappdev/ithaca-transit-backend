@@ -20,10 +20,10 @@ class Location {
   }
 
   distance (location: Location): number {
-    return (
-      (this.latitude - location.latitude) * (this.latitude - location.latitude) +
-      (this.longitude - location.longitude) * (this.longitude - location.longitude)
-      );
+    let latDiff = this.latitude - location.latitude;
+    let lngDiff = this.longitude - location.longitude;
+    let squareSum = latDiff * latDiff + lngDiff * lngDiff;
+    return Math.sqrt(squareSum);
   }
 
   toArray (): Array<number> {
