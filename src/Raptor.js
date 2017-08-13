@@ -149,13 +149,15 @@ class Raptor {
       i = backTrack.round;
       currentStop = this._getStopFromName(backTrack.stop);
       // Populate array
-      var kml = this.kml[backTrack.busNum].placemarkFromStartEndStops(currentStop, endStop);
       let planEl = {
         arrivalTime: backTrack.time,
         busNum: backTrack.busNum,
         endStop: endStop,
         startStop: currentStop
       };
+      if (backTrack.busNum in this.kml) {
+        planEl.kml = this.kml[backTrack.busNum].placemarkFromStartEndStops(currentStop, endStop);
+      }
       results.push(planEl);
     }
     return results.reverse();
