@@ -19,6 +19,13 @@ class Location {
     );
   }
 
+  distance (location: Location): number {
+    let latDiff = this.latitude - location.latitude;
+    let lngDiff = this.longitude - location.longitude;
+    let squareSum = latDiff * latDiff + lngDiff * lngDiff;
+    return Math.sqrt(squareSum);
+  }
+
   toArray (): Array<number> {
     return [this.longitude, this.latitude];
   }

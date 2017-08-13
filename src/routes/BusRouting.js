@@ -30,6 +30,7 @@ class BusRoutingRouter {
         const raptor = new Raptor(
           raptorPaths,
           allStops,
+          TCAT.busNumberToKml,
           start,
           end,
           startTime
