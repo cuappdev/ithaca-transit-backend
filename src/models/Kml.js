@@ -20,17 +20,17 @@ class Kml {
     this.placemark = placemark;
 
     // The format is longitude,latitude,0 (why 0? TCAT doin a bamboozle?)
-    var regex = /-?[\d|.|e|E|\+]+,-?[\d|.|e|E|\+]+,-?[\d|.|e|E|\+]+/g;
-    var locations = placemark
+    let regex = /-?[\d|.|e|E|\+]+,-?[\d|.|e|E|\+]+,-?[\d|.|e|E|\+]+/g;
+    let locations = placemark
       .match(regex);
 
     // first and last locations in the KML
-    var firstLocation = locations[0];
-    var lastLocation = locations[locations.length-1];
+    let firstLocation = locations[0];
+    let lastLocation = locations[locations.length-1];
 
     // The indices to use when slicing the KML into the prefix and suffix
-    var locationsStart = placemark.indexOf(firstLocation);
-    var locationsEnd = placemark.indexOf(lastLocation) + lastLocation.length;
+    let locationsStart = placemark.indexOf(firstLocation);
+    let locationsEnd = placemark.indexOf(lastLocation) + lastLocation.length;
 
     this.placemarkPrefix = placemark.substring(0, locationsStart);
     this.placemarkSuffix = placemark.substring(locationsEnd);
@@ -43,29 +43,26 @@ class Kml {
   }
 
   placemarkFromStartEndStops (start: Stop, end: Stop) {
-    var startIndex = this.locations
+    let startIndex = this.locations
       .map(a => a.distance(start.location))
       .reduce((icur, x, i, arr) => x < arr[icur] ? i : icur, 0);
-    var endIndex = this.locations
+    let endIndex = this.locations
       .map(a => a.distance(end.location))
       .reduce((icur, x, i, arr) => x < arr[icur] ? i : icur, 0);
     
-    console.log(startIndex);
-    console.log(endIndex);
-
     // rotate locations so that start stops is at index 0
-    var locationsRotated = KmlUtils.rotatedArray(this.locations, startIndex);
+    let locationsRotated = KmlUtils.rotatedArray(this.locations, startIndex);
     
     // compute the number of locations to include in placemark
     var length = endIndex - startIndex;
     length = length < 0 ? length + this.locations.length : length;
     
-    var locationsString = this.locations
+    let locationsString = this.locations
       .slice(0, length)
       .map(a => a.longitude + ',' + a.latitude + ',0')
       .join(' ');
 
-    var placemarkNew = this.placemarkPrefix + locationsString + this.placemarkSuffix;
+    let placemarkNew = this.placemarkPrefix + locationsString + this.placemarkSuffix;
     return placemarkNew;
   }
 }
