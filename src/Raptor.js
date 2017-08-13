@@ -1,6 +1,7 @@
 // @flow
 import RaptorPath from './models/RaptorPath';
 import Stop from './models/Stop';
+import Kml from './models/Kml';
 import TCATConstants from './utils/TCATConstants';
 
 type BackTrack = {
@@ -20,6 +21,7 @@ type PlanElement = {
 class Raptor {
   paths: Array<RaptorPath>;
   stops: Array<Stop>;
+  kml : { [number] : Kml };
   startStop: Stop;
   endStop: Stop;
   startTime: number;
@@ -28,12 +30,14 @@ class Raptor {
   constructor (
     paths: Array<RaptorPath>,
     stops: Array<Stop>,
+    busNumberToKml: { [number] : Kml },
     startStop: Stop,
     endStop: Stop,
     startTime: number,
   ) {
     this.paths = paths;
     this.stops = stops;
+    this.kml = busNumberToKml;
     this.startStop = startStop;
     this.endStop = endStop;
     this.startTime = startTime;
@@ -151,6 +155,9 @@ class Raptor {
         endStop: endStop,
         startStop: currentStop
       };
+      if (backTrack.busNum in this.kml) {
+        planEl.kml = this.kml[backTrack.busNum].placemarkFromStartEndStops(currentStop, endStop);
+      }
       results.push(planEl);
     }
     return results.reverse();
