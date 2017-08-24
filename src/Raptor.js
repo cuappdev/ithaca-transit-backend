@@ -156,7 +156,11 @@ class Raptor {
         startStop: currentStop
       };
       if (backTrack.busNum in this.kml) {
-        planEl.kml = this.kml[backTrack.busNum].placemarkFromStartEndStops(currentStop, endStop);
+        planEl = {
+          ...planEl,
+          kml: this.kml[backTrack.busNum]
+            .placemarkFromStartEndStops(currentStop, endStop)
+        };
       }
       results.push(planEl);
     }

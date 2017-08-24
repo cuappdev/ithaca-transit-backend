@@ -1,7 +1,7 @@
 [ignore]
 *./node_modules/*
 .*/osrm/.*
-
+../appdev.js/package.json
 [include]
 
 [libs]
