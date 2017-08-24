@@ -2,8 +2,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import IndexRouter from './routes/Index';
-import BusRoutingRouter from './routes/BusRouting';
+import GetAllStopsRouter from './routes/GetAllStopsRouter';
 
 class API {
   express: Object;
@@ -19,9 +18,12 @@ class API {
     this.express.use(bodyParser.urlencoded({ extended: false }));
   }
 
+  _use (Router: any): void {
+    this.express.use('/api/v1', Router);
+  }
+
   routes (): void {
-    this.express.use('/api/v1/', IndexRouter);
-    this.express.use('/api/v1/routing/', BusRoutingRouter);
+    this._use(GetAllStopsRouter);
   }
 }
 
