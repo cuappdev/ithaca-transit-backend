@@ -18,6 +18,5 @@ mv *.osm* ./osrm
 mv *.osrm* ./osrm
 npm start
 ````
-4. Scrape TCAT data via `tcat-scrape` repo and move the `data` folder to the root of this directory.
 
 Full `OSRM Node API` docs can be found [`here`](https://github.com/Project-OSRM/osrm-backend/blob/HEAD/docs/nodejs/api.md)

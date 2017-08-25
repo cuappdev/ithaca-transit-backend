@@ -1,4 +1,5 @@
 // @flow
+import TCATConstants from './TCATConstants';
 
 const stringTimeToSeconds = (strTime: string): number => {
   const colon = strTime.indexOf(':');
@@ -8,6 +9,20 @@ const stringTimeToSeconds = (strTime: string): number => {
   return (timeOfDay === 'AM' ? 0 : 12 * 60 * 60) + hour * 60 * 60 + min * 60;
 };
 
+const unixToWeekTime = (unixTimestamp: number): number => {
+  const theDate = new Date(unixTimestamp * 1000);
+
+  const days = theDate.getDay() - 1;
+  const hours = theDate.getHours();
+  const minutes = theDate.getMinutes();
+  return (
+    days * TCATConstants.DAY +
+    hours * TCATConstants.HOUR +
+    minutes * TCATConstants.MINUTE
+  );
+};
+
 export default {
-  stringTimeToSeconds
+  stringTimeToSeconds,
+  unixToWeekTime
 };
