@@ -8,7 +8,8 @@ Note this is only required to get a fresh `map.osm` file, in case roads and such
 been updated.
 2. `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
 the routing library that is used to aid routing calculations.
-3.
+3. Build `osrm` library from source for `node` and `link` it (explained [`here`](https://github.com/Project-OSRM/osrm-backend/issues/4432#issuecomment-324790814))
+4.
 ````bash
 npm install
 node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/foot.lua
