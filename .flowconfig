@@ -1,6 +1,7 @@
 [ignore]
 *./node_modules/*
 .*/osrm/.*
+.*/osrm-backend/.*
 ../appdev.js/package.json
 [include]
 

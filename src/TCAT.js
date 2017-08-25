@@ -46,7 +46,7 @@ const busesJSONs: Array<BusJSON> = JSON.parse(
   )
 );
 
-const kmlJSONs:  Array<KmlJSON> = JSON.parse(
+const kmlJSONs: Array<KmlJSON> = JSON.parse(
   fs.readFileSync(
     'data/kml.json',
     'utf8'

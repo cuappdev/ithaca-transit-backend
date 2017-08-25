@@ -2,7 +2,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import GetAllStopsRouter from './routes/GetAllStopsRouter';
+import GetAllStopsRouter from './routers/GetAllStopsRouter';
+import GetRouteRouter from './routers/GetRouteRouter';
 
 class API {
   express: Object;
@@ -24,6 +25,7 @@ class API {
 
   routes (): void {
     this._use(GetAllStopsRouter);
+    this._use(GetRouteRouter);
   }
 }
 
