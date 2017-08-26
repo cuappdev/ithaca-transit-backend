@@ -51,7 +51,7 @@ class Raptor {
       result[stop.name] =
         new Array(this.N + 1).fill({
           time: TCATConstants.INFINITY,
-          busNum: -1,
+          busNum: -2,
           stop: '',
           round: -1
         });
@@ -59,7 +59,7 @@ class Raptor {
     // Set first one accordingly
     result[this.startStop.name][0] = {
       time: this.startTime,
-      busNum: -1,
+      busNum: -2,
       stop: '',
       round: -1
     };
@@ -99,13 +99,15 @@ class Raptor {
         const stopIndex = path.getStopIndex(stop);
         // If we didn't find the stop at all
         if (stopIndex < 0) continue;
-
         for (let i = stopIndex; i < path.timedStops.length; i++) {
           const currTimedStop = path.timedStops[i];
-          // If true, we already processed this route
-          if (routeBookKeeping[p][i][k]) break;
-          // If it's impossible to reach
-          if (currTimedStop.time < startTime) continue;
+
+          // If true, we already processed this route or
+          // it is impossible to reach
+          if (
+            routeBookKeeping[p][i][k] ||
+            currTimedStop.time < startTime
+          ) break;
 
           const prevBestTime = multiLabels[currTimedStop.stop.name][k].time;
           routeBookKeeping[p][i][k] = true;
@@ -136,14 +138,16 @@ class Raptor {
       // Update variables
       i = backTrack.round;
       currentStop = this._getStopFromName(backTrack.stop);
-      // Populate array
-      let planEl = {
-        arrivalTime: backTrack.time,
-        busNum: backTrack.busNum,
-        endStop: endStop,
-        startStop: currentStop
-      };
-      results.push(planEl);
+      // Conditionally add
+      if (currentStop) {
+        let planEl = {
+          arrivalTime: backTrack.time,
+          busNum: backTrack.busNum,
+          endStop: endStop,
+          startStop: currentStop
+        };
+        results.push(planEl);
+      }
     }
     return results.reverse();
   }
