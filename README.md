@@ -2,7 +2,7 @@
 
 ## Setup
 
-1. Go to the following [`link`](http://www.openstreetmap.org/relation/174979), and
+1. Go to the following [`link`](http://www.openstreetmap.org/export#map=13/42.4510/-76.4967), and
 click `Export` to grab the map of the Ithaca area to be used in routing calculations.
 Note this is only required to get a fresh `map.osm` file, in case roads and such have
 been updated.

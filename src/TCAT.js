@@ -5,7 +5,6 @@ import Location from './models/Location';
 import Kml from './models/Kml';
 import Stop from './models/Stop';
 import TCATUtils from './utils/TCATUtils';
-import KmlUtils from './utils/KmlUtils';
 import TimedStop from './models/TimedStop';
 
 import fs from 'fs';
@@ -67,7 +66,7 @@ const nameToStop: Object = (() => {
   return result;
 })();
 
-const stopNameToIndex = (() => {
+const stopNameToIndex: Object = (() => {
   let result = {};
   for (let i = 0; i < stops.length; i++) {
     result[stops[i].name] = i;
