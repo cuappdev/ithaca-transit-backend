@@ -45,7 +45,7 @@ const walkingPaths = (
 
   const options = {coordinates: coordinates};
   return OSRM.table(options).then(response => {
-    const {durations} = response;
+    const durations = response.durations.map(a => a.map(b => b * 1000));
     let raptorPaths = [];
     const day = dayFromTimeInSecs(startTime);
     const tcatNum = TCATConstants.WALKING_TCAT_NUMBER;
