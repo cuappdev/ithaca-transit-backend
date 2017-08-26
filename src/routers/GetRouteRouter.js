@@ -6,6 +6,7 @@ import Raptor from '../Raptor';
 import RaptorUtils from '../utils/RaptorUtils';
 import Stop from '../models/Stop';
 import TCAT from '../TCAT';
+import TCATConstants from '../utils/TCATConstants';
 import TCATUtils from '../utils/TCATUtils';
 
 class GetRouteRouter extends AppDevRouter {
@@ -19,18 +20,24 @@ class GetRouteRouter extends AppDevRouter {
 
   async content (req: Request) {
     const leaveBy = req.query.leave_by;
+    const startCoords = TCATUtils.coordStringToCoords(req.query.start_coords);
+    const endCoords = TCATUtils.coordStringToCoords(req.query.end_coords);
 
-    // TODO Parameterize
-    // CTB
-    const start = new Stop('WWWS', new Location(42.442279, -76.485267));
-    // Clara Dickson Hall
-    const end = new Stop('WWWE', new Location(42.455262, -76.479368));
+    const start = new Stop(
+      TCATConstants.START_WALKING,
+      new Location(startCoords.latitude, startCoords.longitude)
+    );
+
+    const end = new Stop(
+      TCATConstants.END_WALKING,
+      new Location(endCoords.latitude, endCoords.longitude)
+    );
+
     const startTime = TCATUtils.unixToWeekTime(leaveBy);
 
-    // Assuming startTime is in seconds
+    // Pre-algorithm info
     const allStops = [start, end].concat(TCAT.stops);
     const walkingPaths = await RaptorUtils.walkingPaths(start, end, startTime);
-
     const raptorPaths =
       walkingPaths.concat(RaptorUtils.generateRaptorPaths(startTime));
 

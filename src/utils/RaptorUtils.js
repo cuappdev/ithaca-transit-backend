@@ -72,6 +72,14 @@ const walkingPaths = (
       raptorPaths.push(new RaptorPath(day, tcatNum, toEndTimedStops));
     }
 
+    // Route that features walking from start to end
+    const startToEndTime = durations[0][1];
+    const startToEndTimedStops = [
+      new TimedStop(start, startTime),
+      new TimedStop(end, startTime + startToEndTime)
+    ];
+    raptorPaths.push(new RaptorPath(day, tcatNum, startToEndTimedStops));
+
     return Promise.resolve(raptorPaths);
   });
 };
