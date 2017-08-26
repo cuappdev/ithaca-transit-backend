@@ -35,19 +35,17 @@ class RaptorPath {
 
   static fromPath (path: Path, day: number, tcatNum: number): RaptorPath {
     if (!path.runsOnDay(day % 7)) throw new Error('Invalid day given');
-
     const timedStops = path.timedStops.map(tStop => {
       // Clone + update time of running
       let clonedtStop = TimedStop.clone(tStop);
       clonedtStop.time = day * TCATConstants.DAY + tStop.time;
       return clonedtStop;
     });
-
     return new RaptorPath(day, tcatNum, timedStops);
   }
 
   getStopIndex (stop: Stop): number {
-    return !(stop.name in this._stopToIndex)
+    return !(this._stopToIndex.hasOwnProperty(stop.name))
       ? -1
       : this._stopToIndex[stop.name];
   }

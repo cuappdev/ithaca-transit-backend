@@ -1,7 +1,6 @@
 // @flow
 import RaptorPath from './models/RaptorPath';
 import Stop from './models/Stop';
-import Kml from './models/Kml';
 import TCATConstants from './utils/TCATConstants';
 
 type BackTrack = {
@@ -21,7 +20,6 @@ type PlanElement = {
 class Raptor {
   paths: Array<RaptorPath>;
   stops: Array<Stop>;
-  kml : { [number] : Kml };
   startStop: Stop;
   endStop: Stop;
   startTime: number;
@@ -30,14 +28,12 @@ class Raptor {
   constructor (
     paths: Array<RaptorPath>,
     stops: Array<Stop>,
-    busNumberToKml: { [number] : Kml },
     startStop: Stop,
     endStop: Stop,
     startTime: number,
   ) {
     this.paths = paths;
     this.stops = stops;
-    this.kml = busNumberToKml;
     this.startStop = startStop;
     this.endStop = endStop;
     this.startTime = startTime;
@@ -98,27 +94,19 @@ class Raptor {
       // Stop + startTime at this stop
       let stop = this.stops[s];
       let startTime = multiLabels[stop.name][k - 1].time;
-
-      // Go through all paths
       for (let p = 0; p < this.paths.length; p++) {
         const path = this.paths[p];
-
-        // Lookup index
         const stopIndex = path.getStopIndex(stop);
-
         // If we didn't find the stop at all
         if (stopIndex < 0) continue;
 
         for (let i = stopIndex; i < path.timedStops.length; i++) {
           const currTimedStop = path.timedStops[i];
-
           // If true, we already processed this route
           if (routeBookKeeping[p][i][k]) break;
-
           // If it's impossible to reach
           if (currTimedStop.time < startTime) continue;
 
-          // Process
           const prevBestTime = multiLabels[currTimedStop.stop.name][k].time;
           routeBookKeeping[p][i][k] = true;
           if (currTimedStop.time < prevBestTime) {
@@ -155,13 +143,6 @@ class Raptor {
         endStop: endStop,
         startStop: currentStop
       };
-      if (backTrack.busNum in this.kml) {
-        planEl = {
-          ...planEl,
-          kml: this.kml[backTrack.busNum]
-            .placemarkFromStartEndStops(currentStop, endStop)
-        };
-      }
       results.push(planEl);
     }
     return results.reverse();

@@ -10,6 +10,7 @@ const dayFromTimeInSecs = (timeInSecs: number): number => {
   return ~~(timeInSecs / TCATConstants.DAY); // classic int division
 };
 
+// Generates paths to be used in the Raptor routing algorithm
 const generateRaptorPaths = (startTime: number): Array<RaptorPath> => {
   const currentDay = dayFromTimeInSecs(startTime);
 
@@ -45,7 +46,7 @@ const walkingPaths = (
 
   const options = {coordinates: coordinates};
   return OSRM.table(options).then(response => {
-    const durations = response.durations.map(a => a.map(b => b * 1000));
+    const durations = response.durations.map(a => a.map(b => b * 2));
     let raptorPaths = [];
     const day = dayFromTimeInSecs(startTime);
     const tcatNum = TCATConstants.WALKING_TCAT_NUMBER;
