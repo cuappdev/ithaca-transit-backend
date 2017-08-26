@@ -60,10 +60,28 @@ class GetRouteRouter extends AppDevRouter {
     const departureTime = Math.floor(leaveBy);
     const arrivalTime = Math.floor(leaveBy + (endTime - startTime));
 
+    // Then build up stop ordering / walking information
+    let mainStops = [];
+    let mainStopNums = [];
+
+    for (let i = 0; i < result.length; i++) {
+      const r = result[i];
+      if (
+        r.endStop.name === TCATConstants.START_WALKING ||
+        r.endStop.name === TCATConstants.END_WALKING
+      ) {
+        mainStopNums.push(TCATConstants.WALKING_TCAT_NUMBER);
+      } else {
+        mainStopNums.push(r.busNum);
+        mainStops.push(r.endStop.name);
+      }
+    }
+
     return {
       departureTime: departureTime,
       arrivalTime: arrivalTime,
-      result: result
+      mainStops: mainStops,
+      mainStopNums: mainStopNums
     };
   }
 }
