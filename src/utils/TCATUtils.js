@@ -11,14 +11,15 @@ const stringTimeToSeconds = (strTime: string): number => {
 
 const unixToWeekTime = (unixTimestamp: number): number => {
   const theDate = new Date(unixTimestamp * 1000);
-
   const days = theDate.getDay() - 1;
   const hours = theDate.getHours();
   const minutes = theDate.getMinutes();
+  const seconds = theDate.getSeconds();
   return (
     days * TCATConstants.DAY +
     hours * TCATConstants.HOUR +
-    minutes * TCATConstants.MINUTE
+    minutes * TCATConstants.MINUTE +
+    seconds
   );
 };
 

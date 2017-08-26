@@ -38,7 +38,7 @@ class RaptorPath {
     const timedStops = path.timedStops.map(tStop => {
       // Clone + update time of running
       let clonedtStop = TimedStop.clone(tStop);
-      clonedtStop.time = day * TCATConstants.DAY + tStop.time;
+      clonedtStop.time = (day * TCATConstants.DAY) + tStop.time;
       return clonedtStop;
     });
     return new RaptorPath(day, tcatNum, timedStops);

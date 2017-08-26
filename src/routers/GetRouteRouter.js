@@ -40,16 +40,11 @@ class GetRouteRouter extends AppDevRouter {
     const raptorPaths =
       walkingPaths.concat(RaptorUtils.generateRaptorPaths(startTime));
 
-    const collegetown =
-      TCAT.stops[TCAT.stopNameToIndex['Schwartz Performing Arts']];
-    const balch =
-      TCAT.stops[TCAT.stopNameToIndex['RPCC @ Jameson']];
-
     // Execute the algorithm
     const raptor = new Raptor(
       raptorPaths,
       allStops,
-      collegetown,
+      start,
       end,
       startTime
     );
