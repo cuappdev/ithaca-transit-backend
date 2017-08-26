@@ -78,6 +78,11 @@ class GetRouteRouter extends AppDevRouter {
     }
 
     return {
+      // Given to use originally
+      startCoords: startCoords,
+      endCoords: endCoords,
+
+      // Main data
       departureTime: departureTime,
       arrivalTime: arrivalTime,
       mainStops: mainStops,
