@@ -60,14 +60,10 @@ const walkingPaths = (
       raptorPaths.push(new RaptorPath(day, tcatNum, fromStartTimedStops));
 
       // To End
-      // NOTE: Put walking start time 30 days into the future to allow
-      // for all routing ops to be completed by then, so this is definitely
-      // the last leg of the journey to take
-      const baseEndTime = TCATConstants.DAY * 30;
       const toEndTravelTime = durations[i + 2][1];
       const toEndTimedStops = [
-        new TimedStop(TCAT.stops[i], baseEndTime),
-        new TimedStop(end, baseEndTime + toEndTravelTime)
+        new TimedStop(TCAT.stops[i], TCATConstants.BASE_END_TIME),
+        new TimedStop(end, TCATConstants.BASE_END_TIME + toEndTravelTime)
       ];
       raptorPaths.push(new RaptorPath(day, tcatNum, toEndTimedStops));
     }
@@ -75,8 +71,8 @@ const walkingPaths = (
     // Route that features walking from start to end
     const startToEndTime = durations[0][1];
     const startToEndTimedStops = [
-      new TimedStop(start, startTime),
-      new TimedStop(end, startTime + startToEndTime)
+      new TimedStop(start, TCATConstants.BASE_END_TIME),
+      new TimedStop(end, TCATConstants.BASE_END_TIME + startToEndTime)
     ];
     raptorPaths.push(new RaptorPath(day, tcatNum, startToEndTimedStops));
 

@@ -19,28 +19,28 @@ class GetRouteRouter extends AppDevRouter {
   }
 
   async content (req: Request) {
-    const leaveBy = req.query.leave_by;
+    const leaveBy = parseInt(req.query.leave_by);
     const startCoords = TCATUtils.coordStringToCoords(req.query.start_coords);
     const endCoords = TCATUtils.coordStringToCoords(req.query.end_coords);
 
+    // Start / end stops
     const start = new Stop(
       TCATConstants.START_WALKING,
       new Location(startCoords.latitude, startCoords.longitude)
     );
-
     const end = new Stop(
       TCATConstants.END_WALKING,
       new Location(endCoords.latitude, endCoords.longitude)
     );
 
-    const startTime = TCATUtils.unixToWeekTime(leaveBy);
-
     // Pre-algorithm info
+    const startTime = TCATUtils.unixToWeekTime(leaveBy);
     const allStops = [start, end].concat(TCAT.stops);
     const walkingPaths = await RaptorUtils.walkingPaths(start, end, startTime);
     const raptorPaths =
       walkingPaths.concat(RaptorUtils.generateRaptorPaths(startTime));
 
+    // Execute the algorithm
     const raptor = new Raptor(
       raptorPaths,
       allStops,
@@ -49,9 +49,22 @@ class GetRouteRouter extends AppDevRouter {
       end,
       startTime
     );
-
     const result = await raptor.run();
-    return result;
+
+    const endTime =
+      result[result.length - 1].arrivalTime -
+      TCATConstants.BASE_END_TIME +
+      result[result.length - 2].arrivalTime;
+
+    // First result is when we start walking
+    const departureTime = Math.floor(leaveBy);
+    const arrivalTime = Math.floor(leaveBy + (endTime - startTime));
+
+    return {
+      departureTime: departureTime,
+      arrivalTime: arrivalTime,
+      result: result
+    };
   }
 }
 

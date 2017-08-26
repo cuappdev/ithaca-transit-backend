@@ -17,6 +17,11 @@ const WALKING_TCAT_NUMBER = -1;
 const START_WALKING = 'START_WALKING';
 const END_WALKING = 'END_WALKING';
 
+// NOTE: Put walking start time 30 days into the future to allow
+// for all routing ops to be completed by then, so this is definitely
+// the last leg of the journey to take
+const BASE_END_TIME = DAY * 30;
+
 export default {
   MINUTE,
   HOUR,
@@ -26,5 +31,6 @@ export default {
   RAPTOR_PROJECTED_DAYS,
   WALKING_TCAT_NUMBER,
   START_WALKING,
-  END_WALKING
+  END_WALKING,
+  BASE_END_TIME
 };
