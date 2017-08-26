@@ -66,12 +66,9 @@ class GetRouteRouter extends AppDevRouter {
 
     for (let i = 0; i < result.length; i++) {
       const r = result[i];
-      if (
-        r.endStop.name === TCATConstants.START_WALKING ||
-        r.endStop.name === TCATConstants.END_WALKING
-      ) {
+      if (r.endStop.name === TCATConstants.END_WALKING) {
         mainStopNums.push(TCATConstants.WALKING_TCAT_NUMBER);
-      } else {
+      } else if (r.endStop.name !== TCATConstants.START_WALKING) {
         mainStopNums.push(r.busNum);
         mainStops.push(r.endStop.name);
       }
