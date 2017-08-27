@@ -1,6 +1,7 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import { Request } from 'express';
+import Kml from '../models/Kml';
 import Location from '../models/Location';
 import Raptor from '../Raptor';
 import RaptorUtils from '../utils/RaptorUtils';
@@ -16,6 +17,19 @@ class GetRouteRouter extends AppDevRouter {
 
   getPath (): string {
     return '/routes/';
+  }
+
+  _grabKMLsFromRoute (mainStops: Array<string>, mainStopNums: Array<number>) {
+    let kmls = [];
+    for (let i = 0; i < mainStopNums.length; i++) {
+      const busNumber = mainStopNums[i];
+      if (busNumber < 0) continue; // this is walking, no path KML to grab
+      const kml: Kml = TCAT.busNumberToKml[busNumber];
+      const startStop = TCAT.nameToStop[mainStops[i - 1]];
+      const endStop = TCAT.nameToStop[mainStops[i]];
+      kmls.push(kml.placemarkFromStartEndStops(startStop, endStop));
+    }
+    return kmls;
   }
 
   async content (req: Request) {
@@ -67,7 +81,6 @@ class GetRouteRouter extends AppDevRouter {
     // Then build up stop ordering / walking information
     let mainStops = [];
     let mainStopNums = [];
-
     for (let i = 0; i < result.length; i++) {
       const r = result[i];
       if (r.endStop.name === TCATConstants.END_WALKING) {
@@ -78,16 +91,18 @@ class GetRouteRouter extends AppDevRouter {
       }
     }
 
+    const kmls = this._grabKMLsFromRoute(mainStops, mainStopNums);
+
     return {
       // Given to use originally
       startCoords: startCoords,
       endCoords: endCoords,
-
       // Main data
       departureTime: departureTime,
       arrivalTime: arrivalTime,
       mainStops: mainStops,
-      mainStopNums: mainStopNums
+      mainStopNums: mainStopNums,
+      kmls: kmls
     };
   }
 }
