@@ -5,3 +5,5 @@
 *package-lock.json*
 *secret*
 *.osrm*
+.elasticbeanstalk/
+*.zip
