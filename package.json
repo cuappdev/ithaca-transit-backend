@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "body-parser": "^1.17.2",
+    "eb-fix-npm": "^1.2.5",
     "jest": "^20.0.4"
   }
 }
