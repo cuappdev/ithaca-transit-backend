@@ -2,7 +2,6 @@
 
 import Location from './Location';
 import Stop from './Stop';
-import KmlUtils from '../utils/KmlUtils';
 
 class Kml {
   // Line number of the bus this KML corresponds to
@@ -54,10 +53,6 @@ class Kml {
     let endIndex = this.locations
       .map(a => a.distance(end.location))
       .reduce((icur, x, i, arr) => x < arr[icur] ? i : icur, 0);
-
-    // rotate locations so that start stops is at index 0
-    let locationsRotated =
-      KmlUtils.rotatedArray(this.locations, startIndex);
 
     // compute the number of locations to include in placemark
     var length = endIndex - startIndex;
