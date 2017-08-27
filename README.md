@@ -32,7 +32,13 @@ node_modules/osrm/lib/binding/osrm-contract osrm/map.osrm
 mkdir osrm
 mv *.osm* ./osrm
 mv *.osrm* ./osrm
-npm start
 ````
 
 Full `OSRM Node API` docs can be found [`here`](https://github.com/Project-OSRM/osrm-backend/blob/HEAD/docs/nodejs/api.md)
+
+## Regular Usage
+
+0. Enter tcat.js/ folder
+1. `npm start`
+2. Use the base URL http://localhost:3000/api/v1
+
