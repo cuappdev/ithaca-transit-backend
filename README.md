@@ -9,7 +9,21 @@ Note this is only required to get a fresh `map.osm` file, in case roads and such
 been updated.
 2. `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
 the routing library that is used to aid routing calculations.
-3. Build `osrm` library from source for `node` and `link` it (explained [`here`](https://github.com/Project-OSRM/osrm-backend/issues/4432#issuecomment-324790814))
+3. Build `osrm` library from source for `node` and `link`. Run commands below.
+
+````bash
+git clone https://github.com/Project-OSRM/osrm-backend.git
+cd osrm-backend
+mkdir build
+cd build
+cmake -DENABLE_MASON=ON -DENABLE_NODE_BINDINGS=ON ..
+make
+cd ..
+npm link
+````
+
+Then, inside tcat.js folder, run `npm link osrm`
+
 4.
 ````bash
 npm install
