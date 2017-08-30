@@ -2,6 +2,7 @@
 
 ## Setup
 Before setup, grab `node` version `6.*.*` and `npm`.  This is easily `Google`-ed.
+
 Also follow `JS` environment setup [`here`](https://github.com/cuappdev/bible/tree/master/js),
 **including the library section**, as the `appdev` module is necessary for this app.
 
@@ -27,8 +28,11 @@ cd ..
 npm link
 ````
 
-5. `npm link appdev`
-6. Then, inside tcat.js folder, run `npm link osrm`
+Then, inside `tcat.js` folder, run `npm link osrm`
+
+5. Inside `tcat.js`, run `npm link appdev`
+
+6.
 
 ````bash
 node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/foot.lua
