@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import GetAllStopsRouter from './routers/GetAllStopsRouter';
 import GetRouteRouter from './routers/GetRouteRouter';
 import GetBusesRouter from './routers/GetBusesRouter';
+import GetBusTrackingRouter from './routers/GetBusTrackingRouter';
 
 class API {
   express: Object;
@@ -28,6 +29,7 @@ class API {
     this._use(GetAllStopsRouter);
     this._use(GetRouteRouter);
     this._use(GetBusesRouter);
+    this._use(GetBusTrackingRouter);
   }
 }
 
