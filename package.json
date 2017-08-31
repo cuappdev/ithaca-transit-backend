@@ -20,8 +20,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "express": "^4.15.3",
     "flow-bin": "^0.51.1",
-    "webpack": "^3.4.1",
-    "xml2js": "^0.4.19"
+    "webpack": "^3.4.1"
   },
   "devDependencies": {
     "body-parser": "^1.17.2",
