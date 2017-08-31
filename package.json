@@ -11,6 +11,7 @@
   "author": "CUAppDev",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.16.2",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
@@ -19,11 +20,16 @@
     "babel-preset-stage-2": "^6.24.1",
     "express": "^4.15.3",
     "flow-bin": "^0.51.1",
-    "webpack": "^3.4.1"
+    "webpack": "^3.4.1",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "body-parser": "^1.17.2",
     "eb-fix-npm": "^1.2.5",
     "jest": "^20.0.4"
+  },
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/cuappdev/tcat.js.git"
   }
 }
