@@ -2,7 +2,6 @@
 import { AppDevRouter } from 'appdev';
 import { Request } from 'express';
 import axios from 'axios';
-import xml2js from 'xml2js';
 
 class GetBusTrackingRouter extends AppDevRouter {
   constructor () {
@@ -14,7 +13,6 @@ class GetBusTrackingRouter extends AppDevRouter {
   }
 
   async content (req: Request) {
-    const parseString = xml2js.parseString;
     const routeID = req.query.routeID;
     const baseURL = 'https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute';
     axios.get(baseURL, {
@@ -23,18 +21,32 @@ class GetBusTrackingRouter extends AppDevRouter {
       }
     })
       .then((response) => {
-        parseString(response.data, function (err, result) {
-          if (err) {
-            return {
-              success: false,
-              data: []
-            };
-          }
+        var parsedData = response.data.map((busInfo) => {
           return {
-            success: true,
-            data: result
+            commStatus: busInfo.CommStatus,
+            destination: busInfo.Destination,
+            deviation: busInfo.Deviation,
+            direction: busInfo.Direction,
+            displayStatus: busInfo.DisplayStatus,
+            gpsStatus: busInfo.GPSStatus,
+            heading: busInfo.Heading,
+            lastStop: busInfo.LastStop,
+            lastUpdated: busInfo.LastUpdated,
+            latitude: busInfo.Latitude,
+            longitude: busInfo.Longitude,
+            name: busInfo.Name,
+            opStatus: busInfo.OpStatus,
+            routeID: busInfo.RouteId,
+            runID: busInfo.RunId,
+            speed: busInfo.Speed,
+            tripID: busInfo.TripId,
+            behicleID: busInfo.VehicleId
           };
         });
+        return {
+          success: true,
+          data: parsedData
+        };
       })
       .catch(() => {
         return {
