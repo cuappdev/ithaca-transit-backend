@@ -18,6 +18,8 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-flow": "^6.23.0",
     "babel-preset-stage-2": "^6.24.1",
+    "csvjson": "^4.3.4",
+    "d3-collection": "^1.0.4",
     "express": "^4.15.3",
     "flow-bin": "^0.51.1",
     "osrm": "^5.12.0",
