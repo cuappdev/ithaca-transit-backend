@@ -6,6 +6,7 @@ import Kml from './models/Kml';
 import Stop from './models/Stop';
 import TCATUtils from './utils/TCATUtils';
 import TimedStop from './models/TimedStop';
+import GTFS from './GTFS';
 
 import fs from 'fs';
 

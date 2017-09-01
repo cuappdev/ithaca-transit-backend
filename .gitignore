@@ -7,3 +7,4 @@
 *.osrm*
 .elasticbeanstalk/
 *.zip
+gtfs/
