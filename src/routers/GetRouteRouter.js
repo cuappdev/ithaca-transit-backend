@@ -93,7 +93,7 @@ class GetRouteRouter extends AppDevRouter {
 
     const kmls = this._grabKMLsFromRoute(mainStops, mainStopNums);
 
-    return {
+    return [{
       // Given to use originally
       startCoords: startCoords,
       endCoords: endCoords,
@@ -103,7 +103,7 @@ class GetRouteRouter extends AppDevRouter {
       mainStops: mainStops,
       mainStopNums: mainStopNums,
       kmls: kmls
-    };
+    }];
   }
 }
 
