@@ -1,5 +1,9 @@
+// @flow
+import Location from './models/Location';
+import Stop from './models/Stop';
+
 import csvjson from 'csvjson';
-import * as d3 from 'd3-collection';
+import d3 from 'd3-collection';
 import fs from 'fs';
 import path from 'path';
 
@@ -94,7 +98,12 @@ const stopTimesFile: Array<StopTimeJSON> = (() => {
 })();
 
 const routes = routesFile;
-const stops = stopsFile;
+
+// Convert to stops
+const stops: Array<Stop> = stopsFile.map(s => {
+  const location = new Location(s.stop_lat, s.stop_lon);
+  return new Stop(s.stop_name, location);
+});
 
 const trips = d3.nest()
   .key(d => d.service_id)
