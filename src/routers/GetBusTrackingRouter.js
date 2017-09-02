@@ -49,7 +49,7 @@ class GetBusTrackingRouter extends AppDevRouter {
       });
       return parsedData;
     } catch (error) {
-      // @todo log error on backend but pass in a presentable string so frontend can display it
+      // TODO log error on backend but pass in a presentable string so frontend can display it
       throw new Error(error);
     }
   }
