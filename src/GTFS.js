@@ -102,8 +102,13 @@ const routes = routesFile;
 // Convert to stops
 const stops: Array<Stop> = stopsFile.map(s => {
   const location = new Location(s.stop_lat, s.stop_lon);
-  return new Stop(s.stop_name, location);
+  return new Stop(s.stop_name, location, false);
 });
+
+const nameToStopIndex = {};
+for (let i = 0; i < stops.length; i++) {
+  nameToStopIndex[stops[i].name] = i;
+}
 
 const trips = d3.nest()
   .key(d => d.service_id)
@@ -119,5 +124,6 @@ export default {
   routes,
   stops,
   trips,
-  stopTimes
+  stopTimes,
+  nameToStopIndex
 };
