@@ -16,6 +16,11 @@ async (buses: Array<PostProcessBus>): Promise<void> => {
 
   // Function to handle interpolation of a journey
   const interpolateJourney = (journey: PostProcessJourney) => {
+    // First timestop index -
+    // Pre-condition: there is at least one w/in the journey
+    // or else we have no frame of reference as to when this journey occurs
+    let firstTimestopIdx = journey.stops.length;
+    // TODO - for loop
     // TODO - use what timestops we know to interpolate journey information
   };
 
