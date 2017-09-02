@@ -1,5 +1,10 @@
-import csvjson from 'csvjson'
-import * as d3 from 'd3-collection'
+// @flow
+import Location from './models/Location';
+import Stop from './models/Stop';
+import TimedStop from './models/TimedStop';
+
+import csvjson from 'csvjson';
+import d3 from 'd3-collection';
 import fs from 'fs';
 import path from 'path';
 
@@ -115,6 +120,33 @@ const trips = d3.nest()
 const stopTimes = d3.nest()
   .key(d => d.trip_id)
   .entries(stopTimesFile);
+
+const dayToServiceID = [15, 15, 15, 16, 14, 12, 13];
+
+const xxx = (() => {
+  let paths = [];
+  for (let i = 0; i < trips.length; i++) {
+    let serviceIDs = trips[i].values;
+    for (let j = 0; j < serviceIDs.length; j++) {
+      let tripIDs = serviceIDs[j].values;
+      for (let k = 0; k < tripIDs.length; k++) {
+        let tripID = tripIDs[0].key;
+        let tripTimes = stopTimes.find(d => d.key == tripID).values;
+        let yyy = [];
+        for (let l = 0; l < tripTimes.length; l++) {
+          let stopID: number = tripTimes[l].stop_id;
+          let isTimepoint = tripTimes[l].timepoint == 1;
+          let stop = stopsFile.find(d => d.stop_id == stopID);
+          yyy.push(new TimedStop(new Stop(stop.stop_name, new Location(stop.stop_lat, stop.stop_lon)), , isTimepoint));
+        }
+        paths.push(yyy);
+      }
+    }
+  }
+  return paths
+})();
+
+//console.log(trips);
 
 export default {
   routes,
