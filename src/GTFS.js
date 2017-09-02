@@ -1,7 +1,7 @@
-import csvjson from 'csvjson'
-import * as d3 from 'd3-collection'
+import csvjson from 'csvjson';
+import * as d3 from 'd3-collection';
 import fs from 'fs';
-import path from 'path'
+import path from 'path';
 
 type RouteJSON = {
   route_id: number,
@@ -41,7 +41,7 @@ type StopTimeJSON = {
 const routesFile: Array<RouteJSON> = (() => {
   var data = fs.readFileSync(
     path.join(__dirname, '../gtfs/routes.txt'),
-    { encoding : 'utf8'});
+    { encoding: 'utf8' });
   var jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.route_id = +d.route_id;
@@ -55,7 +55,7 @@ const routesFile: Array<RouteJSON> = (() => {
 const stopsFile: Array<StopJSON> = (() => {
   var data = fs.readFileSync(
     path.join(__dirname, '../gtfs/stops.txt'),
-    { encoding : 'utf8'});
+    { encoding: 'utf8' });
   var jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.stop_id = +d.stop_id;
@@ -69,7 +69,7 @@ const stopsFile: Array<StopJSON> = (() => {
 const tripsFile: Array<StopJSON> = (() => {
   var data = fs.readFileSync(
     path.join(__dirname, '../gtfs/trips.txt'),
-    { encoding : 'utf8'});
+    { encoding: 'utf8' });
   var jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.route_id = +d.route_id;
@@ -83,7 +83,7 @@ const tripsFile: Array<StopJSON> = (() => {
 const stopTimesFile: Array<StopTimeJSON> = (() => {
   var data = fs.readFileSync(
     path.join(__dirname, '../gtfs/trips.txt'),
-    { encoding : 'utf8'});
+    { encoding: 'utf8' });
   var jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.stop_id = +d.route_id;
