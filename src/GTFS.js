@@ -1,11 +1,7 @@
-// @flow
-import Location from './models/Location';
-import Stop from './models/Stop';
-
-import csvjson from 'csvjson';
-import d3 from 'd3-collection';
+import csvjson from 'csvjson'
+import * as d3 from 'd3-collection'
 import fs from 'fs';
-import path from 'path';
+import path from 'path'
 
 type RouteJSON = {
   route_id: number,
@@ -45,7 +41,7 @@ type StopTimeJSON = {
 const routesFile: Array<RouteJSON> = (() => {
   var data = fs.readFileSync(
     path.join(__dirname, '../gtfs/routes.txt'),
-    { encoding: 'utf8' });
+    { encoding : 'utf8'});
   var jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.route_id = +d.route_id;
@@ -59,7 +55,7 @@ const routesFile: Array<RouteJSON> = (() => {
 const stopsFile: Array<StopJSON> = (() => {
   var data = fs.readFileSync(
     path.join(__dirname, '../gtfs/stops.txt'),
-    { encoding: 'utf8' });
+    { encoding : 'utf8'});
   var jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.stop_id = +d.stop_id;
@@ -73,7 +69,7 @@ const stopsFile: Array<StopJSON> = (() => {
 const tripsFile: Array<StopJSON> = (() => {
   var data = fs.readFileSync(
     path.join(__dirname, '../gtfs/trips.txt'),
-    { encoding: 'utf8' });
+    { encoding : 'utf8'});
   var jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.route_id = +d.route_id;
@@ -87,7 +83,7 @@ const tripsFile: Array<StopJSON> = (() => {
 const stopTimesFile: Array<StopTimeJSON> = (() => {
   var data = fs.readFileSync(
     path.join(__dirname, '../gtfs/trips.txt'),
-    { encoding: 'utf8' });
+    { encoding : 'utf8'});
   var jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.stop_id = +d.route_id;
@@ -111,14 +107,31 @@ for (let i = 0; i < stops.length; i++) {
 }
 
 const trips = d3.nest()
-  .key(d => d.service_id)
   .key(d => d.route_id)
+  .key(d => d.service_id)
   .key(d => d.trip_id)
   .entries(tripsFile);
 
 const stopTimes = d3.nest()
   .key(d => d.trip_id)
   .entries(stopTimesFile);
+
+const dayToServiceID = [15, 15, 15, 16, 14, 12, 13];
+
+const xxx = (() => {
+  for (let i = 0; i < trips.length; i++) {
+    let service_ids = trips[i].values;
+    for (let j = 0; j < service_ids.length; j++) {
+      let trip_ids = service_ids[j].values;
+      for (let k = 0; k < trip_ids.length; k++) {
+        let trip_id = trip_ids[0].key;
+        let stop_times = stopTimes.find(d => d.key == trip_id);
+      }
+    }
+  }
+})();
+
+//console.log(trips);
 
 export default {
   routes,
