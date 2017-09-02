@@ -2,7 +2,7 @@
 import TimedStop from '../models/TimedStop';
 
 export type PostProcessJourney = {
-  stops: Array<Array<TimedStop>>,
+  stops: Array<TimedStop>,
 }
 
 export type PostProcessBus = {
