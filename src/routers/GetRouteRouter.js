@@ -32,8 +32,8 @@ class GetRouteRouter extends AppDevRouter {
   }
 
   async content (req: Request) {
-    const buses = await GTFS.buses();
-    const leaveBy = parseInt(req.query.leave_by);
+    const buses = GTFS.buses([15]);
+  /*  const leaveBy = parseInt(req.query.leave_by);
     const startCoords = TCATUtils.coordStringToCoords(req.query.start_coords);
     const endCoords = TCATUtils.coordStringToCoords(req.query.end_coords);
 
@@ -46,7 +46,7 @@ class GetRouteRouter extends AppDevRouter {
       TCATConstants.END_WALKING,
       new Location(endCoords.latitude, endCoords.longitude)
     );
-
+*/
     // Pre-algorithm info
 /*    const startTime = TCATUtils.unixToWeekTime(leaveBy);
     const allStops = [start, end].concat(TCAT.stops);
@@ -54,9 +54,7 @@ class GetRouteRouter extends AppDevRouter {
     const raptorPaths =
       walkingPaths.concat(RaptorUtils.generateRaptorPaths(startTime));
 */
-    return {
-      status: "rekt"
-    };
+    return buses;
   }
 }
 

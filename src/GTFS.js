@@ -122,6 +122,34 @@ const calendarDatesFile: Array<CalendarDateJSON> = (() => {
   });
 })();
 
+const routesNested = d3.nest()
+  .key(d => d.route_id)
+  .object(routesFile);
+
+const tripsNested = (() => {
+  let routeNest = d3.nest()
+    .key(d => d.route_id)
+    .entries(tripsFile);
+  let totalNest = routeNest.map(a => {
+    let serviceNest = d3.nest()
+      .key(b => b.service_id)
+      .entries(a.values);
+    let serviceMap = {};
+    serviceNest.forEach(e => {
+      serviceMap[e.key] = d3.nest()
+        .key(c => c.trip_id)
+        .entries(e.values);
+    });
+    a.values = serviceMap;
+    return a;
+  });
+  return totalNest;
+})();
+
+const stopTimesNested = d3.nest()
+  .key(d => d.trip_id)
+  .object(stopTimesFile);
+
 const stopFromStopJSON = (s: Object) => {
   const location = new Location(s.stop_lat, s.stop_lon);
   return new Stop(s.stop_name, location);
@@ -130,35 +158,29 @@ const stopFromStopJSON = (s: Object) => {
 // Convert to stops
 const stops: Array<Stop> = stopsFile.map(stopFromStopJSON);
 
-const buses = async (): Promise<Array<Bus>> => {
-  const trips = d3.nest()
-    .key(d => d.service_id)
-    .key(d => d.route_id)
-    .key(d => d.trip_id)
-    .entries(tripsFile);
-
-  const stopTimes = d3.nest()
-    .key(d => d.trip_id)
-    .entries(stopTimesFile);
+const buses = async (serviceIDs: Array<number>): Promise<Array<Bus>> => {
 
   let result: Array<Bus> = [];
-  let preprocessBus = [];
-  for (let i = 0; i < trips.length; i++) {
-    const routeID = trips[i].key;
-    const routeNumber =
-      (routesFile.find(d => d.route_id === routeID) || {}).route_short_name;
-    const serviceIDs = trips[i].values;
+  let postprocessBus = [];
+  for (let i = 0; i < tripsNested.length; i++) {
+    const routeID = tripsNested[i].key;
+    const routeNumber = routesNested[routeID][0].route_short_name;
+    const serviceMap = tripsNested[i].values;
 
     let paths = [];
-    let preprocessJourneys = [];
+    let postprocessJourneys = [];
     for (let j = 0; j < serviceIDs.length; j++) {
-      const serviceID = serviceIDs[j].key;
-      const tripIDs = serviceIDs[j].values;
+
+      const tripIDs = serviceMap[serviceIDs[j]];
+      if (tripIDs == undefined) {
+        continue;
+      }
+
       let timedStops = [];
 
       for (let k = 0; k < tripIDs.length; k++) {
         let tripID = tripIDs[k].key;
-        let tripTimes = stopTimes.find(d => d.key === tripID).values;
+        let tripTimes = stopTimesNested[tripID];
 
         for (let l = 0; l < tripTimes.length; l++) {
           const stopID = tripTimes[l].stop_id;
@@ -168,7 +190,7 @@ const buses = async (): Promise<Array<Bus>> => {
           const stop = stopFromStopJSON(stopJSON);
           let time = 0;
           if (isTimepoint) {
-            time = TimeUtils.stringTimeToWeekTime(tripTimes[l].arrival_time);
+            time = TimeUtils.stringTimeDayToWeekTime(tripTimes[l].arrival_time, i);
           }
           const timedStop = new TimedStop(stop, time, isTimepoint);
 
@@ -178,16 +200,16 @@ const buses = async (): Promise<Array<Bus>> => {
           }
         }
 
-        preprocessJourneys.push({stops: timedStops});
-        const path = new Path(serviceID, timedStops);
+        postprocessJourneys.push({stops: timedStops});
+        const path = new Path(timedStops);
         paths.push(path);
       }
     }
-    preprocessBus.push({journeys: preprocessJourneys});
+    postprocessBus.push({journeys: postprocessJourneys});
     const bus = new Bus(paths, routeNumber);
     result.push(bus);
   }
-  await GeoUtils.interpolateTimes(preprocessBus, stops, nameToStopIndex);
+  await GeoUtils.interpolateTimes(postprocessBus, stops, nameToStopIndex);
   return result;
 };
 
