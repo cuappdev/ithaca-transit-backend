@@ -8,6 +8,7 @@ import Path from './Path';
  * of stops.
  */
 class Bus {
+  
   paths: Array<Path>;
   lineNumber: number;
 
