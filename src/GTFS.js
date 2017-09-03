@@ -6,7 +6,7 @@ import Path from './models/Path';
 import Bus from './models/Bus';
 
 import TimeUtils from './utils/TimeUtils';
-import GeoUtils from './geo/GeoUtils'
+import GeoUtils from './geo/GeoUtils';
 
 import csvjson from 'csvjson';
 import * as d3 from 'd3-collection';
@@ -122,7 +122,7 @@ const calendarDatesFile: Array<CalendarDateJSON> = (() => {
   });
 })();
 
-const stopFromStopJSON = s => {
+const stopFromStopJSON = (s: Object) => {
   const location = new Location(s.stop_lat, s.stop_lon);
   return new Stop(s.stop_name, location);
 };
@@ -131,7 +131,6 @@ const stopFromStopJSON = s => {
 const stops: Array<Stop> = stopsFile.map(stopFromStopJSON);
 
 const buses = async (): Promise<Array<Bus>> => {
-
   const trips = d3.nest()
     .key(d => d.service_id)
     .key(d => d.route_id)
@@ -145,29 +144,27 @@ const buses = async (): Promise<Array<Bus>> => {
   let result: Array<Bus> = [];
   let preprocessBus = [];
   for (let i = 0; i < trips.length; i++) {
-
     const routeID = trips[i].key;
-    const routeNumber = routesFile.find(d => d.route_id == routeID).route_short_name;
+    const routeNumber =
+      (routesFile.find(d => d.route_id === routeID) || {}).route_short_name;
     const serviceIDs = trips[i].values;
 
     let paths = [];
     let preprocessJourneys = [];
     for (let j = 0; j < serviceIDs.length; j++) {
-
       const serviceID = serviceIDs[j].key;
       const tripIDs = serviceIDs[j].values;
       let timedStops = [];
 
       for (let k = 0; k < tripIDs.length; k++) {
-
         let tripID = tripIDs[k].key;
-        let tripTimes = stopTimes.find(d => d.key == tripID).values;
+        let tripTimes = stopTimes.find(d => d.key === tripID).values;
 
         for (let l = 0; l < tripTimes.length; l++) {
-
           const stopID = tripTimes[l].stop_id;
-          const isTimepoint = tripTimes[l].timepoint == 1;
-          const stopJSON = stopsFile.find(d => d.stop_id == stopID);
+          const isTimepoint = tripTimes[l].timepoint === 1;
+          const stopJSON: Object =
+            stopsFile.find(d => d.stop_id === stopID) || {};
           const stop = stopFromStopJSON(stopJSON);
           let time = 0;
           if (isTimepoint) {
@@ -190,7 +187,7 @@ const buses = async (): Promise<Array<Bus>> => {
     const bus = new Bus(paths, routeNumber);
     result.push(bus);
   }
-  //await GeoUtils.interpolateTimes(preprocessBus);
+  await GeoUtils.interpolateTimes(preprocessBus, stops, nameToStopIndex);
   return result;
 };
 
@@ -199,7 +196,7 @@ for (let i = 0; i < stops.length; i++) {
   nameToStopIndex[stops[i].name] = i;
 }
 
-//console.log(trips);
+// console.log(trips);
 
 export default {
   buses,
