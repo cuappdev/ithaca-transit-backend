@@ -6,11 +6,9 @@ import TimedStop from './TimedStop';
  * indicated by "days" field
  */
 class Path {
-  serviceID: number;
   timedStops: Array<TimedStop>;
 
-  constructor (serviceID: number, timedStops: Array<TimedStop>) {
-    this.serviceID = serviceID;
+  constructor (timedStops: Array<TimedStop>) {
     this.timedStops = timedStops;
   }
 }
