@@ -6,12 +6,15 @@ import Location from './Location';
  * as name, location, etc.  Example: "Shops at Ithaca Mall @ Sears"
  */
 class Stop {
+
   name: string;
   location: Location;
+  routes: Array<Route>;
 
   constructor (name: string, location: Location) {
     this.name = name;
     this.location = location;
+    this.routes = [];
   }
 
   equals (route: Stop): boolean {

@@ -14,7 +14,7 @@ import TimedStop from './TimedStop';
  * TCAT #30 traverses stops X, Y, and Z with arrival times of
  * 4:03PM, 4:08PM, and 4:15PM).
  */
-class RaptorPath {
+class BusPath {
   day: number;
   tcatNum: number;
   timedStops: Array<TimedStop>;
