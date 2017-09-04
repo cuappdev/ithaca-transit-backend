@@ -79,16 +79,32 @@ class GetRouteRouter extends AppDevRouter {
     const arrivalTime = Math.floor(leaveBy + (endTime - startTime));
 
     // Then build up stop ordering / walking information
-    let mainStops = [];
-    let mainStopNums = [];
-    for (let i = 0; i < result.length; i++) {
+    const stopSummary = [];
+    for (let i = 0; i <result.length; i++) {
       const r = result[i];
-      if (r.endStop.name === TCATConstants.END_WALKING) {
-        mainStopNums.push(TCATConstants.WALKING_TCAT_NUMBER);
-      } else if (r.endStop.name !== TCATConstants.START_WALKING) {
-        mainStopNums.push(r.busNum);
-        mainStops.push(r.endStop.name);
+      const obj = {};
+      if (i == 0 && r.startStop.name == START_WALKING) {
+        obj.name = "Current Location";
+        obj.type = "currentLocation";
+        obj.busNumber = r.busNum;
+      } else {
+        obj.name = r.startStop.name;
+        obj.busNumber = r.busNum;
       }
+      if ((result[i+1].busNum == -1) && (i < result.length)) {
+          obj.nextDirection = "walk";
+      } else if ((result[i+1].busNum == null) && (i < result.length)) {
+          obj.nextDirection = "none";
+      } else {
+        obj.nextDirection = "bus";
+      }
+      if (obj.nextDirection == "bus" || obj.nextDirection == "walk") {
+        obj.type = "stop";
+      }
+      if ((i == result.length - 1) && (r.endStop.name == END_WALKING)) {
+        obj.type = "place";
+      }
+      stopSummary.append(obj);
     }
 
     const kmls = this._grabKMLsFromRoute(mainStops, mainStopNums);
@@ -100,11 +116,9 @@ class GetRouteRouter extends AppDevRouter {
       // Main data
       departureTime: departureTime,
       arrivalTime: arrivalTime,
-      mainStops: mainStops,
-      mainStopNums: mainStopNums,
+      stopSummary: stopSummary,
       kmls: kmls
     }];
   }
-}
 
 export default new GetRouteRouter().router;
