@@ -83,7 +83,7 @@ class GetRouteRouter extends AppDevRouter {
     for (let i = 0; i <result.length; i++) {
       const r = result[i];
       const obj = {};
-      if (i == 0 && r.startStop.name == START_WALKING) {
+      if (i == 0 && r.startStop.name == "START_WALKING") {
         obj.name = "Current Location";
         obj.type = "currentLocation";
         obj.busNumber = r.busNum;
@@ -101,13 +101,13 @@ class GetRouteRouter extends AppDevRouter {
       if (obj.nextDirection == "bus" || obj.nextDirection == "walk") {
         obj.type = "stop";
       }
-      if ((i == result.length - 1) && (r.endStop.name == END_WALKING)) {
+      if ((i == result.length - 1) && (r.endStop.name == "END_WALKING")) {
         obj.type = "place";
       }
-      stopSummary.append(obj);
+      stopSummary.push(obj);
     }
 
-    const kmls = this._grabKMLsFromRoute(mainStops, mainStopNums);
+  //  const kmls = this._grabKMLsFromRoute(stopSummary);
 
     return [{
       // Given to use originally
@@ -117,8 +117,9 @@ class GetRouteRouter extends AppDevRouter {
       departureTime: departureTime,
       arrivalTime: arrivalTime,
       stopSummary: stopSummary,
-      kmls: kmls
+      //kmls: kmls
     }];
   }
+}
 
 export default new GetRouteRouter().router;
