@@ -79,35 +79,51 @@ class GetRouteRouter extends AppDevRouter {
     const arrivalTime = Math.floor(leaveBy + (endTime - startTime));
 
     // Then build up stop ordering / walking information
-    const stopSummary = [];
-    for (let i = 0; i <result.length; i++) {
+
+    let mainStops = [];
+    let mainStopNums = [];
+    for (let i = 0; i < result.length; i++) {
       const r = result[i];
-      const obj = {};
+      if (r.endStop.name === TCATConstants.END_WALKING) {
+        mainStopNums.push(TCATConstants.WALKING_TCAT_NUMBER);
+      } else if (r.endStop.name !== TCATConstants.START_WALKING) {
+        mainStopNums.push(r.busNum);
+        mainStops.push(r.endStop.name);
+      }
+    }
+
+     const stopSummary = [];
+     for (let i = 0; i <result.length; i++) {
+       const r = result[i];
+       const obj = {};
       if (i == 0 && r.startStop.name == "START_WALKING") {
         obj.name = "Current Location";
         obj.type = "currentLocation";
+        obj.nextDirection = "walk";
         obj.busNumber = r.busNum;
       } else {
         obj.name = r.startStop.name;
         obj.busNumber = r.busNum;
       }
-      if ((result[i+1].busNum == -1) && (i < result.length)) {
+      if ((i + 1 < result.length) && (obj.nextDirection == null)) {
+        if ((r.busNum != -1) && (r.busNum != null)) {
+          obj.nextDirection = "bus";
+        }
+        else if (r.busNum == -1) {
           obj.nextDirection = "walk";
-      } else if ((result[i+1].busNum == null) && (i < result.length)) {
-          obj.nextDirection = "none";
-      } else {
-        obj.nextDirection = "bus";
+        }
       }
-      if (obj.nextDirection == "bus" || obj.nextDirection == "walk") {
+      if ((obj.nextDirection == "bus" || obj.nextDirection == "walk") && (obj.type == null)) {
         obj.type = "stop";
       }
       if ((i == result.length - 1) && (r.endStop.name == "END_WALKING")) {
         obj.type = "place";
+        obj.nextDirection = "walk";
       }
       stopSummary.push(obj);
-    }
+     }
 
-  //  const kmls = this._grabKMLsFromRoute(stopSummary);
+    const kmls = this._grabKMLsFromRoute(mainStops, mainStopNums);
 
     return [{
       // Given to use originally
@@ -117,7 +133,7 @@ class GetRouteRouter extends AppDevRouter {
       departureTime: departureTime,
       arrivalTime: arrivalTime,
       stopSummary: stopSummary,
-      //kmls: kmls
+      kmls: kmls
     }];
   }
 }
