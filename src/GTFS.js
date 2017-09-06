@@ -158,9 +158,15 @@ const stopFromStopJSON = (s: Object) => {
 // Convert to stops
 const stops: Array<Stop> = stopsFile.map(stopFromStopJSON);
 
-const buses = async (serviceIDs: Array<number>): Promise<Array<Bus>> => {
+const buses = async (serviceDate: number): Promise<{[number]: Bus}> => {
 
-  let result: Array<Bus> = [];
+  let dateIndex = calendarDatesFile.findIndex(d => d.date == serviceDate);
+  let serviceIDs = calendarDatesFile.slice(dateIndex, dateIndex + 2).map(d => d.service_id);
+  //console.log(serviceDate);
+  //console.log(serviceIDs);
+
+  let result = {}
+  let buses: Array<Bus> = [];
   let postprocessBus = [];
   for (let i = 0; i < tripsNested.length; i++) {
     const routeID = tripsNested[i].key;
@@ -207,9 +213,12 @@ const buses = async (serviceIDs: Array<number>): Promise<Array<Bus>> => {
     }
     postprocessBus.push({journeys: postprocessJourneys});
     const bus = new Bus(paths, routeNumber);
-    result.push(bus);
+    buses.push(bus);
   }
   await GeoUtils.interpolateTimes(postprocessBus, stops, nameToStopIndex);
+  buses.forEach(d => {
+    result[d.lineNumber] = d;
+  })
   return result;
 };
 

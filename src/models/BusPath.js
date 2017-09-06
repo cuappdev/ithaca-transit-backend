@@ -15,40 +15,24 @@ import TimedStop from './TimedStop';
  * 4:03PM, 4:08PM, and 4:15PM).
  */
 class BusPath {
-  day: number;
-  tcatNum: number;
-  timedStops: Array<TimedStop>;
+  lineNumber: number;
+  path: Path;
+  cutoff: Stop;
+  isForward: boolean;
 
-  _stopToIndex: { [string]: number } // For quick look-ups
-
-  constructor (day: number, tcatNum: number, timedStops: Array<TimedStop>) {
-    this.day = day;
-    this.tcatNum = tcatNum;
-    this.timedStops = timedStops;
-
-    this._stopToIndex = {};
-
-    for (let i = 0; i < this.timedStops.length; i++) {
-      this._stopToIndex[this.timedStops[i].stop.name] = i;
-    }
+  constructor (lineNumber: number, path: Path, cutoff: Stop, isForward: boolean) {
+    this.lineNumber = lineNumber;
+    this.path = path;
+    this.cutoff = cutoff;
+    this.isForward = isForward;
   }
 
-  static fromPath (path: Path, day: number, tcatNum: number): RaptorPath {
-    if (!path.runsOnDay(day % 7)) throw new Error('Invalid day given');
-    const timedStops = path.timedStops.map(tStop => {
-      // Clone + update time of running
-      let clonedtStop = TimedStop.clone(tStop);
-      clonedtStop.time = (day * TCATConstants.DAY) + tStop.time;
-      return clonedtStop;
-    });
-    return new RaptorPath(day, tcatNum, timedStops);
-  }
-
-  getStopIndex (stop: Stop): number {
-    return !(this._stopToIndex.hasOwnProperty(stop.name))
-      ? -1
-      : this._stopToIndex[stop.name];
+  comesBeforeStartAfterTime(stop: Stop, time: number): boolean {
+    let stopIndex = this.path.getStopIndex(stop);
+    let cutoffIndex = this.path.getStopIndex(this.cutoff);
+    return stopIndex < cutoffIndex
+      && this.path.hasStopAfterTime(stop, time);
   }
 }
 
-export default RaptorPath;
+export default BusPath;
