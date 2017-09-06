@@ -79,7 +79,6 @@ class GetRouteRouter extends AppDevRouter {
     const arrivalTime = Math.floor(leaveBy + (endTime - startTime));
 
     // Then build up stop ordering / walking information
-
     let mainStops = [];
     let mainStopNums = [];
     for (let i = 0; i < result.length; i++) {
@@ -92,38 +91,34 @@ class GetRouteRouter extends AppDevRouter {
       }
     }
 
-     const stopSummary = [];
-     for (let i = 0; i <result.length; i++) {
-       const r = result[i];
-       const obj = {};
-      if (i == 0 && r.startStop.name == "START_WALKING") {
-        obj.name = "Current Location";
-        obj.type = "currentLocation";
-        obj.nextDirection = "walk";
-        obj.busNumber = r.busNum;
-      } else {
-        obj.name = r.startStop.name;
-        obj.busNumber = r.busNum;
-      }
-      if ((i + 1 < result.length) && (obj.nextDirection == null)) {
-        if ((r.busNum != -1) && (r.busNum != null)) {
-          obj.nextDirection = "bus";
-        }
-        else if (r.busNum == -1) {
-          obj.nextDirection = "walk";
-        }
-      }
-      if ((obj.nextDirection == "bus" || obj.nextDirection == "walk") && (obj.type == null)) {
-        obj.type = "stop";
-      }
-      if ((i == result.length - 1) && (r.endStop.name == "END_WALKING")) {
-        obj.type = "place";
-        obj.nextDirection = "walk";
-      }
-      stopSummary.push(obj);
-     }
-
     const kmls = this._grabKMLsFromRoute(mainStops, mainStopNums);
+
+    // Construct a stopSummary array of JSON objects with specific details for
+    // each stop in the route
+    const stopSummary = [];
+    for (let i = 0; i < result.length; i++) {
+      const currResult = result[i];
+      const currNode = {};
+      if (i === 0) {
+        currNode.name = TCATConstants.LOCATION_NAME_CURR;
+        currNode.nextDirection = TCATConstants.NEXT_DIRECTION_WALK;
+        currNode.type = TCATConstants.LOCATION_TYPE_CURR;
+      } else {
+        currNode.name = mainStops[i-1];
+      }
+      currNode.busNumber = mainStopNums[i];
+      if (currNode.busNumber === -1) {
+        currNode.nextDirection = TCATConstants.NEXT_DIRECTION_WALK;
+      } else {
+        currNode.nextDirection = TCATConstants.NEXT_DIRECTION_BUS;
+      }
+      if (i === result.length - 1) {
+        currNode.type = TCATConstants.LOCATION_TYPE_PLACE;
+      } else if (!currNode.type) {
+        currNode.type = TCATConstants.LOCATION_TYPE_STOP;
+      }
+      stopSummary.push(currNode);
+    }
 
     return [{
       // Given to use originally

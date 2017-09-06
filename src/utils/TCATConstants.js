@@ -17,6 +17,14 @@ const WALKING_TCAT_NUMBER = -1;
 const START_WALKING = 'START_WALKING';
 const END_WALKING = 'END_WALKING';
 
+//stopSummary attributes
+const NEXT_DIRECTION_WALK = 'walk';
+const NEXT_DIRECTION_BUS = 'bus';
+const LOCATION_TYPE_PLACE = 'place';
+const LOCATION_TYPE_STOP = 'stop';
+const LOCATION_TYPE_CURR = 'currentLocation';
+const LOCATION_NAME_CURR = 'Current Location';
+
 // NOTE: Put walking start time 30 days into the future to allow
 // for all routing ops to be completed by then, so this is definitely
 // the last leg of the journey to take
@@ -32,5 +40,11 @@ export default {
   WALKING_TCAT_NUMBER,
   START_WALKING,
   END_WALKING,
-  BASE_END_TIME
+  BASE_END_TIME,
+  NEXT_DIRECTION_WALK,
+  NEXT_DIRECTION_BUS,
+  LOCATION_TYPE_STOP,
+  LOCATION_TYPE_CURR,
+  LOCATION_NAME_CURR,
+  LOCATION_TYPE_PLACE
 };
