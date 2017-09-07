@@ -93,6 +93,43 @@ class GetRouteRouter extends AppDevRouter {
 
     const kmls = this._grabKMLsFromRoute(mainStops, mainStopNums);
 
+    // Construct a stopSummary array of JSON objects with specific details for
+    // each stop in the route
+    const stopSummary = [];
+    const currLocation = {};
+    currLocation.name = TCATConstants.LOCATION_NAME_CURR;
+    currLocation.busNumber = mainStopNums[0];
+    currLocation.nextDirection = TCATConstants.NEXT_DIRECTION_WALK;
+    currLocation.type = TCATConstants.LOCATION_TYPE_CURR;
+    stopSummary.push(currLocation);
+    for (let i = 1; i <= result.length; i++) {
+      const currNode = {};
+      // the following if block is if the final destination is a bus stop and
+      // an end location needs to be added to the array of json objects
+      if ((result.length === mainStopNums.length) && (i === result.length)) {
+        currNode.name = TCATConstants.LOCATION_NAME_END;
+        currNode.nextDirection = TCATConstants.NEXT_DIRECTION_NONE;
+        currNode.type = TCATConstants.LOCATION_TYPE_PLACE;
+        stopSummary.push(currNode);
+        break;
+      }
+      const currResult = result[i];
+      currNode.name = mainStops[i-1];
+      currNode.busNumber = mainStopNums[i];
+      if (currNode.busNumber === -1) {
+
+        currNode.nextDirection = TCATConstants.NEXT_DIRECTION_WALK;
+      } else {
+        currNode.nextDirection = TCATConstants.NEXT_DIRECTION_BUS;
+      }
+      if (result.length === mainStops.length){
+        currNode.type = TCATConstants.LOCATION_TYPE_PLACE;
+      } else {
+        currNode.type = TCATConstants.LOCATION_TYPE_STOP;
+      }
+      stopSummary.push(currNode);
+    }
+
     return [{
       // Given to use originally
       startCoords: startCoords,
@@ -100,8 +137,7 @@ class GetRouteRouter extends AppDevRouter {
       // Main data
       departureTime: departureTime,
       arrivalTime: arrivalTime,
-      mainStops: mainStops,
-      mainStopNums: mainStopNums,
+      stopSummary: stopSummary,
       kmls: kmls
     }];
   }
