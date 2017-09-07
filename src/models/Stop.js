@@ -9,16 +9,14 @@ class Stop {
 
   name: string;
   location: Location;
-  routes: Array<Route>;
 
   constructor (name: string, location: Location) {
     this.name = name;
     this.location = location;
-    this.routes = [];
   }
 
-  equals (route: Stop): boolean {
-    return this.name === route.name && this.location.equals(route.location);
+  equals (stop: Stop): boolean {
+    return this.name === stop.name && this.location.equals(stop.location);
   }
 }
 

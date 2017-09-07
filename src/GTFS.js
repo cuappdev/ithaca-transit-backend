@@ -158,13 +158,16 @@ const stopFromStopJSON = (s: Object) => {
 // Convert to stops
 const stops: Array<Stop> = stopsFile.map(stopFromStopJSON);
 
-const buses = async (serviceDate: number): Promise<{[number]: Bus}> => {
+const buses = async (serviceDate: number, stopsToRoutes: {[string]: Array<number>}): Promise<{[number]: Bus}> => {
 
   let dateIndex = calendarDatesFile.findIndex(d => d.date == serviceDate);
   let serviceIDs = calendarDatesFile.slice(dateIndex, dateIndex + 2).map(d => d.service_id);
   //console.log(serviceDate);
   //console.log(serviceIDs);
 
+  stops.forEach(d => {
+    stopsToRoutes[d.name] = [];
+  })
   let result = {}
   let buses: Array<Bus> = [];
   let postprocessBus = [];
@@ -194,6 +197,7 @@ const buses = async (serviceDate: number): Promise<{[number]: Bus}> => {
           const stopJSON: Object =
             stopsFile.find(d => d.stop_id === stopID) || {};
           const stop = stopFromStopJSON(stopJSON);
+          stopsToRoutes[stop.name].push(routeNumber);
           let time = 0;
           if (isTimepoint) {
             time = TimeUtils.stringTimeDayToWeekTime(tripTimes[l].arrival_time, i);
@@ -219,6 +223,14 @@ const buses = async (serviceDate: number): Promise<{[number]: Bus}> => {
   buses.forEach(d => {
     result[d.lineNumber] = d;
   })
+
+  stops.forEach(d => {
+    let seen = {};
+    stopsToRoutes[d.name] = stopsToRoutes[d.name].filter(e => {
+        return seen.hasOwnProperty(e) ? false : (seen[e] = true);
+    });
+  })
+
   return result;
 };
 

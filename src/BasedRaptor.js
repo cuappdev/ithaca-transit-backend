@@ -19,6 +19,7 @@ class BasedRaptor {
   buses: {[number]: Bus};
   start: Stop;
   end: Stop;
+  stopsToRoutes: {[string]: Array<number>};
   footpathMatrix: FootpathMatrix;
   startTime: number;
 
@@ -26,12 +27,14 @@ class BasedRaptor {
     buses: {[number]: Bus},
     start: Stop,
     end: Stop,
+    stopsToRoutes: {[string]: Array<number>},
     footpathMatrix: FootpathMatrix,
     startTime: number
   ) {
     this.buses = buses;
     this.start = start;
     this.end = end;
+    this.stopsToRoutes = stopsToRoutes;
     this.footpathMatrix = footpathMatrix;
     this.startTime = startTime;
   }
@@ -47,15 +50,19 @@ class BasedRaptor {
         start: this.start,
         end: GTFS.stops[i],
         time: this.startTime,
-        duration: this.footpathMatrix.durationBetween(this.start, GTFS.stops[i])
+        duration: this.footpathMatrix.durationBetween(this.start, GTFS.stops[i]),
+        busPath: null
       }];
       marked.push(GTFS.stops[i]);
     }
-
+/*
     for (let k = 0; k < 2; k++) {
-      
+      for (let i = 0; i < marked.length; i++) {
+        let stop = marked[i];
+      }
     }
-
+*/
+    return dp;
   }
 
 }

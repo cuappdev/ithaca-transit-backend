@@ -19,7 +19,7 @@ class FootpathMatrix {
   durationBetween(stop1: Stop, stop2: Stop) {
     let i = this._stopsToIndex[stop1.name];
     let j = this._stopsToIndex[stop2.name];
-    return durations[i][j];
+    return this.durations[i][j];
   }
 
 }
