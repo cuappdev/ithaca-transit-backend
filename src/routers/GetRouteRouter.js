@@ -9,6 +9,7 @@ import TCATUtils from '../utils/TCATUtils';
 import TimeUtils from '../utils/TimeUtils';
 import GTFS from '../GTFS'
 import BasedRaptorUtils from '../utils/BasedRaptorUtils'
+import BasedRaptor from '../BasedRaptor'
 
 class GetRouteRouter extends AppDevRouter {
   constructor () {
@@ -32,13 +33,15 @@ class GetRouteRouter extends AppDevRouter {
     return kmls;
   }
 
+  // test URL: http://localhost:3000/api/v1/routes?leave_by=1504474540&start_coords=42.4424,-76.4849&end_coords=42.483327,-76.490933
   async content (req: Request) {
 
     const leaveBy = parseInt(req.query.leave_by);
     const startTime = TimeUtils.unixTimeToWeekTime(leaveBy);
     const serviceDate = TimeUtils.unixTimeToGTFSDate(leaveBy);
 
-    const buses = await GTFS.buses(serviceDate);
+    const stopsToRoutes = {};
+    const buses = await GTFS.buses(serviceDate, stopsToRoutes);
 
     const startCoords = TCATUtils.coordStringToCoords(req.query.start_coords);
     const start = new Stop(
@@ -55,6 +58,7 @@ class GetRouteRouter extends AppDevRouter {
 
     const footpathMatrix = await BasedRaptorUtils.footpathMatrix(start, end);
 
+    const basedRaptor = new BasedRaptor(buses, start, end, stopsToRoutes, footpathMatrix, startTime);
     // Pre-algorithm info
 /*    const startTime = TCATUtils.unixToWeekTime(leaveBy);
     const allStops = [start, end].concat(TCAT.stops);
@@ -62,7 +66,7 @@ class GetRouteRouter extends AppDevRouter {
     const raptorPaths =
       walkingPaths.concat(RaptorUtils.generateRaptorPaths(startTime));
 */
-    return buses;
+    return basedRaptor.run();
   }
 }
 
