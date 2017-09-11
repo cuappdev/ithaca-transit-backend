@@ -93,15 +93,15 @@ class GetRouteRouter extends AppDevRouter {
 
     const kmls = this._grabKMLsFromRoute(mainStops, mainStopNums);
 
-    // Construct a stopSummary array of JSON objects with specific details for
+    // Construct a routeSummary array of JSON objects with specific details for
     // each stop in the route
-    const stopSummary = [];
+    const routeSummary = [];
     const currLocation = {};
     currLocation.name = TCATConstants.LOCATION_NAME_CURR;
     currLocation.busNumber = mainStopNums[0];
     currLocation.nextDirection = TCATConstants.NEXT_DIRECTION_WALK;
     currLocation.type = TCATConstants.LOCATION_TYPE_CURR;
-    stopSummary.push(currLocation);
+    routeSummary.push(currLocation);
     for (let i = 1; i <= result.length; i++) {
       const currNode = {};
       // the following if block is if the final destination is a bus stop and
@@ -110,7 +110,7 @@ class GetRouteRouter extends AppDevRouter {
         currNode.name = TCATConstants.LOCATION_NAME_END;
         currNode.nextDirection = TCATConstants.NEXT_DIRECTION_NONE;
         currNode.type = TCATConstants.LOCATION_TYPE_PLACE;
-        stopSummary.push(currNode);
+        routeSummary.push(currNode);
         break;
       }
       const currResult = result[i];
@@ -127,7 +127,7 @@ class GetRouteRouter extends AppDevRouter {
       } else {
         currNode.type = TCATConstants.LOCATION_TYPE_STOP;
       }
-      stopSummary.push(currNode);
+      routeSummary.push(currNode);
     }
 
     return [{
@@ -137,7 +137,7 @@ class GetRouteRouter extends AppDevRouter {
       // Main data
       departureTime: departureTime,
       arrivalTime: arrivalTime,
-      stopSummary: stopSummary,
+      routeSummary: routeSummary,
       kmls: kmls
     }];
   }
