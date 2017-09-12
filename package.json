@@ -20,15 +20,15 @@
     "babel-preset-stage-2": "^6.24.1",
     "express": "^4.15.3",
     "flow-bin": "^0.51.1",
+    "osrm": "^5.12.0",
     "webpack": "^3.4.1"
   },
   "devDependencies": {
     "body-parser": "^1.17.2",
-    "eb-fix-npm": "^1.2.5",
     "jest": "^20.0.4"
   },
   "repository": {
-  "type": "git",
-  "url": "https://github.com/cuappdev/tcat.js.git"
+    "type": "git",
+    "url": "https://github.com/cuappdev/tcat.js.git"
   }
 }
