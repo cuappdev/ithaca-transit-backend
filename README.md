@@ -15,24 +15,8 @@ been updated.
 2. `npm install`
 3. `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
 the routing library that is used to aid routing calculations.
-4. Build `osrm` library from source for `node` and `link`. Run commands below.
-
-````bash
-git clone https://github.com/Project-OSRM/osrm-backend.git
-cd osrm-backend
-mkdir build
-cd build
-cmake -DENABLE_MASON=ON -DENABLE_NODE_BINDINGS=ON ..
-make
-cd ..
-npm link
-````
-
-Then, inside `tcat.js` folder, run `npm link osrm`
-
-5. Inside `tcat.js`, run `npm link appdev`
-
-6.
+4. Inside `tcat.js`, run `npm link appdev`
+5.
 
 ````bash
 node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/foot.lua
