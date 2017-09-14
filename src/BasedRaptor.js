@@ -10,9 +10,10 @@ import GTFS from './GTFS'
 type PathElement = {
   start: Stop,
   end: Stop,
-  time: number;
-  duration: number;
-  busPath: BusPath;
+  k: number,
+  startTime: number,
+  endTime: number,
+  busPath: ?BusPath,
 }
 
 class BasedRaptor {
@@ -40,28 +41,30 @@ class BasedRaptor {
   }
 
   run() {
-    let dp = {}
+    let dp: {[string]: Array<PathElement>} = {}
     let Q = {};
     let marked = [];
 
     // preprocess
     for (let i = 0; i < GTFS.stops.length; i++) {
+      let duration = this.footpathMatrix.durationBetween(this.start, GTFS.stops[i]);
       dp[GTFS.stops[i].name] = [{
         start: this.start,
         end: GTFS.stops[i],
-        time: this.startTime,
-        duration: this.footpathMatrix.durationBetween(this.start, GTFS.stops[i]),
+        k: -1,
+        startTime: this.startTime,
+        endTime: this.startTime + duration,
         busPath: null
       }];
       marked.push(GTFS.stops[i]);
     }
-/*
+
     for (let k = 0; k < 2; k++) {
       for (let i = 0; i < marked.length; i++) {
         let stop = marked[i];
       }
     }
-*/
+
     return dp;
   }
 
