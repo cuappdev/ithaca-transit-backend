@@ -34,6 +34,14 @@ class Path {
     let stopIndex = this.getStopIndex(stop);
     return stopIndex != -1 && time < this.timedStops[stopIndex].time;
   }
+
+  length() {
+    return this.timedStops.length;
+  }
+
+  getStop(i: number): TimedStop {
+    return this.timedStops[i];
+  }
 }
 
 export default Path;
