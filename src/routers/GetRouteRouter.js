@@ -58,15 +58,15 @@ class GetRouteRouter extends AppDevRouter {
 
     const footpathMatrix = await BasedRaptorUtils.footpathMatrix(start, end);
 
-    const basedRaptor = new BasedRaptor(buses, start, end, stopsToRoutes, footpathMatrix, startTime);
-    // Pre-algorithm info
-/*    const startTime = TCATUtils.unixToWeekTime(leaveBy);
-    const allStops = [start, end].concat(TCAT.stops);
-    const walkingPaths = await RaptorUtils.walkingPaths(start, end, startTime);
-    const raptorPaths =
-      walkingPaths.concat(RaptorUtils.generateRaptorPaths(startTime));
-*/
-    return basedRaptor.run();
+    const basedRaptor = new BasedRaptor(
+      buses,
+      start,
+      end,
+      stopsToRoutes,
+      footpathMatrix,
+      startTime);
+    basedRaptor.run();
+    return basedRaptor.pathTable;
   }
 }
 

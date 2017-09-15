@@ -33,6 +33,14 @@ class BusPath {
     return stopIndex < cutoffIndex
       && this.path.hasStopAfterTime(stop, time);
   }
+
+  length() {
+    return this.path.length() -  this.path.getStopIndex(this.cutoff);
+  }
+
+  getStop(i: number): TimedStop {
+    return this.path.getStop(i + this.path.getStopIndex(this.cutoff));
+  }
 }
 
 export default BusPath;
