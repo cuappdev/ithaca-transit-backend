@@ -5,7 +5,7 @@ import Bus from './models/Bus';
 import BusPath from './models/BusPath';
 import Path from './models/Path';
 import FootpathMatrix from './models/FootpathMatrix';
-import GTFS from './GTFS'
+import GTFS from './GTFS';
 
 type PathElement = {
   start: Stop,
@@ -42,19 +42,20 @@ class BasedRaptor {
     this.pathTable = {};
   }
 
-  _lastElement(stop: Stop): PathElement {
+  _lastElement (stop: Stop): PathElement {
     let pathElements = this.pathTable[stop.name];
     let length = pathElements.length;
-    return pathElements[length-1];
+    return pathElements[length - 1];
   }
 
-  run() {
+  run () {
     let Q = {};
     let marked = [];
 
     // preprocess
     for (let i = 0; i < GTFS.stops.length; i++) {
-      let duration = this.footpathMatrix.durationBetween(this.start, GTFS.stops[i]);
+      let duration =
+        this.footpathMatrix.durationBetween(this.start, GTFS.stops[i]);
       this.pathTable[GTFS.stops[i].name] = [{
         start: this.start,
         end: GTFS.stops[i],
@@ -67,7 +68,6 @@ class BasedRaptor {
     }
 
     for (let k = 0; k < 2; k++) {
-      
       for (let i = 0; i < marked.length; i++) {
         let stop = marked[i];
         let routeNumbers = this.stopsToRoutes[routes];
@@ -116,16 +116,16 @@ class BasedRaptor {
                 startTime: busPath.getStop(0).time,
                 endTime: timedStop.endTime,
                 busPath: busPath
-              })
-              marked.push(stop)
+              });
+              marked.push(stop);
             }
           }
         }
       }
 
-      for (let i = 0; i < marked.length; i++) { 
+      for (let i = 0; i < marked.length; i++) {
         let stop = marked[i];
-        let endTime = this._lastElement(stop).endTime; 
+        let endTime = this._lastElement(stop).endTime;
         let durations = this.footpathMatrix.durationsToGTFSStops(stop);
         for (let j = 0; j < GTFS.stops.length; j++) {
           let otherStop = GTFS.stops[j];
@@ -138,12 +138,11 @@ class BasedRaptor {
               endTime: endTime + durations[j],
               busPath: null
             });
-          }              
+          }
         }
       }
     }
   }
-
 }
 
 export default BasedRaptor;
