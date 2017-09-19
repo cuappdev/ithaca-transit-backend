@@ -2,7 +2,7 @@
 import TCATConstants from './TCATConstants';
 
 const stringTimeDayToWeekTime = (stringTime: string, day: number): number => {
-  const timeComponents = stringTime.split(":").map(d => +d);
+  const timeComponents = stringTime.split(':').map(d => +d);
   return (
     day * TCATConstants.DAY +
     timeComponents[0] * TCATConstants.HOUR +
@@ -37,7 +37,7 @@ const unixTimeToGTFSDate = (unixTimestamp: number): number => {
 };
 
 export default {
-    stringTimeDayToWeekTime,
-    unixTimeToWeekTime,
-    unixTimeToGTFSDate
-}
+  stringTimeDayToWeekTime,
+  unixTimeToWeekTime,
+  unixTimeToGTFSDate
+};

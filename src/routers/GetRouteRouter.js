@@ -38,7 +38,6 @@ class GetRouteRouter extends AppDevRouter {
   async content (req: Request) {
     try {
       const leaveBy = parseInt(req.query.leave_by);
-      const startTime = TimeUtils.unixTimeToWeekTime(leaveBy);
       const serviceDate = TimeUtils.unixTimeToGTFSDate(leaveBy);
       const stopsToRoutes = {};
       const buses = await GTFS.buses(serviceDate, stopsToRoutes);
@@ -58,14 +57,17 @@ class GetRouteRouter extends AppDevRouter {
       // Start / end stops
       const footpathMatrix = await BasedRaptorUtils.footpathMatrix(start, end);
 
-      // Run raptor
+      // Create Raptor instance
       const basedRaptor = new BasedRaptor(
         buses,
         start,
         end,
         stopsToRoutes,
         footpathMatrix,
-        startTime);
+        leaveBy
+      );
+
+      // Run Raptor
       basedRaptor.run();
 
 <<<<<<< HEAD

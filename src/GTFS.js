@@ -159,16 +159,16 @@ const stopFromStopJSON = (s: Object) => {
 const stops: Array<Stop> = stopsFile.map(stopFromStopJSON);
 
 const buses = async (serviceDate: number, stopsToRoutes: {[string]: Array<number>}): Promise<{[number]: Bus}> => {
-
-  let dateIndex = calendarDatesFile.findIndex(d => d.date == serviceDate);
-  let serviceIDs = calendarDatesFile.slice(dateIndex, dateIndex + 2).map(d => d.service_id);
-  //console.log(serviceDate);
-  //console.log(serviceIDs);
+  let dateIndex = calendarDatesFile.findIndex(d => d.date === serviceDate);
+  let serviceIDs = calendarDatesFile
+    .slice(dateIndex, dateIndex + 2)
+    .map(d => d.service_id);
 
   stops.forEach(d => {
     stopsToRoutes[d.name] = [];
-  })
-  let result = {}
+  });
+
+  let result = {};
   let buses: Array<Bus> = [];
   let postprocessBus = [];
   for (let i = 0; i < tripsNested.length; i++) {
@@ -179,14 +179,11 @@ const buses = async (serviceDate: number, stopsToRoutes: {[string]: Array<number
     let paths = [];
     let postprocessJourneys = [];
     for (let j = 0; j < serviceIDs.length; j++) {
-
       const tripIDs = serviceMap[serviceIDs[j]];
-      if (tripIDs == undefined) {
+      if (!tripIDs) {
         continue;
       }
-
       let timedStops = [];
-
       for (let k = 0; k < tripIDs.length; k++) {
         let tripID = tripIDs[k].key;
         let tripTimes = stopTimesNested[tripID];
@@ -200,7 +197,9 @@ const buses = async (serviceDate: number, stopsToRoutes: {[string]: Array<number
           stopsToRoutes[stop.name].push(routeNumber);
           let time = 0;
           if (isTimepoint) {
-            time = TimeUtils.stringTimeDayToWeekTime(tripTimes[l].arrival_time, i);
+            time = TimeUtils.stringTimeDayToWeekTime(
+              tripTimes[l].arrival_time, i
+            );
           }
           const timedStop = new TimedStop(stop, time, isTimepoint);
 
@@ -222,14 +221,14 @@ const buses = async (serviceDate: number, stopsToRoutes: {[string]: Array<number
   await GeoUtils.interpolateTimes(postprocessBus, stops, nameToStopIndex);
   buses.forEach(d => {
     result[d.lineNumber] = d;
-  })
+  });
 
   stops.forEach(d => {
     let seen = {};
     stopsToRoutes[d.name] = stopsToRoutes[d.name].filter(e => {
-        return seen.hasOwnProperty(e) ? false : (seen[e] = true);
+      return seen.hasOwnProperty(e) ? false : (seen[e] = true);
     });
-  })
+  });
 
   return result;
 };
@@ -238,8 +237,6 @@ const nameToStopIndex = {};
 for (let i = 0; i < stops.length; i++) {
   nameToStopIndex[stops[i].name] = i;
 }
-
-// console.log(trips);
 
 export default {
   buses,
