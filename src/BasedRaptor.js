@@ -51,6 +51,7 @@ class BasedRaptor {
   }
 
   run () {
+    // Route Number -> [BusPath]
     let Q: {[number]: Array<BusPath>} = {};
     let marked = [];
     let pathTable: {[string]: Array<PathElement>} = {};
@@ -72,18 +73,23 @@ class BasedRaptor {
 
     // Start looping over rounds
     for (let k = 0; k < TCATConstants.MAX_RAPTOR_ROUNDS; k++) {
-      // Grabbing values that have yet to be marked ->
-      // to get bus paths that pass through the given stop
-      // for each route that it's apart of
+      // Accumulate routes serving marked stops from previous round
+      Q = {}; // Clear queue
+      // For each marked stop...
       for (let i = 0; i < marked.length; i++) {
         const stop = marked[i];
         const routeNumbers = this.stopsToRoutes[stop.name];
-        // For each route the stop is apart of, add possible bus paths
+        // For each route # serving marked stop `stop`....
         for (let j = 0; j < routeNumbers.length; j++) {
-          let lastEndTime = pathTable[stop.name][k].endTime;
-          if (Q.hasOwnProperty(routeNumbers[j])) {
-            let busPaths = Q[routeNumbers[j]];
+          // Clear out all stops that come after `stop` in
+          // route `routeNum` that are in `Q`
+          const routeNum = routeNumbers[j];
+          const lastEndTime = pathTable[stop.name][k].endTime;
+          // If this route number is contained `Q`
+          if (Q.hasOwnProperty(routeNum)) {
+            let busPaths = Q[routeNum];
             let wasChange = false;
+            // TODO - comment this more
             for (let l = 0; l < busPaths.length; l++) {
               let busPath = busPaths[l];
               if (busPath.comesBeforeStartAfterTime(stop, lastEndTime)) {
@@ -93,17 +99,17 @@ class BasedRaptor {
               }
             }
             if (!wasChange) {
-              let bus = this.buses[routeNumbers[j]];
+              let bus = this.buses[routeNum];
               let busPath = bus.earliestTripForward(stop, lastEndTime);
               if (busPath) {
-                Q[routeNumbers[j]].push(busPath);
+                Q[routeNum].push(busPath);
               }
             }
           } else {
-            let bus = this.buses[routeNumbers[j]];
+            let bus = this.buses[routeNum];
             let busPath = bus.earliestTripForward(stop, lastEndTime);
             if (busPath) {
-              Q[routeNumbers[j]] = [busPath];
+              Q[routeNum] = [busPath];
             }
           }
         }

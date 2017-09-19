@@ -1,7 +1,8 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import { Request } from 'express';
-import TCAT from '../TCAT';
+import GTFS from '../GTFS';
+import TimeUtils from '../utils/TimeUtils';
 
 class GetBusesRouter extends AppDevRouter {
   constructor () {
@@ -13,7 +14,13 @@ class GetBusesRouter extends AppDevRouter {
   }
 
   async content (req: Request) {
-    return TCAT.buses;
+    try {
+      const currTime = Math.floor(new Date().getTime());
+      const serviceDate = TimeUtils.unixTimeToGTFSDate(currTime);
+      return await GTFS.buses(serviceDate, {});
+    } catch (e) {
+      return e;
+    }
   }
 }
 
