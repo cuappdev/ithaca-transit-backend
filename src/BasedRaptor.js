@@ -6,6 +6,7 @@ import BusPath from './models/BusPath';
 import Path from './models/Path';
 import FootpathMatrix from './models/FootpathMatrix';
 import GTFS from './GTFS';
+import TCATConstants from './utils/TCATConstants';
 
 type PathElement = {
   start: Stop,
@@ -67,7 +68,7 @@ class BasedRaptor {
       marked.push(GTFS.stops[i]);
     }
 
-    for (let k = 0; k < 2; k++) {
+    for (let k = 0; k < TCATConstants.MAX_RAPTOR_ROUNDS; k++) {
       for (let i = 0; i < marked.length; i++) {
         let stop = marked[i];
         let routeNumbers = this.stopsToRoutes[stop];

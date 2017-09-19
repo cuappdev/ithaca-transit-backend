@@ -9,7 +9,7 @@ const DAY = 24 * HOUR;
 const INFINITY = Number.MAX_VALUE - 30 * DAY;
 
 // Raptor-specific
-const MAX_RAPTOR_ROUNDS = 3;
+const MAX_RAPTOR_ROUNDS = 2; // + 1
 const RAPTOR_PROJECTED_DAYS = 6;
 
 // Walking-based travel
@@ -17,7 +17,7 @@ const WALKING_TCAT_NUMBER = -1;
 const START_WALKING = 'START_WALKING';
 const END_WALKING = 'END_WALKING';
 
-//stopSummary attributes
+// stopSummary attributes
 const NEXT_DIRECTION_WALK = 'walk';
 const NEXT_DIRECTION_BUS = 'bus';
 const NEXT_DIRECTION_NONE = 'none';
