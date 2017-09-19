@@ -1,5 +1,5 @@
 // @flow
-import Stop from './Stop'
+import Stop from './Stop';
 import TimedStop from './TimedStop';
 
 /**
@@ -7,14 +7,12 @@ import TimedStop from './TimedStop';
  * indicated by "days" field
  */
 class Path {
-
   timedStops: Array<TimedStop>;
   _stopToIndex: { [string]: number } // For quick look-ups
 
   constructor (timedStops: Array<TimedStop>) {
     this.timedStops = timedStops;
     this._stopToIndex = {};
-
     for (let i = 0; i < this.timedStops.length; i++) {
       this._stopToIndex[this.timedStops[i].stop.name] = i;
     }
@@ -27,19 +25,19 @@ class Path {
   }
 
   startTime (): number {
-    return this.timedStops.find(d => d.time != undefined).time;
+    return this.timedStops.find(d => !(d.time)).time;
   }
 
   hasStopAfterTime (stop: Stop, time: number): boolean {
     let stopIndex = this.getStopIndex(stop);
-    return stopIndex != -1 && time < this.timedStops[stopIndex].time;
+    return stopIndex !== -1 && time < this.timedStops[stopIndex].time;
   }
 
-  length() {
+  length () {
     return this.timedStops.length;
   }
 
-  getStop(i: number): TimedStop {
+  getStop (i: number): TimedStop {
     return this.timedStops[i];
   }
 }
