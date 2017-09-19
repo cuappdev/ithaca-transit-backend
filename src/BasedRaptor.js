@@ -70,8 +70,8 @@ class BasedRaptor {
     for (let k = 0; k < 2; k++) {
       for (let i = 0; i < marked.length; i++) {
         let stop = marked[i];
-        let routeNumbers = this.stopsToRoutes[routes];
-        for (let j = 0; j < routes.length; j++) {
+        let routeNumbers = this.stopsToRoutes[stop];
+        for (let j = 0; j < stop.length; j++) {
           let lastEndTime = this.pathTable[stop.name][0].endTime;
           if (this.pathTable.hasOwnProperty(stop.name)) {
             let busPaths = Q[routeNumbers[j]];
