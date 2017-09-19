@@ -14,13 +14,10 @@ class GetBusesRouter extends AppDevRouter {
   }
 
   async content (req: Request) {
-    try {
-      const currTime = Math.floor(new Date().getTime());
-      const serviceDate = TimeUtils.unixTimeToGTFSDate(currTime);
-      return await GTFS.buses(serviceDate, {});
-    } catch (e) {
-      return e;
-    }
+    const currTime = Math.round((new Date()).getTime() / 1000);
+    const serviceDate = TimeUtils.unixTimeToGTFSDate(currTime);
+    let {buses} = await GTFS.buses(serviceDate);
+    return buses;
   }
 }
 
