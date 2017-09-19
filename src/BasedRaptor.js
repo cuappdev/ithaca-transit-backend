@@ -127,7 +127,8 @@ class BasedRaptor {
           for (let l = 0; l < busPath.length(); l++) {
             let timedStop = busPath.getStop(l);
             let stop = timedStop.stop;
-            let endTime = pathTable[stop.name].endTime;
+            // TODO - is this right?
+            let endTime = pathTable[stop.name][pathTable[stop.name].length - 1].endTime;
             if (endTime > timedStop.time) {
               pathTable[stop.name].length =
                 Math.min(k + 1, pathTable[stop.name].length);
@@ -153,7 +154,8 @@ class BasedRaptor {
         for (let j = 0; j < this.stops.length; j++) {
           let otherStop = this.stops[j];
           if (
-            endTime + durations[j] < this._lastElement(pathTable, otherStop)
+            endTime + durations[j] <
+            this._lastElement(pathTable, otherStop).endTime
           ) {
             // Effectively eliminates extra elements, fixing the correspondence
             // for backpointers
