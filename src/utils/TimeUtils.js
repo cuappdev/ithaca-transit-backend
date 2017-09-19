@@ -11,7 +11,7 @@ const stringTimeDayToWeekTime = (stringTime: string, day: number): number => {
   );
 };
 
-const unixTimeToWeekTime = (unixTimestamp: number): number => {
+const unixTimeToDayTime = (unixTimestamp: number): number => {
   const theDate = new Date(unixTimestamp * 1000);
   const days = theDate.getDay() - 1;
   const hours = theDate.getHours();
@@ -38,6 +38,6 @@ const unixTimeToGTFSDate = (unixTimestamp: number): number => {
 
 export default {
   stringTimeDayToWeekTime,
-  unixTimeToWeekTime,
+  unixTimeToDayTime,
   unixTimeToGTFSDate
 };

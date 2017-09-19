@@ -21,7 +21,6 @@ class BasedRaptor {
   stopsToRoutes: {[string]: Array<number>};
   footpathMatrix: FootpathMatrix;
   startTime: number;
-  pathTable: {[string]: Array<PathElement>};
   stops: Array<Stop>;
 
   constructor (
@@ -39,9 +38,13 @@ class BasedRaptor {
     this.stopsToRoutes = stopsToRoutes;
     this.footpathMatrix = footpathMatrix;
     this.startTime = startTime;
+    this.stops = stops;
   }
 
-  _lastElement (pathTable: Object, stop: Stop): PathElement {
+  _lastElement (
+    pathTable: {[string]: Array<PathElement>},
+    stop: Stop
+  ): PathElement {
     let pathElements = pathTable[stop.name];
     let length = pathElements.length;
     return pathElements[length - 1];
@@ -50,7 +53,7 @@ class BasedRaptor {
   run () {
     let Q: {[number]: Array<BusPath>} = {};
     let marked = [];
-    let pathTable = {};
+    let pathTable: {[string]: Array<PathElement>} = {};
 
     // Preprocess
     for (let i = 0; i < this.stops.length; i++) {
@@ -74,11 +77,11 @@ class BasedRaptor {
       // for each route that it's apart of
       for (let i = 0; i < marked.length; i++) {
         const stop = marked[i];
-        const routeNumbers = this.stopsToRoutes[stop];
+        const routeNumbers = this.stopsToRoutes[stop.name];
         // For each route the stop is apart of, add possible bus paths
         for (let j = 0; j < routeNumbers.length; j++) {
           let lastEndTime = pathTable[stop.name][k].endTime;
-          if (pathTable.hasOwnProperty(stop.name)) {
+          if (Q.hasOwnProperty(routeNumbers[j])) {
             let busPaths = Q[routeNumbers[j]];
             let wasChange = false;
             for (let l = 0; l < busPaths.length; l++) {
@@ -92,12 +95,16 @@ class BasedRaptor {
             if (!wasChange) {
               let bus = this.buses[routeNumbers[j]];
               let busPath = bus.earliestTripForward(stop, lastEndTime);
-              Q[routeNumbers[j]].push(busPath);
+              if (busPath) {
+                Q[routeNumbers[j]].push(busPath);
+              }
             }
           } else {
             let bus = this.buses[routeNumbers[j]];
             let busPath = bus.earliestTripForward(stop, lastEndTime);
-            Q[routeNumbers[j]] = [busPath];
+            if (busPath) {
+              Q[routeNumbers[j]] = [busPath];
+            }
           }
         }
       }
@@ -159,7 +166,9 @@ class BasedRaptor {
       }
     }
 
+    console.log(pathTable);
     // TODO - backtrack
+    return pathTable[this.end.name];
   }
 }
 
