@@ -92,6 +92,7 @@ class GetRouteRouter extends AppDevRouter {
       return basedRaptor.pathTable;
     } catch (e) {
       console.log(e);
+      return {};
     }
 >>>>>>> I'm back
   }
