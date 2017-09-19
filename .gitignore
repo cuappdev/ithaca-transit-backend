@@ -8,3 +8,4 @@
 .elasticbeanstalk/
 *.zip
 gtfs/
+npm-debug.log
