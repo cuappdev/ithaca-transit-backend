@@ -6,7 +6,12 @@
   "scripts": {
     "start": "webpack -p && node build/bundle.js",
     "deploy": "node build/bundle.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      ".*": "<rootDir>/node_modules/babel-jest"
+    }
   },
   "author": "CUAppDev",
   "license": "ISC",
@@ -28,7 +33,9 @@
   },
   "devDependencies": {
     "body-parser": "^1.17.2",
-    "jest": "^20.0.4"
+    "jest": "^20.0.4",
+    "supertest": "^3.0.0",
+    "supertest-as-promised": "^4.0.2"
   },
   "repository": {
     "type": "git",
