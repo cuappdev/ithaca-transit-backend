@@ -1,7 +1,6 @@
 // @flow
 import Path from './Path';
 import Stop from './Stop';
-import TCATConstants from '../utils/TCATConstants';
 import TimedStop from './TimedStop';
 
 /**
@@ -20,25 +19,29 @@ class BusPath {
   cutoff: Stop;
   isForward: boolean;
 
-  constructor (lineNumber: number, path: Path, cutoff: Stop, isForward: boolean) {
+  constructor (
+    lineNumber: number,
+    path: Path,
+    cutoff: Stop,
+    isForward: boolean
+  ) {
     this.lineNumber = lineNumber;
     this.path = path;
     this.cutoff = cutoff;
     this.isForward = isForward;
   }
 
-  comesBeforeStartAfterTime(stop: Stop, time: number): boolean {
+  comesBeforeStartAfterTime (stop: Stop, time: number): boolean {
     let stopIndex = this.path.getStopIndex(stop);
     let cutoffIndex = this.path.getStopIndex(this.cutoff);
-    return stopIndex < cutoffIndex
-      && this.path.hasStopAfterTime(stop, time);
+    return stopIndex < cutoffIndex && this.path.hasStopAfterTime(stop, time);
   }
 
-  length() {
-    return this.path.length() -  this.path.getStopIndex(this.cutoff);
+  length (): number {
+    return this.path.length() - this.path.getStopIndex(this.cutoff);
   }
 
-  getStop(i: number): TimedStop {
+  getStop (i: number): TimedStop {
     return this.path.getStop(i + this.path.getStopIndex(this.cutoff));
   }
 }

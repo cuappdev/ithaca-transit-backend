@@ -39,15 +39,19 @@ class GetRouteRouter extends AppDevRouter {
     try {
       const leaveBy = parseInt(req.query.leave_by);
       const serviceDate = TimeUtils.unixTimeToGTFSDate(leaveBy);
+
+      // TODO - make this not C
       const stopsToRoutes = {};
       const buses = await GTFS.buses(serviceDate, stopsToRoutes);
 
+      // Start coordinate
       const startCoords = TCATUtils.coordStringToCoords(req.query.start_coords);
       const start = new Stop(
         TCATConstants.START_WALKING,
         new Location(startCoords.latitude, startCoords.longitude)
       );
 
+      // End coordinate
       const endCoords = TCATUtils.coordStringToCoords(req.query.end_coords);
       const end = new Stop(
         TCATConstants.END_WALKING,
@@ -64,7 +68,8 @@ class GetRouteRouter extends AppDevRouter {
         end,
         stopsToRoutes,
         footpathMatrix,
-        leaveBy
+        leaveBy,
+        GTFS.stops
       );
 
       // Run Raptor
@@ -87,7 +92,6 @@ class GetRouteRouter extends AppDevRouter {
       return basedRaptor.pathTable;
     } catch (e) {
       console.log(e);
-      return {};
     }
 >>>>>>> I'm back
   }
