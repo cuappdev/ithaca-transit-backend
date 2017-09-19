@@ -20,11 +20,7 @@ class Bus {
 
   earliestTripForward (stop: Stop, time: number): ?BusPath {
     let path = this.paths.find(d => d.hasStopAfterTime(stop, time));
-    if (!path) {
-      return null;
-    }
-    let busPath = new BusPath(this.lineNumber, path, stop, true);
-    return busPath;
+    return path ? new BusPath(this.lineNumber, path, stop, true) : null;
   }
 }
 

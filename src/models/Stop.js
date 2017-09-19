@@ -6,7 +6,6 @@ import Location from './Location';
  * as name, location, etc.  Example: "Shops at Ithaca Mall @ Sears"
  */
 class Stop {
-
   name: string;
   location: Location;
 
