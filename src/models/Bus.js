@@ -1,7 +1,7 @@
 // @flow
 import Stop from './Stop';
 import Path from './Path';
-import BusPath from './BusPath'
+import BusPath from './BusPath';
 
 /**
  * A bus line hat runs at various times during the week.  The busline can
@@ -10,25 +10,22 @@ import BusPath from './BusPath'
  * of stops.
  */
 class Bus {
-
   paths: Array<Path>;
   lineNumber: number;
 
   constructor (paths: Array<Path>, lineNumber: number) {
     this.lineNumber = lineNumber;
     this.paths = paths;
-    //this.paths.sort((a, b) => a.startTime() - b.startTime());
   }
 
-  earliestTripForward(stop: Stop, time: number) {
+  earliestTripForward (stop: Stop, time: number) {
     let path = this.paths.find(d => d.hasStopAfterTime(stop, time));
-    if (path == undefined) {
+    if (!path) {
       return null;
     }
     let busPath = new BusPath(this.lineNumber, path, stop, true);
     return busPath;
   }
-
 }
 
 export default Bus;

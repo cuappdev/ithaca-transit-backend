@@ -1,11 +1,8 @@
 // @flow
-import Location from './models/Location';
 import Stop from './models/Stop';
 import Bus from './models/Bus';
 import BusPath from './models/BusPath';
-import Path from './models/Path';
 import FootpathMatrix from './models/FootpathMatrix';
-import GTFS from './GTFS';
 import TCATConstants from './utils/TCATConstants';
 
 type PathElement = {
@@ -25,6 +22,7 @@ class BasedRaptor {
   footpathMatrix: FootpathMatrix;
   startTime: number;
   pathTable: {[string]: Array<PathElement>};
+  stops: Array<Stop>;
 
   constructor (
     buses: {[number]: Bus},
@@ -32,7 +30,8 @@ class BasedRaptor {
     end: Stop,
     stopsToRoutes: {[string]: Array<number>},
     footpathMatrix: FootpathMatrix,
-    startTime: number
+    startTime: number,
+    stops: Array<Stop>
   ) {
     this.buses = buses;
     this.start = start;
@@ -50,30 +49,35 @@ class BasedRaptor {
   }
 
   run () {
-    let Q = {};
+    let Q: {[number]: Array<BusPath>} = {};
     let marked = [];
 
-    // preprocess
-    for (let i = 0; i < GTFS.stops.length; i++) {
+    // Preprocess
+    for (let i = 0; i < this.stops.length; i++) {
       let duration =
-        this.footpathMatrix.durationBetween(this.start, GTFS.stops[i]);
-      this.pathTable[GTFS.stops[i].name] = [{
+        this.footpathMatrix.durationBetween(this.start, this.stops[i]);
+      this.pathTable[this.stops[i].name] = [{
         start: this.start,
-        end: GTFS.stops[i],
+        end: this.stops[i],
         k: -1,
         startTime: this.startTime,
         endTime: this.startTime + duration,
         busPath: null
       }];
-      marked.push(GTFS.stops[i]);
+      marked.push(this.stops[i]);
     }
 
+    // Start looping over rounds
     for (let k = 0; k < TCATConstants.MAX_RAPTOR_ROUNDS; k++) {
+      // Grabbing values that have yet to be marked ->
+      // to get bus paths that pass through the given stop
+      // for each route that it's apart of
       for (let i = 0; i < marked.length; i++) {
-        let stop = marked[i];
-        let routeNumbers = this.stopsToRoutes[stop];
-        for (let j = 0; j < stop.length; j++) {
-          let lastEndTime = this.pathTable[stop.name][0].endTime;
+        const stop = marked[i];
+        const routeNumbers = this.stopsToRoutes[stop];
+        // For each route the stop is apart of, add possible bus paths
+        for (let j = 0; j < routeNumbers.length; j++) {
+          let lastEndTime = this.pathTable[stop.name][k].endTime;
           if (this.pathTable.hasOwnProperty(stop.name)) {
             let busPaths = Q[routeNumbers[j]];
             let wasChange = false;
@@ -100,9 +104,11 @@ class BasedRaptor {
 
       marked.length = 0;
 
-      let routeNumbers = Object.keys(Q);
-      for (let i = 0; i < routeNumbers.length; i++) {
-        let busPaths = Q[routeNumbers[i]];
+      let queuedRoutes = Object.keys(Q);
+      // Go through the lines with queued bus paths and try and improve
+      // times to get to each stop from the original start stop
+      for (let i = 0; i < queuedRoutes.length; i++) {
+        let busPaths = Q[queuedRoutes[i]];
         for (let j = 0; j < busPaths.length; j++) {
           let busPath = busPaths[j];
           for (let l = 0; l < busPath.length(); l++) {
@@ -110,6 +116,8 @@ class BasedRaptor {
             let stop = timedStop.stop;
             let endTime = this.pathTable[stop.name].endTime;
             if (endTime > timedStop.time) {
+              this.pathTable[stop.name].length =
+                Math.min(k + 1, this.pathTable[stop.name].length);
               this.pathTable[stop.name].push({
                 start: busPath.cutoff,
                 end: timedStop.stop,
@@ -124,12 +132,13 @@ class BasedRaptor {
         }
       }
 
+      // Process foot-paths
       for (let i = 0; i < marked.length; i++) {
         let stop = marked[i];
         let endTime = this._lastElement(stop).endTime;
         let durations = this.footpathMatrix.durationsToGTFSStops(stop);
-        for (let j = 0; j < GTFS.stops.length; j++) {
-          let otherStop = GTFS.stops[j];
+        for (let j = 0; j < this.stops.length; j++) {
+          let otherStop = this.stops[j];
           if (endTime + durations[j] < this._lastElement(otherStop)) {
             // Effectively eliminates extra elements, fixing the correspondence
             // for backpointers
@@ -147,6 +156,8 @@ class BasedRaptor {
         }
       }
     }
+
+    // TODO - backtrack
   }
 }
 
