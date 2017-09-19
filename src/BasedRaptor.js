@@ -131,6 +131,10 @@ class BasedRaptor {
         for (let j = 0; j < GTFS.stops.length; j++) {
           let otherStop = GTFS.stops[j];
           if (endTime + durations[j] < this._lastElement(otherStop)) {
+            // Effectively eliminates extra elements, fixing the correspondence
+            // for backpointers
+            this.pathTable[otherStop.name].length =
+              Math.min(k + 1, this.pathTable[otherStop.name].length);
             this.pathTable[otherStop.name].push({
               start: stop,
               end: otherStop,
