@@ -1,7 +1,7 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import { Request } from 'express';
-import TCAT from '../TCAT';
+import GTFS from '../GTFS';
 
 class GetAllStopsRouter extends AppDevRouter {
   constructor () {
@@ -13,7 +13,7 @@ class GetAllStopsRouter extends AppDevRouter {
   }
 
   async content (req: Request) {
-    return TCAT.stops;
+    return GTFS.stops;
   }
 }
 
