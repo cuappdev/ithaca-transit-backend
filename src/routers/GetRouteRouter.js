@@ -130,16 +130,30 @@ class GetRouteRouter extends AppDevRouter {
       routeSummary.push(currNode);
     }
     const directions = [];
-    const currDirection = {};
-    currDirection.type = "walk";
-    currDirection.locationName = "currLocation";
-    currDirection.startLocation = result[0].startStop.location;
-    currDirection.endLocation = result[0].endStop.location;
-    currDirection.startTime = leaveBy;
-    currDirection.endTime = result[0].arrivalTime;
-    currDirection.busStops=[];
-    currDirection.routeNumber = -1;
-    directions.push(currDirection);
+    const currLocationDir = {};
+    currLocationDir.type = "walk";
+    currLocationDir.locationName = mainStops[0];
+    currLocationDir.startLocation = result[0].startStop.location;
+    currLocationDir.endLocation = result[0].endStop.location;
+    currLocationDir.startTime = leaveBy;
+    currLocationDir.endTime = result[0].arrivalTime;
+    currLocationDir.busStops=[];
+    currLocationDir.routeNumber = -1;
+    directions.push(currLocationDir);
+    const nonWalkingRouteNums = [];
+    for (let i = 0; i < mainStopNums.length; i++) {
+      if (mainStopNums[i] != -1) {
+        nonWalkingRouteNums.push(mainStopNums[i]);
+      }
+    }
+    for (let j = 0; j < nonWalkingRouteNums.length; j++) {
+      const departDir = {};
+      const arriveDir = {};
+      departDir.type = "depart";
+      arriveDir.type = "arrive";
+      directions.push(departDir);
+      directions.push(arriveDir);
+    }
 
     // type is of 3 types, walk, depart, or arrivalTime
     // location name: for first point, will be current location/first bus stop and then for
