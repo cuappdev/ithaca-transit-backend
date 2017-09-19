@@ -8,7 +8,7 @@ import TimedStop from './TimedStop';
  */
 class Path {
   timedStops: Array<TimedStop>;
-  _stopToIndex: { [string]: number } // For quick look-ups
+  _stopToIndex: {[string]: number} // For quick look-ups
 
   constructor (timedStops: Array<TimedStop>) {
     this.timedStops = timedStops;
@@ -33,7 +33,7 @@ class Path {
     return stopIndex !== -1 && time < this.timedStops[stopIndex].time;
   }
 
-  length () {
+  length (): number {
     return this.timedStops.length;
   }
 

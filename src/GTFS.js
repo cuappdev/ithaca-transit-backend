@@ -54,6 +54,8 @@ type CalendarDateJSON = {
   exception_type: number;
 };
 
+// START - reading in all files + nesting
+
 const routesFile: Array<RouteJSON> = (() => {
   const data = fs.readFileSync(
     path.join(__dirname, '../gtfs/routes.txt'),
@@ -150,6 +152,8 @@ const stopTimesNested = d3.nest()
   .key(d => d.trip_id)
   .object(stopTimesFile);
 
+// END - reading in all files + nesting
+
 const stopFromStopJSON = (s: Object) => {
   const location = new Location(s.stop_lat, s.stop_lon);
   return new Stop(s.stop_name, location);
@@ -158,7 +162,13 @@ const stopFromStopJSON = (s: Object) => {
 // Convert to stops
 const stops: Array<Stop> = stopsFile.map(stopFromStopJSON);
 
-const buses = async (serviceDate: number, stopsToRoutes: {[string]: Array<number>}): Promise<{[number]: Bus}> => {
+type BusMetadata = {
+  buses: {[number]: Bus},
+  stopsToRoutes: {[string]: Array<number>}
+};
+
+const buses = async (serviceDate: number): Promise<BusMetadata> => {
+  let stopsToRoutes: {[string]: Array<number>} = {};
   let dateIndex = calendarDatesFile.findIndex(d => d.date === serviceDate);
   let serviceIDs = calendarDatesFile
     .slice(dateIndex, dateIndex + 2)
@@ -230,7 +240,10 @@ const buses = async (serviceDate: number, stopsToRoutes: {[string]: Array<number
     });
   });
 
-  return result;
+  return {
+    buses: result,
+    stopsToRoutes: stopsToRoutes
+  };
 };
 
 const nameToStopIndex = {};

@@ -40,10 +40,7 @@ class GetRouteRouter extends AppDevRouter {
       const leaveBy = parseInt(req.query.leave_by);
       const dayStartTime = TimeUtils.unixTimeToDayTime(leaveBy);
       const serviceDate = TimeUtils.unixTimeToGTFSDate(leaveBy);
-
-      // TODO - make this not C
-      const stopsToRoutes = {};
-      const buses = await GTFS.buses(serviceDate, stopsToRoutes);
+      const {buses, stopsToRoutes} = await GTFS.buses(serviceDate);
 
       // Start coordinate
       const startCoords = TCATUtils.coordStringToCoords(req.query.start_coords);
