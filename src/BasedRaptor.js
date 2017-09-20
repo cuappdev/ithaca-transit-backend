@@ -167,8 +167,22 @@ class BasedRaptor {
       }
     }
 
+    const endFinishTimes = this.stops.map((stop: Stop) => {
+      const lastEndTime: number = this
+        ._lastElement(pathTable, stop, TCATConstants.MAX_RAPTOR_ROUNDS)
+        .endTime;
+      const walkTime = this.footpathMatrix.durationBetween(stop, this.end);
+      return { stop: stop, endTime: lastEndTime + walkTime };
+    });
+
+    const sortedEndFinishTimes = endFinishTimes.sort((a: Object, b: Object) => {
+      return (a.endTime < b.endTime)
+        ? -1
+        : (a.endTime > b.endTime ? 1 : 0);
+    });
+
     // TODO - backtrack
-    return pathTable;
+    return sortedEndFinishTimes;
   }
 }
 
