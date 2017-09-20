@@ -176,7 +176,7 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
   let dateIndex = calendarDatesFile.findIndex(d => d.date === serviceDate);
   // Grab the service ids for the current day plus one day
   let serviceIDs = calendarDatesFile
-    .slice(dateIndex, dateIndex + 1)
+    .slice(dateIndex, dateIndex + 1) // TODO - fix this
     .map(d => d.service_id);
   // Fill up the stopsToRoutes mapping with empty arrays
   stops.forEach(d => { stopsToRoutes[d.name] = []; });

@@ -22,7 +22,7 @@ class BusPath {
   constructor (
     lineNumber: number,
     path: Path,
-    cutoff: Stop,
+    cutoff: Stop, // start of the trip according to the markings of Raptor
     isForward: boolean
   ) {
     this.lineNumber = lineNumber;

@@ -1,5 +1,4 @@
 // @flow
-import Location from '../models/Location';
 import Stop from '../models/Stop';
 import FootpathMatrix from '../models/FootpathMatrix';
 import OSRM from '../OSRM';
