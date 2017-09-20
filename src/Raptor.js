@@ -1,5 +1,4 @@
 // @flow
-import RaptorPath from './models/RaptorPath';
 import Stop from './models/Stop';
 import TCATConstants from './utils/TCATConstants';
 
@@ -18,7 +17,7 @@ type PlanElement = {
 };
 
 class Raptor {
-  paths: Array<RaptorPath>;
+  paths: Array<Object>;
   stops: Array<Stop>;
   startStop: Stop;
   endStop: Stop;
@@ -26,7 +25,7 @@ class Raptor {
   N: number; // rounds of algo (max transfers is N - 1)
 
   constructor (
-    paths: Array<RaptorPath>,
+    paths: Array<Object>,
     stops: Array<Stop>,
     startStop: Stop,
     endStop: Stop,

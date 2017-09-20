@@ -25,7 +25,11 @@ class Path {
   }
 
   startTime (): number {
-    return this.timedStops.find(d => !(d.time)).time;
+    const firstTimedStop = this.timedStops.find(ts => ts.isTimepoint);
+    if (!firstTimedStop) {
+      throw new Error('At least one time-point MUST exist!');
+    }
+    return firstTimedStop.time;
   }
 
   hasStopAfterTime (stop: Stop, time: number): boolean {
