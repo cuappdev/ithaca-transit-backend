@@ -86,7 +86,7 @@ const stopsFile: Array<StopJSON> = (() => {
   });
 })();
 
-const tripsFile: Array<StopJSON> = (() => {
+const tripsFile: Array<TripJSON> = (() => {
   const data = fs.readFileSync(
     path.join(__dirname, '../gtfs/trips.txt'),
     { encoding: 'utf8' });
