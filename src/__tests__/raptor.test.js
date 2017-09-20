@@ -1,5 +1,8 @@
 /* eslint-disable no-undef */
+import 'babel-polyfill';
+
 import BasedRaptor from '../BasedRaptor';
+import BasedRaptorUtils from '../utils/BasedRaptorUtils';
 import Bus from '../models/Bus';
 import Location from '../models/Location';
 import Path from '../models/Path';
