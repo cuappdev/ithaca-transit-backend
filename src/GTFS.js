@@ -1,4 +1,6 @@
 // @flow
+import type { PostProcessJourney, PostProcessBus } from './geo/GeoTypes';
+
 import Location from './models/Location';
 import Stop from './models/Stop';
 import TimedStop from './models/TimedStop';
@@ -168,32 +170,32 @@ type BusMetadata = {
 };
 
 const buses = async (serviceDate: number): Promise<BusMetadata> => {
+  // Stop name -> route #s
   let stopsToRoutes: {[string]: Array<number>} = {};
+  // Grab the index of the date we are getting stops for
   let dateIndex = calendarDatesFile.findIndex(d => d.date === serviceDate);
+  // Grab the service ids for the current day plus one day
   let serviceIDs = calendarDatesFile
-    .slice(dateIndex, dateIndex + 2)
+    .slice(dateIndex, dateIndex + 1)
     .map(d => d.service_id);
+  // Fill up the stopsToRoutes mapping with empty arrays
+  stops.forEach(d => { stopsToRoutes[d.name] = []; });
 
-  stops.forEach(d => {
-    stopsToRoutes[d.name] = [];
-  });
-
-  let result = {};
   let buses: Array<Bus> = [];
-  let postprocessBus = [];
+  let postprocessBuses: Array<PostProcessBus> = [];
   for (let i = 0; i < tripsNested.length; i++) {
     const routeID = tripsNested[i].key;
     const routeNumber = routesNested[routeID][0].route_short_name;
     const serviceMap = tripsNested[i].values;
 
     let paths = [];
-    let postprocessJourneys = [];
+    let postprocessJourneys: Array<PostProcessJourney> = [];
     for (let j = 0; j < serviceIDs.length; j++) {
       const tripIDs = serviceMap[serviceIDs[j]];
       if (!tripIDs) {
         continue;
       }
-      let timedStops = [];
+      let timedStops: Array<TimedStop> = [];
       for (let k = 0; k < tripIDs.length; k++) {
         let tripID = tripIDs[k].key;
         let tripTimes = stopTimesNested[tripID];
@@ -211,12 +213,8 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
               tripTimes[l].arrival_time, i
             );
           }
-          const timedStop = new TimedStop(stop, time, isTimepoint);
-
-          // TODO: Fix interpolation so that this isnt necessary
-          if (isTimepoint) {
-            timedStops.push(timedStop);
-          }
+          const timedStop: TimedStop = new TimedStop(stop, time, isTimepoint);
+          timedStops.push(timedStop);
         }
 
         postprocessJourneys.push({stops: timedStops});
@@ -224,14 +222,17 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
         paths.push(path);
       }
     }
-    postprocessBus.push({journeys: postprocessJourneys});
+    postprocessBuses.push({journeys: postprocessJourneys});
     const bus = new Bus(paths, routeNumber);
     buses.push(bus);
   }
-  await GeoUtils.interpolateTimes(postprocessBus, stops, nameToStopIndex);
-  buses.forEach(d => {
-    result[d.lineNumber] = d;
-  });
+
+  // Mutate timedstops according to interpolation
+  await GeoUtils.interpolateTimes(postprocessBuses, stops, nameToStopIndex);
+
+  // Fill in this mapping, after we've created the buses themselves
+  let result: {[number]: Bus } = {};
+  buses.forEach(d => { result[d.lineNumber] = d; });
 
   stops.forEach(d => {
     let seen = {};
