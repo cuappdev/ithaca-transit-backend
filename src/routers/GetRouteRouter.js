@@ -27,8 +27,8 @@ class GetRouteRouter extends AppDevRouter {
       const busNumber = mainStopNums[i];
       if (busNumber < 0) continue; // this is walking, no path KML to grab
       const kml: Kml = TCAT.busNumberToKml[busNumber];
-      const startStop = TCAT.nameToStop[mainStops[i - 1]];
-      const endStop = TCAT.nameToStop[mainStops[i]];
+      const startStop = GTFS.nameToStopIndex[mainStops[i - 1]];
+      const endStop = GTFS.nameToStopIndex[mainStops[i]];
       kmls.push(kml.placemarkFromStartEndStops(startStop, endStop));
     }
     return kmls;
