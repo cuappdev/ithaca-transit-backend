@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import API from '../API';
 import request from 'supertest-as-promised';
 
@@ -10,7 +11,7 @@ describe('GetAllStopsRouter Success Test', () => {
       .then((res) => {
         const reqKeys = ['success', 'data'];
         const item = res.body;
-        //Assert that reqKeys are present in response
+        // Assert that reqKeys are present in response
         reqKeys.forEach((key) => {
           expect(Object.keys(item)).toContain(key);
         });
