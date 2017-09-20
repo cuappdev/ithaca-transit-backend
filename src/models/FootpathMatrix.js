@@ -24,7 +24,7 @@ class FootpathMatrix {
   }
 
   durationsToGTFSStops (stop: Stop): Array<number> {
-    let stopIndex = this._stopsToIndex[stop];
+    let stopIndex = this._stopsToIndex[stop.name];
     let durations = this.durations[stopIndex];
     return durations.slice(GTFS_STOP_START);
   }
