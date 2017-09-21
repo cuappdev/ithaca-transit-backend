@@ -19,5 +19,4 @@ describe('GetAllStopsRouter Success Test', () => {
         expect(item.success).toEqual(true);
       });
   });
-
 });

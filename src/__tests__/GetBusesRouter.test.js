@@ -15,9 +15,7 @@ describe('GetAllStopsRouter Success Test', () => {
         reqKeys.forEach((key) => {
           expect(Object.keys(item)).toContain(key);
         });
-
         expect(item.success).toEqual(true);
       });
   });
-
 });
