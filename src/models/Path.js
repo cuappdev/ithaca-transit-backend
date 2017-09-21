@@ -34,7 +34,7 @@ class Path {
 
   hasStopAfterTime (stop: Stop, time: number): boolean {
     let stopIndex = this.getStopIndex(stop);
-    return stopIndex !== -1 && time < this.timedStops[stopIndex].time;
+    return stopIndex !== -1 && time <= this.timedStops[stopIndex].time;
   }
 
   length (): number {
