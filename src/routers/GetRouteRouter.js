@@ -71,8 +71,10 @@ class GetRouteRouter extends AppDevRouter {
       );
 
       // Run Raptor
-      // Grab all paths
-      return basedRaptor.pathTable;
+      return {
+        results: basedRaptor.run(),
+        baseTime: parseInt(req.query.leave_by) - dayStartTime
+      };
     } catch (e) {
       console.log(e);
       return {};
