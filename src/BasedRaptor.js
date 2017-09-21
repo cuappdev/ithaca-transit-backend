@@ -5,6 +5,7 @@ import BusPath from './models/BusPath';
 import FootpathMatrix from './models/FootpathMatrix';
 import TCATConstants from './utils/TCATConstants';
 
+// Element in a returned Raptor path
 type PathElement = {
   start: Stop,
   end: Stop,
@@ -12,12 +13,20 @@ type PathElement = {
   startTime: number,
   endTime: number,
   busPath: ?BusPath,
-}
+};
 
+// Element used in scoring the different last stops
+// in paths
+type StopScoreElement = {
+  stop: Stop,
+  endTime: number
+};
+
+// Raptor returns an array of these
 type RaptorResponseElement = {
   arrivalTime: number,
   path: Array<PathElement>
-}
+};
 
 class BasedRaptor {
   buses: {[number]: Bus};
@@ -46,23 +55,6 @@ class BasedRaptor {
     this.stops = stops;
   }
 
-  // Grab the last, viable path element for a particular
-  // stop, based on the current pathTable and the current
-  // round
-  _lastElement (
-    pathTable: {[string]: Array<?PathElement>},
-    stop: Stop,
-    currK: number
-  ): PathElement {
-    let pathElements = pathTable[stop.name];
-    let i = currK;
-    while (i >= 0) {
-      if (pathElements[i]) return pathElements[i];
-      i--;
-    }
-    throw Error('We found no viable path element!');
-  }
-
   // Build up a path table according to our round
   // number constraint
   _initPathTable (): {[string]: Array<?PathElement>} {
@@ -77,7 +69,51 @@ class BasedRaptor {
     return pathTable;
   }
 
-  run () {
+  // Grab the last, viable path element for a particular
+  // stop, based on the current pathTable and the current
+  // round
+  _getLastElement (
+    pathTable: {[string]: Array<?PathElement>},
+    stop: Stop,
+    currK: number
+  ): PathElement {
+    let pathElements = pathTable[stop.name];
+    let i = currK;
+    while (i >= 0) {
+      if (pathElements[i]) return pathElements[i];
+      i--;
+    }
+    throw Error('We found no viable path element!');
+  }
+
+  // Sorted list score elements, driven by the most efficient
+  // way to get to each stop [start + all other stops]
+  _getSortedEndFinishTimes (
+    pathTable: {[string]: Array<?PathElement>}
+  ): Array<StopScoreElement> {
+    const endFinishTimes = this.stops.map((stop: Stop) => {
+      const lastEndTime: number = this
+        ._getLastElement(pathTable, stop, TCATConstants.MAX_RAPTOR_ROUNDS)
+        .endTime;
+      const walkTime = this.footpathMatrix.durationBetween(stop, this.end);
+      return { stop: stop, endTime: lastEndTime + walkTime };
+    });
+
+    const directWalkingScore: StopScoreElement = {
+      stop: this.start,
+      endTime: this.startTime +
+        this.footpathMatrix.durationBetween(this.start, this.end)
+    };
+
+    return [directWalkingScore]
+      .concat(endFinishTimes).sort((a: Object, b: Object) => {
+        return (a.endTime < b.endTime)
+          ? -1
+          : (a.endTime > b.endTime ? 1 : 0);
+      });
+  }
+
+  run (): Array<RaptorResponseElement> {
     // Route Number -> [BusPath]
     let Q: Array<BusPath>;
     let marked = [];
@@ -112,7 +148,7 @@ class BasedRaptor {
           // route `routeNum` that are in `Q`
           const routeNum = routeNumbers[j];
           const lastEndTime: number =
-            this._lastElement(pathTable, stop, k).endTime;
+            this._getLastElement(pathTable, stop, k).endTime;
           // If this route number is contained `Q`
           let bus = this.buses[routeNum];
           // Grabs the buspaths related to this stop -> traverse them later
@@ -130,7 +166,7 @@ class BasedRaptor {
           const timedStop = busPath.getStop(l);
           const stop = timedStop.stop;
           const endTime: number =
-            this._lastElement(pathTable, stop, k).endTime;
+            this._getLastElement(pathTable, stop, k).endTime;
           // Only re-mark / update if this will benefit us in terms
           // of getting to the final stop
           if (endTime > timedStop.time) {
@@ -150,13 +186,13 @@ class BasedRaptor {
       // Process foot-paths
       for (let i = 0; i < marked.length; i++) {
         let stop = marked[i];
-        let endTime = this._lastElement(pathTable, stop, k).endTime;
+        let endTime = this._getLastElement(pathTable, stop, k).endTime;
         let durations = this.footpathMatrix.durationsToGTFSStops(stop);
         for (let j = 0; j < this.stops.length; j++) {
           let otherStop = this.stops[j];
           if (
             endTime + durations[j] <
-            this._lastElement(pathTable, otherStop, k).endTime
+            this._getLastElement(pathTable, otherStop, k).endTime
           ) {
             pathTable[otherStop.name][k] = {
               start: stop,
@@ -171,25 +207,8 @@ class BasedRaptor {
       }
     }
 
-    // Establish end times
-    const endFinishTimes = this.stops.map((stop: Stop) => {
-      const lastEndTime: number = this
-        ._lastElement(pathTable, stop, TCATConstants.MAX_RAPTOR_ROUNDS)
-        .endTime;
-      const walkTime = this.footpathMatrix.durationBetween(stop, this.end);
-      return { stop: stop, endTime: lastEndTime + walkTime };
-    });
-
     // Sorted based on the best end time
-    const sortedEndFinishTimes = [{
-      stop: this.start,
-      endTime: this.startTime +
-        this.footpathMatrix.durationBetween(this.start, this.end)
-    }].concat(endFinishTimes).sort((a: Object, b: Object) => {
-      return (a.endTime < b.endTime)
-        ? -1
-        : (a.endTime > b.endTime ? 1 : 0);
-    });
+    const sortedEndFinishTimes = this._getSortedEndFinishTimes(pathTable);
 
     // Backtrack
     let results: Array<RaptorResponseElement> = [];
@@ -208,7 +227,7 @@ class BasedRaptor {
         });
       } else {
         // Backtrack
-        const lastElement = this._lastElement(
+        const lastElement = this._getLastElement(
           pathTable,
           sortedEndFinishTimes[i].stop,
           TCATConstants.MAX_RAPTOR_ROUNDS
@@ -216,7 +235,7 @@ class BasedRaptor {
         let currentElement = lastElement;
         let topOrder: Array<PathElement> = [lastElement];
         while (currentElement.k >= 0) {
-          currentElement = this._lastElement(
+          currentElement = this._getLastElement(
             pathTable,
             currentElement.start,
             currentElement.k
