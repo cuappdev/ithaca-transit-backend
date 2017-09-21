@@ -202,7 +202,7 @@ class BasedRaptor {
           TCATConstants.MAX_RAPTOR_ROUNDS
         );
         let currentElement = lastElement;
-        let topOrder = [lastElement];
+        let topOrder: Array<PathElement> = [lastElement];
         while (currentElement.k >= 0) {
           currentElement = this._lastElement(
             pathTable,
@@ -217,6 +217,7 @@ class BasedRaptor {
         });
       }
     }
+
     return results;
   }
 }

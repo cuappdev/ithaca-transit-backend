@@ -1,9 +1,14 @@
 // @flow
+import BasedRaptor from '../BasedRaptor';
 import Bus from '../models/Bus';
+import FootpathMatrix from '../models/FootpathMatrix';
 import Location from '../models/Location';
 import Path from '../models/Path';
 import Stop from '../models/Stop';
 import TimedStop from '../models/TimedStop';
+
+import fs from 'fs';
+import path from 'path';
 
 type StopMetadata = {
   name: string,
@@ -26,7 +31,8 @@ type TestCase = {
   end: StopMetadata,
   stops: Array<StopMetadata>,
   buses: Array<BusMetadata>,
-  startTime: number
+  startTime: number,
+  routingMatrix: Array<Array<number>>
 };
 
 type RaptorInput = {
@@ -35,20 +41,29 @@ type RaptorInput = {
   buses: {[number]: Bus},
   stopsToRoutes: {[string]: Array<number>},
   stops: Array<Stop>,
-  startTime: number
+  startTime: number,
+  footpathMatrix: FootpathMatrix
 };
 
 const generateDataStructures = (testCase: TestCase): RaptorInput => {
   // Stops
-
-  const start = new Stop(testCase.start.name, new Location(testCase.start.lat,testCase.start.long));
-  const end = new Stop(testCase.end.name, new Location(testCase.end.lat, testCase.end.long));
-
+  const start = new Stop(
+    testCase.start.name,
+    new Location(testCase.start.lat, testCase.start.long)
+  );
+  const end = new Stop(
+    testCase.end.name,
+    new Location(testCase.end.lat, testCase.end.long)
+  );
   const startTime = testCase.startTime;
-
   const stops = testCase.stops.map((s: StopMetadata) => {
     return new Stop(s.name, new Location(s.lat, s.long));
   });
+
+  const footpathMatrix = new FootpathMatrix(
+    [start, end].concat(stops),
+    testCase.routingMatrix
+  );
 
   // Instantiate mapping
   let stopsToRoutes: {[string]: Array<number>} = {};
@@ -85,10 +100,26 @@ const generateDataStructures = (testCase: TestCase): RaptorInput => {
     buses: busMapping,
     stopsToRoutes: stopsToRoutes,
     stops: stops,
-    startTime: startTime
+    startTime: startTime,
+    footpathMatrix: footpathMatrix
   };
 };
 
+const raptorInstanceGenerator = async (path: string): Promise<BasedRaptor> => {
+  const testJson = JSON.parse(fs.readFileSync(path, 'utf8'));
+  const raptorInput = generateDataStructures(testJson);
+  return new BasedRaptor(
+    raptorInput.buses,
+    raptorInput.start,
+    raptorInput.end,
+    raptorInput.stopsToRoutes,
+    raptorInput.footpathMatrix,
+    raptorInput.startTime,
+    raptorInput.stops
+  );
+};
+
 export default {
-  generateDataStructures
+  generateDataStructures,
+  raptorInstanceGenerator
 };
