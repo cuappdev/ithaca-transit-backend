@@ -5,11 +5,8 @@ import OSRM from '../OSRM';
 import Stop from '../models/Stop';
 import TimedStop from '../models/TimedStop';
 
-const interpolateTimes = async (
-  buses: Array<PostProcessBus>,
-  stops: Array<Stop>,
-  nameToStopIndex: { [string]: [number] }
-): Promise<void> => {
+/* eslint-disable max-len */
+const interpolateTimes = async (buses: Array<PostProcessBus>, stops: Array<Stop>, nameToStopIndex: { [string]: [number] }): Promise<void> => {
   // Create 2D matrix `durations`
   // durations[i][j] reflects how long (in seconds) it takes to drive
   // from location indexed by i to location indexed by j
