@@ -8,7 +8,7 @@ describe('Raptor Test', () => {
   it('Basic Test', async () => {
     const rapt =
       await TestUtils.raptorInstanceGenerator(
-        path.join(__dirname, './data/first_test.json')
+        path.join(__dirname, './data/1.json')
       );
     const result = await rapt.run();
     expect(result[0].arrivalTime === 150); // 0 -> 10 -> 100 -> 150

@@ -14,6 +14,11 @@ type PathElement = {
   busPath: ?BusPath,
 }
 
+type RaptorResponseElement = {
+  arrivalTime: number,
+  path: Array<PathElement>
+}
+
 class BasedRaptor {
   buses: {[number]: Bus};
   start: Stop;
@@ -187,12 +192,19 @@ class BasedRaptor {
     });
 
     // Backtrack
-    let results = [];
+    let results: Array<RaptorResponseElement> = [];
     for (let i = 0; i < Math.min(5, sortedEndFinishTimes.length); i++) {
       if (sortedEndFinishTimes[i].stop.equals(this.start)) {
         results.push({
           arrivalTime: sortedEndFinishTimes[i].endTime,
-          path: 'Walk the entire way'
+          path: [{
+            start: this.start,
+            end: this.end,
+            k: 0,
+            startTime: this.startTime,
+            endTime: sortedEndFinishTimes[i].endTime,
+            busPath: null
+          }]
         });
       } else {
         // Backtrack
