@@ -1,9 +1,9 @@
 // @flow
-import Bus from '../models/Bus';
-import Location from '../models/Location';
-import Path from '../models/Path';
-import Stop from '../models/Stop';
-import TimedStop from '../models/TimedStop';
+import Bus from './models/Bus';
+import Location from './models/Location';
+import Path from './models/Path';
+import Stop from './models/Stop';
+import TimedStop from './models/TimedStop';
 
 type StopMetadata = {
   name: string,
@@ -18,7 +18,7 @@ type TimedStopMetadata = {
 
 type BusMetadata = {
   lineNumber: number,
-  path: Array<Array<TimedStopMetadata>>
+  paths: Array<Array<TimedStopMetadata>>
 };
 
 type TestCase = {
@@ -44,7 +44,7 @@ const generateDataStructures = (testCase: TestCase): RaptorInput => {
 
   // Buses + build up stopsToRoutes
   const buses: Array<Bus> = testCase.buses.map((b: BusMetadata) => {
-    const paths = b.path.map((pArr: Array<TimedStopMetadata>) => {
+    const paths = b.paths.map((pArr: Array<TimedStopMetadata>) => {
       const timedStops: Array<TimedStop> = pArr.map((ts: TimedStopMetadata) => {
         // Add to data structure
         stopsToRoutes[stops[ts.stopIndex].name].push(b.lineNumber);
