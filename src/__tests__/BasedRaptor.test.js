@@ -39,7 +39,6 @@ describe('Raptor Test', () => {
   it('Basic Walking Transfer 1', async () => {
     const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/3.json'));
     const result = await rapt.run();
-    console.log(result[0]);
     expect(result[0].arrivalTime).toEqual(240);
 
     // Peep the optimal path
