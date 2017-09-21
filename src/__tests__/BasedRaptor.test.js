@@ -5,7 +5,7 @@ import BasedRaptor from '../BasedRaptor';
 import BasedRaptorUtils from '../utils/BasedRaptorUtils';
 import Location from '../models/Location';
 import Stop from '../models/Stop';
-import TestUtils from '../TestUtils';
+import TestUtils from '../utils/TestUtils';
 
 describe('Raptor Test', () => {
   it('Basic Test', async () => {
