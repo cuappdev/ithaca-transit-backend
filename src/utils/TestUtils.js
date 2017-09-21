@@ -1,9 +1,9 @@
 // @flow
-import Bus from './models/Bus';
-import Location from './models/Location';
-import Path from './models/Path';
-import Stop from './models/Stop';
-import TimedStop from './models/TimedStop';
+import Bus from '../models/Bus';
+import Location from '../models/Location';
+import Path from '../models/Path';
+import Stop from '../models/Stop';
+import TimedStop from '../models/TimedStop';
 
 type StopMetadata = {
   name: string,
