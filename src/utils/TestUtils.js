@@ -8,12 +8,9 @@ import Stop from '../models/Stop';
 import TimedStop from '../models/TimedStop';
 
 import fs from 'fs';
-import path from 'path';
 
 type StopMetadata = {
-  name: string,
-  lat: number,
-  long: number
+  name: string
 };
 
 type TimedStopMetadata = {
@@ -27,8 +24,6 @@ type BusMetadata = {
 };
 
 type TestCase = {
-  start: StopMetadata,
-  end: StopMetadata,
   stops: Array<StopMetadata>,
   buses: Array<BusMetadata>,
   startTime: number,
@@ -47,17 +42,11 @@ type RaptorInput = {
 
 const generateDataStructures = (testCase: TestCase): RaptorInput => {
   // Stops
-  const start = new Stop(
-    testCase.start.name,
-    new Location(testCase.start.lat, testCase.start.long)
-  );
-  const end = new Stop(
-    testCase.end.name,
-    new Location(testCase.end.lat, testCase.end.long)
-  );
+  const start = new Stop('Start', new Location(-1, -1));
+  const end = new Stop('End', new Location(-1, -1));
   const startTime = testCase.startTime;
   const stops = testCase.stops.map((s: StopMetadata) => {
-    return new Stop(s.name, new Location(s.lat, s.long));
+    return new Stop(s.name, new Location(-1, -1));
   });
 
   const footpathMatrix = new FootpathMatrix(
