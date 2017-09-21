@@ -22,18 +22,30 @@ type BusMetadata = {
 };
 
 type TestCase = {
+  start: StopMetadata,
+  end: StopMetadata,
   stops: Array<StopMetadata>,
-  buses: Array<BusMetadata>
+  buses: Array<BusMetadata>,
+  startTime: number
 };
 
 type RaptorInput = {
+  start: Stop,
+  end: Stop,
   buses: {[number]: Bus},
   stopsToRoutes: {[string]: Array<number>},
-  stops: Array<Stop>
+  stops: Array<Stop>,
+  startTime: number
 };
 
 const generateDataStructures = (testCase: TestCase): RaptorInput => {
   // Stops
+
+  const start = new Stop(testCase.start.name, new Location(testCase.start.lat,testCase.start.long));
+  const end = new Stop(testCase.end.name, new Location(testCase.end.lat, testCase.end.long));
+
+  const startTime = testCase.startTime;
+
   const stops = testCase.stops.map((s: StopMetadata) => {
     return new Stop(s.name, new Location(s.lat, s.long));
   });
@@ -68,9 +80,12 @@ const generateDataStructures = (testCase: TestCase): RaptorInput => {
   });
 
   return {
+    start: start,
+    end: end,
     buses: busMapping,
     stopsToRoutes: stopsToRoutes,
-    stops: stops
+    stops: stops,
+    startTime: startTime
   };
 };
 
