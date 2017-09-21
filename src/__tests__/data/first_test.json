@@ -11,19 +11,27 @@
   },
   "stops": [
     {
-      "name": "Schwartz Performing Arts Center",
+      "name": "0",
       "lat": 42.442558,
       "long": -76.485336
     },
     {
-      "name": "Carpenter Hall",
+      "name": "1",
       "lat": 42.444889,
       "long": -76.484993
     }
   ],
   "buses": [{
-    "lineNumber": 10,
-    "paths": [[{"stopIndex": 0, "time": 1000}, {"stopIndex": 1, "time": 2000}]]
+    "lineNumber": 11,
+    "paths": [
+      [{"stopIndex": 0, "time": 10}, {"stopIndex": 1, "time": 100}]
+    ]
   }],
-  "startTime": 900
+  "startTime": 0,
+  "routingMatrix": [
+    [0,320,5,300],
+    [320,0,330,50],
+    [5,330,0,280],
+    [300,50,280,0]
+  ]
 }
