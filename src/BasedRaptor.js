@@ -117,7 +117,6 @@ class BasedRaptor {
       }
       // Clear marked :D
       marked.length = 0;
-
       // Go through the lines with queued bus paths and try and improve
       // times to get to each stop from the original start stop
       for (let j = 0; j < Q.length; j++) {
@@ -167,6 +166,7 @@ class BasedRaptor {
       }
     }
 
+    // Establish end times
     const endFinishTimes = this.stops.map((stop: Stop) => {
       const lastEndTime: number = this
         ._lastElement(pathTable, stop, TCATConstants.MAX_RAPTOR_ROUNDS)
@@ -175,14 +175,43 @@ class BasedRaptor {
       return { stop: stop, endTime: lastEndTime + walkTime };
     });
 
-    const sortedEndFinishTimes = endFinishTimes.sort((a: Object, b: Object) => {
+    // Sorted based on the best end time
+    const sortedEndFinishTimes = [{
+      stop: this.start,
+      endTime: this.startTime +
+        this.footpathMatrix.durationBetween(this.start, this.end)
+    }].concat(endFinishTimes).sort((a: Object, b: Object) => {
       return (a.endTime < b.endTime)
         ? -1
         : (a.endTime > b.endTime ? 1 : 0);
     });
 
-    // TODO - backtrack
-    return sortedEndFinishTimes;
+    // Backtrack
+    let results = [];
+    for (let i = 0; i < 5; i++) {
+      if (sortedEndFinishTimes[i].stop.equals(this.start)) {
+        results.push([sortedEndFinishTimes[i]]);
+      } else {
+        // Backtrack
+        const lastElement = this._lastElement(
+          pathTable,
+          sortedEndFinishTimes[i].stop,
+          TCATConstants.MAX_RAPTOR_ROUNDS
+        );
+        let currentElement = lastElement;
+        let topOrder = [lastElement];
+        while (currentElement.k >= 0) {
+          currentElement = this._lastElement(
+            pathTable,
+            currentElement.start,
+            currentElement.k
+          );
+          topOrder.push(currentElement);
+        }
+        results.push(topOrder.reverse());
+      }
+    }
+    return results;
   }
 }
 
