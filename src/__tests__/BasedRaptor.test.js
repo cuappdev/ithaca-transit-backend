@@ -49,7 +49,6 @@ describe('Raptor Test', () => {
 
     // Run + check
     const result = await rapt.run();
-    console.log(result);
   });
   it('Basic Test', async () => {
     const testCase = {
@@ -67,16 +66,16 @@ describe('Raptor Test', () => {
       ],
       buses: [{
         lineNumber: 10,
-        paths: [[{stopIndex: 0, time: 960}, {stopIndex: 1, time: 1200}]]
+        paths: [[{stopIndex: 0, time: 800}, {stopIndex: 1, time: 1110}]]
       }]
     };
 
     // Generate data-structures from testCase JSON
     const raptorInput = TestUtils.generateDataStructures(testCase);
     // CTB
-    const start = new Stop('Start', new Location(42.442579, -76.485068));
+    const start = new Stop('Start', new Location(42.442558, -76.485336));
     // Statler
-    const end = new Stop('End', new Location(42.445627, -76.482600));
+    const end = new Stop('End', new Location(42.444889, -76.484993));
     // Footpath transitions
     const footpathMatrix = await BasedRaptorUtils.footpathMatrix(start, end);
     // Raptor instance
@@ -86,7 +85,7 @@ describe('Raptor Test', () => {
       end,
       raptorInput.stopsToRoutes,
       footpathMatrix,
-      900,
+      800,
       raptorInput.stops
     );
 

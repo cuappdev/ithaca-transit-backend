@@ -190,7 +190,10 @@ class BasedRaptor {
     let results = [];
     for (let i = 0; i < Math.min(5, sortedEndFinishTimes.length); i++) {
       if (sortedEndFinishTimes[i].stop.equals(this.start)) {
-        results.push([sortedEndFinishTimes[i]]);
+        results.push({
+          arrivalTime: sortedEndFinishTimes[i].endTime,
+          path: 'Walk the entire way'
+        });
       } else {
         // Backtrack
         const lastElement = this._lastElement(
@@ -208,7 +211,10 @@ class BasedRaptor {
           );
           topOrder.push(currentElement);
         }
-        results.push(topOrder.reverse());
+        results.push({
+          arrivalTime: sortedEndFinishTimes[i].endTime,
+          path: topOrder.reverse()
+        });
       }
     }
     return results;
