@@ -188,7 +188,7 @@ class BasedRaptor {
 
     // Backtrack
     let results = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < Math.min(5, sortedEndFinishTimes.length); i++) {
       if (sortedEndFinishTimes[i].stop.equals(this.start)) {
         results.push([sortedEndFinishTimes[i]]);
       } else {

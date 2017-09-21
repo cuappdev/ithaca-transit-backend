@@ -16,7 +16,7 @@
   "author": "CUAppDev",
   "license": "ISC",
   "dependencies": {
-    "appdev": "^0.2.0",
+    "appdev": "^0.3.0",
     "axios": "^0.16.2",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
