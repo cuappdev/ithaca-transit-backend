@@ -31,23 +31,10 @@ Follow `JS` environment setup [`here`](https://github.com/cuappdev/bible/tree/ma
 Before setup, grab `node` version `6.*.*` and `npm`.  This is easily `Google`-ed.
 
 Once you clone this repo, setup the following:
-1. (Can be skipped if your `map.osm` is up to date)
-Go to the following [`link`](http://www.openstreetmap.org/export#map=13/42.4510/-76.4967), and
-click `Export` to grab the map of the Ithaca area to be used in routing calculations.
-Note this is only required to get a fresh `map.osm` file, in case roads and such have
-been updated.
-2. `npm install`
-3. `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
+1. `npm install`
+2. `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
 the routing library that is used to aid routing calculations.
-4.
-
-````bash
-node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/foot.lua
-node_modules/osrm/lib/binding/osrm-contract osrm/map.osrm
-mkdir osrm
-mv *.osm* ./osrm
-mv *.osrm* ./osrm
-````
+3. `node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/foot.lua && node_modules/osrm/lib/binding/osrm-contract osrm/map.osrm`
 
 Note: When pasting multiple lines into terminal, every line will execute except the last one. Pressing Enter will execute the last line.
 
@@ -57,7 +44,7 @@ Full `OSRM Node API` docs can be found [`here`](https://github.com/Project-OSRM/
 
 1. Enter tcat.js/ folder
 2. `npm start`
-3. Use the base URL http://localhost:3000/api/v1
+3. Use the base URL `http://localhost:3000/api/v1`
 4. Test using the `/stops` endpoints (append "/stops" to above URL)
 
 ## Troubleshooting
@@ -69,3 +56,10 @@ In no particular order...
 - `npm link osrm`
 - `npm link appdev`
 - `npm start`
+
+## Updating the Map
+
+Go to the following [`link`](http://www.openstreetmap.org/export#map=13/42.4510/-76.4967), and
+click `Export` to grab the map of the Ithaca area to be used in routing calculations.
+Note this is only required to get a fresh `map.osm` file, in case roads and such have
+been updated.
