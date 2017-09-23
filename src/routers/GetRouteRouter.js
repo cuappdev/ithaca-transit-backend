@@ -135,8 +135,8 @@ class GetRouteRouter extends AppDevRouter {
     currLocationDir.locationName = mainStops[0];
     currLocationDir.startLocation = result[0].startStop.location;
     currLocationDir.endLocation = result[0].endStop.location;
-    currLocationDir.startTime = leaveBy;
-    currLocationDir.endTime = result[0].arrivalTime;
+    currLocationDir.startTime = departureTime;
+    currLocationDir.endTime = departureTime + (result[0].arrivalTime - departureTime)
     currLocationDir.busStops=[];
     currLocationDir.routeNumber = -1;
     directions.push(currLocationDir);
@@ -150,10 +150,34 @@ class GetRouteRouter extends AppDevRouter {
       const departDir = {};
       const arriveDir = {};
       departDir.type = "depart";
+      departDir.locationName = mainStops[j];
+      departDir.startLocation = result[j+1].startStop.location;
+      departDir.endLocation = result[j+1].endStop.location;
+      departDir.startTime = result[j].arrivalTime;
+      departDir.endTime = result[j+1].arrivalTime;
+      departDir.busStops = [];
+      departDir.routeNumber = nonWalkingRouteNums[j];
       arriveDir.type = "arrive";
+      arriveDir.locationName = mainStops[j+1];
+      arriveDir.startLocation = result[j+2].startStop.location;
+      arriveDir.endLocation = result[j+2].endStop.location;
+      arriveDir.startTime = result[j+2].arrivalTime;
+      arriveDir.endTime = result[j+2].arrivalTime;
+      arriveDir.busStops = [];
+      arriveDir.routeNumber = -1;
       directions.push(departDir);
       directions.push(arriveDir);
     }
+    const endDir = {}
+    endDir.type = "walk";
+    endDir.locationName = mainStops[mainStops.length-1];
+    endDir.startLocation = result[result.length-1].startStop.location;
+    endDir.endLocation = result[result.length-1].endStop.location;
+    endDir.startTime = result[result.length-2].arrivalTime;
+    endDir.endTime = arrivalTime;
+    endDir.busStops = [];
+    endDir.routeNumber = -1;
+    directions.push(endDir);
 
     // type is of 3 types, walk, depart, or arrivalTime
     // location name: for first point, will be current location/first bus stop and then for
