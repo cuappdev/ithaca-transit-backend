@@ -155,7 +155,7 @@ class GetRouteRouter extends AppDevRouter {
       departDir.endLocation = result[j+1].endStop.location;
       departDir.startTime = result[j].arrivalTime;
       departDir.endTime = result[j+1].arrivalTime;
-      departDir.busStops = [];
+      departDir.busStops = ["Bus Stop #1", "Bus Stop #2", "Bus Stop #3"];
       departDir.routeNumber = nonWalkingRouteNums[j];
       arriveDir.type = "arrive";
       arriveDir.locationName = mainStops[j+1];
