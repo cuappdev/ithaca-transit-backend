@@ -129,6 +129,137 @@ class GetRouteRouter extends AppDevRouter {
       }
       routeSummary.push(currNode);
     }
+    const directions = [];
+    const currLocationDir = {};
+    currLocationDir.type = "walk";
+    currLocationDir.locationName = mainStops[0];
+    currLocationDir.startLocation = result[0].startStop.location;
+    currLocationDir.endLocation = result[0].endStop.location;
+    currLocationDir.startTime = departureTime;
+    currLocationDir.endTime = departureTime + (result[0].arrivalTime - departureTime)
+    currLocationDir.busStops=[];
+    currLocationDir.routeNumber = -1;
+    directions.push(currLocationDir);
+    const nonWalkingRouteNums = [];
+    for (let i = 0; i < mainStopNums.length; i++) {
+      if (mainStopNums[i] != -1) {
+        nonWalkingRouteNums.push(mainStopNums[i]);
+      }
+    }
+    for (let j = 0; j < nonWalkingRouteNums.length; j++) {
+      const departDir = {};
+      const arriveDir = {};
+      departDir.type = "depart";
+      departDir.locationName = mainStops[j];
+      departDir.startLocation = result[j+1].startStop.location;
+      departDir.endLocation = result[j+1].endStop.location;
+      departDir.startTime = result[j].arrivalTime;
+      departDir.endTime = result[j+1].arrivalTime;
+      departDir.busStops = ["Bus Stop #1", "Bus Stop #2", "Bus Stop #3"];
+      departDir.routeNumber = nonWalkingRouteNums[j];
+      arriveDir.type = "arrive";
+      arriveDir.locationName = mainStops[j+1];
+      arriveDir.startLocation = result[j+2].startStop.location;
+      arriveDir.endLocation = result[j+2].endStop.location;
+      arriveDir.startTime = result[j+2].arrivalTime;
+      arriveDir.endTime = result[j+2].arrivalTime;
+      arriveDir.busStops = [];
+      arriveDir.routeNumber = -1;
+      directions.push(departDir);
+      directions.push(arriveDir);
+    }
+    const endDir = {}
+    endDir.type = "walk";
+    endDir.locationName = mainStops[mainStops.length-1];
+    endDir.startLocation = result[result.length-1].startStop.location;
+    endDir.endLocation = result[result.length-1].endStop.location;
+    endDir.startTime = result[result.length-2].arrivalTime;
+    endDir.endTime = arrivalTime;
+    endDir.busStops = [];
+    endDir.routeNumber = -1;
+    directions.push(endDir);
+
+    // type is of 3 types, walk, depart, or arrivalTime
+    // location name: for first point, will be current location/first bus stop and then for
+    //  ending it will be the end location that the user has requested
+    // startLocation + endLocation: start point of the location and the end point of location
+    //  arrive startLocation: location the bus will arrive at
+    //  depart endLocation: location where user should debark
+    // startTime+endTime: start and end time the direction should take
+    // busStops: empty or list of bus stops in the routeSummary
+    // routeNumber: route number
+
+    // "directions": [
+    //
+    // 			{
+    // 				"type": "walk",
+    // 				"locationName": "Bus Stop #1",
+    // 				"startLocation": {
+    // 					"latitude": 40,
+    // 					"longitude": 70
+    // 				},
+    // 				"endLocation": {
+    // 					"latitude": 40,
+    // 					"longitude": 70
+    // 				},
+    // 				"startTime": 1505337262,
+    // 				"endTime": 1505337462,
+    // 				"busStops": [],
+    // 				"routeNumber": 0
+    // 			},
+    //
+    // 			{
+    // 				"type": "depart",
+    // 				"locationName": "Bus Stop #1",
+    // 				"startLocation": {
+    // 					"latitude": 40,
+    // 					"longitude": 70
+    // 				},
+    // 				"endLocation": {
+    // 					"latitude": 41,
+    // 					"longitude": 71
+    // 				},
+    // 				"startTime": 1505337462,
+    // 				"endTime": 1505337762,
+    // 				"busStops": ["Sage Hall", "Rockefeller Hall", "Baker Flagpole"],
+    // 				"routeNumber": 90
+    // 			},
+    //
+    // 			{
+    // 				"type": "arrive",
+    // 				"locationName": "Bus Stop #2",
+    // 				"startLocation": {
+    // 					"latitude": 41,
+    // 					"longitude": 71
+    // 				},
+    // 				"endLocation": {
+    // 					"latitude": 41,
+    // 					"longitude": 71
+    // 				},
+    // 				"startTime": 1505337762,
+    // 				"endTime": 1505337762,
+    // 				"busStops": [],
+    // 				"routeNumber": 0
+    // 			},
+    //
+    // 			{
+    // 				"type": "walk",
+    // 				"locationName": "Keeton House",
+    // 				"startLocation": {
+    // 					"latitude": 41,
+    // 					"longitude": 71
+    // 				},
+    // 				"endLocation": {
+    // 					"latitude": 42,
+    // 					"longitude": 72
+    // 				},
+    // 				"startTime": 1505337762,
+    // 				"endTime": 1505337962,
+    // 				"busStops": [],
+    // 				"routeNumber": 0
+    // 			}
+    //
+    // 		]
 
     return [{
       // Given to use originally
@@ -138,6 +269,7 @@ class GetRouteRouter extends AppDevRouter {
       departureTime: departureTime,
       arrivalTime: arrivalTime,
       routeSummary: routeSummary,
+      directions: directions,
       kmls: kmls
     }];
   }
