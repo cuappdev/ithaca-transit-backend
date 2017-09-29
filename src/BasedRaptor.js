@@ -205,6 +205,7 @@ class BasedRaptor {
               endTime: endTime + durations[j],
               busPath: null
             };
+            marked.push(otherStop);
           }
         }
       }
@@ -241,7 +242,7 @@ class BasedRaptor {
           currentElement = this._getLastElement(
             pathTable,
             currentElement.start,
-            currentElement.k
+            currentElement.k - 1
           );
           topOrder.push(currentElement);
         }
