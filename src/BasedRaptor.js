@@ -190,6 +190,9 @@ class BasedRaptor {
         let durations = this.footpathMatrix.durationsToGTFSStops(stop);
         for (let j = 0; j < this.stops.length; j++) {
           let otherStop = this.stops[j];
+          if (otherStop.name === stop.name) {
+            continue;
+          }
           if (
             endTime + durations[j] <
             this._getLastElement(pathTable, otherStop, k).endTime

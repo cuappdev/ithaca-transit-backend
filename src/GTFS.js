@@ -210,7 +210,7 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
           let time = 0;
           if (isTimepoint) {
             time = TimeUtils.stringTimeDayToWeekTime(
-              tripTimes[l].arrival_time, i
+              tripTimes[l].arrival_time, j
             );
           }
           const timedStop: TimedStop = new TimedStop(stop, time, isTimepoint);
@@ -255,5 +255,6 @@ for (let i = 0; i < stops.length; i++) {
 export default {
   buses,
   stops,
-  nameToStopIndex
+  nameToStopIndex,
+  tripsNested
 };
