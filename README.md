@@ -4,7 +4,7 @@
 
 Before setup, download...
 
-  - [node](https://nodejs.org/en/download/), ≤ v6.x.x
+  - [node](https://nodejs.org/en/download/) (≥ v6.x.x)
   - [npm](https://www.npmjs.com/get-npm)
   
 ### AppDev JS
