@@ -9,3 +9,4 @@
 *.zip
 gtfs/
 npm-debug.log
+osrm-backend/
