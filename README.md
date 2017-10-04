@@ -11,11 +11,7 @@ Before setup, download...
 
 **Quick Way (Libraries)**
 
-0. Install Appdev Dependencies
-
-`npm install --save-dev babel-cli babel-jest babel-preset-flow flow-bin`
-
-1. Install and link appdev module
+Install appdev.js dependencies with `npm install --save-dev babel-cli babel-jest babel-preset-flow flow-bin`
 
 Within a generic "AppDev" folder (**not** within existing projects)
 
@@ -44,7 +40,8 @@ been updated.
 3. `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
 the routing library that is used to aid routing calculations.
 4. Inside `tcat.js`, run `npm link appdev`
-5.
+
+Last but not least, copy and paste the following. It'll take a while :)
 
 ````bash
 node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/foot.lua
