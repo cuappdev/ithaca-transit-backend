@@ -68,15 +68,13 @@ describe('Raptor Test', () => {
     expect(result[0].path[3].end.name).toEqual('3');
   });
 
-  it('Prioritize Later But Faster Bus 1', async () => {
-    const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/4.json'));
+  it('Walking is fastest path', async () => {
+    const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/6.json'));
     const result = await rapt.run();
 
-    // Optimal path
-    expect(result[0].arrivalTime).toEqual(200);
+    // TODO: Optimal path
+    expect(result[0].arrivalTime).toEqual(1000);
     expect(result[0].path[0].start.name).toEqual('Start');
-    expect(result[0].path[0].end.name).toEqual('0');
-    expect(result[0].path[1].start.name).toEqual('0');
-    expect(result[0].path[1].end.name).toEqual('3');
+    expect(result[0].path[0].end.name).toEqual('End');
   });
 });
