@@ -29,19 +29,15 @@ Follow `JS` environment setup [`here`](https://github.com/cuappdev/bible/tree/ma
 
 ## Setup
 
-Once you clone this repo, setup the following
-
-1. (Can be skipped if your `map.osm` is up to date)
-Go to the following [`link`](http://www.openstreetmap.org/export#map=13/42.4510/-76.4967), and
-click `Export` to grab the map of the Ithaca area to be used in routing calculations.
-Note this is only required to get a fresh `map.osm` file, in case roads and such have
-been updated.
-2. `npm install`
-3. `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
+0. Clone this repo, on the same directory as tcat-ios.
+1. Go to the following [`link`](http://www.openstreetmap.org/export#map=13/42.4510/-76.4967), and
+click `Export` to grab the map of the Ithaca area to be used in routing calculations. After completing this once, only do againto update `map.osm` for updated map information.
+2. Inside the `tcat.js` folder, run `npm install`
+3. Run `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
 the routing library that is used to aid routing calculations.
-4. Inside `tcat.js`, run `npm link appdev`
+4. Run `npm link appdev`
 
-Last but not least, copy and paste the following. It'll take a while :)
+Last but not least, copy and paste the following.
 
 ````bash
 node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/foot.lua
@@ -50,6 +46,8 @@ mkdir osrm
 mv *.osm* ./osrm
 mv *.osrm* ./osrm
 ````
+
+Note: When pasting multiple lines into terminal, every line will execute except the last one. Pressing Enter will execute the last line.
 
 Full `OSRM Node API` docs can be found [`here`](https://github.com/Project-OSRM/osrm-backend/blob/HEAD/docs/nodejs/api.md)
 
