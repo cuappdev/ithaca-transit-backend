@@ -58,6 +58,7 @@ Full `OSRM Node API` docs can be found [`here`](https://github.com/Project-OSRM/
 0. Enter tcat.js/ folder
 1. `npm start`
 2. Use the base URL http://localhost:3000/api/v1
+3. Test using the `/stops` endpoints (append "/stops" to above URL)
 
 ## Troubleshooting
 
