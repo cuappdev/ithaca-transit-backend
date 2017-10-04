@@ -33,3 +33,13 @@ Full `OSRM Node API` docs can be found [`here`](https://github.com/Project-OSRM/
 0. Enter tcat.js/ folder
 1. `npm start`
 2. Use the base URL http://localhost:3000/api/v1
+
+## Troubleshooting
+
+In no particular order...
+
+- `npm install webpack`
+- `npm install`
+- `npm link osrm`
+- `npm link appdev`
+- `npm start`
