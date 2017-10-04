@@ -1,12 +1,40 @@
 # TCAT JavaScript API
 
+## Getting Started
+
+Before setup, download...
+
+  - [node](https://nodejs.org/en/download/), ≤ v6.x.x
+  - [npm](https://www.npmjs.com/get-npm)
+  
+### AppDev JS
+
+**Quick Way (Libraries)**
+
+0. Install Appdev Dependencies
+
+`npm install --save-dev babel-cli babel-jest babel-preset-flow flow-bin`
+
+1. Install and link appdev module
+
+Within a generic "AppDev" folder (**not** within existing projects)
+
+````
+git clone https://github.com/cuappdev/appdev.js.git
+cd appdev.js
+npm install
+npm run build
+npm link # Links local NPM module in your global npm config
+````
+
+**Long Way**
+
+Follow `JS` environment setup [`here`](https://github.com/cuappdev/bible/tree/master/js).
+
 ## Setup
-Before setup, grab `node` version `6.*.*` and `npm`.  This is easily `Google`-ed.
 
-Also follow `JS` environment setup [`here`](https://github.com/cuappdev/bible/tree/master/js),
-**including the library section**, as the `appdev` module is necessary for this app.
+Once you clone this repo, setup the following
 
-Once you clone this repo, setup the following:
 1. (Can be skipped if your `map.osm` is up to date)
 Go to the following [`link`](http://www.openstreetmap.org/export#map=13/42.4510/-76.4967), and
 click `Export` to grab the map of the Ithaca area to be used in routing calculations.
