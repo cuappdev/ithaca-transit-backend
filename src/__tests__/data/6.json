@@ -1,7 +1,7 @@
 {
   "stops": [
     {"name": "0"},
-    {"name": "1"},
+    {"name": "1"}
   ],
   "buses": [{
     "lineNumber": 16,
