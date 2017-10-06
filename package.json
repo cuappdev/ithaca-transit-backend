@@ -6,7 +6,9 @@
   "scripts": {
     "start": "webpack -p && node build/bundle.js",
     "deploy": "node build/bundle.js",
-    "test": "jest"
+    "test": "jest",
+    "flow": "node_modules/.bin/flow",
+    "flow-stop": "node_modules/.bin/flow stop"
   },
   "jest": {
     "transform": {
