@@ -1,5 +1,5 @@
+/* eslint-disable no-undef */
 import 'babel-polyfill';
-import TestUtils from '../utils/TestUtils';
 import TimeUtils from '../utils/TimeUtils';
 import GTFS from '../GTFS';
 
@@ -15,18 +15,10 @@ describe('Testing GTFS', () => {
       for (var path in bus.paths) {
         for (var timedStops in path.timedStops) {
           for (let i = 1; i < timedStops.length; i++) {
-            console.log(timedStops[i].time)
-            if (timedStops[i].time < timedStops[i-1].time) {
-              console.log(timeStops);
-            }
-            expect(timedStops[i].time >= timedStops[i-1].time);
+            expect(timedStops[i].time >= timedStops[i - 1].time);
           }
         }
       }
     }
-
-
-  })
-
-
+  });
 });

@@ -5,28 +5,20 @@
     {"name": "2"},
     {"name": "3"}
   ],
-  "buses": [
-      {
-        "lineNumber": 11,
-        "paths": [
-          [{"stopIndex": 0, "time": 90}, {"stopIndex": 1, "time": 100}],
-          [{"stopIndex": 2, "time": 170}, {"stopIndex": 3, "time": 180}]
-        ]
-      },
-      {
-        "lineNumber": 15,
-        "paths": [
-          [{"stopIndex": 0, "time": 105}, {"stopIndex": 3, "time": 140}]
-        ]
-      }
-  ],
+  "buses": [{
+    "lineNumber": 11,
+    "paths": [
+      [{"stopIndex": 0, "time": 90}, {"stopIndex": 1, "time": 100}],
+      [{"stopIndex": 2, "time": 170}, {"stopIndex": 3, "time": 180}]
+    ]
+  }],
   "startTime": 0,
   "routingMatrix": [
     [0, 400, 5, 160, 170, 340],
     [400, 0, 330, 150, 150, 60],
     [5, 330, 0, 80, 70, 280],
-    [160, 150, 80, 0, 60, 110],
-    [170, 150, 70, 60, 0, 100],
+    [160, 150, 80, 0, 80, 110],
+    [170, 150, 70, 80, 0, 100],
     [340, 60, 280, 110, 100, 0]
   ]
 }
