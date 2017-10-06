@@ -39,15 +39,14 @@ describe('Raptor Test', () => {
   it('Basic 3', async () => {
     const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/3.json'));
     const result = await rapt.run();
-    console.log(result[0].path);
-    expect(result[0].arrivalTime).toEqual(290);
-    expect(result[1].arrivalTime).toEqual(360);
+    expect(result[0].arrivalTime).toEqual(220);
+    expect(result[1].arrivalTime).toEqual(225);
 
     // Peep the optimal path
     expect(result[0].path[0].start.name).toEqual('Start');
     expect(result[0].path[0].end.name).toEqual('0');
     expect(result[0].path[1].start.name).toEqual('0');
-    expect(result[0].path[1].end.name).toEqual('2');
+    expect(result[0].path[1].end.name).toEqual('3');
   });
 
   it('Skip over bus route', async () => {
