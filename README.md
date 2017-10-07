@@ -34,7 +34,7 @@ Once you clone this repo, setup the following:
 1. `npm install`
 2. `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
 the routing library that is used to aid routing calculations.
-3. `node_modules/osrm/lib/binding/osrm-extract osrm/map.osm -p node_modules/osrm/profiles/foot.lua && node_modules/osrm/lib/binding/osrm-contract osrm/map.osrm`
+3. `./setup.sh`
 
 Note: When pasting multiple lines into terminal, every line will execute except the last one. Pressing Enter will execute the last line.
 

@@ -5,14 +5,17 @@ import OSRM from '../OSRM';
 import Stop from '../models/Stop';
 import TimedStop from '../models/TimedStop';
 
-/* eslint-disable max-len */
-const interpolateTimes = async (buses: Array<PostProcessBus>, stops: Array<Stop>, nameToStopIndex: { [string]: [number] }): Promise<void> => {
+async function interpolateTimes (
+  buses: Array<PostProcessBus>,
+  stops: Array<Stop>,
+  nameToStopIndex: { [string]: [number] }
+): Promise<void> {
   // Create 2D matrix `durations`
   // durations[i][j] reflects how long (in seconds) it takes to drive
   // from location indexed by i to location indexed by j
   const coordinates = stops.map(s => s.location.toArray());
-  const response = await OSRM.table({coordinates});
-  const durations = response.durations.map(d => d.map(e => e * 0.5));
+  const response = await OSRM.carTable({coordinates});
+  const durations = response.durations;
 
   // first -> second TimedStop (the time to travel)
   const getTimeDiff = (first: TimedStop, second: TimedStop): number => {
@@ -60,6 +63,13 @@ const interpolateTimes = async (buses: Array<PostProcessBus>, stops: Array<Stop>
       journey.stops[k] =
         new TimedStop(timedStop.stop, prevTimedStop.time + timeDiff, true);
     }
+
+    // Post-processing validation correction
+    for (let i = 1; i < journey.stops.length; i++) {
+      if (journey.stops[i - 1].time > journey.stops[i].time) {
+        journey.stops[i - 1].time = journey.stops[i].time;
+      }
+    }
   };
 
   // Mutations to the timed stops
@@ -69,7 +79,7 @@ const interpolateTimes = async (buses: Array<PostProcessBus>, stops: Array<Stop>
       interpolateJourney(bus.journeys[j]);
     }
   }
-};
+}
 
 export default {
   interpolateTimes
