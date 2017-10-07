@@ -1,4 +1,5 @@
 // @flow
+import Location from './Location';
 import Stop from './Stop';
 import TimedStop from './TimedStop';
 
@@ -8,10 +9,12 @@ import TimedStop from './TimedStop';
  */
 class Path {
   timedStops: Array<TimedStop>;
+  shape: Array<Location>;
   _stopToIndex: {[string]: number} // For quick look-ups
 
-  constructor (timedStops: Array<TimedStop>) {
+  constructor (timedStops: Array<TimedStop>, shape: Array<Location>) {
     this.timedStops = timedStops;
+    this.shape = shape;
     this._stopToIndex = {};
     for (let i = 0; i < this.timedStops.length; i++) {
       this._stopToIndex[this.timedStops[i].stop.name] = i;

@@ -56,6 +56,14 @@ type CalendarDateJSON = {
   exception_type: number;
 };
 
+type ShapeJSON = {
+  shape_id: string,
+  shape_pt_lat: number,
+  shape_pt_lon: number,
+  shape_pt_sequence: number,
+  shape_dist_traveled: number
+};
+
 // START - reading in all files
 
 const routesFile: Array<RouteJSON> = (() => {
@@ -75,7 +83,8 @@ const routesFile: Array<RouteJSON> = (() => {
 const stopsFile: Array<StopJSON> = (() => {
   const data = fs.readFileSync(
     path.join(__dirname, '../gtfs/stops.txt'),
-    { encoding: 'utf8' });
+    { encoding: 'utf8' }
+  );
   const jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.stop_id = +d.stop_id;
@@ -89,7 +98,8 @@ const stopsFile: Array<StopJSON> = (() => {
 const tripsFile: Array<TripJSON> = (() => {
   const data = fs.readFileSync(
     path.join(__dirname, '../gtfs/trips.txt'),
-    { encoding: 'utf8' });
+    { encoding: 'utf8' }
+  );
   const jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.route_id = +d.route_id;
@@ -103,7 +113,8 @@ const tripsFile: Array<TripJSON> = (() => {
 const stopTimesFile: Array<StopTimeJSON> = (() => {
   const data = fs.readFileSync(
     path.join(__dirname, '../gtfs/stop_times.txt'),
-    { encoding: 'utf8' });
+    { encoding: 'utf8' }
+  );
   const jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.stop_id = +d.stop_id;
@@ -116,7 +127,8 @@ const stopTimesFile: Array<StopTimeJSON> = (() => {
 const calendarDatesFile: Array<CalendarDateJSON> = (() => {
   const data = fs.readFileSync(
     path.join(__dirname, '../gtfs/calendar_dates.txt'),
-    { encoding: 'utf8' });
+    { encoding: 'utf8' }
+  );
   const jsons = csvjson.toObject(data);
   return jsons.map(d => {
     d.service_id = +d.service_id;
@@ -126,9 +138,45 @@ const calendarDatesFile: Array<CalendarDateJSON> = (() => {
   });
 })();
 
+const shapesFile: Array<ShapeJSON> = (() => {
+  const data = fs.readFileSync(
+    path.join(__dirname, '../gtfs/shapes.txt'),
+    { encoding: 'utf8' }
+  );
+  const jsons = csvjson.toObject(data);
+  return jsons.map(d => {
+    return {
+      shape_id: d.shape_id,
+      shape_pt_lat: +d.shape_pt_lat,
+      shape_pt_lon: +d.shape_pt_lon,
+      shape_pt_sequence: +d.shape_pt_sequence,
+      shape_dist_traveled: +d.shape_dist_traveled
+    };
+  });
+})();
+
 // END - reading in all files
 
 // START - nesting data-structures
+
+const shapesNested: {[string]: Array<Location>} = (() => {
+  const nested = d3.nest().key(d => d.shape_id).object(shapesFile);
+  const keys = Object.keys(nested);
+  let result = {};
+  for (let i = 0; i < keys.length; i++) {
+    result[keys[i]] = nested[keys[i]]
+      .map(e => new Location(e.shape_pt_lat, e.shape_pt_lon));
+  }
+  return result;
+})();
+
+const tripIdToShapeId: { [string] : string } = (() => {
+  let result = {};
+  for (let i = 0; i < tripsFile.length; i++) {
+    result[tripsFile[i].trip_id] = tripsFile[i].shape_id;
+  }
+  return result;
+})();
 
 const routesNested: {[string]: Array<RouteJSON>} = d3.nest()
   .key(d => d.route_id)
@@ -219,6 +267,7 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
         // Path per trip
         let timedStops: Array<TimedStop> = [];
         let tripID = tripIDs[k].key;
+        let shapeID = tripIdToShapeId[tripID];
         let tripTimes = stopTimesNested[tripID];
 
         for (let l = 0; l < tripTimes.length; l++) {
@@ -241,9 +290,10 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
             time = TimeUtils
               .stringTimeDayToWeekTime(tripTimes[l].arrival_time, j);
           }
+
           timedStops.push(new TimedStop(stop, time, isTimepoint));
           postprocessJourneys.push({stops: timedStops});
-          const path = new Path(timedStops);
+          const path = new Path(timedStops, shapesNested[shapeID]);
           paths.push(path);
         }
       }

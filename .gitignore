@@ -7,6 +7,5 @@
 *.osrm*
 .elasticbeanstalk/
 *.zip
-gtfs/
 npm-debug.log
 osrm-backend/
