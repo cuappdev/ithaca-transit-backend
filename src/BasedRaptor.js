@@ -1,8 +1,5 @@
 // @flow
-import Stop from './models/Stop';
-import Bus from './models/Bus';
-import BusPath from './models/BusPath';
-import FootpathMatrix from './models/FootpathMatrix';
+import { Stop, Bus, BusPath, FootpathMatrix } from './models';
 import TCATConstants from './utils/TCATConstants';
 
 // Element in a returned Raptor path

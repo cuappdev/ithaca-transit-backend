@@ -1,5 +1,4 @@
 // @flow
-
 import Location from './Location';
 import Stop from './Stop';
 

@@ -1,12 +1,13 @@
 // @flow
+import {
+  Bus,
+  FootpathMatrix,
+  Location,
+  Path,
+  Stop,
+  TimedStop
+} from '../models';
 import BasedRaptor from '../BasedRaptor';
-import Bus from '../models/Bus';
-import FootpathMatrix from '../models/FootpathMatrix';
-import Location from '../models/Location';
-import Path from '../models/Path';
-import Stop from '../models/Stop';
-import TimedStop from '../models/TimedStop';
-
 import fs from 'fs';
 
 type StopMetadata = {
