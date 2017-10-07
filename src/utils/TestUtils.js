@@ -67,7 +67,7 @@ const generateDataStructures = (testCase: TestCase): RaptorInput => {
         // Return timedStop
         return new TimedStop(stops[ts.stopIndex], ts.time, true);
       });
-      return new Path(timedStops);
+      return new Path(timedStops, []);
     });
     return new Bus(paths, b.lineNumber);
   });
