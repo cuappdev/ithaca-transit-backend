@@ -36,49 +36,44 @@ class GetRouteRouter extends AppDevRouter {
 
   // test URL: http://localhost:3000/api/v1/routes?leave_by=1504474540&start_coords=42.4424,-76.4849&end_coords=42.483327,-76.490933
   async content (req: Request) {
-    try {
-      const leaveBy = parseInt(req.query.leave_by);
-      const dayStartTime = TimeUtils.unixTimeToDayTime(leaveBy);
-      const serviceDate = TimeUtils.unixTimeToGTFSDate(leaveBy);
-      const {buses, stopsToRoutes} = await GTFS.buses(serviceDate);
+    const leaveBy = parseInt(req.query.leave_by);
+    const dayStartTime = TimeUtils.unixTimeToDayTime(leaveBy);
+    const serviceDate = TimeUtils.unixTimeToGTFSDate(leaveBy);
+    const {buses, stopsToRoutes} = await GTFS.buses(serviceDate);
 
-      // Start coordinate
-      const startCoords = TCATUtils.coordStringToCoords(req.query.start_coords);
-      const start = new Stop(
-        TCATConstants.START_WALKING,
-        new Location(startCoords.latitude, startCoords.longitude)
-      );
+    // Start coordinate
+    const startCoords = TCATUtils.coordStringToCoords(req.query.start_coords);
+    const start = new Stop(
+      TCATConstants.START_WALKING,
+      new Location(startCoords.latitude, startCoords.longitude)
+    );
 
-      // End coordinate
-      const endCoords = TCATUtils.coordStringToCoords(req.query.end_coords);
-      const end = new Stop(
-        TCATConstants.END_WALKING,
-        new Location(endCoords.latitude, endCoords.longitude)
-      );
+    // End coordinate
+    const endCoords = TCATUtils.coordStringToCoords(req.query.end_coords);
+    const end = new Stop(
+      TCATConstants.END_WALKING,
+      new Location(endCoords.latitude, endCoords.longitude)
+    );
 
-      // Start / end stops
-      const footpathMatrix = await BasedRaptorUtils.footpathMatrix(start, end);
+    // Start / end stops
+    const footpathMatrix = await BasedRaptorUtils.footpathMatrix(start, end);
 
-      // Create Raptor instance
-      const basedRaptor = new BasedRaptor(
-        buses,
-        start,
-        end,
-        stopsToRoutes,
-        footpathMatrix,
-        dayStartTime,
-        GTFS.stops
-      );
+    // Create Raptor instance
+    const basedRaptor = new BasedRaptor(
+      buses,
+      start,
+      end,
+      stopsToRoutes,
+      footpathMatrix,
+      dayStartTime,
+      GTFS.stops
+    );
 
-      // Run Raptor
-      return {
-        results: basedRaptor.run(),
-        baseTime: parseInt(req.query.leave_by) - dayStartTime
-      };
-    } catch (e) {
-      console.log(e);
-      return {};
-    }
+    // Run Raptor
+    return {
+      results: basedRaptor.run(),
+      baseTime: parseInt(req.query.leave_by) - dayStartTime
+    };
   }
 }
 
