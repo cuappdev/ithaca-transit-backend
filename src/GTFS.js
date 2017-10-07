@@ -56,7 +56,7 @@ type CalendarDateJSON = {
   exception_type: number;
 };
 
-// START - reading in all files + nesting
+// START - reading in all files
 
 const routesFile: Array<RouteJSON> = (() => {
   const data = fs.readFileSync(
@@ -126,37 +126,57 @@ const calendarDatesFile: Array<CalendarDateJSON> = (() => {
   });
 })();
 
-const routesNested = d3.nest()
+// END - reading in all files
+
+// START - nesting data-structures
+
+const routesNested: {[string]: Array<RouteJSON>} = d3.nest()
   .key(d => d.route_id)
   .object(routesFile);
 
-const tripsNested = (() => {
-  let routeNest = d3.nest()
+type NestedTrip = {
+  key: string,
+  values: Array<TripJSON>
+};
+
+type NestedTripService = {
+  key: string,
+  values: Array<TripJSON>
+};
+
+type NestedTripsByService = {
+  key: string,
+  values: { [string]: Array<NestedTripService> }
+};
+
+const tripsNested: Array<NestedTripsByService> = (() => {
+  // Nest by route_id
+  const tripNest: Array<NestedTrip> = d3.nest()
     .key(d => d.route_id)
     .entries(tripsFile);
-  let totalNest = routeNest.map(a => {
-    let serviceNest = d3.nest()
+
+  const totalNest = tripNest.map(a => {
+    // Nest by service_id
+    const serviceNest: Array<NestedTrip> = d3.nest()
       .key(b => b.service_id)
       .entries(a.values);
-    let serviceMap = {};
+
+    // Service ID is the key
+    let serviceMap: { [string]: Array<NestedTripService> } = {};
     serviceNest.forEach(e => {
-      serviceMap[e.key] = d3.nest()
-        .key(c => c.trip_id)
-        .entries(e.values);
+      serviceMap[e.key] = d3.nest().key(c => c.trip_id).entries(e.values);
     });
-    a.values = serviceMap;
-    return a;
+
+    return { key: a.key, values: serviceMap };
   });
   return totalNest;
 })();
 
-const stopTimesNested = d3.nest()
-  .key(d => d.trip_id)
-  .object(stopTimesFile);
+const stopTimesNested = d3.nest().key(d => d.trip_id).object(stopTimesFile);
 
-// END - reading in all files + nesting
+// END - nesting data-structures
 
-const stopFromStopJSON = (s: Object) => {
+const stopFromStopJSON = (s: StopJSON) => {
   const location = new Location(s.stop_lat, s.stop_lon);
   return new Stop(s.stop_name, location);
 };
@@ -176,8 +196,8 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
   let dateIndex = calendarDatesFile.findIndex(d => d.date === serviceDate);
   // Grab the service ids for the current day plus one day
   let serviceIDs = calendarDatesFile
-    .slice(dateIndex, dateIndex + 1) // TODO - fix this
-    .map(d => d.service_id);
+    .slice(dateIndex, dateIndex + 2)
+    .map(d => '' + d.service_id);
   // Fill up the stopsToRoutes mapping with empty arrays
   stops.forEach(d => { stopsToRoutes[d.name] = []; });
 
@@ -191,35 +211,41 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
     let paths = [];
     let postprocessJourneys: Array<PostProcessJourney> = [];
     for (let j = 0; j < serviceIDs.length; j++) {
+      // Grab tripIDs per serviceID
       const tripIDs = serviceMap[serviceIDs[j]];
-      if (!tripIDs) {
-        continue;
-      }
-      let timedStops: Array<TimedStop> = [];
+      if (!tripIDs) continue;
+
       for (let k = 0; k < tripIDs.length; k++) {
+        // Path per trip
+        let timedStops: Array<TimedStop> = [];
         let tripID = tripIDs[k].key;
         let tripTimes = stopTimesNested[tripID];
 
         for (let l = 0; l < tripTimes.length; l++) {
           const stopID = tripTimes[l].stop_id;
           const isTimepoint = tripTimes[l].timepoint === 1;
-          const stopJSON: Object =
-            stopsFile.find(d => d.stop_id === stopID) || {};
+
+          const optionalStopJSON: ?StopJSON =
+            stopsFile.find(d => d.stop_id === stopID);
+
+          if (!optionalStopJSON) {
+            throw new Error('Stop not found!');
+          }
+
+          const stopJSON: StopJSON = optionalStopJSON;
           const stop = stopFromStopJSON(stopJSON);
           stopsToRoutes[stop.name].push(routeNumber);
+
           let time = 0;
           if (isTimepoint) {
-            time = TimeUtils.stringTimeDayToWeekTime(
-              tripTimes[l].arrival_time, j
-            );
+            time = TimeUtils
+              .stringTimeDayToWeekTime(tripTimes[l].arrival_time, j);
           }
-          const timedStop: TimedStop = new TimedStop(stop, time, isTimepoint);
-          timedStops.push(timedStop);
+          timedStops.push(new TimedStop(stop, time, isTimepoint));
+          postprocessJourneys.push({stops: timedStops});
+          const path = new Path(timedStops);
+          paths.push(path);
         }
-
-        postprocessJourneys.push({stops: timedStops});
-        const path = new Path(timedStops);
-        paths.push(path);
       }
     }
     postprocessBuses.push({journeys: postprocessJourneys});
