@@ -1,6 +1,5 @@
 // @flow
-import Stop from '../models/Stop';
-import FootpathMatrix from '../models/FootpathMatrix';
+import { Stop, FootpathMatrix } from '../models';
 import OSRM from '../OSRM';
 import GTFS from '../GTFS';
 

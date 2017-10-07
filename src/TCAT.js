@@ -1,5 +1,5 @@
 // @flow
-import Kml from './models/Kml';
+import { Kml } from './models';
 import fs from 'fs';
 
 type KmlJSON = {

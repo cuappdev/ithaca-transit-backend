@@ -1,12 +1,7 @@
 // @flow
 import type { PostProcessJourney, PostProcessBus } from './geo/GeoTypes';
 
-import Location from './models/Location';
-import Stop from './models/Stop';
-import TimedStop from './models/TimedStop';
-import Path from './models/Path';
-import Bus from './models/Bus';
-
+import { Location, Stop, TimedStop, Path, Bus } from './models';
 import TimeUtils from './utils/TimeUtils';
 import GeoUtils from './geo/GeoUtils';
 
