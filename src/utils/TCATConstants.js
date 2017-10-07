@@ -14,8 +14,8 @@ const RAPTOR_PROJECTED_DAYS = 6;
 
 // Walking-based travel
 const WALKING_TCAT_NUMBER = -1;
-const START_WALKING = 'START';
-const END_WALKING = 'END';
+const START_WALKING = 'Start';
+const END_WALKING = 'End';
 
 // stopSummary attributes
 const NEXT_DIRECTION_WALK = 'walk';
