@@ -4,41 +4,16 @@
 
 Before setup, download...
 
-  - [node](https://nodejs.org/en/download/) (≥ v6.x.x)
-  - [npm](https://www.npmjs.com/get-npm)
-
-### AppDev JS
-
-**Quick Way (Libraries)**
-
-Install appdev.js dependencies with `npm install --save-dev babel-cli babel-jest babel-preset-flow flow-bin`
-
-Within a generic "AppDev" folder (**not** within existing projects)
-
-````
-git clone https://github.com/cuappdev/appdev.js.git
-cd appdev.js
-npm install
-npm run build
-npm link # Links local NPM module in your global npm config
-````
-
-**Long Way**
-
-Follow `JS` environment setup [`here`](https://github.com/cuappdev/bible/tree/master/js).
+  - [node](https://nodejs.org/en/download/) (≥ `v6.x.x`)
+  - [npm](https://www.npmjs.com/get-npm) (`v4.x.x`, `5.x.x` doesn't work)
 
 ## Setup
-Before setup, grab `node` version `6.*.*` and `npm`.  This is easily `Google`-ed.
 
 Once you clone this repo, setup the following:
 1. `npm install`
 2. `brew install lua`, which is a dependency of [`OSRM`](http://project-osrm.org/),
 the routing library that is used to aid routing calculations.
 3. `./setup.sh`
-
-Note: When pasting multiple lines into terminal, every line will execute except the last one. Pressing Enter will execute the last line.
-
-Full `OSRM Node API` docs can be found [`here`](https://github.com/Project-OSRM/osrm-backend/blob/HEAD/docs/nodejs/api.md)
 
 ## Regular Usage
 
@@ -63,3 +38,7 @@ Go to the following [`link`](http://www.openstreetmap.org/export#map=13/42.4510/
 click `Export` to grab the map of the Ithaca area to be used in routing calculations.
 Note this is only required to get a fresh `map.osm` file, in case roads and such have
 been updated.
+
+## OSRM Info
+
+Full `OSRM Node API` docs can be found [`here`](https://github.com/Project-OSRM/osrm-backend/blob/HEAD/docs/nodejs/api.md)
