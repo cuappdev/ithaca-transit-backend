@@ -26,7 +26,10 @@ describe('Raptor Test', () => {
   it('Basic 2', async () => {
     const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/2.json'));
     const result = await rapt.run();
+<<<<<<< HEAD
     console.log(result);
+=======
+>>>>>>> f1755b666e0649c8b17073c85eec8614bdda524d
     expect(result[0].arrivalTime).toEqual(140);
     expect(result[1].arrivalTime).toEqual(260);
 
@@ -38,16 +41,24 @@ describe('Raptor Test', () => {
   });
 
   it('Basic 3', async () => {
+<<<<<<< HEAD
     const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/5.json'));
     const result = await rapt.run();
     console.log(result);
     expect(result[0].arrivalTime).toEqual(290);
     expect(result[1].arrivalTime).toEqual(360);
+=======
+    const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/3.json'));
+    const result = await rapt.run();
+    expect(result[0].arrivalTime).toEqual(220);
+    expect(result[1].arrivalTime).toEqual(225);
+>>>>>>> f1755b666e0649c8b17073c85eec8614bdda524d
 
     // Peep the optimal path
     expect(result[0].path[0].start.name).toEqual('Start');
     expect(result[0].path[0].end.name).toEqual('0');
     expect(result[0].path[1].start.name).toEqual('0');
+<<<<<<< HEAD
     expect(result[0].path[1].end.name).toEqual('2');
   });
 
@@ -66,6 +77,21 @@ describe('Raptor Test', () => {
     expect(result[0].path[2].end.name).toEqual('2');
     expect(result[0].path[3].start.name).toEqual('2');
     expect(result[0].path[3].end.name).toEqual('3');
+=======
+    expect(result[0].path[1].end.name).toEqual('3');
+  });
+
+  it('Skip over bus route', async () => {
+    const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/4.json'));
+    const result = await rapt.run();
+    expect(result[0].arrivalTime).toEqual(240);
+
+    // Peep the optimal path
+    expect(result[0].path[0].start.name).toEqual('Start');
+    expect(result[0].path[0].end.name).toEqual('2');
+    expect(result[0].path[1].start.name).toEqual('2');
+    expect(result[0].path[1].end.name).toEqual('3');
+>>>>>>> f1755b666e0649c8b17073c85eec8614bdda524d
   });
 
   it('Walking is fastest path', async () => {
@@ -77,5 +103,8 @@ describe('Raptor Test', () => {
     expect(result[0].path[0].start.name).toEqual('Start');
     expect(result[0].path[0].end.name).toEqual('End');
   });
+<<<<<<< HEAD
   
+=======
+>>>>>>> f1755b666e0649c8b17073c85eec8614bdda524d
 });

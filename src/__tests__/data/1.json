@@ -1,0 +1,19 @@
+{
+  "stops": [
+    {"name": "0"},
+    {"name": "1"}
+  ],
+  "buses": [{
+    "lineNumber": 11,
+    "paths": [
+      [{"stopIndex": 0, "time": 10}, {"stopIndex": 1, "time": 100}]
+    ]
+  }],
+  "startTime": 0,
+  "routingMatrix": [
+    [0,320,5,300],
+    [320,0,330,50],
+    [5,330,0,280],
+    [300,50,280,0]
+  ]
+}

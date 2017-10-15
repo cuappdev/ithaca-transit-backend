@@ -1,20 +1,19 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import { Request } from 'express';
-import GTFS from '../GTFS';
 
-class GetAllStopsRouter extends AppDevRouter {
+class HelloWorldRouter extends AppDevRouter {
   constructor () {
     super('GET');
   }
 
   getPath (): string {
-    return '/stops/';
+    return '/hello/';
   }
 
   async content (req: Request) {
-    return GTFS.stops;
+    return { message: 'Hello, World!' };
   }
 }
 
-export default new GetAllStopsRouter().router;
+export default new HelloWorldRouter().router;

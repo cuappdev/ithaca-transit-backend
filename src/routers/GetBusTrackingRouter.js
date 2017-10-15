@@ -14,7 +14,8 @@ class GetBusTrackingRouter extends AppDevRouter {
 
   async content (req: Request) {
     const routeID = req.query.routeID;
-    const baseURL = 'https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute';
+    const baseURL = 'https://realtimetcatbus.availtec.com/' +
+      'InfoPoint/rest/Vehicles/GetAllVehiclesForRoute';
     try {
       const response = await axios.get(baseURL, {
         params: {
@@ -49,7 +50,8 @@ class GetBusTrackingRouter extends AppDevRouter {
       });
       return parsedData;
     } catch (error) {
-      // TODO log error on backend but pass in a presentable string so frontend can display it
+      // TODO log error on backend but pass in a
+      // presentable string so frontend can display it
       throw new Error(error);
     }
   }
