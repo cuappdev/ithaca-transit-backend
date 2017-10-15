@@ -7,3 +7,5 @@
 *.osrm*
 .elasticbeanstalk/
 *.zip
+npm-debug.log
+osrm-backend/

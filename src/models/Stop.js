@@ -14,8 +14,8 @@ class Stop {
     this.location = location;
   }
 
-  equals (route: Stop): boolean {
-    return this.name === route.name && this.location.equals(route.location);
+  equals (stop: Stop): boolean {
+    return this.name === stop.name && this.location.equals(stop.location);
   }
 }
 
