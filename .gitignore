@@ -8,4 +8,4 @@
 .elasticbeanstalk/
 *.zip
 npm-debug.log
-osrm-backend/
+osrm-backend/*
