@@ -123,7 +123,7 @@ class BasedRaptor {
       pathTable[this.stops[i].name][0] = {
         start: this.start,
         end: this.stops[i],
-        k: -1,
+        k: 0,
         startTime: this.startTime,
         endTime: this.startTime + duration,
         busPath: null
@@ -208,6 +208,72 @@ class BasedRaptor {
       }
     }
 
+    // Backpack
+    let journeys: Array<Array<PathElement>> = [];
+    for (let i = 0; i < this.stops.length; i++) {
+      let journey: Array<PathElement> = [];
+      let stop = this.stops[i];
+      let k = TCATConstants.MAX_RAPTOR_ROUNDS;
+      while (k >= 0 && stop) {
+        let element = this._getLastElement(
+          pathTable,
+          stop,
+          k
+        );
+        journey.push(element);
+        stop = element.start;
+        k = element.k - 1;
+      }
+      if (k < 0) {
+        journey.reverse();
+        let lastElement = journey[journey.length-1];
+        let finalElement = {
+          start: lastElement.end,
+          end: this.end,
+          k: TCATConstants.MAX_RAPTOR_ROUNDS + 1,
+          startTime: lastElement.endTime,
+          endTime: lastElement.endTime + this.footpathMatrix.durationBetween(lastElement.end, this.end),
+          busPath: null
+        };
+        journey.push(finalElement);
+        journeys.push(journey);
+      }
+    }
+
+    journeys = journeys.filter(a => {
+      return !a.reduce((acc, x) => acc && (x.busPath == null), true);
+    });
+
+    journeys.push([{
+      start: this.start,
+      end: this.end,
+      k: TCATConstants.MAX_RAPTOR_ROUNDS + 1,
+      startTime: this.startTime,
+      endTime: this.startTime + this.footpathMatrix.durationBetween(this.start, this.end),
+      busPath: null
+    }]);
+
+    journeys.sort((a, b) => {
+      let aTime = a[a.length-1].endTime;
+      let bTime = b[b.length-1].endTime;
+      if (aTime < bTime) { return -1; }
+      if (aTime > bTime) { return 1; }
+
+      let aWalkTime = 0;
+      let bWalkTime = 0;
+      for (let i = 0; i < a.length; i++) {
+        aWalkTime += a[i].busPath ? a[i].endTime - a[i].startTime : 0;
+      }
+      for (let i = 0; i < b.length; i++) {
+        bWalkTime += b[i].busPath ? b[i].endTime - b[i].startTime : 0;
+      }
+      if (aWalkTime < bWalkTime) { return -1; }
+      if (aWalkTime > bWalkTime) { return 1; }
+
+      return 0;
+    })
+
+/*
     // Sorted based on the best end time
     const sortedEndFinishTimes = this._getSortedEndFinishTimes(pathTable);
 
@@ -249,8 +315,8 @@ class BasedRaptor {
         });
       }
     }
-
-    return results;
+*/
+    return journeys;
   }
 }
 
