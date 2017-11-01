@@ -250,6 +250,8 @@ class BasedRaptor {
     }
     let journeys = this._backtrackAndPrune();
 
+    this._prioritizeJourneys(journeys);
+
     journeys.push([{
       start: this.start,
       end: this.end,
@@ -258,8 +260,6 @@ class BasedRaptor {
       endTime: this.startTime + this.footpathMatrix.durationBetween(this.start, this.end),
       busPath: null
     }]);
-
-    this._prioritizeJourneys(journeys);
     return journeys;
   }
 }
