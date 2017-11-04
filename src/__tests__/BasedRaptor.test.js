@@ -60,7 +60,7 @@ describe('Raptor Test', () => {
     expect(result[0].path[1].start.name).toEqual('2');
     expect(result[0].path[1].end.name).toEqual('3');
   });
-
+  /* Disabled - as per front-end request, even if walking is optimal, do not display
   it('Walking is fastest path', async () => {
     const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/6.json'));
     const result = await rapt.run();
@@ -70,6 +70,7 @@ describe('Raptor Test', () => {
     expect(result[0].path[0].start.name).toEqual('Start');
     expect(result[0].path[0].end.name).toEqual('End');
   });
+  */
 
   it('Basic transfer', async () => {
     const rapt = await TestUtils.raptorInstanceGenerator(fl('./data/7.json'));
@@ -84,12 +85,12 @@ describe('Raptor Test', () => {
     expect(result[0].path[1].end.name).toEqual('1');
     // Walk from Bus Stop 1 to Bus Stop 3
     expect(result[0].path[2].start.name).toEqual('1');
-    expect(result[0].path[2].end.name).toEqual('3');
+    expect(result[0].path[2].end.name).toEqual('2');
     // Bus ending at Bus Stop 4
-    expect(result[0].path[3].start.name).toEqual('3');
-    expect(result[0].path[3].end.name).toEqual('4');
+    expect(result[0].path[3].start.name).toEqual('2');
+    expect(result[0].path[3].end.name).toEqual('3');
     // Walk to End
-    expect(result[0].path[4].start.name).toEqual('4');
+    expect(result[0].path[4].start.name).toEqual('3');
     expect(result[0].path[4].end.name).toEqual('End');
 
     // TODO: Check other reccomended paths?
