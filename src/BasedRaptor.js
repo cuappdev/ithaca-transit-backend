@@ -179,13 +179,16 @@ class BasedRaptor {
       let journey: Array<PathElement> = [];
       let stop = this.stops[i];
       let k = TCATConstants.MAX_RAPTOR_ROUNDS;
+      let isOnlyWalking = true;
+
       while (k >= 0 && stop) {
         let element = this._getLastElement(stop, k);
         journey.push(element);
         stop = element.start;
         k = element.k - 1;
+        isOnlyWalking = isOnlyWalking && element.busPath == null;
       }
-      if (k < 0) {
+      if (k < 0 && !isOnlyWalking) {
         journey.reverse();
         let lastElement = journey[journey.length-1];
         let finalElement = {
@@ -200,10 +203,6 @@ class BasedRaptor {
         journeys.push(journey);
       }
     }
-
-    journeys = journeys.filter(a => {
-      return !a.reduce((acc, x) => acc && (x.busPath == null), true);
-    });
 
     return journeys;
   }
@@ -248,7 +247,7 @@ class BasedRaptor {
       this._processBusPaths(k, marked, Q);
       this._processFootpaths(k, marked);
     }
-    let journeys = this._backtrackAndPrune();
+    let journeys: Array<Array<PathElement>> = this._backtrackAndPrune();
 
     this._prioritizeJourneys(journeys);
 
@@ -260,7 +259,15 @@ class BasedRaptor {
       endTime: this.startTime + this.footpathMatrix.durationBetween(this.start, this.end),
       busPath: null
     }]);
-    return journeys;
+
+    let response = journeys.map(d => {
+        return {
+          arrivalTime: d[d.length-1].endTime,
+          path: d
+        };
+    });
+
+    return response;
   }
 }
 
