@@ -108,7 +108,7 @@ class BasedRaptor {
         // Clear out all stops that come after `stop` in
         // route `routeNum` that are in `Q`
         const routeNum = routeNumbers[j];
-        const lastEndTime: number =this._getLastElement(stop, k).endTime;
+        const lastEndTime: number = this._getLastElement(stop, k).endTime;
         // If this route number is contained `Q`
         let bus = this.buses[routeNum];
         // Grabs the buspaths related to this stop -> traverse them later
@@ -156,7 +156,10 @@ class BasedRaptor {
           continue;
         }
 
-        if (endTime + durations[j] < this._getLastElement(otherStop, k).endTime) {
+        if (
+          endTime + durations[j] <
+          this._getLastElement(otherStop, k).endTime
+        ) {
           this.pathTable[otherStop.name][k] = {
             start: stop,
             end: otherStop,
@@ -190,13 +193,14 @@ class BasedRaptor {
       }
       if (k < 0 && !isOnlyWalking) {
         journey.reverse();
-        let lastElement = journey[journey.length-1];
+        let lastElement = journey[journey.length - 1];
         let finalElement = {
           start: lastElement.end,
           end: this.end,
           k: TCATConstants.MAX_RAPTOR_ROUNDS + 1,
           startTime: lastElement.endTime,
-          endTime: lastElement.endTime + this.footpathMatrix.durationBetween(lastElement.end, this.end),
+          endTime: lastElement.endTime +
+            this.footpathMatrix.durationBetween(lastElement.end, this.end),
           busPath: null
         };
         journey.push(finalElement);
@@ -209,8 +213,8 @@ class BasedRaptor {
 
   _prioritizeJourneys (journeys: Array<Array<PathElement>>) {
     journeys.sort((a, b) => {
-      let aTime = a[a.length-1].endTime;
-      let bTime = b[b.length-1].endTime;
+      let aTime = a[a.length - 1].endTime;
+      let bTime = b[b.length - 1].endTime;
       if (aTime < bTime) { return -1; }
       if (aTime > bTime) { return 1; }
 
@@ -251,22 +255,24 @@ class BasedRaptor {
 
     this._prioritizeJourneys(journeys);
 
-    journeys = journeys.slice(0, Math.min(journeys.length, 15) + 1);
+    // Only return 5 results for the sake of speed on client
+    journeys = journeys.slice(0, Math.min(journeys.length, 5) + 1);
 
     journeys.push([{
       start: this.start,
       end: this.end,
       k: TCATConstants.MAX_RAPTOR_ROUNDS + 1,
       startTime: this.startTime,
-      endTime: this.startTime + this.footpathMatrix.durationBetween(this.start, this.end),
+      endTime: this.startTime +
+        this.footpathMatrix.durationBetween(this.start, this.end),
       busPath: null
     }]);
 
     let response = journeys.map(d => {
-        return {
-          arrivalTime: d[d.length-1].endTime,
-          path: d
-        };
+      return {
+        arrivalTime: d[d.length - 1].endTime,
+        path: d
+      };
     });
 
     return response;
