@@ -251,6 +251,8 @@ class BasedRaptor {
 
     this._prioritizeJourneys(journeys);
 
+    journeys = journeys.slice(0, Math.min(journeys.length, 15) + 1);
+
     journeys.push([{
       start: this.start,
       end: this.end,
