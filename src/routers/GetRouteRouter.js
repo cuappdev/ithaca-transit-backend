@@ -1,4 +1,5 @@
 // @flow
+import type { RaptorResponseElement } from '../BasedRaptor';
 import { AppDevRouter } from 'appdev';
 import { Request } from 'express';
 import { Location, Stop } from '../models';
@@ -18,8 +19,8 @@ class GetRouteRouter extends AppDevRouter {
     return '/routes/';
   }
 
-  // test URL: http://localhost:3000/api/v1/routes?leave_by=1504474540&start_coords=42.4424,-76.4849&end_coords=42.483327,-76.490933
   async content (req: Request) {
+    console.log(req.url);
     const leaveBy = parseInt(req.query.leave_by);
     const dayStartTime = TimeUtils.unixTimeToDayTime(leaveBy);
     const serviceDate = TimeUtils.unixTimeToGTFSDate(leaveBy);
@@ -42,20 +43,43 @@ class GetRouteRouter extends AppDevRouter {
     // Start / end stops
     const footpathMatrix = await BasedRaptorUtils.footpathMatrix(start, end);
 
-    // Create Raptor instance
-    const basedRaptor = new BasedRaptor(
-      buses,
-      start,
-      end,
-      stopsToRoutes,
-      footpathMatrix,
-      dayStartTime,
-      GTFS.stops
-    );
+    // Extrapolate out by 30 minutes, by 5 minute intervals
+    let results: Array<RaptorResponseElement> = [];
+    for (let i = 0; i <= 30 * 60; i += 5 * 60) {
+      const basedRaptor = new BasedRaptor(
+        buses,
+        start,
+        end,
+        stopsToRoutes,
+        footpathMatrix,
+        dayStartTime,
+        GTFS.stops
+      );
+      results = results.concat(basedRaptor.run());
+    }
+
+    // Sort
+    results.sort((a: RaptorResponseElement, b: RaptorResponseElement) => {
+      if (a.arrivalTime < b.arrivalTime) {
+        return -1;
+      } else if (a.arrivalTime > b.arrivalTime) {
+        return 1;
+      }
+      return 0;
+    });
+
+    // Filter
+    let routeSet = new Set();
+    results = results.filter((r: RaptorResponseElement): boolean => {
+      let stringified = JSON.stringify(r);
+      if (routeSet.has(stringified)) return false;
+      routeSet.add(stringified);
+      return true;
+    });
 
     // Run Raptor
     return {
-      results: basedRaptor.run(),
+      results: results.slice(0, 4), // top 4
       baseTime: parseInt(req.query.leave_by) - dayStartTime
     };
   }
