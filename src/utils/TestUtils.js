@@ -64,8 +64,6 @@ const generateDataStructures = (testCase: TestCase): RaptorInput => {
     const paths = b.paths.map((pArr: Array<TimedStopMetadata>) => {
       const timedStops: Array<TimedStop> = pArr.map((ts: TimedStopMetadata) => {
         // Add to data structure
-        console.log(ts.stopIndex);
-        console.log(stops);
         stopsToRoutes[stops[ts.stopIndex].name].push(b.lineNumber);
         // Return timedStop
         return new TimedStop(stops[ts.stopIndex], ts.time, true);

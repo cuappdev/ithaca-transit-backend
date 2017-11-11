@@ -12,15 +12,8 @@ type PathElement = {
   busPath: ?BusPath,
 };
 
-// Element used in scoring the different last stops
-// in paths
-type StopScoreElement = {
-  stop: Stop,
-  endTime: number
-};
-
 // Raptor returns an array of these
-type RaptorResponseElement = {
+export type RaptorResponseElement = {
   arrivalTime: number,
   path: Array<PathElement>
 };
@@ -81,7 +74,7 @@ class BasedRaptor {
   }
 
   // Preprocess + skip a step
-  _preprocessAndFilleMarked (marked: Array<Stop>) {
+  _preprocessAndFillMarked (marked: Array<Stop>) {
     for (let i = 0; i < this.stops.length; i++) {
       let duration =
         this.footpathMatrix.durationBetween(this.start, this.stops[i]);
@@ -123,7 +116,7 @@ class BasedRaptor {
     // times to get to each stop from the original start stop
     for (let j = 0; j < Q.length; j++) {
       let busPath = Q[j];
-      for (let l = 0; l < busPath.length(); l++) {
+      for (let l = 1; l < busPath.length(); l++) {
         const timedStop = busPath.getStop(l);
         const stop = timedStop.stop;
         const endTime: number = this._getLastElement(stop, k).endTime;
@@ -144,40 +137,9 @@ class BasedRaptor {
     }
   }
 
-  // Process foot-paths
-  _processFootpaths (k: number, marked: Array<Stop>) {
-    for (let i = 0; i < marked.length; i++) {
-      let stop = marked[i];
-      let endTime = this._getLastElement(stop, k).endTime;
-      let durations = this.footpathMatrix.durationsToGTFSStops(stop);
-      for (let j = 0; j < this.stops.length; j++) {
-        let otherStop = this.stops[j];
-        if (otherStop.name === stop.name) {
-          continue;
-        }
-
-        if (
-          endTime + durations[j] <
-          this._getLastElement(otherStop, k).endTime
-        ) {
-          this.pathTable[otherStop.name][k] = {
-            start: stop,
-            end: otherStop,
-            k: k,
-            startTime: endTime,
-            endTime: endTime + durations[j],
-            busPath: null
-          };
-          marked.push(otherStop);
-        }
-      }
-    }
-  }
-
   // Backtrack and prune joruneys
   _backtrackAndPrune (): Array<Array<PathElement>> {
     let journeys: Array<Array<PathElement>> = [];
-    console.log(journeys);
     for (let i = 0; i < this.stops.length; i++) {
       let journey: Array<PathElement> = [];
       let stop = this.stops[i];
@@ -191,6 +153,7 @@ class BasedRaptor {
         k = element.k - 1;
         isOnlyWalking = isOnlyWalking && element.busPath == null;
       }
+
       if (k < 0 && !isOnlyWalking) {
         journey.reverse();
         let lastElement = journey[journey.length - 1];
@@ -207,12 +170,13 @@ class BasedRaptor {
         journeys.push(journey);
       }
     }
-
     return journeys;
   }
 
-  _prioritizeJourneys (journeys: Array<Array<PathElement>>) {
-    journeys.sort((a, b) => {
+  _prioritizeJourneys (
+    journeys: Array<Array<PathElement>>
+  ): Array<Array<PathElement>> {
+    journeys.sort((a: Array<PathElement>, b: Array<PathElement>): number => {
       let aTime = a[a.length - 1].endTime;
       let bTime = b[b.length - 1].endTime;
       if (aTime < bTime) { return -1; }
@@ -231,31 +195,53 @@ class BasedRaptor {
 
       return 0;
     });
+
+    // Return the mutated journeys array
+    return journeys;
+  }
+
+  _filterDuplicateBuses (
+    journeys: Array<Array<PathElement>>
+  ): Array<Array<PathElement>> {
+    // Keep track of the journey leg / bus number combos
+    let busLegCombos: Set<string> = new Set();
+
+    // Filter those w/repeat buses @ particular legs
+    return journeys.filter((journey: Array<PathElement>) => {
+      for (let i = 0; i < journey.length; i++) {
+        let pathElement = journey[i];
+        if (pathElement.busPath) {
+          let busLegCombo = `${pathElement.busPath.lineNumber}:${i}`;
+          if (busLegCombos.has(busLegCombo)) {
+            return false;
+          } else {
+            busLegCombos.add(busLegCombo);
+          }
+        }
+      }
+      return true;
+    });
   }
 
   run (): Array<RaptorResponseElement> {
     // Route Number -> [BusPath]
     let Q: Array<BusPath> = [];
     let marked = [];
-    this._preprocessAndFilleMarked(marked);
+    this._preprocessAndFillMarked(marked);
 
     // Start looping over rounds
     for (let k = 1; k < TCATConstants.MAX_RAPTOR_ROUNDS + 1; k++) {
       Q.length = 0; // clear that queue
-
       this._processMarked(k, marked, Q);
-
-      // Clear marked :D
       marked.length = 0;
-
       this._processBusPaths(k, marked, Q);
-      this._processFootpaths(k, marked);
     }
+
+    // Grab the resultant journeys
     let journeys: Array<Array<PathElement>> = this._backtrackAndPrune();
 
-    this._prioritizeJourneys(journeys);
-
-    // Only return 5 results for the sake of speed on client
+    // Sort the journeys accordingly + filter duplicate bus / legs
+    journeys = this._filterDuplicateBuses(this._prioritizeJourneys(journeys));
     journeys = journeys.slice(0, Math.min(journeys.length, 5) + 1);
 
     journeys.push([{
@@ -268,14 +254,9 @@ class BasedRaptor {
       busPath: null
     }]);
 
-    let response = journeys.map(d => {
-      return {
-        arrivalTime: d[d.length - 1].endTime,
-        path: d
-      };
+    return journeys.map(d => {
+      return {arrivalTime: d[d.length - 1].endTime, path: d};
     });
-
-    return response;
   }
 }
 
