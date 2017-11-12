@@ -43,9 +43,9 @@ class GetRouteRouter extends AppDevRouter {
     // Start / end stops
     const footpathMatrix = await BasedRaptorUtils.footpathMatrix(start, end);
 
-    // Extrapolate out by 30 minutes, by 10 minute intervals
+    // Extrapolate out by intervals
     let results: Array<RaptorResponseElement> = [];
-    for (let i = 0; i <= 30 * 60; i += 10 * 60) {
+    for (let i = 0; i <= 30 * 60; i += 5 * 60) {
       const basedRaptor = new BasedRaptor(
         buses,
         start,
@@ -68,10 +68,12 @@ class GetRouteRouter extends AppDevRouter {
       return 0;
     });
 
-    // Filter - TODO this is really hacky; fix in future
+    // Filter - ensure that no routes are returned with the same stop-wise
+    // progression (set of names --> unique identifier for that)
     let routeSet = new Set();
     results = results.filter((r: RaptorResponseElement): boolean => {
-      let stringified = JSON.stringify(r);
+      let stopProgression = r.path.map(e => e.start.name);
+      let stringified = JSON.stringify(stopProgression);
       if (routeSet.has(stringified)) return false;
       routeSet.add(stringified);
       return true;
