@@ -38,7 +38,7 @@ class BusPath {
   }
 
   length (): number {
-    return this.path.length() - (this.path.getStopIndex(this.cutoff));
+    return this.path.length() - this.path.getStopIndex(this.cutoff);
   }
 
   getStop (i: number): TimedStop {
