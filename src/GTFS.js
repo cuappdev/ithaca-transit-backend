@@ -272,10 +272,7 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
           const optionalStopJSON: ?StopJSON =
             stopsFile.find(d => d.stop_id === stopID);
 
-          if (!optionalStopJSON) {
-            throw new Error('Stop not found!');
-          }
-
+          if (!optionalStopJSON) throw new Error('Stop not found!');
           const stopJSON: StopJSON = optionalStopJSON;
           const stop = stopFromStopJSON(stopJSON);
           stopsToRoutes[stop.name].push(routeNumber);
@@ -293,7 +290,9 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
         }
       }
     }
+
     postprocessBuses.push({journeys: postprocessJourneys});
+
     const bus = new Bus(paths, routeNumber);
     buses.push(bus);
   }
@@ -302,7 +301,7 @@ const buses = async (serviceDate: number): Promise<BusMetadata> => {
   await GeoUtils.interpolateTimes(postprocessBuses, stops, nameToStopIndex);
 
   // Fill in this mapping, after we've created the buses themselves
-  let result: {[number]: Bus } = {};
+  let result: {[number]: Bus} = {};
   buses.forEach(d => { result[d.lineNumber] = d; });
 
   stops.forEach(d => {
