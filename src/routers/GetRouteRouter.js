@@ -68,7 +68,7 @@ class GetRouteRouter extends AppDevRouter {
       return 0;
     });
 
-    // Filter
+    // Filter - TODO this is really hacky; fix in future
     let routeSet = new Set();
     results = results.filter((r: RaptorResponseElement): boolean => {
       let stringified = JSON.stringify(r);
