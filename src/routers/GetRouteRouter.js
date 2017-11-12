@@ -43,7 +43,7 @@ class GetRouteRouter extends AppDevRouter {
     // Start / end stops
     const footpathMatrix = await BasedRaptorUtils.footpathMatrix(start, end);
 
-    // Extrapolate out by 30 minutes, by 5 minute intervals
+    // Extrapolate out by 30 minutes, by 10 minute intervals
     let results: Array<RaptorResponseElement> = [];
     for (let i = 0; i <= 30 * 60; i += 10 * 60) {
       const basedRaptor = new BasedRaptor(
