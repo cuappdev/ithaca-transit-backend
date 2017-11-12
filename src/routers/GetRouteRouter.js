@@ -45,14 +45,14 @@ class GetRouteRouter extends AppDevRouter {
 
     // Extrapolate out by 30 minutes, by 5 minute intervals
     let results: Array<RaptorResponseElement> = [];
-    for (let i = 0; i <= 30 * 60; i += 5 * 60) {
+    for (let i = 0; i <= 30 * 60; i += 10 * 60) {
       const basedRaptor = new BasedRaptor(
         buses,
         start,
         end,
         stopsToRoutes,
         footpathMatrix,
-        dayStartTime,
+        dayStartTime + i,
         GTFS.stops
       );
       results = results.concat(basedRaptor.run());
