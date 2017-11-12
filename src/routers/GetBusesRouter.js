@@ -10,14 +10,17 @@ class GetBusesRouter extends AppDevRouter {
   }
 
   getPath (): string {
-    return '/buses/';
+    return '/buses/:lineNumber/';
   }
 
   async content (req: Request) {
+    let lineNumber: number = req.params.lineNumber;
+
     const currTime = Math.round((new Date()).getTime() / 1000);
     const serviceDate = TimeUtils.unixTimeToGTFSDate(currTime);
     let {buses} = await GTFS.buses(serviceDate);
-    return buses;
+
+    return {bus: buses[lineNumber]};
   }
 }
 
