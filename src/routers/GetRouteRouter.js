@@ -65,7 +65,8 @@ class GetRouteRouter extends AppDevRouter {
       } else if (a.arrivalTime > b.arrivalTime) {
         return 1;
       }
-      return 0;
+
+      return a.path[0].startTime < b.path[0].startTime ? -1 : a.path[0].startTime > b.path[0].startTime ? 1 : 0;
     });
 
     // Filter - ensure that no routes are returned with the same stop-wise
