@@ -26,8 +26,8 @@ class GetRouteRouter extends AppDevRouter {
     console.log(isNaN(arriveBy));
 
     if (isNaN(arriveBy)) {
-      const dayStartTime = TimeUtils.unixTimeToDayTime(j);
-      const serviceDate = TimeUtils.unixTimeToGTFSDate(j);
+      const dayStartTime = TimeUtils.unixTimeToDayTime(leaveBy);
+      const serviceDate = TimeUtils.unixTimeToGTFSDate(leaveBy);
       const {buses, stopsToRoutes} = await GTFS.buses(serviceDate);
 
       // Start coordinate
@@ -86,7 +86,7 @@ class GetRouteRouter extends AppDevRouter {
       // Run Raptor
       return {
         results: results.slice(0, 4), // top 4
-        baseTime: j - dayStartTime
+        baseTime: leaveBy - dayStartTime
       };
     }
 
@@ -162,7 +162,6 @@ class GetRouteRouter extends AppDevRouter {
       };
 
       if (Math.round(retVal.results[0].arrivalTime+retVal.baseTime-0.5) <= arriveBy){
-        console.log("break");
         return retVal;
       }
       j -= (60*20);
