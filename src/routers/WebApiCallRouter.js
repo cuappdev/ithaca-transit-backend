@@ -15,15 +15,16 @@ class WebApiCallRouter extends AppDevRouter {
     this.restURL = restURL;
     this.apiPath = apiPath;
     this.webApi = WebApiUtils.webApiCall(restURL);
+    this.init();
   }
 
   getPath (): string {
-    return this.apiPath;
+    return this.apiPath || '/placeholder/';
   }
 
   async content (req: Request) {
-    //const data = await this.webApi();
-    return 'fuck';
+    const data = await this.webApi();
+    return data;
   }
 }
 
