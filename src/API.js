@@ -7,6 +7,7 @@ import GetAllStopsRouter from './routers/GetAllStopsRouter';
 import GetRouteRouter from './routers/GetRouteRouter';
 import GetBusesRouter from './routers/GetBusesRouter';
 import GetBusTrackingRouter from './routers/GetBusTrackingRouter';
+import WebApiCallRouter from './routers/WebApiCallRouter';
 
 class API {
   express: Object;
@@ -32,7 +33,9 @@ class API {
     this._use(GetRouteRouter);
     this._use(GetBusesRouter);
     this._use(GetBusTrackingRouter);
+    this._use(new WebApiCallRouter('/rest/RouteDetails/GetAllRouteDetails', '/routeDetails/').router);
+//    this._use(new WebApiCallRouter('/rest/Stop/GetAllStops').router);
+//    this._use(new WebApiCallRouter('/rest/StopDepartures/GetAllStopDepartures').router);
   }
 }
-
 export default API;
