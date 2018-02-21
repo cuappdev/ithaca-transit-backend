@@ -4,13 +4,15 @@ This is our implementation of the TCAT backend. It is currently being rebuilt on
 
 ## Install
 
-Run `sh scripts/setup.sh` to setup all the necessary data
+Run `npm run setup` to setup all the necessary data
 
 ## Running
 
+Run `npm run graph` to build the graph. It starts up the GraphHopper server, which builds the graph if a cache doesn't exist already. After the server has started fully, kill it - the graph is built.
+ 
 Run `npm start` to startup the backend at `localhost:3000`.
 
-You can run `sh scripts/cleanup` to kill any remaining processes.
+You can run `sh scripts` to kill any remaining processes.
 
 ### Supported requests
 
