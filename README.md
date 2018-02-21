@@ -12,7 +12,7 @@ Run `npm run graph` to build the graph. It starts up the GraphHopper server, whi
  
 Run `npm start` to startup the backend at `localhost:3000`.
 
-You can run `sh scripts` to kill any remaining processes.
+You can run `npm run cleanup` to kill any GraphHopper processes. This is useful in case the GraphHopper server cannot be started if the port (default 8989) is already bound.
 
 ### Supported requests
 
