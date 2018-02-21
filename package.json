@@ -6,6 +6,8 @@
   "scripts": {
     "build": "webpack -p",
     "serve": "node build/bundle.js",
+    "setup": "sh scripts/setup.sh",
+    "build-graph": "sh scripts/build.sh",
     "start": "killall -9 java; webpack -p && sh scripts/run.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
     "flow": "node_modules/.bin/flow",
