@@ -8,7 +8,7 @@ Run `npm run setup` to setup all the necessary data
 
 ## Running
 
-Run `npm run graph` to build the graph. It starts up the GraphHopper server, which builds the graph if a cache doesn't exist already. After the server has started fully, kill it - the graph is built.
+Run `npm run graph` to build the graph. It starts up the GraphHopper server, which builds the graph if a cache doesn't exist already. After the server has fully started and the graph is built, **kill the session using `Ctrl-C`**.
  
 Run `npm start` to startup the backend at `localhost:3000`.
 
