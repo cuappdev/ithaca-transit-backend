@@ -1,43 +1,33 @@
-const fs = require('fs');
+const webpack = require('webpack'); //to access built-in plugins
+const nodeExternals = require('webpack-node-externals');
 const path = require('path');
-const webpack = require('webpack');
 
-const nodeModules = {};
-fs.readdirSync('node_modules')
-  .filter(function (x) {
-    return ['.bin'].indexOf(x) === -1;
-  })
-  .forEach(function (mod) {
-    nodeModules[mod] = 'commonjs ' + mod;
-  });
-
-module.exports = {
-  devtool: 'eval',
-  entry: [path.join(__dirname, 'src/server.js')],
-  context: __dirname,
-  node: {
-    __filename: true,
-    __dirname: true
-  },
+const config = {
   target: 'node',
+  context: __dirname,
+  externals: [nodeExternals()],
+  entry: ['babel-polyfill', path.resolve(__dirname, 'src/server.js')],
   output: {
-    path: path.join(__dirname, './build/'),
+    path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js'
   },
-  externals: nodeModules,
   module: {
     rules: [
       {
-        test: /\.js?$/,
-        loader: 'babel-loader',
-        exclude: /(node_modules)/,
-        query: {
-          presets: ['es2015', 'stage-2']
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['env', 'flow']
+          }
         }
       }
     ]
   },
   plugins: [
-    new webpack.IgnorePlugin(/\.(css|less)$/)
+    new webpack.optimize.UglifyJsPlugin(),
   ]
 };
+
+module.exports = config;

@@ -1,30 +1,44 @@
 // @flow
 import http from 'http';
-import API from './API';
+import express, {Application, Request, Response} from 'express';
+import axios from 'axios';
+import qs from 'qs';
 
-type Error = {
-  errno?: number;
-  code?: string;
-  path?: string;
-  syscall?: string;
-};
+const app: Application = express();
 
-const app: API = new API();
+app.get('/', (req: Request, res: express.Response) => {
+  res.send('hello, world!');
+});
+
+app.get('/route', async (req: Request, res: express.Response) => {
+  let start: string = req.query.start;
+  let end: string = req.query.end;
+  let departureTime: string = req.query.time;
+  try {
+    let parameters: any = {
+      locale: "en-US",
+      vehicle: "pt",
+      weighting: "fastest",
+      point: [start, end]
+    }
+    parameters["pt.earliest_departure_time"] = departureTime;
+    let graphhopper: any = await axios.get('http://localhost:8989/route',{ 
+      params: parameters,
+      paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
+    });
+    res.send(graphhopper.data);
+  } catch (err) {
+    console.log(err);
+    res.send("rip");
+  }
+});
+
 const port: number = parseInt(process.env.PORT) || 3000;
-const server: http.Server = http.createServer(app.express);
+const server: http.Server = http.createServer(app);
 
 const onError = (error: Error): void => {
-  if (error.syscall !== 'listen') throw error;
-  switch (error.code) {
-  case 'EACCES':
-    console.error(`${port} requires elevated privileges`);
-    process.exit(1);
-  case 'EADDRINUSE':
-    console.error(`${port} is already in use`);
-    process.exit(1);
-  default:
-    throw error;
-  }
+  console.log(error);
+  process.exit(1);
 };
 
 const onListening = (): void => {

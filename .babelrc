@@ -1,8 +1,0 @@
-{
-  "presets": [
-    "es2015",
-    "flow",
-    "stage-2",
-  ],
-  "retainLines": true
-}
