@@ -14,6 +14,8 @@ app.get('/route', async (req: Request, res: express.Response) => {
   let start: string = req.query.start;
   let end: string = req.query.end;
   let departureTime: string = req.query.time;
+  let departureTimeMilliseconds = parseFloat(departureTime) * 1000;
+  let departureTimeDate = new Date(departureTimeMilliseconds).toISOString();
   try {
     let parameters: any = {
       locale: "en-US",
@@ -21,7 +23,7 @@ app.get('/route', async (req: Request, res: express.Response) => {
       weighting: "fastest",
       point: [start, end]
     }
-    parameters["pt.earliest_departure_time"] = departureTime;
+    parameters["pt.earliest_departure_time"] = departureTimeDate;
     let graphhopper: any = await axios.get('http://localhost:8989/route',{ 
       params: parameters,
       paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
