@@ -9,3 +9,6 @@
 *.zip
 npm-debug.log
 osrm-backend/*
+*graphhopper*
+*tcat-ny-us.zip*
+*graph-cache*
