@@ -2,9 +2,13 @@
 
 This is our implementation of the TCAT backend. It is currently being rebuilt on top of the GraphHopper API.
 
+## Pre-Req
+
+Check if you have Maven installed with `mvn -v`. If you don't, `brew install maven`.
+
 ## Install
 
-Run `npm run setup` to setup all the necessary data
+Run `npm run setup` to setup all the necessary data. If you get an error about wget, `brew install wget`.
 
 ## Running
 
