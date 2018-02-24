@@ -10,6 +10,26 @@ app.get('/', (req: Request, res: express.Response) => {
   res.send('hello, world!');
 });
 
+app.get('/allStops/', async (req: Request, res: express.Response) => {
+	const AuthStr = 'Bearer 5a54bc7f-a7df-3796-a83a-5bba7a8e31c8'; // Accept: "application/json"
+    axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Stops/GetAllStops', { headers: { Authorization: AuthStr } }).then(response => {
+    		var allStops = [];
+    		let tcatAllStops = response.data;
+    		for (var i = 0; i < tcatAllStops.length; i++) {
+    			let stopData = tcatAllStops[i];
+    			allStops.push({
+								name: stopData.Name,
+								lat: stopData.Latitude,
+								lon: stopData.Longitude
+				});
+    		}
+    		res.send(JSON.stringify(allStops));
+          })
+          .catch((error) => {
+            res.send('error ** ' + error);
+          });
+});
+
 app.get('/route', async (req: Request, res: express.Response) => {
   let start: string = req.query.start;
   let end: string = req.query.end;
