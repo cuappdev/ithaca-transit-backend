@@ -10,6 +10,16 @@ app.get('/', (req: Request, res: express.Response) => {
   res.send('hello, world!');
 });
 
+app.get('/tracking/', async (req: Request, res: express.Response) => {
+	let routeID = req.query.routeID;
+	const AuthStr = 'Bearer 5a54bc7f-a7df-3796-a83a-5bba7a8e31c8';
+	axios.get('https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute?routeID='+routeID, { headers: { Authorization: AuthStr } }).then(response => {
+		res.send(response.data);
+	}).catch((error) => {
+		res.send('error ** ' + error);
+	});
+});
+
 app.get('/allStops/', async (req: Request, res: express.Response) => {
 	const AuthStr = 'Bearer 5a54bc7f-a7df-3796-a83a-5bba7a8e31c8'; // Accept: "application/json"
     axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Stops/GetAllStops', { headers: { Authorization: AuthStr } }).then(response => {
