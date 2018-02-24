@@ -162,6 +162,7 @@ app.get('/route', async (req: Request, res: express.Response) => {
       })
 
     }
+    res.set('Content-Type', 'application/json')
     res.send(JSON.stringify(possibleRoutes));
   } catch (err) {
     console.log(err);
