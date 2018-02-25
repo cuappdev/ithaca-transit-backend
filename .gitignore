@@ -11,3 +11,5 @@ npm-debug.log
 osrm-backend/*
 *graphhopper*
 *tcat-ny-us.zip*
+*.idea*
+*graph-cache*
