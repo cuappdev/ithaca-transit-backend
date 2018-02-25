@@ -6,7 +6,7 @@ import qs from 'qs';
 class RouteRouter extends AbstractRouter {
 
     constructor() {
-        super('GET', '/route', false);
+        super('GET', '/route', true);
     }
 
     async content(req: Request): Promise<any> {
@@ -38,15 +38,15 @@ class RouteRouter extends AbstractRouter {
                 let currPath = paths[index]; // object {}
                 let totalTime = currPath.time; //total time for journey, in milliseconds
                 let numberOfTransfers = currPath.transfers;
-                let legs = currPath.legs //array containing legs of journey. e.g. walk, bus ride, walk
+                let legs = currPath.legs; //array containing legs of journey. e.g. walk, bus ride, walk
                 let amountOfLegs = legs.length;
                 let departureTime = legs[0].departureTime; //string 2018-02-21T17:27:00Z
                 let arriveTime = legs[amountOfLegs - 1].arrivalTime;//string 2018-02-21T17:30:53Z
                 let startingLocationGeometry = legs[0].geometry;
                 let endingLocationGeometry = legs[amountOfLegs - 1].geometry;
 
-                let startingLocationLong = startingLocationGeometry.coordinates[0][0] //name implies
-                let startingLocationLat = startingLocationGeometry.coordinates[0][1]
+                let startingLocationLong = startingLocationGeometry.coordinates[0][0]; //name implies
+                let startingLocationLat = startingLocationGeometry.coordinates[0][1];
 
                 let endingLocationLong = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][0]
                 let endingLocationLat = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][1]
@@ -145,7 +145,7 @@ class RouteRouter extends AbstractRouter {
             return JSON.stringify(possibleRoutes);
         } catch (err) {
             console.log(err);
-            return "rip";
+            throw err;
         }
     }
 

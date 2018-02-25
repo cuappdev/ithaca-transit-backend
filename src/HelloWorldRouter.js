@@ -4,7 +4,7 @@ import AbstractRouter from './AbstractRouter';
 class HelloWorldRouter extends AbstractRouter {
 
     constructor() {
-        super('GET', '/', false);
+        super('GET', '/', true);
     }
 
     async content(req: Request): Promise<any> {
