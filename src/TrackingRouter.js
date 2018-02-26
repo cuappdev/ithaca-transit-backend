@@ -39,7 +39,7 @@ class TrackingRouter extends AbstractRouter {
               vehicleID: busInfo.VehicleId
             };
           });
-          return JSON.stringify(trackingData);
+          return trackingData;
         } catch (error) {
             console.log(error);
             throw error;

@@ -142,7 +142,6 @@ class RouteRouter extends AbstractRouter {
 
             }
             // res.set('Content-Type', 'application/json');
-            // return JSON.stringify(possibleRoutes);
             return possibleRoutes
         } catch (err) {
             console.log(err);

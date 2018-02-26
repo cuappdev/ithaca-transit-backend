@@ -20,7 +20,7 @@ class AllStopsRouter extends AbstractRouter {
                     long: stop.Longitude
                 }
             });
-            return JSON.stringify(tcatAllStops);
+            return tcatAllStops;
         } catch (error) {
             console.log(error);
             throw error;
