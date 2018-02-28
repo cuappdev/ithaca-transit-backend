@@ -143,7 +143,11 @@ async function parseRoute(resp: Object) {
                     routeNumber = parseInt(route[0]["route_short_name"]);
                 }
                 //if the path.length <= 3, map matching will return error
+<<<<<<< HEAD
                 if (path.length >= 3) {
+=======
+                if (path.length > 3) {
+>>>>>>> a7af952be41912217a052f784fc4b363305b94f9
 
                     //Map Matching
                     let firstStopCoords = path[0];
