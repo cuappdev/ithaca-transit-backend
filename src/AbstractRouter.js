@@ -23,6 +23,7 @@ class AbstractRouter {
     response(): ExpressHandlerFunction {
         return async (request: Request, response: Response, next: NextFunction) => {
             try {
+                response.set('Content-Type', 'application/json');
                 const data = await this.content(request);
                 if (this.wrapsResponse) {
                     response.send({success: true, data: data});

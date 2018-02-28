@@ -5,6 +5,7 @@ import HelloWorldRouter from './HelloWorldRouter';
 import TrackingRouter from './TrackingRouter';
 import RouteRouter from './RouteRouter';
 import AllStopsRouter from './AllStopsRouter';
+import TCATUtils from './TCATUtils';
 
 import Api from './Api';
 
@@ -14,6 +15,8 @@ const api: Api = new Api('', [], [
     RouteRouter,
     AllStopsRouter
 ]);
+
+TCATUtils.createRouteJson('routes.txt');
 
 const port: number = parseInt(process.env.PORT) || 3000;
 
