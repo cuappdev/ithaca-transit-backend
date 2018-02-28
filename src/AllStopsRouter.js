@@ -5,7 +5,7 @@ import axios from 'axios';
 class AllStopsRouter extends AbstractRouter {
 
     constructor() {
-        super('GET', '/allStops', false);
+        super('GET', '/allStops', true);
     }
 
     async content(req: Request): Promise<any> {
@@ -20,9 +20,10 @@ class AllStopsRouter extends AbstractRouter {
                     long: stop.Longitude
                 }
             });
-            return JSON.stringify(tcatAllStops);
+            return tcatAllStops;
         } catch (error) {
-            return 'error ** ' + error;
+            console.log(error);
+            throw error;
         }
     }
 

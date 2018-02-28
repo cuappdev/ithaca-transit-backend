@@ -5,7 +5,7 @@ import axios from 'axios';
 class TrackingRouter extends AbstractRouter {
 
     constructor() {
-        super('GET', '/tracking', false);
+        super('GET', '/tracking', true);
     }
 
     async content(req: Request): Promise<any> {
@@ -14,7 +14,7 @@ class TrackingRouter extends AbstractRouter {
         try {
         let trackingRequest = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute?routeID=' + routeID, {headers: {Authorization: AuthStr}});
         const trackingData = trackingRequest.data.map((busInfo) => {
-            var lastUpdated = busInfo.LastUpdated;
+            let lastUpdated = busInfo.LastUpdated;
             const firstParan = lastUpdated.indexOf('(') + 1;
             const secondParan = lastUpdated.indexOf('-');
             lastUpdated = parseInt(lastUpdated.slice(firstParan, secondParan));
@@ -39,10 +39,10 @@ class TrackingRouter extends AbstractRouter {
               vehicleID: busInfo.VehicleId
             };
           });
-          return JSON.stringify(trackingData);
+          return trackingData;
         } catch (error) {
             console.log(error);
-            return 'error';
+            throw error;
         }
     }
 

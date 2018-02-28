@@ -12,7 +12,7 @@ import type Request from 'express';
 class RouteRouter extends AbstractRouter {
 
     constructor() {
-        super('GET', '/route', false);
+        super('GET', '/route', true);
     }
 
     async content(req: Request): Promise<any> {
@@ -68,8 +68,7 @@ class RouteRouter extends AbstractRouter {
                 }
                 return false;
             });
-
-            return JSON.stringify(combinedRoutes);
+            return combinedRoutes;
         } catch (err) {
             throw err;
         }
