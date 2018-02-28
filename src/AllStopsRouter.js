@@ -9,10 +9,11 @@ class AllStopsRouter extends AbstractRouter {
     }
 
     async content(req: Request): Promise<any> {
-        const AuthStr = 'Bearer 5a54bc7f-a7df-3796-a83a-5bba7a8e31c8'; // Accept: "application/json"
+		let credentials = require("../config.json");
+        const apiAuth = 'Bearer ' + credentials.access_token;
         try {
             let stopsRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Stops/GetAllStops',
-                {headers: {Authorization: AuthStr}});
+                {headers: {Authorization: apiAuth}});
             let tcatAllStops = stopsRequest.data.map(stop => {
                 return {
                     name: stop.Name,
@@ -22,6 +23,18 @@ class AllStopsRouter extends AbstractRouter {
             });
             return JSON.stringify(tcatAllStops);
         } catch (error) {
+			let errorCode = error.response.status;
+			if (errorCode == 401) { // need to generate new access token
+				const tokenAuth = 'Basic ' + credentials.basic_token;
+				try {
+					// need to somehow disable SSL verification from this domain using axios
+		            let tokenRequest = await axios.post('https://gateway.api.cloud.wso2.com:443/token',
+        		        {headers: {Authorization: tokenAuth, 'Content-Type': 'application/x-www-form-urlencoded'}, data: {"grant_type": "client_credentials"}});
+        		    return tokenRequest.data;
+				} catch (error) {
+					return 'error *** ' + error;
+				}
+			}
             return 'error ** ' + error;
         }
     }

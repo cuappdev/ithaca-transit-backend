@@ -10,9 +10,8 @@ class TrackingRouter extends AbstractRouter {
 
     async content(req: Request): Promise<any> {
         let routeID = req.query.routeID;
-        const AuthStr = 'Bearer 5a54bc7f-a7df-3796-a83a-5bba7a8e31c8';
         try {
-        let trackingRequest = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute?routeID=' + routeID, {headers: {Authorization: AuthStr}});
+        let trackingRequest = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute?routeID=' + routeID);
         const trackingData = trackingRequest.data.map((busInfo) => {
             var lastUpdated = busInfo.LastUpdated;
             const firstParan = lastUpdated.indexOf('(') + 1;

@@ -13,3 +13,4 @@ osrm-backend/*
 *tcat-ny-us.zip*
 *.idea*
 *graph-cache*
+config.json
