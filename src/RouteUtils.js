@@ -125,7 +125,8 @@ async function parseRoute(resp: Object) {
             let stops = [];
             let distance = currLeg.distance;
             if (type == "depart") {
-
+                console.log('Tripid')
+                console.log(console.log(currLeg["trip_id"]));
                 var route = TCATUtils.routeJson.filter(routeObj => {
                     return routeObj["route_id"] == currLeg["route_id"];
                 });
