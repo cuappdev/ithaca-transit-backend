@@ -123,10 +123,10 @@ async function parseRoute(resp: Object) {
             let endLocation = path[path.length - 1];
             var routeNumber = null;
             let stops = [];
+            var tripID = null;
             let distance = currLeg.distance;
             if (type == "depart") {
-                console.log('Tripid')
-                console.log(console.log(currLeg["trip_id"]));
+                tripID = currLeg["trip_id"]
                 var route = TCATUtils.routeJson.filter(routeObj => {
                     return routeObj["route_id"] == currLeg["route_id"];
                 });
@@ -210,7 +210,8 @@ async function parseRoute(resp: Object) {
                 path: path,
                 distance: distance,
                 routeNumber: routeNumber,
-                stops: stops
+                stops: stops,
+                tripID: tripID
             })
         }
 
