@@ -4,7 +4,7 @@ RUN mkdir /usr/src/app
 RUN git clone https://github.com/cuappdev/tcat.js.git /usr/src/app
 
 WORKDIR /usr/src/app
-RUN git checkout young/docker
+RUN git checkout austin/realtime
 RUN apt-get update
 
 RUN apt-get -y install maven wget
