@@ -57,7 +57,8 @@ async function fetchRealtimeFeed() {
 function getTrackingInformation(stopID: String, tripID: String) {
     var resp = {
         vehicleID: null,
-        delay: null
+        delay: null,
+        noInfoYet: false
     }
 
     let filteredTrips = realtimeFeed.filter(trip => {
@@ -76,6 +77,12 @@ function getTrackingInformation(stopID: String, tripID: String) {
         if (filteredStops.length > 0) {
             let stop = filteredStops[0];
             resp.delay = stop.delay;
+        }
+    } else {
+        return {
+            vehicleID: null,
+            delay: null,
+            noInfoYet: true
         }
     }
 

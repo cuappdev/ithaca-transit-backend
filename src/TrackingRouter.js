@@ -18,7 +18,11 @@ class TrackingRouter extends AbstractRouter {
         const AuthStr = 'Bearer 5a54bc7f-a7df-3796-a83a-5bba7a8e31c8';
 
         let realtimeData = RealtimeFeedUtils.getTrackingInformation(stopID, tripID);
-
+        if (realtimeData.noInfoYet) {
+            return {
+                case: 'invalidData'
+            }
+        }
 
         try {
         let trackingRequest = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute?routeID=' + routeID, {headers: {Authorization: AuthStr}});
@@ -49,7 +53,8 @@ class TrackingRouter extends AbstractRouter {
               runID: busInfo.RunId,
               speed: busInfo.Speed,
               tripID: busInfo.TripId,
-              vehicleID: busInfo.VehicleId
+              vehicleID: busInfo.VehicleId,
+              case: 'validData'
             };
           });
 
@@ -61,7 +66,9 @@ class TrackingRouter extends AbstractRouter {
           }
 
           //return empty data which indicates no realtime tracking available :(
-          return {}
+          return {
+              case: 'noData'
+          }
         } catch (error) {
             console.log(error);
             throw error;
