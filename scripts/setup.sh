@@ -9,6 +9,3 @@ mkdir tcat-ny-us
 cd tcat-ny-us
 wget https://s3.amazonaws.com/tcat-gtfs/tcat-ny-us.zip
 unzip tcat-ny-us.zip
-cd ../graphhopper
-./graphhopper.sh buildweb
-cd ..
