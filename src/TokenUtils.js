@@ -3,29 +3,17 @@ import fs from 'fs';
 import https from 'https';
 import axios from 'axios';
 import qs from 'qs';
+import credentials from '../config.json';
 
-function getCredentials() {
-	return require('../config.json');
-}
-
-async function isAccessTokenExpired() {
-    return new Promise(async function (resolve, reject) {
-    	try {
-			let credentials = getCredentials();
-			let currentDate = new Date();
-			let expiryDate = new Date(credentials.expiry_date);
-			let isTokenExpired = expiryDate.getTime() < currentDate.getTime();
-			resolve(isTokenExpired);
-        } catch (err) {
-        	reject(err);
-        }
-    });
+function isAccessTokenExpired() {
+	let currentDate = new Date();
+	let expiryDate = new Date(credentials.expiry_date);
+	return expiryDate.getTime() < currentDate.getTime();
 }
 
 async function generateAccessToken() {
 	return new Promise(async function (resolve, reject) {
 		try {
-			let credentials = getCredentials();
 			const tokenAuth = 'Basic ' + credentials.basic_token;
 			const agent = new https.Agent({  
 			  rejectUnauthorized: false
@@ -52,15 +40,8 @@ async function generateAccessToken() {
 
 }
 
-async function getAccessToken() {
-	return new Promise(async function (resolve, reject) {
-    	try {
-			let credentials = getCredentials();
-			resolve(credentials.access_token);
-        } catch (err) {
-        	reject(err);
-        }
-	});
+function getAccessToken() {
+	return credentials.access_token;
 }
 
 export default {

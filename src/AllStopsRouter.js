@@ -13,12 +13,12 @@ class AllStopsRouter extends AbstractRouter {
     async content(req: Request): Promise<any> {
     	try {
     		// generate or retrieve TCAT API access token
-			let isAccessTokenExpired = await TokenUtils.isAccessTokenExpired();
+			let isAccessTokenExpired = TokenUtils.isAccessTokenExpired();
 			let accessToken;
 			if (isAccessTokenExpired) {
 				accessToken = await TokenUtils.generateAccessToken();
 			} else {
-				accessToken = await TokenUtils.getAccessToken();
+				accessToken = TokenUtils.getAccessToken();
 			}
 			
 			// make request to TCAT API
