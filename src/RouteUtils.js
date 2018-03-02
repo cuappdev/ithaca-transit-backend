@@ -195,7 +195,8 @@ async function parseRoute(resp: Object) {
                     return {
                         name: stop.stop_name,
                         lat: stop.geometry.coordinates[1],
-                        long: stop.geometry.coordinates[0]
+                        long: stop.geometry.coordinates[0],
+                        stopID: stop.stop_id
                     }
                 });
             }

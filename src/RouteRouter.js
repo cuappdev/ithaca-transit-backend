@@ -19,23 +19,23 @@ class RouteRouter extends AbstractRouter {
         let start: string = req.query.start;
         let end: string = req.query.end;
         let arriveBy: boolean = req.query.arriveBy == '1'
+        console.log('arriveBy, ', arriveBy);
         let departureTimeQuery: string = req.query.time;
-        let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
+        let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000 - 600000;
         let departureTimeFifteenMinutesLater = departureTimeNowMs + 900000;
         let departureTimeDateNow = new Date(departureTimeNowMs).toISOString();
+        console.log(departureTimeNowMs);
         let departureTimeDateLater = new Date(departureTimeFifteenMinutesLater).toISOString();
         
         try {
             let parameters: any = {
-                locale: "en-US",
                 vehicle: "pt",
                 weighting: "short_fastest",
                 point: [start, end],
-                points_encoded: false,
-                use_miles: true
+                points_encoded: false
             };
             parameters["pt.arrive_by"] = arriveBy;
-            parameters["ch.disable"] = true;
+           // parameters["ch.disable"] = true;
 
             // if this was set to > 3.0, sometimes the route would suggest getting off busy earlier and walk half a mile instead of waiting longer
             parameters["pt.walk_speed"] = 3.0;
@@ -69,7 +69,7 @@ class RouteRouter extends AbstractRouter {
                 return false;
             });
 
-            return combinedRoutes;
+            return routeNow;
         } catch (err) {
             throw err;
         }

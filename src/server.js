@@ -6,6 +6,8 @@ import TrackingRouter from './TrackingRouter';
 import RouteRouter from './RouteRouter';
 import AllStopsRouter from './AllStopsRouter';
 import TCATUtils from './TCATUtils';
+import RealtimeFeedUtils from './RealtimeFeedUtils';
+
 
 import Api from './Api';
 
@@ -17,6 +19,7 @@ const api: Api = new Api('', [], [
 ]);
 
 TCATUtils.createRouteJson('routes.txt');
+RealtimeFeedUtils.start()
 
 const port: number = parseInt(process.env.PORT) || 3000;
 
