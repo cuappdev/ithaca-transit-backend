@@ -1,0 +1,10 @@
+version: "2"
+
+services:
+  web:
+    build: .
+    image: tcat
+    ports:
+      - "3000:3000"
+      - "8988:8988"
+      - "8989:8989"
