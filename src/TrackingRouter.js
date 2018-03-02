@@ -1,6 +1,7 @@
 // @flow
 import AbstractRouter from './AbstractRouter';
 import axios from 'axios';
+import qs from 'qs';
 
 class TrackingRouter extends AbstractRouter {
 
@@ -9,9 +10,14 @@ class TrackingRouter extends AbstractRouter {
     }
 
     async content(req: Request): Promise<any> {
-        let routeID = req.query.routeID;
         try {
-        let trackingRequest = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute?routeID=' + routeID);
+        let parameters: any = {
+        	routeID: req.query.routeID
+        };
+        let trackingRequest = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute', {
+			params: parameters,
+			paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
+        });
         const trackingData = trackingRequest.data.map((busInfo) => {
             var lastUpdated = busInfo.LastUpdated;
             const firstParan = lastUpdated.indexOf('(') + 1;
