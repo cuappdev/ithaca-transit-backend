@@ -1,6 +1,8 @@
 // @flow
+import TokenUtils from './TokenUtils';
 import AbstractRouter from './AbstractRouter';
 import axios from 'axios';
+import qs from 'qs';
 
 class TrackingRouter extends AbstractRouter {
 
@@ -9,10 +11,16 @@ class TrackingRouter extends AbstractRouter {
     }
 
     async content(req: Request): Promise<any> {
-        let routeID = req.query.routeID;
-        const AuthStr = 'Bearer 5a54bc7f-a7df-3796-a83a-5bba7a8e31c8';
         try {
-        let trackingRequest = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/rest/Vehicles/GetAllVehiclesForRoute?routeID=' + routeID, {headers: {Authorization: AuthStr}});
+		let authHeader = await TokenUtils.getAuthorizationHeader()
+        let parameters: any = {
+        	routeID: req.query.routeID
+        };
+        let trackingRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Vehicles/GetAllVehiclesForRoute', {
+			params: parameters,
+			paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
+			headers: {Authorization: authHeader}
+        });
         const trackingData = trackingRequest.data.map((busInfo) => {
             let lastUpdated = busInfo.LastUpdated;
             const firstParan = lastUpdated.indexOf('(') + 1;
