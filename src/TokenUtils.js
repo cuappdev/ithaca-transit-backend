@@ -1,17 +1,21 @@
 // @flow
-import fs from 'fs';
 import https from 'https';
 import axios from 'axios';
 import qs from 'qs';
-import credentials from '../config.json';
+import fs from 'fs';
 
-function isAccessTokenExpired() {
+function getCredentials() {
+	return JSON.parse(fs.readFileSync('config.json', 'utf8'));
+};
+
+function isAccessTokenExpired(credentials) {
 	let currentDate = new Date();
 	let expiryDate = new Date(credentials.expiry_date);
 	return expiryDate.getTime() - 500 < currentDate.getTime(); // 0.5 second expiration buffer
 }
 
 async function generateAccessToken() {
+	let credentials = getCredentials();
 	try {
 		const basicAuthHeader = 'Basic ' + credentials.basic_token;
 		const agent = new https.Agent({  
@@ -26,20 +30,19 @@ async function generateAccessToken() {
 							  access_token: tokenRequest.data.access_token,
 							  expiry_date: new Date(currentDate.getTime() + tokenRequest.data.expires_in*1000)};
 		fs.writeFile('config.json', JSON.stringify(newCredentials), 'utf8', function(err) {
-			if (err) {
-				return err;
-			} else {
-				return newCredentials.access_token;
-			}
+			if (err)
+				console.log(err);
 		});
+		return newCredentials.access_token;
 	} catch (err) {
 		return err;
 	}
 }
 
 async function getAuthorizationHeader() {
+	let credentials = getCredentials();
 	let accessToken;
-	if (isAccessTokenExpired()) {
+	if (isAccessTokenExpired(credentials)) {
 		accessToken = await generateAccessToken();
 	} else {
 		accessToken = credentials.access_token;
