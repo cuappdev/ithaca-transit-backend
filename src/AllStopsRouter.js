@@ -12,19 +12,9 @@ class AllStopsRouter extends AbstractRouter {
 
     async content(req: Request): Promise<any> {
     	try {
-    		// generate or retrieve TCAT API access token
-			let isAccessTokenExpired = TokenUtils.isAccessTokenExpired();
-			let accessToken;
-			if (isAccessTokenExpired) {
-				accessToken = await TokenUtils.generateAccessToken();
-			} else {
-				accessToken = TokenUtils.getAccessToken();
-			}
-			
-			// make request to TCAT API
-			let apiAuth = 'Bearer ' + accessToken;
+			let authHeader = await TokenUtils.getAuthorizationHeader();
 			let stopsRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Stops/GetAllStops',
-				{headers: {Authorization: apiAuth}});
+				{headers: {Authorization: authHeader}});
 			let allTcatStops = stopsRequest.data.map(stop => {
 				return {
 					name: stop.Name,
