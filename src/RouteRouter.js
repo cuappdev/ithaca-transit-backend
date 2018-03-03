@@ -41,13 +41,13 @@ class RouteRouter extends AbstractRouter {
             parameters["pt.walk_speed"] = 3.0;
             parameters["pt.earliest_departure_time"] = departureTimeDateNow;
 
-            let routeNowReq: any = axios.get('http://localhost:8988/route', {
+            let routeNowReq: any = axios.get('http://0.0.0.0:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
 
             parameters["pt.earliest_departure_time"] = departureTimeDateLater;
-            let routeLaterReq: any = axios.get('http://localhost:8988/route', {
+            let routeLaterReq: any = axios.get('http://0.0.0.0:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });

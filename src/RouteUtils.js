@@ -165,7 +165,7 @@ async function parseRoute(resp: Object) {
                         }
                     };
 
-                    var snappingResponse = await axios.post('http://localhost:8989/match', gpx, config);
+                    var snappingResponse = await axios.post('http://0.0.0.0:8989/match', gpx, config);
                     path = snappingResponse.data.paths[0].points.coordinates.map(point => {
                         return {
                             lat: point[1],
