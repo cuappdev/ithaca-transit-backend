@@ -7,7 +7,7 @@ import qs from 'qs';
 class TrackingRouter extends AbstractRouter {
 
     constructor() {
-        super('GET', '/tracking', false);
+        super('GET', '/tracking', true);
     }
 
     async content(req: Request): Promise<any> {
@@ -22,7 +22,7 @@ class TrackingRouter extends AbstractRouter {
 			headers: {Authorization: authHeader}
         });
         const trackingData = trackingRequest.data.map((busInfo) => {
-            var lastUpdated = busInfo.LastUpdated;
+            let lastUpdated = busInfo.LastUpdated;
             const firstParan = lastUpdated.indexOf('(') + 1;
             const secondParan = lastUpdated.indexOf('-');
             lastUpdated = parseInt(lastUpdated.slice(firstParan, secondParan));
@@ -47,10 +47,10 @@ class TrackingRouter extends AbstractRouter {
               vehicleID: busInfo.VehicleId
             };
           });
-          return JSON.stringify(trackingData);
+          return trackingData;
         } catch (error) {
             console.log(error);
-            return 'error';
+            throw error;
         }
     }
 

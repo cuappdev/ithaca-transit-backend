@@ -7,7 +7,7 @@ import qs from 'qs';
 class AllStopsRouter extends AbstractRouter {
 
     constructor() {
-        super('GET', '/allStops', false);
+        super('GET', '/allStops', true);
     }
 
     async content(req: Request): Promise<any> {
@@ -23,9 +23,9 @@ class AllStopsRouter extends AbstractRouter {
 				}
 			});
 			return JSON.stringify(allTcatStops);
-		} catch (err) {
-			throw err;
-		}
+		  } catch (err) {
+			  throw err;
+		  }
     }
 }
 
