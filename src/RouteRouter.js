@@ -19,12 +19,10 @@ class RouteRouter extends AbstractRouter {
         let start: string = req.query.start;
         let end: string = req.query.end;
         let arriveBy: boolean = req.query.arriveBy == '1'
-        console.log('arriveBy, ', arriveBy);
         let departureTimeQuery: string = req.query.time;
         let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000 - 600000;
         let departureTimeFifteenMinutesLater = departureTimeNowMs + 900000;
         let departureTimeDateNow = new Date(departureTimeNowMs).toISOString();
-        console.log(departureTimeNowMs);
         let departureTimeDateLater = new Date(departureTimeFifteenMinutesLater).toISOString();
         
         try {
@@ -41,20 +39,20 @@ class RouteRouter extends AbstractRouter {
             parameters["pt.walk_speed"] = 3.0;
             parameters["pt.earliest_departure_time"] = departureTimeDateNow;
 
-            let routeNowReq: any = axios.get('http://0.0.0.0:8988/route', {
+            let routeNowReq: any = axios.get('http://localhost:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
 
             parameters["pt.earliest_departure_time"] = departureTimeDateLater;
-            let routeLaterReq: any = axios.get('http://0.0.0.0:8988/route', {
+            let routeLaterReq: any = axios.get('http://localhost:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
 
             //Wait until all requests finish
             let [routeNowResult, routeLaterResult] = await Promise.all([routeNowReq, routeLaterReq]);
-
+            
             //Filter out route duplicates
             var dups = []
             let routeNow = await RouteUtils.parseRoute(routeNowResult.data);

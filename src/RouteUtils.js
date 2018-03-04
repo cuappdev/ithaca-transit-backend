@@ -87,13 +87,17 @@ async function parseRoute(resp: Object) {
             maxLong: currPath.bbox[2]
         };
 
-        let directions = [];
+        let directions: Array<Object> = [];
         for (let j = 0; j < amountOfLegs; j++) {
 
             let currLeg = legs[j];
             let type = currLeg.type;
             if (type == "pt") {
                 type = "depart";
+                if (currLeg.isInSameVehicleAsPrevious) {
+                    //last depart was a transfer
+                    directions[j-1].stayOnBusTransfer = true;
+                }
             }
 
             let name = "";
@@ -165,7 +169,7 @@ async function parseRoute(resp: Object) {
                         }
                     };
 
-                    var snappingResponse = await axios.post('http://0.0.0.0:8989/match', gpx, config);
+                    var snappingResponse = await axios.post('http://localhost:8989/match', gpx, config);
                     path = snappingResponse.data.paths[0].points.coordinates.map(point => {
                         return {
                             lat: point[1],
