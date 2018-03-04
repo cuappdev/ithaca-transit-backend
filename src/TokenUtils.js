@@ -9,6 +9,9 @@ function getCredentials() {
 };
 
 function isAccessTokenExpired(credentials) {
+	if (!("expiry_date" in credentials)) // we have yet to generate an access token
+		return true;
+		
 	let currentDate = new Date();
 	let expiryDate = new Date(credentials.expiry_date);
 	return expiryDate.getTime() - 500 < currentDate.getTime(); // 0.5 second expiration buffer
