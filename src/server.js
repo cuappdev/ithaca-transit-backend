@@ -21,7 +21,7 @@ const api: Api = new Api('', [], [
 TCATUtils.createRouteJson('routes.txt');
 RealtimeFeedUtils.start()
 
-const port: number = parseInt(process.env.PORT) || 3000;
+const port: number = parseInt(process.env.PORT) || 80;
 
 const server: http.Server = http.createServer(api.app);
 
