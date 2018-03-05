@@ -14,3 +14,6 @@ osrm-backend/*
 *.idea*
 *graph-cache*
 config.json
+*tcat-ny-us*
+*.vscode*
+*map-matching*
