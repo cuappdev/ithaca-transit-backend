@@ -1,6 +1,8 @@
 // @flow
+import TokenUtils from './TokenUtils';
 import AbstractRouter from './AbstractRouter';
 import axios from 'axios';
+import qs from 'qs';
 
 class AllStopsRouter extends AbstractRouter {
 
@@ -9,24 +11,22 @@ class AllStopsRouter extends AbstractRouter {
     }
 
     async content(req: Request): Promise<any> {
-        const AuthStr = 'Bearer 5a54bc7f-a7df-3796-a83a-5bba7a8e31c8'; // Accept: "application/json"
-        try {
-            let stopsRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Stops/GetAllStops',
-                {headers: {Authorization: AuthStr}});
-            let tcatAllStops = stopsRequest.data.map(stop => {
-                return {
-                    name: stop.Name,
-                    lat: stop.Latitude,
-                    long: stop.Longitude
-                }
-            });
-            return tcatAllStops;
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
+    	try {
+			let authHeader = await TokenUtils.getAuthorizationHeader();
+			let stopsRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Stops/GetAllStops',
+				{headers: {Authorization: authHeader}});
+			let allTcatStops = stopsRequest.data.map(stop => {
+				return {
+					name: stop.Name,
+					lat: stop.Latitude,
+					long: stop.Longitude
+				}
+			});
+			return allTcatStops;
+		  } catch (err) {
+			  throw err;
+		  }
     }
-
 }
 
 export default new AllStopsRouter().router;
