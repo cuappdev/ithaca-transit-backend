@@ -7,8 +7,7 @@ import RouteRouter from './RouteRouter';
 import AllStopsRouter from './AllStopsRouter';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
-
-
+import dotenv from 'dotenv';
 import Api from './Api';
 
 const api: Api = new Api('', [], [
@@ -20,6 +19,7 @@ const api: Api = new Api('', [], [
 
 TCATUtils.createRouteJson('routes.txt');
 RealtimeFeedUtils.start()
+dotenv.config()
 
 const port: number = parseInt(process.env.PORT) || 80;
 
