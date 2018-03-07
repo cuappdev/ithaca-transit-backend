@@ -6,6 +6,8 @@ This is our implementation of the TCAT backend. It is currently being rebuilt on
 
 Check if you have Maven installed with `mvn -v`. If you don't, `brew install maven`.
 
+After cloning the repo, run `cp env.template .env`. This will copy env.template to .env which will allow you to run the server on port 3000. You cannot run the server on port 80. When doing testing locally, you must use port 3000.
+
 ## Install
 Run `npm run setup` to setup all the necessary data. If you get an error about wget, `brew install wget`.
 
