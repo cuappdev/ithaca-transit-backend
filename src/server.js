@@ -8,6 +8,7 @@ import AllStopsRouter from './AllStopsRouter';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import Api from './Api';
 
 const api: Api = new Api('', [], [
@@ -22,6 +23,13 @@ RealtimeFeedUtils.start()
 dotenv.config()
 
 const port: number = parseInt(process.env.PORT) || 80;
+const token = process.env.TOKEN;
+fs.writeFile("config.json", JSON.stringify({basic_token: token}), function (err) {
+    if(err) {
+        console.log(err)
+    }
+});
+
 
 const server: http.Server = http.createServer(api.app);
 
