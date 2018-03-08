@@ -37,6 +37,52 @@ function createGpxJson(stops: Array<Object>, startTime: String): Object {
     }
 }
 
+function mergeDirections(first, second) {
+    second.stops.shift();
+    second.path.shift()
+    let path = first.path.concat(second.path);
+    let distance = first.distance + second.distance;
+    let stops = first.stops.concat(second.stops);
+    let tripID = first.tripID.concat(second.tripID);
+    return {
+        type: first.type,
+        name: first.name,
+        startTime: first.startTime,
+        endTime: second.endTime,
+        startLocation: first.startLocation,
+        endLocation: second.endLocation,
+        path: path,
+        distance: distance,
+        routeNumber: first.routeNumber,
+        stops: stops,
+        tripID: tripID
+    }
+}
+
+function condense(route: Object) {
+    var updatedDirections = []
+    for (let index = 0; index < route.directions.length; index++) {
+        let direction = route.directions[index];
+        if (index != 0 && direction.type == "depart" && route.directions[index - 1].type == "depart") {
+            //if we are here, we have a possible merge
+            let firstDirection = route.directions[index - 1];
+            let secondDirection = route.directions[index];
+            if (firstDirection.routeNumber == secondDirection.routeNumber) {
+                //this means both directions have the same routeNumber. No real transfer, probably just change in trip_ids
+                let combinedDirection = mergeDirections(firstDirection, secondDirection)
+                updatedDirections.pop()
+                updatedDirections.push(combinedDirection)
+            } else {
+                updatedDirections.push(direction);
+            }
+        } else {
+            updatedDirections.push(direction);
+        }  
+    }
+    route.directions = updatedDirections
+    return route
+}
+
 async function parseRoute(resp: Object) {
     //array of parsed routes
     let possibleRoutes = [];
@@ -130,7 +176,7 @@ async function parseRoute(resp: Object) {
             var tripID = null;
             let distance = currLeg.distance;
             if (type == "depart") {
-                tripID = currLeg["trip_id"]
+                tripID = [currLeg["trip_id"]]
                 var route = TCATUtils.routeJson.filter(routeObj => {
                     return routeObj["route_id"] == currLeg["route_id"];
                 });
@@ -234,5 +280,6 @@ async function parseRoute(resp: Object) {
 }
 
 export default {
-    parseRoute: parseRoute
+    parseRoute: parseRoute,
+    condense: condense
 };
