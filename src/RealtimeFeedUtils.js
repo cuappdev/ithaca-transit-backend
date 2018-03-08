@@ -54,30 +54,42 @@ async function fetchRealtimeFeed() {
 }
 
 //returns the vehicleID, the delay, and anything else required
-function getTrackingInformation(stopID: String, tripID: String) {
+function getTrackingInformation(stopID: String, tripIDs: String[]) {
     var resp = {
         vehicleID: null,
         delay: null,
         noInfoYet: false
     }
 
-    let filteredTrips = realtimeFeed.filter(trip => {
-        return trip.tripID == tripID
-    });
-
-    //if we found a match
-    if (filteredTrips.length > 0) {
-        let trip = filteredTrips[0];
-        let filteredStops = trip.stopUpdates.filter(stop => {
-            return stop.stopID == stopID
-        });
-        resp.vehicleID = trip.vehicleID
-
-        //we found the correct stop and have the correct trip
-        if (filteredStops.length > 0) {
-            let stop = filteredStops[0];
-            resp.delay = stop.delay;
+    let foundTripInfo = false;
+    for (let index = 0; index < tripIDs.length; index++) {
+        if (foundTripInfo) {
+            break;
         }
+
+        const tripID = tripIDs[index];
+        let filteredTrips = realtimeFeed.filter(trip => {
+            return trip.tripID == tripID
+        });
+
+        //we found a tripID in the realtime feed
+        if (filteredTrips.length > 0) {
+            foundTripInfo = true;
+            let trip = filteredTrips[0];
+            let filteredStops = trip.stopUpdates.filter(stop => {
+                return stop.stopID == stopID
+            });
+            resp.vehicleID = trip.vehicleID
+
+            if (filteredStops.length > 0) {
+                let stop = filteredStops[0];
+                resp.delay = stop.delay;
+            }
+        }   
+    }
+
+    if (foundTripInfo) {
+        return resp
     } else {
         return {
             vehicleID: null,
@@ -85,8 +97,6 @@ function getTrackingInformation(stopID: String, tripID: String) {
             noInfoYet: true
         }
     }
-
-    return resp;
 }
 
 function start() {
