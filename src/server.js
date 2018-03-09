@@ -12,7 +12,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import Api from './Api';
 
-const api: Api = new Api('', [], [
+const api: Api = new Api('/api/v1', [], [
     HelloWorldRouter,
     TrackingRouter,
     RouteRouter,
