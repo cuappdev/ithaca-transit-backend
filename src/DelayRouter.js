@@ -21,7 +21,6 @@ class DelayRouter extends AbstractRouter {
             delay: delay
         } 
     }
-
 }
 
 export default new DelayRouter().router;
