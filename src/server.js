@@ -5,6 +5,7 @@ import HelloWorldRouter from './HelloWorldRouter';
 import TrackingRouter from './TrackingRouter';
 import RouteRouter from './RouteRouter';
 import AllStopsRouter from './AllStopsRouter';
+import DelayRouter from './DelayRouter';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import dotenv from 'dotenv';
@@ -15,7 +16,8 @@ const api: Api = new Api('', [], [
     HelloWorldRouter,
     TrackingRouter,
     RouteRouter,
-    AllStopsRouter
+    AllStopsRouter,
+    DelayRouter
 ]);
 
 TCATUtils.createRouteJson('routes.txt');
