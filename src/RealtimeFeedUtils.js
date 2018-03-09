@@ -53,6 +53,27 @@ async function fetchRealtimeFeed() {
     }
 }
 
+function getDelay(stopID: String, tripID: String) {
+    let delay = null;
+    let filteredTrips = realtimeFeed.filter(trip => {
+        return trip.tripID == tripID;
+    });
+
+    if (filteredTrips.length > 0) {
+        let trip = filteredTrips[0];
+        let filteredStops = trip.stopUpdates.filter(stop => {
+            return stop.stopID == stopID
+        });
+
+        if (filteredStops.length > 0) {
+            let stop = filteredStops[0]
+            delay = stop.delay;
+        }
+    }
+    return delay;
+
+}
+
 //returns the vehicleID, the delay, and anything else required
 function getTrackingInformation(stopID: String, tripIDs: String[]) {
     var resp = {
@@ -69,7 +90,7 @@ function getTrackingInformation(stopID: String, tripIDs: String[]) {
 
         const tripID = tripIDs[index];
         let filteredTrips = realtimeFeed.filter(trip => {
-            return trip.tripID == tripID
+            return trip.tripID == tripID;
         });
 
         //we found a tripID in the realtime feed
@@ -108,5 +129,6 @@ function start() {
 
 export default {
     start: start,
-    getTrackingInformation: getTrackingInformation
+    getTrackingInformation: getTrackingInformation,
+    getDelay: getDelay
 };

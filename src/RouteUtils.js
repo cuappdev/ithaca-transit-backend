@@ -1,5 +1,6 @@
 //@flow
 import TCATUtils from './TCATUtils';
+import RealtimeFeedUtils from './RealtimeFeedUtils';
 import axios from 'axios';
 import qs from 'qs';
 import csv from 'csvtojson';
@@ -140,10 +141,6 @@ async function parseRoute(resp: Object) {
             let type = currLeg.type;
             if (type == "pt") {
                 type = "depart";
-                if (currLeg.isInSameVehicleAsPrevious) {
-                    //last depart was a transfer
-                    directions[j-1].stayOnBusTransfer = true;
-                }
             }
 
             let name = "";
@@ -172,10 +169,17 @@ async function parseRoute(resp: Object) {
             let startLocation = path[0];
             let endLocation = path[path.length - 1];
             var routeNumber = null;
-            let stops = [];
             var tripID = null;
+            var delay = null;
+            let stops = [];
+            
             let distance = currLeg.distance;
             if (type == "depart") {
+                if (currLeg.isInSameVehicleAsPrevious) {
+                    //last depart was a transfer
+                    directions[j-1].stayOnBusForTransfer = true;
+                }
+
                 tripID = [currLeg["trip_id"]]
                 var route = TCATUtils.routeJson.filter(routeObj => {
                     return routeObj["route_id"] == currLeg["route_id"];
@@ -249,6 +253,8 @@ async function parseRoute(resp: Object) {
                         stopID: stop.stop_id
                     }
                 });
+
+                delay = RealtimeFeedUtils.getDelay(stops[0].stopID, tripID[0]);
             }
 
             directions.push({
@@ -262,7 +268,8 @@ async function parseRoute(resp: Object) {
                 distance: distance,
                 routeNumber: routeNumber,
                 stops: stops,
-                tripID: tripID
+                tripID: tripID,
+                delay: delay
             })
         }
 

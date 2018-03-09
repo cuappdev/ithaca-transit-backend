@@ -18,7 +18,7 @@ class TrackingRouter extends AbstractRouter {
         var trackingInformation = []
         var invalidData = false
         var noData = false
-
+        console.log(req.body);
         for (let index = 0; index < trackingArray.length; index++) {
             let data = trackingArray[index];
             let realtimeData = RealtimeFeedUtils.getTrackingInformation(data.stopID, data.tripIdentifiers);

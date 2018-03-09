@@ -30,7 +30,6 @@ fs.writeFile("config.json", JSON.stringify({basic_token: token}), function (err)
     }
 });
 
-
 const server: http.Server = http.createServer(api.app);
 
 const onError = (err: Error): void => {
