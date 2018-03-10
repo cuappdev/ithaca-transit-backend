@@ -268,7 +268,7 @@ async function parseRoute(resp: Object) {
                 distance: distance,
                 routeNumber: routeNumber,
                 stops: stops,
-                tripID: tripID,
+                tripIdentifiers: tripID,
                 delay: delay
             })
         }
