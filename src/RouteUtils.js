@@ -44,7 +44,7 @@ function mergeDirections(first, second) {
     let path = first.path.concat(second.path);
     let distance = first.distance + second.distance;
     let stops = first.stops.concat(second.stops);
-    let tripID = first.tripID.concat(second.tripID);
+    let tripIDs = first.tripIdentifiers.concat(second.tripIdentifiers);
     return {
         type: first.type,
         name: first.name,
@@ -56,7 +56,7 @@ function mergeDirections(first, second) {
         distance: distance,
         routeNumber: first.routeNumber,
         stops: stops,
-        tripID: tripID
+        tripIdentifiers: tripIDs
     }
 }
 
