@@ -46,18 +46,11 @@ class RouteRouter extends AbstractRouter {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
 
-            // let paramForLater = Object.assign({}, parameters);
-            // paramForLater["pt.earliest_departure_time"] = departureTimeDateLater;
-            // let routeLaterReq: any = axios.get('http://localhost:8988/route', {
-            //     params: paramForLater,
-            //     paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
-            // });
-
             //Wait until all requests finish
             let [routeNowResult] = await Promise.all([routeNowReq]);
-            //Filter out route duplicates
+    
             let routeNow = await RouteUtils.parseRoute(routeNowResult.data);
-            console.log("NUMBER OF ROUTES: ", routeNow.length);
+            
             routeNow = routeNow.filter(route => {
                 var isValid = true;
                 for (let index = 0; index < route.directions.length; index++) {
@@ -75,18 +68,7 @@ class RouteRouter extends AbstractRouter {
             });
 
             return routeNow;
-            //let routeLater = await RouteUtils.parseRoute(routeLaterResult.data);
-            // var combinedRoutes = routeNow.concat(routeLater);
-            // combinedRoutes = combinedRoutes.filter(route => {
-            //     let stringifyRoute = JSON.stringify(route)
-            //     if(dups.indexOf(stringifyRoute) == -1) {
-            //         dups.push(stringifyRoute)
-            //         return true;
-            //     }
-            //     return false;
-            // });
 
-            // return routeNow;
         } catch (err) {
             throw err;
         }
