@@ -1,5 +1,6 @@
 // @flow
 import RouteUtils from './RouteUtils';
+import WalkingUtils from './WalkingUtils';
 import AbstractRouter from './AbstractRouter';
 import TCATUtils from './TCATUtils';
 import axios from 'axios';
@@ -21,9 +22,7 @@ class RouteRouter extends AbstractRouter {
         let arriveBy: boolean = req.query.arriveBy == '1'
         let departureTimeQuery: string = req.query.time;
         let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
-        //let departureTimeFifteenMinutesLater = departureTimeNowMs + 900000;
         let departureTimeDateNow = new Date(departureTimeNowMs).toISOString();
-        //let departureTimeDateLater = new Date(departureTimeFifteenMinutesLater).toISOString();
         
         try {
             let parameters: any = {
@@ -41,15 +40,27 @@ class RouteRouter extends AbstractRouter {
             parameters["pt.profile"] = true;
             parameters["pt.limit_solutions"] = 6
             
-            let routeNowReq: any = axios.get('http://localhost:8988/route', {
+            let route: any = axios.get('http://localhost:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
 
+            let walkingParameters: any = {
+                vehicle: "foot",
+                point: [start, end],
+                points_encoded: false
+            };
+
+            let walkingRoute: any = axios.get('http://localhost:8987/route', {
+                params: walkingParameters,
+                paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
+            });
+
             //Wait until all requests finish
-            let [routeNowResult] = await Promise.all([routeNowReq]);
+            let [routeResult, walkingResult] = await Promise.all([route, walkingRoute]);
     
-            let routeNow = await RouteUtils.parseRoute(routeNowResult.data);
+            let routeNow = await RouteUtils.parseRoute(routeResult.data);
+            let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs)
             
             routeNow = routeNow.filter(route => {
                 var isValid = true;
@@ -66,6 +77,19 @@ class RouteRouter extends AbstractRouter {
             routeNow = routeNow.map(route => {
                 return RouteUtils.condense(route);
             });
+            //now need to compare if walking route is better
+            routeNow = routeNow.filter(route => {
+                let walkingDirections = route.directions.filter(direction => {
+                    return direction.type == "walk"
+                });
+                const reducer = (accumulator, currentWalk) => accumulator + currentWalk.distance;
+                let totalWalkingDistance = walkingDirections.reduce(reducer);
+                return totalWalkingDistance <= routeWalking.directions[0].distance;
+            });
+
+            if (routeNow.length == 0) {
+                return [routeWalking]
+            }
 
             return routeNow;
 
