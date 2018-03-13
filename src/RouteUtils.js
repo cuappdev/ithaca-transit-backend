@@ -101,7 +101,7 @@ async function parseRoute(resp: Object) {
         let numberOfTransfers = currPath.transfers;
 
         //array containing legs of journey. e.g. walk, bus ride, walk
-        let legs = currPath.legs
+        let legs = currPath.legs;
         let amountOfLegs = legs.length;
 
         //string 2018-02-21T17:27:00Z
@@ -111,8 +111,8 @@ async function parseRoute(resp: Object) {
         let startingLocationGeometry = legs[0].geometry;
         let endingLocationGeometry = legs[amountOfLegs - 1].geometry;
 
-        let startingLocationLong = startingLocationGeometry.coordinates[0][0]
-        let startingLocationLat = startingLocationGeometry.coordinates[0][1]
+        let startingLocationLong = startingLocationGeometry.coordinates[0][0];
+        let startingLocationLat = startingLocationGeometry.coordinates[0][1];
 
         let endingLocationLong = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][0]
         let endingLocationLat = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][1]
@@ -136,7 +136,6 @@ async function parseRoute(resp: Object) {
 
         let directions: Array<Object> = [];
         for (let j = 0; j < amountOfLegs; j++) {
-
             let currLeg = legs[j];
             let type = currLeg.type;
             if (type == "pt") {
