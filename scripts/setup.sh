@@ -4,6 +4,13 @@ git clone https://github.com/graphhopper/map-matching.git
 cd graphhopper
 git checkout 0.10
 cd ..
+mkdir graphhopper-walking
+cd graphhopper-walking
+git clone https://github.com/graphhopper/graphhopper.git
+cd graphhopper
+git checkout 0.10
+cd ../..
+
 cd map-matching
 git checkout 0.9
 ./map-matching.sh action=import datasource=../osrm/map.osm vehicle=car,foot
@@ -14,3 +21,7 @@ tar xvf tcat-ny-us.zip -C tcat-ny-us
 cd graphhopper
 ./graphhopper.sh buildweb
 cd ..
+cd graphhopper-walking/graphhopper
+./graphhopper.sh buildweb
+cd ../..
+
