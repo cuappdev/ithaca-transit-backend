@@ -42,8 +42,8 @@ class RouteRouter extends AbstractRouter {
             parameters["pt.limit_solutions"] = 6
 
             console.log(JSON.stringify(parameters));
-            
-            let routeResult: any = await axios.get('http://localhost:8988/route', {
+
+            let route: any = axios.get('http://localhost:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
@@ -62,10 +62,21 @@ class RouteRouter extends AbstractRouter {
 
             console.log('set up walking route');
 
+            let walkingParameters: any = {
+                vehicle: "foot",
+                point: [start, end],
+                points_encoded: false
+            };
+
+            let walkingRoute: any = axios.get('http://localhost:8987/route', {
+                params: walkingParameters,
+                paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
+            });
+
             //Wait until all requests finish
-            let [walkingResult] = await Promise.all([walkingRoute]);
-            console.log('finished awaiting');
-    
+
+            let [routeResult, walkingResult] = await Promise.all([route, walkingRoute]);
+
             let routeNow = await RouteUtils.parseRoute(routeResult.data);
             let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs)
             
@@ -90,6 +101,7 @@ class RouteRouter extends AbstractRouter {
             });
             //now need to compare if walking route is better
             routeNow = routeNow.filter(route => {
+<<<<<<< HEAD
                 let walkingDirections = route.directions.filter(direction => { //only show walking directions
                     return direction.type == "walk"
                 });
@@ -105,6 +117,14 @@ class RouteRouter extends AbstractRouter {
                 //console.log( 'total walking distance ', parseFloat(totalWalkingDistance));
                 //console.log('route walking distance', routeWalking.directions[0].distance);
                 return totalWalkingForRoute <= routeWalking.directions[0].distance;
+=======
+                let walkingDirections = route.directions.filter(direction => {
+                    return direction.type == "walk"
+                });
+                const reducer = (accumulator, currentWalk) => accumulator + currentWalk.distance;
+                let totalWalkingDistance = walkingDirections.reduce(reducer);
+                return totalWalkingDistance <= routeWalking.directions[0].distance;
+>>>>>>> added walking GHopper
             });
 
             if (routeNow.length == 0) {
