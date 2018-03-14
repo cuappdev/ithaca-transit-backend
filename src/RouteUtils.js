@@ -193,11 +193,22 @@ async function parseRoute(resp: Object) {
                 })
 
                 if (route.length == 1) {
-
                     //this gets the correct route number for the gtfs data
                     routeNumber = parseInt(route[0]["route_short_name"]);
                 }
-                //if the path.length <= 3, map matching will return error
+                
+                //ensure path.length >= 3 for map matching
+                if (path.length < 3) {
+                	let firstStopCoords = path[0];
+                	let lastStopCoords = path[path.length - 1];
+					let averageStopCoords = {
+						lat: (firstStopCoords.lat + lastStopCoords.lat)/2.0,
+						long: (firstStopCoords.long + lastStopCoords.long)/2.0,						
+					};
+                    path.splice(1, 0, averageStopCoords);
+                }
+                
+                //if the path.length < 3, map matching will return error
                 if (path.length >= 3) {
 
                     //Map Matching
