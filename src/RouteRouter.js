@@ -101,7 +101,7 @@ class RouteRouter extends AbstractRouter {
             });
             //now need to compare if walking route is better
             routeNow = routeNow.filter(route => {
-<<<<<<< HEAD
+
                 let walkingDirections = route.directions.filter(direction => { //only show walking directions
                     return direction.type == "walk"
                 });
@@ -117,14 +117,6 @@ class RouteRouter extends AbstractRouter {
                 //console.log( 'total walking distance ', parseFloat(totalWalkingDistance));
                 //console.log('route walking distance', routeWalking.directions[0].distance);
                 return totalWalkingForRoute <= routeWalking.directions[0].distance;
-=======
-                let walkingDirections = route.directions.filter(direction => {
-                    return direction.type == "walk"
-                });
-                const reducer = (accumulator, currentWalk) => accumulator + currentWalk.distance;
-                let totalWalkingDistance = walkingDirections.reduce(reducer);
-                return totalWalkingDistance <= routeWalking.directions[0].distance;
->>>>>>> added walking GHopper
             });
 
             if (routeNow.length == 0) {

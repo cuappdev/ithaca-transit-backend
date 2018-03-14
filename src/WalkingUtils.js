@@ -3,7 +3,7 @@
 function parseWalkingRoute(data, startDateMs) {
     let path = data.paths[0];
     let endDateMs = startDateMs + path.time;
-    
+
     let departureTime = new Date(startDateMs).toISOString().split('.')[0]+"Z";
     let arrivalTime = new Date(endDateMs).toISOString().split('.')[0]+"Z";
 
