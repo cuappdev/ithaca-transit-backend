@@ -79,12 +79,21 @@ class RouteRouter extends AbstractRouter {
             });
             //now need to compare if walking route is better
             routeNow = routeNow.filter(route => {
-                let walkingDirections = route.directions.filter(direction => {
+                let walkingDirections = route.directions.filter(direction => { //only show walking directions
                     return direction.type == "walk"
                 });
-                const reducer = (accumulator, currentWalk) => accumulator + currentWalk.distance;
-                let totalWalkingDistance = walkingDirections.reduce(reducer);
-                return totalWalkingDistance <= routeWalking.directions[0].distance;
+                let walkingTotals = walkingDirections.map(walk => {
+                    return walk.distance
+                });
+                var totalWalkingForRoute = 0
+                walkingTotals.forEach(element => {
+                    totalWalkingForRoute += element;
+                });
+                //const reducer = (accumulator, currentWalk) => accumulator + currentWalk.distance;
+                //let totalWalkingDistance = walkingDirections.reduce(reducer);
+                //console.log( 'total walking distance ', parseFloat(totalWalkingDistance));
+                //console.log('route walking distance', routeWalking.directions[0].distance);
+                return totalWalkingForRoute <= routeWalking.directions[0].distance;
             });
 
             if (routeNow.length == 0) {
