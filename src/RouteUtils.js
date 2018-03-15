@@ -1,29 +1,27 @@
 //@flow
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
+import AllStopUtils from './AllStopUtils'
 import axios from 'axios';
-import qs from 'qs';
-import csv from 'csvtojson';
-import fs from 'fs';
 import createGpx from 'gps-to-gpx';
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
  */
 function distanceBetweenPoints(point1: Object, point2: Object): number {
-    var radlat1 = Math.PI * point1.lat / 180
-    var radlat2 = Math.PI * point2.lat / 180
-    var theta = point1.long - point2.long
-    var radtheta = Math.PI * theta / 180
-    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-    dist = Math.acos(dist)
-    dist = dist * 180 / Math.PI
-    dist = dist * 60 * 1.1515
+    const radlat1 = Math.PI * point1.lat / 180;
+    const radlat2 = Math.PI * point2.lat / 180;
+    const theta = point1.long - point2.long;
+    const radtheta = Math.PI * theta / 180;
+    let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist);
+    dist = dist * 180 / Math.PI;
+    dist = dist * 60 * 1.1515;
     return dist
 }
 
 function createGpxJson(stops: Array<Object>, startTime: String): Object {
-    var waypoints = stops.map(stop => {
+    const waypoints = stops.map(stop => {
         return {
             latitude: stop.lat,
             longitude: stop.long,
@@ -40,7 +38,7 @@ function createGpxJson(stops: Array<Object>, startTime: String): Object {
 
 function mergeDirections(first, second) {
     second.stops.shift();
-    second.path.shift()
+    second.path.shift();
     let path = first.path.concat(second.path);
     let distance = first.distance + second.distance;
     let stops = first.stops.concat(second.stops);
@@ -60,19 +58,35 @@ function mergeDirections(first, second) {
     }
 }
 
-function condense(route: Object) {
-    var updatedDirections = []
+function condense(route: Object, startCoords: string, endCoords: string) {
+    const updatedDirections = [];
+
+    let canFirstDirectionBeRemoved = AllStopUtils.isStop(startCoords, route.directions[0].name);
+    let canLastDirectionBeRemoved = AllStopUtils.isStop(endCoords,
+        route.directions[route.directions.length-1].name);
+    if(canFirstDirectionBeRemoved) {
+        route.directions.shift();
+    }
+    if(canLastDirectionBeRemoved){
+        route.directions.pop();
+    }
+
     for (let index = 0; index < route.directions.length; index++) {
         let direction = route.directions[index];
-        if (index != 0 && direction.type == "depart" && route.directions[index - 1].type == "depart") {
-            //if we are here, we have a possible merge
+        if (index != 0) {
             let firstDirection = route.directions[index - 1];
             let secondDirection = route.directions[index];
-            if (firstDirection.routeNumber == secondDirection.routeNumber) {
-                //this means both directions have the same routeNumber. No real transfer, probably just change in trip_ids
-                let combinedDirection = mergeDirections(firstDirection, secondDirection)
-                updatedDirections.pop()
-                updatedDirections.push(combinedDirection)
+            if (direction.type == "depart" && route.directions[index - 1].type == "depart") {
+                //if we are here, we have a possible merge
+                if (firstDirection.routeNumber == secondDirection.routeNumber) {
+                    //this means both directions have the same routeNumber.
+                    // No real transfer, probably just change in trip_ids
+                    let combinedDirection = mergeDirections(firstDirection, secondDirection);
+                    updatedDirections.pop();
+                    updatedDirections.push(combinedDirection);
+                } else {
+                    updatedDirections.push(direction);
+                }
             } else {
                 updatedDirections.push(direction);
             }
@@ -80,7 +94,7 @@ function condense(route: Object) {
             updatedDirections.push(direction);
         }  
     }
-    route.directions = updatedDirections
+    route.directions = updatedDirections;
     return route
 }
 
@@ -114,8 +128,8 @@ async function parseRoute(resp: Object) {
         let startingLocationLong = startingLocationGeometry.coordinates[0][0];
         let startingLocationLat = startingLocationGeometry.coordinates[0][1];
 
-        let endingLocationLong = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][0]
-        let endingLocationLat = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][1]
+        let endingLocationLong = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][0];
+        let endingLocationLat = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][1];
 
         let startCoords = {
             lat: startingLocationLat,
@@ -158,7 +172,7 @@ async function parseRoute(resp: Object) {
             let startTime = currLeg.departureTime;
             let endTime = currLeg.arrivalTime;
 
-            let currCoordinates = currLeg.geometry.coordinates
+            let currCoordinates = currLeg.geometry.coordinates;
             let path = currCoordinates.map(point => {
                 return {
                     lat: point[1],
@@ -167,9 +181,9 @@ async function parseRoute(resp: Object) {
             });
             let startLocation = path[0];
             let endLocation = path[path.length - 1];
-            var routeNumber = null;
-            var tripID = null;
-            var delay = null;
+            let routeNumber = null;
+            let tripID = null;
+            let delay = null;
             let stops = [];
             
             let distance = currLeg.distance;
@@ -179,8 +193,8 @@ async function parseRoute(resp: Object) {
                     directions[j-1].stayOnBusForTransfer = true;
                 }
 
-                tripID = [currLeg["trip_id"]]
-                var route = TCATUtils.routeJson.filter(routeObj => {
+                tripID = [currLeg["trip_id"]];
+                const route = TCATUtils.routeJson.filter(routeObj => {
                     return routeObj["route_id"] == currLeg["route_id"];
                 });
 
@@ -189,7 +203,7 @@ async function parseRoute(resp: Object) {
                         lat: stop.geometry.coordinates[1],
                         long: stop.geometry.coordinates[0]
                     }
-                })
+                });
 
                 if (route.length == 1) {
                     //this gets the correct route number for the gtfs data
@@ -213,13 +227,13 @@ async function parseRoute(resp: Object) {
                     //Map Matching
                     let firstStopCoords = path[0];
                     let lastStopCoords = path[path.length - 1];
-                    var gpxJson = createGpxJson(path, startTime);
+                    const gpxJson = createGpxJson(path, startTime);
                     const gpx = createGpx(gpxJson.waypoints, {
                         activityName: gpxJson.activityType,
                         startTime: gpxJson.startTime
                     });
 
-                    var config = {
+                    const config = {
                         headers: {
                             'Content-Type': 'application/xml'
                         },
@@ -229,7 +243,7 @@ async function parseRoute(resp: Object) {
                         }
                     };
 
-                    var snappingResponse = await axios.post('http://localhost:8989/match', gpx, config);
+                    const snappingResponse = await axios.post('http://localhost:8989/match', gpx, config);
                     path = snappingResponse.data.paths[0].points.coordinates.map(point => {
                         return {
                             lat: point[1],
@@ -238,16 +252,16 @@ async function parseRoute(resp: Object) {
                     });
 
                     //Trim Coordinates so they start/end at bus stops
-                    var startDistanceArray = path.map(point2 => {
+                    const startDistanceArray = path.map(point2 => {
                         return distanceBetweenPoints(firstStopCoords, point2);
                     });
 
-                    var endDistanceArray = path.map(point2 => {
+                    const endDistanceArray = path.map(point2 => {
                         return distanceBetweenPoints(lastStopCoords, point2);
                     });
 
-                    var startIndex = startDistanceArray.indexOf(Math.min(...startDistanceArray));
-                    var endIndex = endDistanceArray.indexOf(Math.min(...endDistanceArray));
+                    const startIndex = startDistanceArray.indexOf(Math.min(...startDistanceArray));
+                    const endIndex = endDistanceArray.indexOf(Math.min(...endDistanceArray));
 
                     path = path.slice(startIndex, endIndex);
                     path.unshift(firstStopCoords);

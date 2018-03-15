@@ -38,7 +38,7 @@ class RouteRouter extends AbstractRouter {
             parameters["pt.walk_speed"] = 3.0;
             parameters["pt.earliest_departure_time"] = departureTimeDateNow;
             parameters["pt.profile"] = true;
-            parameters["pt.limit_solutions"] = 6
+            parameters["pt.limit_solutions"] = 6;
             
             let route: any = axios.get('http://localhost:8988/route', {
                 params: parameters,
@@ -74,8 +74,12 @@ class RouteRouter extends AbstractRouter {
                 return isValid;
             });
 
+            let routePointParams = start.split(',').concat(end.split(','));
+
             routeNow = routeNow.map(route => {
-                return RouteUtils.condense(route);
+                return RouteUtils.condense(route,
+                    {'lat': routePointParams[0], 'long': routePointParams[1]},
+                    {'lat': routePointParams[2], 'long': routePointParams[3]});
             });
             //now need to compare if walking route is better
             routeNow = routeNow.filter(route => {
