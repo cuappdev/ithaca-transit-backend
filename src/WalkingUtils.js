@@ -7,7 +7,6 @@ function parseWalkingRoute(data, startDateMs) {
     let departureTime = new Date(startDateMs).toISOString().split('.')[0]+"Z";
     let arrivalTime = new Date(endDateMs).toISOString().split('.')[0]+"Z";
 
-
     let boundingBox = {
         minLat: path.bbox[1],
         minLong: path.bbox[0],

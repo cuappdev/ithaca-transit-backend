@@ -43,6 +43,7 @@ class RouteRouter extends AbstractRouter {
 
             console.log(JSON.stringify(parameters));
 
+
             let route: any = axios.get('http://localhost:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
@@ -62,18 +63,6 @@ class RouteRouter extends AbstractRouter {
 
             console.log('set up walking route');
 
-            let walkingParameters: any = {
-                vehicle: "foot",
-                point: [start, end],
-                points_encoded: false
-            };
-
-            let walkingRoute: any = axios.get('http://localhost:8987/route', {
-                params: walkingParameters,
-                paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
-            });
-
-            //Wait until all requests finish
 
             let [routeResult, walkingResult] = await Promise.all([route, walkingRoute]);
 
