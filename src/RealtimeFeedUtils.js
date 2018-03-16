@@ -5,18 +5,21 @@ import xml2js from 'xml2js';
 
 
 var parseString = xml2js.parseString;
-var realtimeFeedAlarm;
+var realtimeTripFeedAlarm;
+var realtimeVehicleFeedAlarm;
 
-var realtimeFeed = []
+var tripRealtimeFeed = [];
+var vehicleRealtimeFeed = [];
+ 
 
-function xmlToJson(xml: String) {
+function xmlToJson(xml: String, forTrip: boolean) {
     parseString(xml, function (err, result) {
         if (err) {
             console.log(err);
         }
 
-        if (result) {
-           realtimeFeed = result.FeedMessage.Entities[0].FeedEntity.map(entity => {
+        if (result && forTrip) {
+           tripRealtimeFeed = result.FeedMessage.Entities[0].FeedEntity.map(entity => {
                var vehicleID = null;
                var tripUpdate = entity.TripUpdate[0];
                var trip = tripUpdate.Trip[0];
@@ -38,24 +41,47 @@ function xmlToJson(xml: String) {
                    stopUpdates: stopUpdates
                }
            });
+        } else if (result) { //means we are here for the vehicle realtime data
+            vehicleRealtimeFeed = result.FeedMessage.Entities[0].FeedEntity.map(entity => {
+                if (entity.Vehicle[0].Trip) {
+                return entity.Vehicle[0].Trip[0].TripId[0];
+                }
+                return null;
+            });
         }
-    })
+    });
 }
 
-async function fetchRealtimeFeed() {
+async function fetchVehicleRealtimeFeed() {
+    try {
+        let realtimeReq = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=VehiclePosition&debug=true&serverid=0');
+        xmlToJson(realtimeReq.data, false);
+    } catch (err) {
+        console.log(err);
+        console.log('couldnt get vehicle realtime feed');
+    }
+}
+
+async function fetchTripRealtimeFeed() {
     try {
     let realtimeReq = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=TripUpdate&debug=true');
-    xmlToJson(realtimeReq.data);
-    //data is now stored in realtimeFeed
+    xmlToJson(realtimeReq.data, true);
+    //data is now stored in tripRealtimeFeed
     } catch (err) { 
         console.log(err);
-        console.log('couldnt get realtime feed')
+        console.log('couldnt get trip realtime feed')
     }
 }
 
 function getDelay(stopID: String, tripID: String) {
+    console.log('getting delay for: ', tripID);
     let delay = null;
-    let filteredTrips = realtimeFeed.filter(trip => {
+    if (vehicleRealtimeFeed.indexOf(tripID) == -1) {
+        console.log('tripID is not in array');
+        return delay;
+    }
+
+    let filteredTrips = tripRealtimeFeed.filter(trip => {
         return trip.tripID == tripID;
     });
 
@@ -70,6 +96,7 @@ function getDelay(stopID: String, tripID: String) {
             delay = stop.delay;
         }
     }
+    console.log(delay);
     return delay;
 
 }
@@ -89,12 +116,12 @@ function getTrackingInformation(stopID: String, tripIDs: String[]) {
         }
 
         const tripID = tripIDs[index];
-        let filteredTrips = realtimeFeed.filter(trip => {
+        let filteredTrips = tripRealtimeFeed.filter(trip => {
             return trip.tripID == tripID;
         });
 
-        //we found a tripID in the realtime feed
-        if (filteredTrips.length > 0) {
+        //we found a tripID in the realtime feed and it is an active trip
+        if (filteredTrips.length > 0 && vehicleRealtimeFeed.indexOf(tripID) != -1) {
             foundTripInfo = true;
             let trip = filteredTrips[0];
             let filteredStops = trip.stopUpdates.filter(stop => {
@@ -121,8 +148,10 @@ function getTrackingInformation(stopID: String, tripIDs: String[]) {
 }
 
 function start() {
-    realtimeFeedAlarm = alarm.recurring(30000, fetchRealtimeFeed)
-    fetchRealtimeFeed()
+    realtimeTripFeedAlarm = alarm.recurring(30000, fetchTripRealtimeFeed);
+    realtimeVehicleFeedAlarm = alarm.recurring(15000, fetchVehicleRealtimeFeed);
+    fetchTripRealtimeFeed()
+    fetchVehicleRealtimeFeed()
 } 
 
 //call realtimeFeedAlarm() to cancel recurring call
