@@ -197,7 +197,7 @@ async function parseRoute(resp: Object) {
                     //this gets the correct route number for the gtfs data
                     routeNumber = parseInt(route[0]["route_short_name"]);
                 }
-                //if the path.length <= 3, map matching will return error
+                //if the path.length < 3, map matching will return error
                 if (path.length >= 3) {
 
                     //Map Matching

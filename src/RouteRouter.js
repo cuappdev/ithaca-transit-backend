@@ -39,11 +39,14 @@ class RouteRouter extends AbstractRouter {
             parameters["pt.earliest_departure_time"] = departureTimeDateNow;
             parameters["pt.profile"] = true;
             parameters["pt.limit_solutions"] = 6
+
+            console.log(JSON.stringify(parameters));
             
-            let route: any = axios.get('http://localhost:8988/route', {
+            let routeResult: any = await axios.get('http://localhost:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
+            console.log('set up bus route');
 
             let walkingParameters: any = {
                 vehicle: "foot",
@@ -56,8 +59,11 @@ class RouteRouter extends AbstractRouter {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
 
+            console.log('set up walking route');
+
             //Wait until all requests finish
-            let [routeResult, walkingResult] = await Promise.all([route, walkingRoute]);
+            let [walkingResult] = await Promise.all([walkingRoute]);
+            console.log('finished awaiting');
     
             let routeNow = await RouteUtils.parseRoute(routeResult.data);
             let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs)
@@ -103,6 +109,7 @@ class RouteRouter extends AbstractRouter {
             return routeNow;
 
         } catch (err) {
+            console.log(err);
             throw err;
         }
     }
