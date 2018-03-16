@@ -1,6 +1,6 @@
 //@flow
 
-function parseWalkingRoute(data, startDateMs) {
+function parseWalkingRoute(data: any, startDateMs: number) {
     let path = data.paths[0];
     let endDateMs = startDateMs + path.time;
 
