@@ -11,15 +11,15 @@ class DelayRouter extends AbstractRouter {
     }
 
     async content(req: Request): Promise<any> {
-        let stopID = req.query.stopID
-        let tripID = req.query.tripID
+        let stopID = req.query.stopID;
+        let tripID = req.query.tripID;
         let delay = RealtimeFeedUtils.getDelay(stopID, tripID);
         if (delay) {
-            delay = parseInt(delay)
+            delay = delay;
         }
         return {
             delay: delay
-        } 
+        };
     }
 }
 

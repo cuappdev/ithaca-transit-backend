@@ -74,10 +74,8 @@ async function fetchTripRealtimeFeed() {
 }
 
 function getDelay(stopID: String, tripID: String) {
-    console.log('getting delay for: ', tripID);
     let delay = null;
     if (vehicleRealtimeFeed.indexOf(tripID) == -1) {
-        console.log('tripID is not in array');
         return delay;
     }
 
@@ -96,8 +94,7 @@ function getDelay(stopID: String, tripID: String) {
             delay = stop.delay;
         }
     }
-    console.log(delay);
-    return delay;
+    return parseInt(delay);
 
 }
 
