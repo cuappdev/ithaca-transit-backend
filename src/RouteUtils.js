@@ -38,7 +38,8 @@ function createGpxJson(stops: Array<Object>, startTime: String): Object {
 
 function mergeDirections(first, second) {
     second.stops.shift();
-    second.path.shift();
+
+    second.path.shift()
     let path = first.path.concat(second.path);
     let distance = first.distance + second.distance;
     let stops = first.stops.concat(second.stops);
@@ -99,6 +100,7 @@ function condense(route: Object, startCoords: string, endCoords: string) {
 }
 
 async function parseRoute(resp: Object, destinationName: string) {
+
     //array of parsed routes
     let possibleRoutes = [];
 

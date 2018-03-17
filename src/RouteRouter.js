@@ -65,14 +65,11 @@ class RouteRouter extends AbstractRouter {
                 params: walkingParameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
-
-
+            //Wait until all requests finish
             let [walkingResult, routeResult] = await Promise.all([walkingRoute, busRoute]);
-
-    
             let routeNow = await RouteUtils.parseRoute(routeResult.data, destinationName);
             let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs, destinationName);
-            
+
             routeNow = routeNow.filter(route => {
                 var isValid = true;
                 for (let index = 0; index < route.directions.length; index++) {
@@ -94,7 +91,6 @@ class RouteRouter extends AbstractRouter {
             });
             //now need to compare if walking route is better
             routeNow = routeNow.filter(route => {
-
                 let walkingDirections = route.directions.filter(direction => { //only show walking directions
                     return direction.type == "walk"
                 });

@@ -92,10 +92,10 @@ function getDelay(stopID: String, tripID: String) {
         if (filteredStops.length > 0) {
             let stop = filteredStops[0]
             delay = stop.delay;
+
         }
     }
     return parseInt(delay);
-
 }
 
 //returns the vehicleID, the delay, and anything else required
@@ -111,7 +111,6 @@ function getTrackingInformation(stopID: String, tripIDs: String[]) {
         if (foundTripInfo) {
             break;
         }
-
         const tripID = tripIDs[index];
         let filteredTrips = tripRealtimeFeed.filter(trip => {
             return trip.tripID == tripID;
