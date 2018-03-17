@@ -172,12 +172,13 @@ async function parseRoute(resp: Object) {
             var tripID = null;
             var delay = null;
             let stops = [];
+            let stayOnBusForTransfer = false;
             
             let distance = currLeg.distance;
             if (type == "depart") {
                 if (currLeg.isInSameVehicleAsPrevious) {
                     //last depart was a transfer
-                    directions[j-1].stayOnBusForTransfer = true;
+                    stayOnBusForTransfer = true;
                 }
 
                 tripID = [currLeg["trip_id"]]
@@ -280,7 +281,8 @@ async function parseRoute(resp: Object) {
                 routeNumber: routeNumber,
                 stops: stops,
                 tripIdentifiers: tripID,
-                delay: delay
+                delay: delay,
+                stayOnBusForTransfer: stayOnBusForTransfer
             })
         }
 
