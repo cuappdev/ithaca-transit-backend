@@ -20,6 +20,7 @@ class RouteRouter extends AbstractRouter {
         let start: string = req.query.start;
         let end: string = req.query.end;
         let arriveBy: boolean = req.query.arriveBy == '1'
+        let destinationName = req.query.destinationName;
         let departureTimeQuery: string = req.query.time;
         let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
         let departureDelayBuffer: boolean = false;
@@ -46,8 +47,9 @@ class RouteRouter extends AbstractRouter {
             parameters["pt.walk_speed"] = 3.0;
             parameters["pt.earliest_departure_time"] = departureTimeDateNow;
             parameters["pt.profile"] = true;
+
             parameters["pt.limit_solutions"] = 6
-            
+
             let busRoute: any =  axios.get('http://localhost:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
@@ -63,13 +65,11 @@ class RouteRouter extends AbstractRouter {
                 params: walkingParameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
-
             //Wait until all requests finish
             let [walkingResult, routeResult] = await Promise.all([walkingRoute, busRoute]);
-    
-            let routeNow = await RouteUtils.parseRoute(routeResult.data);
-            let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs);
-            
+            let routeNow = await RouteUtils.parseRoute(routeResult.data, destinationName);
+            let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs, destinationName);
+
             routeNow = routeNow.filter(route => {
                 var isValid = true;
                 for (let index = 0; index < route.directions.length; index++) {
@@ -82,8 +82,12 @@ class RouteRouter extends AbstractRouter {
                 return isValid;
             });
 
+            let routePointParams = start.split(',').concat(end.split(','));
+
             routeNow = routeNow.map(route => {
-                return RouteUtils.condense(route);
+                return RouteUtils.condense(route,
+                    {'lat': routePointParams[0], 'long': routePointParams[1]},
+                    {'lat': routePointParams[2], 'long': routePointParams[3]});
             });
             //now need to compare if walking route is better
             routeNow = routeNow.filter(route => {

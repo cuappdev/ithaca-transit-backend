@@ -8,6 +8,7 @@ import AllStopsRouter from './AllStopsRouter';
 import DelayRouter from './DelayRouter';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
+import AllStopUtils from './AllStopUtils';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import Api from './Api';
@@ -21,8 +22,9 @@ const api: Api = new Api('/api/v1', [], [
 ]);
 
 TCATUtils.createRouteJson('routes.txt');
-RealtimeFeedUtils.start()
-dotenv.config()
+RealtimeFeedUtils.start();
+AllStopUtils.start();
+dotenv.config();
 
 const port: number = parseInt(process.env.PORT) || 80;
 const token = process.env.TOKEN;
