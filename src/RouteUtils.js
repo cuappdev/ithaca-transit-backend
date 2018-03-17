@@ -98,7 +98,7 @@ function condense(route: Object, startCoords: string, endCoords: string) {
     return route
 }
 
-async function parseRoute(resp: Object) {
+async function parseRoute(resp: Object, destinationName: string) {
     //array of parsed routes
     let possibleRoutes = [];
 
@@ -161,7 +161,7 @@ async function parseRoute(resp: Object) {
 
                 //means we are at the last direction aka a walk. name needs to equal final destination
                 if (j == amountOfLegs - 1) {
-                    name = "your destination";
+                    name = destinationName;
                 } else {
                     name = legs[j + 1].departureLocation
                 }

@@ -20,6 +20,7 @@ class RouteRouter extends AbstractRouter {
         let start: string = req.query.start;
         let end: string = req.query.end;
         let arriveBy: boolean = req.query.arriveBy == '1'
+        let destinationName = req.query.destinationName;
         let departureTimeQuery: string = req.query.time;
         let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
         let departureDelayBuffer: boolean = false;
@@ -67,9 +68,10 @@ class RouteRouter extends AbstractRouter {
 
 
             let [walkingResult, routeResult] = await Promise.all([walkingRoute, busRoute]);
-            
-            let routeNow = await RouteUtils.parseRoute(routeResult.data);
-            let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs);
+
+    
+            let routeNow = await RouteUtils.parseRoute(routeResult.data, destinationName);
+            let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs, destinationName);
             
             routeNow = routeNow.filter(route => {
                 var isValid = true;
