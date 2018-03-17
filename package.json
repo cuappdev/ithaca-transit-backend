@@ -8,7 +8,7 @@
     "serve": "node build/bundle.js",
     "setup": "sh scripts/setup.sh",
     "graph": "sh scripts/graph.sh",
-    "graph-walking": "sh scripts/graph-walking",
+    "graph-walking": "sh scripts/graph-walking.sh",
     "mapmatching": "sh scripts/mapmatching.sh",
     "start": "killall -9 java; webpack -p && sh scripts/run.sh",
     "cleanup": "sh scripts/cleanup.sh",

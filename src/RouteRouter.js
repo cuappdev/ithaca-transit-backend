@@ -22,6 +22,13 @@ class RouteRouter extends AbstractRouter {
         let arriveBy: boolean = req.query.arriveBy == '1'
         let departureTimeQuery: string = req.query.time;
         let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
+        let departureDelayBuffer: boolean = false;
+        let departureTimeNowActualMs = departureTimeNowMs;
+        if (!arriveBy) { // 'leave at' query
+        	departureDelayBuffer = true;
+        	const delayBuffer = 5; // minutes
+        	departureTimeNowMs = departureTimeNowActualMs - delayBuffer*60*1000; // so we can potentially display delayed routes
+        }
         let departureTimeDateNow = new Date(departureTimeNowMs).toISOString();
         const oneHourInMilliseconds = 3600000;
         
@@ -103,6 +110,7 @@ class RouteRouter extends AbstractRouter {
                 return [routeWalking]
             }
             //throw out routes with over 1 hour time between each direction
+            //also throw out routes that will depart before the query time if query is for 'leave at'
             routeNow = routeNow.filter(route => {
                 let keepRoute = true;
                 for (let index = 0; index < route.directions.length; index++) {
@@ -114,6 +122,15 @@ class RouteRouter extends AbstractRouter {
                             keepRoute = false;
                         };
                     };
+                    
+                    if (departureDelayBuffer) { // make sure user can catch the bus
+                    	if (direction.type == "depart") {
+                    		let busActualDepartTime = startTime + (direction.delay != null ? direction.delay*1000 : 0);
+                    		if (busActualDepartTime < departureTimeNowActualMs) {
+                    			keepRoute = false;
+                    		}
+                    	}
+                    }
                 };
                 return keepRoute;
             });
