@@ -23,6 +23,7 @@ class RouteRouter extends AbstractRouter {
         let departureTimeQuery: string = req.query.time;
         let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
         let departureTimeDateNow = new Date(departureTimeNowMs).toISOString();
+        const oneHourInMilliseconds = 3600000;
         
         try {
             let parameters: any = {
@@ -41,14 +42,10 @@ class RouteRouter extends AbstractRouter {
 
             parameters["pt.limit_solutions"] = 6
 
-            console.log(JSON.stringify(parameters));
-
-
-            let route: any = axios.get('http://localhost:8988/route', {
+            let busRoute: any =  axios.get('http://localhost:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
-            console.log('set up bus route');
 
             let walkingParameters: any = {
                 vehicle: "foot",
@@ -61,13 +58,11 @@ class RouteRouter extends AbstractRouter {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
 
-            console.log('set up walking route');
 
-
-            let [routeResult, walkingResult] = await Promise.all([route, walkingRoute]);
-
+            let [walkingResult, routeResult] = await Promise.all([walkingRoute, busRoute]);
+            
             let routeNow = await RouteUtils.parseRoute(routeResult.data);
-            let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs)
+            let routeWalking = WalkingUtils.parseWalkingRoute(walkingResult.data, departureTimeNowMs);
             
             routeNow = routeNow.filter(route => {
                 var isValid = true;
@@ -101,16 +96,27 @@ class RouteRouter extends AbstractRouter {
                 walkingTotals.forEach(element => {
                     totalWalkingForRoute += element;
                 });
-                //const reducer = (accumulator, currentWalk) => accumulator + currentWalk.distance;
-                //let totalWalkingDistance = walkingDirections.reduce(reducer);
-                //console.log( 'total walking distance ', parseFloat(totalWalkingDistance));
-                //console.log('route walking distance', routeWalking.directions[0].distance);
                 return totalWalkingForRoute <= routeWalking.directions[0].distance;
             });
 
             if (routeNow.length == 0) {
                 return [routeWalking]
             }
+            //throw out routes with over 1 hour time between each direction
+            routeNow = routeNow.filter(route => {
+                let keepRoute = true;
+                for (let index = 0; index < route.directions.length; index++) {
+                    const direction = route.directions[index];
+                    const startTime = Date.parse(direction.startTime);
+                    if (index != 0) { //means we can access the previous direction endTime
+                        const endTime = Date.parse(route.directions[index-1].endTime);
+                        if (endTime + oneHourInMilliseconds < startTime) {
+                            keepRoute = false;
+                        };
+                    };
+                };
+                return keepRoute;
+            });
 
             return routeNow;
 
