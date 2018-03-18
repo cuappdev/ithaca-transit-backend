@@ -31,7 +31,7 @@ class RouteRouter extends AbstractRouter {
         	departureTimeNowMs = departureTimeNowActualMs - delayBuffer*60*1000; // so we can potentially display delayed routes
         }
         let departureTimeDateNow = new Date(departureTimeNowMs).toISOString();
-        const oneHourInMilliseconds = 3600000;
+        const twoHourInMilliseconds = 3600000 * 2;
         
         try {
             let parameters: any = {
@@ -107,19 +107,17 @@ class RouteRouter extends AbstractRouter {
             if (routeNow.length == 0) {
                 return [routeWalking]
             }
-            //throw out routes with over 1 hour time between each direction
+            //throw out routes with over 2 hours time between each direction
             //also throw out routes that will depart before the query time if query is for 'leave at'
             routeNow = routeNow.filter(route => {
                 let keepRoute = true;
                 for (let index = 0; index < route.directions.length; index++) {
                     const direction = route.directions[index];
                     const startTime = Date.parse(direction.startTime);
-                    if (index != 0) { //means we can access the previous direction endTime
-                        const endTime = Date.parse(route.directions[index-1].endTime);
-                        if (endTime + oneHourInMilliseconds < startTime) {
-                            keepRoute = false;
-                        };
-                    };
+                    const endTime = Date.parse(direction.endTime);
+                    if (startTime + twoHourInMilliseconds <= endTime) {
+                        keepRoute = false;
+                    }
                     
                     if (departureDelayBuffer) { // make sure user can catch the bus
                     	if (direction.type == "depart") {
