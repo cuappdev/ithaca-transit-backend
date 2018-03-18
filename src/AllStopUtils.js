@@ -20,6 +20,7 @@ async function fetchAllStops() {
                 }
             });
         } catch (err) {
+            console.log('got error from fetchAllStops');
             throw err;
         }
 }

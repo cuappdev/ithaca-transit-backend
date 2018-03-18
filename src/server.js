@@ -22,8 +22,6 @@ const api: Api = new Api('/api/v1', [], [
 ]);
 
 TCATUtils.createRouteJson('routes.txt');
-RealtimeFeedUtils.start();
-AllStopUtils.start();
 dotenv.config();
 
 const port: number = parseInt(process.env.PORT) || 80;
@@ -33,6 +31,9 @@ fs.writeFile("config.json", JSON.stringify({basic_token: token}), function (err)
         console.log(err)
     }
 });
+
+RealtimeFeedUtils.start();
+AllStopUtils.start(); //needs to happen after we write to config file
 
 const server: http.Server = http.createServer(api.app);
 
