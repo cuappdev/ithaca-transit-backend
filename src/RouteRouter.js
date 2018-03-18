@@ -26,13 +26,13 @@ class RouteRouter extends AbstractRouter {
         let departureDelayBuffer: boolean = false;
         let departureTimeNowActualMs = departureTimeNowMs;
         if (!arriveBy) { // 'leave at' query
-        	departureDelayBuffer = true;
-        	const delayBuffer = 5; // minutes
-        	departureTimeNowMs = departureTimeNowActualMs - delayBuffer*60*1000; // so we can potentially display delayed routes
+            departureDelayBuffer = true;
+            const delayBuffer = 5; // minutes
+            departureTimeNowMs = departureTimeNowActualMs - delayBuffer * 60 * 1000; // so we can potentially display delayed routes
         }
         let departureTimeDateNow = new Date(departureTimeNowMs).toISOString();
-        const twoHourInMilliseconds = 3600000 * 2;
-        
+        const oneHourInMilliseconds = 3600000;
+
         try {
             let parameters: any = {
                 vehicle: "pt",
@@ -50,7 +50,7 @@ class RouteRouter extends AbstractRouter {
 
             parameters["pt.limit_solutions"] = 6
 
-            let busRoute: any =  axios.get('http://localhost:8988/route', {
+            let busRoute: any = axios.get('http://localhost:8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
@@ -73,8 +73,8 @@ class RouteRouter extends AbstractRouter {
             routeNow = routeNow.filter(route => {
                 var isValid = true;
                 for (let index = 0; index < route.directions.length; index++) {
-                    if (index != 0 && route.directions[index].type == "depart" && route.directions[index-1].type == "depart") {
-                        var firstPT = route.directions[index-1];
+                    if (index != 0 && route.directions[index].type == "depart" && route.directions[index - 1].type == "depart") {
+                        var firstPT = route.directions[index - 1];
                         var secondPT = route.directions[index];
                         isValid = firstPT.stops[firstPT.stops.length - 1].stopID == secondPT.stops[0].stopID;
                     }
@@ -86,8 +86,8 @@ class RouteRouter extends AbstractRouter {
 
             routeNow = routeNow.map(route => {
                 return RouteUtils.condense(route,
-                    {'lat': routePointParams[0], 'long': routePointParams[1]},
-                    {'lat': routePointParams[2], 'long': routePointParams[3]});
+                    { 'lat': routePointParams[0], 'long': routePointParams[1] },
+                    { 'lat': routePointParams[2], 'long': routePointParams[3] });
             });
             //now need to compare if walking route is better
             routeNow = routeNow.filter(route => {
@@ -115,17 +115,24 @@ class RouteRouter extends AbstractRouter {
                     const direction = route.directions[index];
                     const startTime = Date.parse(direction.startTime);
                     const endTime = Date.parse(direction.endTime);
-                    if (startTime + twoHourInMilliseconds <= endTime) {
+                    if (startTime + (oneHourInMilliseconds * 2) <= endTime) {
                         keepRoute = false;
                     }
-                    
+
+                    if (index != 0) { //means we can access the previous direction endTime
+                        const prevEndTime = Date.parse(route.directions[index - 1].endTime);
+                        if (prevEndTime + oneHourInMilliseconds < startTime) {
+                            keepRoute = false;
+                        };
+                    };
+
                     if (departureDelayBuffer) { // make sure user can catch the bus
-                    	if (direction.type == "depart") {
-                    		let busActualDepartTime = startTime + (direction.delay != null ? direction.delay*1000 : 0);
-                    		if (busActualDepartTime < departureTimeNowActualMs) {
-                    			keepRoute = false;
-                    		}
-                    	}
+                        if (direction.type == "depart") {
+                            let busActualDepartTime = startTime + (direction.delay != null ? direction.delay * 1000 : 0);
+                            if (busActualDepartTime < departureTimeNowActualMs) {
+                                keepRoute = false;
+                            }
+                        }
                     }
                 };
                 return keepRoute;
