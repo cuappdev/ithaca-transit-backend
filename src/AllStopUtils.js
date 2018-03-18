@@ -8,7 +8,6 @@ const HOUR_IN_MS = 1000 * 60 * 60;
 let allStopsAlarm;
 
 async function fetchAllStops() {
-    if(!allStops) {
         try {
             let authHeader = await TokenUtils.getAuthorizationHeader();
             let stopsRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Stops/GetAllStops',
@@ -23,9 +22,16 @@ async function fetchAllStops() {
         } catch (err) {
             throw err;
         }
-    }
-    return allStops;
 }
+
+function getAllStops() {
+    if (allStops.length == 0) {
+        fetchAllStops();
+    }
+    return allStops
+}
+
+
 
 function isStop(point: Object, name: string) {
     let stops  = allStops;
@@ -46,5 +52,5 @@ function start() {
 export default {
     start: start,
     isStop: isStop,
-    fetchAllStops: fetchAllStops
+    getAllStops: getAllStops
 };

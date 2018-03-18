@@ -9,7 +9,7 @@ class AllStopsRouter extends AbstractRouter {
     }
 
     async content(req: Request): Promise<any> {
-		return AllStopUtils.fetchAllStops();
+		return AllStopUtils.getAllStops();
     }
 }
 

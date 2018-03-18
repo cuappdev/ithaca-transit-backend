@@ -59,7 +59,7 @@ function mergeDirections(first, second) {
     }
 }
 
-function condense(route: Object, startCoords: string, endCoords: string) {
+function condense(route: Object, startCoords: Object, endCoords: Object) {
     const updatedDirections = [];
 
     let canFirstDirectionBeRemoved = AllStopUtils.isStop(startCoords, route.directions[0].name);

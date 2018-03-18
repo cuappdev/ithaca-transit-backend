@@ -1,15 +1,15 @@
 npm install
 git clone https://github.com/graphhopper/graphhopper.git
 git clone https://github.com/graphhopper/map-matching.git
-cd graphhopper
-git checkout 0.10
-cd ..
+# cd graphhopper
+# git checkout 0.10
+# cd ..
 mkdir graphhopper-walking
 cd graphhopper-walking
 git clone https://github.com/graphhopper/graphhopper.git
-cd graphhopper
-git checkout 0.10
-cd ../..
+# cd graphhopper
+# git checkout 0.10
+cd ..
 
 cd map-matching
 git checkout 0.9
