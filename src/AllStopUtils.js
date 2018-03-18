@@ -3,7 +3,7 @@ import axios from 'axios';
 import TokenUtils from './TokenUtils';
 import alarm from 'alarm';
 
-let allStops;
+let allStops = [];
 const HOUR_IN_MS = 1000 * 60 * 60;
 let allStopsAlarm;
 
