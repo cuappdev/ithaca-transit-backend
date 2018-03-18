@@ -26,14 +26,17 @@ dotenv.config();
 
 const port: number = parseInt(process.env.PORT) || 80;
 const token = process.env.TOKEN;
-fs.writeFile("config.json", JSON.stringify({basic_token: token}), function (err) {
-    if(err) {
-        console.log(err)
-    }
+
+writeToConfigFile() //make sure we write to config file first
+.then(success => {
+    RealtimeFeedUtils.start();
+    AllStopUtils.start(); //needs to happen after we write to config file
+})
+.catch(err => {
+    throw err;
 });
 
-RealtimeFeedUtils.start();
-AllStopUtils.start(); //needs to happen after we write to config file
+
 
 const server: http.Server = http.createServer(api.app);
 
@@ -49,3 +52,14 @@ const onListening = (): void => {
 server.on('error', onError);
 server.on('listening', onListening);
 server.listen(port);
+
+function writeToConfigFile() {
+    return new Promise(function(resolve, reject) {
+        fs.writeFile("config.json", JSON.stringify({basic_token: token}), function (err) {
+            if(err) {
+                reject(err);
+            }
+            resolve(true);
+        });
+    });
+}
