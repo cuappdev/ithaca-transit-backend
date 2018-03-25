@@ -64,11 +64,11 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
 
     let canFirstDirectionBeRemoved = AllStopUtils.isStop(startCoords, route.directions[0].name);
     let canLastDirectionBeRemoved = AllStopUtils.isStop(endCoords,
-        route.directions[route.directions.length-1].name);
-    if(canFirstDirectionBeRemoved) {
+        route.directions[route.directions.length - 1].name);
+    if (canFirstDirectionBeRemoved) {
         route.directions.shift();
     }
-    if(canLastDirectionBeRemoved){
+    if (canLastDirectionBeRemoved) {
         route.directions.pop();
     }
 
@@ -93,7 +93,7 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
             }
         } else {
             updatedDirections.push(direction);
-        }  
+        }
     }
     route.directions = updatedDirections;
     return route
@@ -105,12 +105,12 @@ async function parseRoute(resp: Object, destinationName: string) {
     let possibleRoutes = [];
 
     let paths = resp.paths;
-    
+
     for (let index = 0; index < paths.length; index++) {
 
         let currPath = paths[index];
 
-         //total time for journey, in milliseconds
+        //total time for journey, in milliseconds
         let totalTime = currPath.time;
 
         //this won't increment if the passenger 'stays on bus'
@@ -188,7 +188,7 @@ async function parseRoute(resp: Object, destinationName: string) {
             let delay = null;
             let stops = [];
             let stayOnBusForTransfer = false;
-            
+
             let distance = currLeg.distance;
             if (type == "depart") {
                 if (currLeg.isInSameVehicleAsPrevious) {
@@ -212,20 +212,8 @@ async function parseRoute(resp: Object, destinationName: string) {
                     //this gets the correct route number for the gtfs data
                     routeNumber = parseInt(route[0]["route_short_name"]);
                 }
-                
-                //ensure path.length >= 3 for map matching
-                if (path.length < 3) {
-                	let firstStopCoords = path[0];
-                	let lastStopCoords = path[path.length - 1];
-					let averageStopCoords = {
-						lat: (firstStopCoords.lat + lastStopCoords.lat)/2.0,
-						long: (firstStopCoords.long + lastStopCoords.long)/2.0,						
-					};
-                    path.splice(1, 0, averageStopCoords);
-                }
-                
-                //if the path.length < 3, map matching will return error
-                if (path.length >= 3) {
+
+                if (path.length >= 2) {
 
                     //Map Matching
                     let firstStopCoords = path[0];
@@ -245,14 +233,19 @@ async function parseRoute(resp: Object, destinationName: string) {
                             'vehicle': 'car'
                         }
                     };
-
-                    const snappingResponse = await axios.post('http://localhost:8989/match', gpx, config);
-                    path = snappingResponse.data.paths[0].points.coordinates.map(point => {
-                        return {
-                            lat: point[1],
-                            long: point[0]
-                        }
-                    });
+                    try {
+                        const snappingResponse = await axios.post('http://localhost:8989/match', gpx, config);
+                        //need to handle errors more gracefully
+                        path = snappingResponse.data.paths[0].points.coordinates.map(point => {
+                            return {
+                                lat: point[1],
+                                long: point[0]
+                            }
+                        });
+                    } catch (error) {
+                        //log error
+                        console.log(error.data);
+                    }
 
                     //Trim Coordinates so they start/end at bus stops
                     const startDistanceArray = path.map(point2 => {

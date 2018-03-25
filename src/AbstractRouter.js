@@ -38,6 +38,7 @@ class AbstractRouter {
                 }
                 throw err;
             }
+            next();
         };
     }
 }
