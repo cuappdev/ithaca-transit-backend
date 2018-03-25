@@ -50,6 +50,7 @@ class RouteRouter extends AbstractRouter {
         parameters["pt.walk_speed"] = 3.0;
         parameters["pt.earliest_departure_time"] = departureTimeDateNow;
         parameters["pt.profile"] = true;
+        parameters["pt.max_walk_distance_per_leg"] = 2000;
 
         let walkingParameters: any = {
             vehicle: "foot",
