@@ -1,25 +1,11 @@
 // @flow
 import http from 'http';
-import express, {Application, Request, Response} from 'express';
-import HelloWorldRouter from './HelloWorldRouter';
-import TrackingRouter from './TrackingRouter';
-import RouteRouter from './RouteRouter';
-import AllStopsRouter from './AllStopsRouter';
-import DelayRouter from './DelayRouter';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import AllStopUtils from './AllStopUtils';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import Api from './Api';
-
-const api: Api = new Api('/api/v1', [], [
-    HelloWorldRouter,
-    TrackingRouter,
-    RouteRouter,
-    AllStopsRouter,
-    DelayRouter
-]);
+import API from './API';
 
 TCATUtils.createRouteJson('routes.txt');
 dotenv.config();
@@ -37,21 +23,9 @@ writeToConfigFile() //make sure we write to config file first
 });
 
 
-api.app.use(logResponseBody);
 
-const server: http.Server = http.createServer(api.app);
+const server = new API().getServer();
 
-const onError = (err: Error): void => {
-    console.log(err);
-};
-
-const onListening = (): void => {
-    const host = server.address().address;
-    console.log(`Listening on ${host}:${port}`);
-};
-
-server.on('error', onError);
-server.on('listening', onListening);
 server.listen(port);
 
 function writeToConfigFile() {
@@ -64,27 +38,3 @@ function writeToConfigFile() {
         });
     });
 }
-
-function logResponseBody(req, res, next) {
-    var oldWrite = res.write,
-        oldEnd = res.end;
-  
-    var chunks = [];
-  
-    res.write = function (chunk) {
-      chunks.push(chunk);
-      oldWrite.apply(res, arguments);
-    };
-  
-    res.end = function (chunk) {
-      if (chunk)
-        chunks.push(chunk);
-  
-      var body = Buffer.concat(chunks).toString('utf8');
-      console.log(req.path, body);
-  
-      oldEnd.apply(res, arguments);
-    };
-  
-    next();
-  }

@@ -1,7 +1,7 @@
 // @flow
+import { AppDevRouter } from 'appdev';
 import RouteUtils from './RouteUtils';
 import WalkingUtils from './WalkingUtils';
-import AbstractRouter from './AbstractRouter';
 import TCATUtils from './TCATUtils';
 import axios from 'axios';
 import qs from 'qs';
@@ -10,13 +10,17 @@ import fs from 'fs';
 import createGpx from 'gps-to-gpx';
 import type Request from 'express';
 
-class RouteRouter extends AbstractRouter {
+class RouteRouter extends AppDevRouter<Array<Object>> {
 
     constructor() {
-        super('GET', '/route', true);
+        super('GET')
     }
 
-    async content(req: Request): Promise<any> {
+    getPath(): string {
+        return '/route/'
+    }
+
+    async content(req: Request): Promise<Array<Object>> {
         let start: string = req.query.start;
         let end: string = req.query.end;
         let arriveBy: boolean = req.query.arriveBy == '1'
@@ -33,18 +37,15 @@ class RouteRouter extends AbstractRouter {
         let departureTimeDateNow = new Date(departureTimeNowMs).toISOString();
         const oneHourInMilliseconds = 3600000;
 
-        //?point=42.441742%2C-76.510983&point=42.455447%2C-76.489651&
-        //pt.earliest_departure_time=2018-03-25T16%3A27%3A00.000Z&use_miles=false&layer=Omniscale
-        //try {
         let parameters: any = {
             vehicle: "pt",
-            weighting: "fastest",
+            weighting: "short_fastest",
             elevation: false,
             point: [start, end],
             points_encoded: false,
         };
         parameters["pt.arrive_by"] = arriveBy;
-        //parameters["ch.disable"] = true;
+        parameters["ch.disable"] = true;
 
         // if this was set to > 3.0, sometimes the route would suggest getting off bus earlier and walk half a mile instead of waiting longer
         parameters["pt.walk_speed"] = 3.0;
