@@ -5,7 +5,7 @@ import RealtimeFeedUtils from './RealtimeFeedUtils';
 import AllStopUtils from './AllStopUtils';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import API from './API';
+import API from './Api';
 
 TCATUtils.createRouteJson('routes.txt');
 dotenv.config();
