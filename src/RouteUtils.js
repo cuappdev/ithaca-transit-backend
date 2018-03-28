@@ -69,7 +69,7 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
         route.directions.shift();
     }
     if(canLastDirectionBeRemoved){
-        route.directions.pop();
+        //route.directions.pop();
     }
 
     for (let index = 0; index < route.directions.length; index++) {
