@@ -62,14 +62,17 @@ function mergeDirections(first, second) {
 function condense(route: Object, startCoords: Object, endCoords: Object) {
     const updatedDirections = [];
 
-    let canFirstDirectionBeRemoved = AllStopUtils.isStop(startCoords, route.directions[0].name);
-    let canLastDirectionBeRemoved = AllStopUtils.isStop(endCoords,
-        route.directions[route.directions.length-1].name);
-    if(canFirstDirectionBeRemoved) {
-        route.directions.shift();
-    }
-    if(canLastDirectionBeRemoved){
-        //route.directions.pop();
+	if (route.directions.length > 1) {
+		let canFirstDirectionBeRemoved = AllStopUtils.isStop(startCoords, route.directions[0].name);
+		let canLastDirectionBeRemoved = AllStopUtils.isStop(endCoords, route.directions[route.directions.length-1].name);
+		let walkDistanceStart = Math.pow(Math.pow(route.directions[0].endLocation.lat - route.directions[1].endLocation.lat, 2) + Math.pow(route.directions[0].endLocation.long - route.directions[1].endLocation.long, 2), 0.5);
+		let walkDistanceEnd = Math.pow(Math.pow(route.directions[route.directions.length-1].endLocation.lat - route.directions[route.directions.length-2].endLocation.lat, 2) + Math.pow(route.directions[route.directions.length-1].endLocation.long - route.directions[route.directions.length-2].endLocation.long, 2), 0.5);
+		if (canFirstDirectionBeRemoved && walkDistanceStart < 0.0005) {
+			route.directions.shift();
+		}
+		if (canLastDirectionBeRemoved && walkDistanceEnd < 0.0005) {
+			route.directions.pop();
+		}
     }
 
     for (let index = 0; index < route.directions.length; index++) {
@@ -83,6 +86,7 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
                     //this means both directions have the same routeNumber.
                     // No real transfer, probably just change in trip_ids
                     let combinedDirection = mergeDirections(firstDirection, secondDirection);
+                    console.log("combining directions: " + firstDirection.name + " " + secondDirection.name);
                     updatedDirections.pop();
                     updatedDirections.push(combinedDirection);
                 } else {
@@ -96,6 +100,7 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
         }  
     }
     route.directions = updatedDirections;
+    
     return route
 }
 
