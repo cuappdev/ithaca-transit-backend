@@ -86,7 +86,6 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
                     //this means both directions have the same routeNumber.
                     // No real transfer, probably just change in trip_ids
                     let combinedDirection = mergeDirections(firstDirection, secondDirection);
-                    console.log("combining directions: " + firstDirection.name + " " + secondDirection.name);
                     updatedDirections.pop();
                     updatedDirections.push(combinedDirection);
                 } else {
@@ -100,7 +99,6 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
         }  
     }
     route.directions = updatedDirections;
-    
     return route
 }
 
