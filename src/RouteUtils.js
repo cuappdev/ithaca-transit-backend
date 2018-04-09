@@ -62,14 +62,17 @@ function mergeDirections(first, second) {
 function condense(route: Object, startCoords: Object, endCoords: Object) {
     const updatedDirections = [];
 
-    let canFirstDirectionBeRemoved = AllStopUtils.isStop(startCoords, route.directions[0].name);
-    let canLastDirectionBeRemoved = AllStopUtils.isStop(endCoords,
-        route.directions[route.directions.length-1].name);
-    if(canFirstDirectionBeRemoved) {
-        route.directions.shift();
-    }
-    if(canLastDirectionBeRemoved){
-        route.directions.pop();
+	if (route.directions.length > 1) {
+		let canFirstDirectionBeRemoved = AllStopUtils.isStop(startCoords, route.directions[0].name);
+		let canLastDirectionBeRemoved = AllStopUtils.isStop(endCoords, route.directions[route.directions.length-1].name);
+		let walkDistanceStart = Math.pow(Math.pow(route.directions[0].endLocation.lat - route.directions[1].endLocation.lat, 2) + Math.pow(route.directions[0].endLocation.long - route.directions[1].endLocation.long, 2), 0.5);
+		let walkDistanceEnd = Math.pow(Math.pow(route.directions[route.directions.length-1].endLocation.lat - route.directions[route.directions.length-2].endLocation.lat, 2) + Math.pow(route.directions[route.directions.length-1].endLocation.long - route.directions[route.directions.length-2].endLocation.long, 2), 0.5);
+		if (canFirstDirectionBeRemoved && walkDistanceStart < 0.0005) {
+			route.directions.shift();
+		}
+		if (canLastDirectionBeRemoved && walkDistanceEnd < 0.0005) {
+			route.directions.pop();
+		}
     }
 
     for (let index = 0; index < route.directions.length; index++) {
