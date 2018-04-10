@@ -4,7 +4,7 @@ import TokenUtils from './TokenUtils';
 import alarm from 'alarm';
 
 let alerts = [];
-const MINUTE_IN_MS = 1000 * 60;
+const THREE_MINUTES_IN_MS = 1000 * 60 * 3;
 let allStopsAlarm;
 
 async function fetchAlerts() {
@@ -16,12 +16,12 @@ async function fetchAlerts() {
             return {
                 id: alert.MessageId,
                 message: alert.Message,
-                fromDate: alert.FromDate,
-                toDate: alert.ToDate,
-                fromTime: alert.FromTime,
-                toTime: alert.ToTime,
+                fromDate: parseMicrosoftFormatJSONDate(alert.FromDate),
+                toDate: parseMicrosoftFormatJSONDate(alert.ToDate),
+                fromTime: parseMicrosoftFormatJSONDate(alert.FromTime),
+                toTime: parseMicrosoftFormatJSONDate(alert.ToTime),
                 priority: alert.Priority,
-                daysOfWeek: alert.DaysOfWeek,
+                daysOfWeek: getWeekdayString(alert.DaysOfWeek),
                 routes: alert.Routes,
                 signs: alert.Signs,
                 channelMessages: alert.ChannelMessages
@@ -33,6 +33,37 @@ async function fetchAlerts() {
     }
 }
 
+function parseMicrosoftFormatJSONDate(dateStr) {
+    return new Date(parseInt(dateStr.substr(6)));
+}
+
+function getWeekdayString(daysOfWeek) {
+    switch(daysOfWeek) {
+        case 127:
+            return 'Every day';
+        case 65:
+            return 'Weekends';
+        case 62:
+            return 'Weekdays';
+        case 2:
+            return 'Monday';
+        case 4:
+            return 'Tuesday';
+        case 8:
+            return 'Wednesday';
+        case 16:
+            return 'Thursday';
+        case 32:
+            return 'Friday';
+        case 64:
+            return 'Saturday';
+        case 1:
+            return 'Sunday';
+        default:
+            return '';
+    }
+}
+
 function getAlerts() {
     if (alerts.length == 0) {
         fetchAlerts();
@@ -41,7 +72,7 @@ function getAlerts() {
 }
 
 function start() {
-    allStopsAlarm = alarm.recurring(MINUTE_IN_MS, fetchAlerts);
+    allStopsAlarm = alarm.recurring(THREE_MINUTES_IN_MS, fetchAlerts);
     fetchAlerts();
 }
 
