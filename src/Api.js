@@ -7,6 +7,7 @@ import HelloWorldRouter from './HelloWorldRouter';
 import TrackingRouter from './TrackingRouter';
 import RouteRouter from './RouteRouter';
 import AllStopsRouter from './AllStopsRouter';
+import AlertsRouter from './AlertsRouter';
 import DelayRouter from './DelayRouter';
 
 class API extends AppDevAPI {
@@ -29,7 +30,8 @@ class API extends AppDevAPI {
             TrackingRouter,
             RouteRouter,
             AllStopsRouter,
-            DelayRouter
+            DelayRouter,
+            AlertsRouter
         ];
     }
 }

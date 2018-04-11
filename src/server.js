@@ -1,8 +1,10 @@
 // @flow
 import http from 'http';
 import TCATUtils from './TCATUtils';
+import AlertsRouter from './AlertsRouter';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import AllStopUtils from './AllStopUtils';
+import AlertsUtils from './AlertsUtils';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import API from './Api';
@@ -17,12 +19,11 @@ writeToConfigFile() //make sure we write to config file first
 .then(success => {
     RealtimeFeedUtils.start();
     AllStopUtils.start(); //needs to happen after we write to config file
+    AlertsUtils.start();
 })
 .catch(err => {
     throw err;
 });
-
-
 
 const server = new API().getServer();
 
