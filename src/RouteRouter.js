@@ -1,5 +1,5 @@
 // @flow
-import { AppDevRouter } from 'appdev';
+import { AppDevRouter, RegisterSession } from 'appdev';
 import RouteUtils from './RouteUtils';
 import WalkingUtils from './WalkingUtils';
 import TCATUtils from './TCATUtils';
@@ -13,17 +13,17 @@ import type Request from 'express';
 class RouteRouter extends AppDevRouter<Array<Object>> {
 
     constructor() {
-        super('GET')
+        super('GET');
     }
 
     getPath(): string {
-        return '/route/'
+        return '/route/';
     }
 
     async content(req: Request): Promise<Array<Object>> {
         let start: string = req.query.start;
         let end: string = req.query.end;
-        let arriveBy: boolean = req.query.arriveBy == '1'
+        let arriveBy: boolean = req.query.arriveBy == '1';
         let destinationName = req.query.destinationName;
         let departureTimeQuery: string = req.query.time;
         let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
@@ -67,9 +67,9 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
-
         } catch (routeErr) {
             console.log('routing error');
+            TCATUtils.writeToRegister("routing_failed", {"parameters": JSON.stringify(parameters)});
             busRoute = null;
         }
 
@@ -80,6 +80,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             });
         } catch (walkingErr) {
             console.log('walking error');
+            TCATUtils.writeToRegister("walking_failed", {"parameters": JSON.stringify(walkingParameters)});
             walkingRoute = null;
         }
 
