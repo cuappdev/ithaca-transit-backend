@@ -28,6 +28,7 @@
   "homepage": "https://github.com/cuappdev/tcat.js#readme",
   "dependencies": {
     "alarm": "^2.0.0",
+    "appdev": "^0.4.2",
     "axios": "^0.18.0",
     "babel-core": "^6.26.0",
     "babel-jest": "^22.4.1",
@@ -42,6 +43,8 @@
     "flow-bin": "^0.66.0",
     "gps-to-gpx": "^1.1.0",
     "jest": "^22.4.2",
+    "moment": "^2.21.0",
+    "moment-timezone": "^0.5.14",
     "qs": "^6.5.1",
     "webpack": "^3.11.0",
     "webpack-node-externals": "^1.6.0",

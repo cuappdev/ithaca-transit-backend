@@ -1,25 +1,39 @@
 // @flow
-import express, {Application, Router, Request, Response, NextFunction} from 'express';
+
+import { AppDevAPI} from 'appdev';
+import { Router } from 'express';
 import bodyParser from 'body-parser';
+import HelloWorldRouter from './HelloWorldRouter';
+import TrackingRouter from './TrackingRouter';
+import RouteRouter from './RouteRouter';
+import AllStopsRouter from './AllStopsRouter';
+import AlertsRouter from './AlertsRouter';
+import DelayRouter from './DelayRouter';
 
-type ExpressHandlerFunction = (Request, Response, NextFunction) => any;
+class API extends AppDevAPI {
 
-class Api {
+    constructor() {
+        super();
+    }
 
-    app: Application;
+    getPath(): string {
+        return '/api/v1/';
+    }
 
-    constructor(root: string, middleware: Array<ExpressHandlerFunction>, routers: Array<Router>) {
-        this.app = express();
-        this.app.use(bodyParser.json())
+    middleware(): Array<any> {
+        return [bodyParser.json()];
+    }
 
-        for (let i = 0; i < middleware.length; i++) {
-            this.app.use(middleware[i]);
-        }
-
-        for (let i = 0; i < routers.length; i++) {
-            this.app.use(root, routers[i]);
-        }
+    routers(): Array<Router> {
+        return [
+            HelloWorldRouter,
+            TrackingRouter,
+            RouteRouter,
+            AllStopsRouter,
+            DelayRouter,
+            AlertsRouter
+        ];
     }
 }
 
-export default Api;
+export default API;

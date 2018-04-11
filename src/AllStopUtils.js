@@ -31,14 +31,13 @@ function getAllStops() {
     }
     return allStops
 }
-
-function isStop(point: Object, name: string) {
-    let stops  = allStops;
+function isStop(point: Object, name: string, distance: number) {
+    let stops = allStops;
     stops = stops.filter(stop => {
         return stop.lat == point.lat && stop.long == point.long;
     });
     if (stops.length > 0) {
-        return stops[0].name.toLowerCase() == name.toLowerCase();
+        return stops[0].name.toLowerCase() == name.toLowerCase() && distance < 15.0;
     }
     return false;
 }

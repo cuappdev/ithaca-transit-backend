@@ -1,11 +1,15 @@
 // @flow
-import AbstractRouter from './AbstractRouter';
+import { AppDevRouter } from 'appdev';
 import AlertsUtils from './AlertsUtils';
 
-class AlertsRouter extends AbstractRouter {
+class AlertsRouter extends AppDevRouter<Array<Object>> {
 
     constructor() {
-        super('GET', '/alerts', true);
+        super('GET');
+    }
+
+    getPath(): string {
+        return '/alerts/';
     }
 
     async content(req: Request): Promise<any> {

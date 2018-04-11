@@ -1,15 +1,19 @@
 // @flow
-import AbstractRouter from './AbstractRouter';
+import { AppDevRouter } from 'appdev';
 
-class HelloWorldRouter extends AbstractRouter {
+class HelloWorldRouter extends AppDevRouter<string> {
 
-    constructor() {
-        super('GET', '/', true);
-    }
+  constructor() {
+    super('GET');
+  }
 
-    async content(req: Request): Promise<any> {
-        return 'hello, world\n';
-    }
+  getPath(): string {
+    return '/';
+  }
+
+  async content(req: Request): Promise<string> {
+    return 'hello, world!';
+  }
 
 }
 

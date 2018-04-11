@@ -1,13 +1,17 @@
 // @flow
-import AbstractRouter from './AbstractRouter';
+import { AppDevRouter } from 'appdev'; 
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import type Request from 'express';
 import axios from 'axios';
 
-class DelayRouter extends AbstractRouter {
+class DelayRouter extends AppDevRouter<Object> {
 
     constructor() {
-        super('GET', '/delay', true);
+        super('GET');
+    }
+
+    getPath(): string {
+        return '/delay/';
     }
 
     async content(req: Request): Promise<any> {

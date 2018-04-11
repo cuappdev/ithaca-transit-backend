@@ -1,15 +1,19 @@
 // @flow
 import TokenUtils from './TokenUtils';
-import AbstractRouter from './AbstractRouter';
+import { AppDevRouter } from 'appdev';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import type Request from 'express';
 import axios from 'axios';
 import qs from 'qs';
 
-class TrackingRouter extends AbstractRouter {
+class TrackingRouter extends AppDevRouter<Object> {
 
     constructor() {
-        super('POST', '/tracking', true);
+        super('POST');
+    }
+
+    getPath(): string {
+        return '/tracking/';
     }
 
     async content(req: Request): Promise<any> {

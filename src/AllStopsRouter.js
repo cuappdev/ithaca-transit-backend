@@ -1,11 +1,15 @@
 // @flow
-import AbstractRouter from './AbstractRouter';
+import { AppDevRouter } from 'appdev';
 import AllStopUtils from './AllStopUtils';
 
-class AllStopsRouter extends AbstractRouter {
+class AllStopsRouter extends AppDevRouter<Array<Object>> {
 
     constructor() {
-        super('GET', '/allStops', true);
+        super('GET');
+    }
+
+    getPath(): string {
+        return '/allStops/';
     }
 
     async content(req: Request): Promise<any> {
