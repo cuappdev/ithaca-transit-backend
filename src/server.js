@@ -17,12 +17,11 @@ writeToConfigFile() //make sure we write to config file first
 .then(success => {
     RealtimeFeedUtils.start();
     AllStopUtils.start(); //needs to happen after we write to config file
+    AlertsUtils.start();
 })
 .catch(err => {
     throw err;
 });
-
-
 
 const server = new API().getServer();
 
