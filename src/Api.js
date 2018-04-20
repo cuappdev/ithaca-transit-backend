@@ -3,11 +3,11 @@
 import { AppDevAPI} from 'appdev';
 import { Router } from 'express';
 import bodyParser from 'body-parser';
-import HelloWorldRouter from './HelloWorldRouter';
-import TrackingRouter from './TrackingRouter';
-import RouteRouter from './RouteRouter';
-import AllStopsRouter from './AllStopsRouter';
-import DelayRouter from './DelayRouter';
+import HelloWorldRouter from './routers/HelloWorldRouter';
+import TrackingRouter from './routers/TrackingRouter';
+import RouteRouter from './routers/RouteRouter';
+import AllStopsRouter from './routers/AllStopsRouter';
+import DelayRouter from './routers/DelayRouter';
 
 class API extends AppDevAPI {
 

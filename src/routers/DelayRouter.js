@@ -1,6 +1,6 @@
 // @flow
 import { AppDevRouter } from 'appdev'; 
-import RealtimeFeedUtils from './RealtimeFeedUtils';
+import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 import type Request from 'express';
 import axios from 'axios';
 

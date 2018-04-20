@@ -1,7 +1,7 @@
 // @flow
-import TokenUtils from './TokenUtils';
+import TokenUtils from '../utils/TokenUtils';
 import { AppDevRouter } from 'appdev';
-import RealtimeFeedUtils from './RealtimeFeedUtils';
+import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 import type Request from 'express';
 import axios from 'axios';
 import qs from 'qs';

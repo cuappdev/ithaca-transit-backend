@@ -1,8 +1,8 @@
 // @flow
 import http from 'http';
-import TCATUtils from './TCATUtils';
-import RealtimeFeedUtils from './RealtimeFeedUtils';
-import AllStopUtils from './AllStopUtils';
+import TCATUtils from './utils/TCATUtils';
+import RealtimeFeedUtils from './utils/RealtimeFeedUtils';
+import AllStopUtils from './utils/AllStopUtils';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import API from './Api';

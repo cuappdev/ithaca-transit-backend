@@ -1,6 +1,6 @@
 // @flow
 import { AppDevRouter } from 'appdev';
-import AllStopUtils from './AllStopUtils';
+import AllStopUtils from '../utils/AllStopUtils';
 
 class AllStopsRouter extends AppDevRouter<Array<Object>> {
 

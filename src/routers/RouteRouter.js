@@ -1,8 +1,8 @@
 // @flow
 import { AppDevRouter, RegisterSession } from 'appdev';
-import RouteUtils from './RouteUtils';
-import WalkingUtils from './WalkingUtils';
-import TCATUtils from './TCATUtils';
+import RouteUtils from '../utils/RouteUtils';
+import WalkingUtils from '../utils/WalkingUtils';
+import TCATUtils from '../utils/TCATUtils';
 import axios from 'axios';
 import qs from 'qs';
 import csv from 'csvtojson';
@@ -83,6 +83,11 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             TCATUtils.writeToRegister("walking_failed", {"parameters": JSON.stringify(walkingParameters)});
             walkingRoute = null;
         }
+
+        if (!busRoute && !walkingRoute) {
+            return []
+        }
+        
 
         let routeWalking = WalkingUtils.parseWalkingRoute(walkingRoute.data, departureTimeNowMs, destinationName);
         
