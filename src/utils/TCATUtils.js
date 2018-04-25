@@ -9,7 +9,7 @@ dotenv.config();
 var routeJson = [];
 
 
-const secret_key = process.env.REGISTERTOKEN || "";
+const secret_key = process.env.REGISTER_TOKEN || "";
 var register = new RegisterSession("http://register.cornellappdev.com", secret_key, 5);
 
 function writeToRegister(event_type: string, payload: Object) {

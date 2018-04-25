@@ -63,7 +63,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         var walkingRoute;
 
         try {
-            busRoute = await axios.get('http://localhost:8988/route', {
+            busRoute = await axios.get('http://' + process.env.GHOPPER_BUS + ':8988/route', {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
@@ -74,7 +74,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         }
 
         try {
-            walkingRoute = await axios.get('http://localhost:8987/route', {
+            walkingRoute = await axios.get('http://' + process.env.GHOPPER_WALKING + ':8987/route', {
                 params: walkingParameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
