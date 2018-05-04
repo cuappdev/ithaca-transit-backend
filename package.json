@@ -13,11 +13,9 @@
     "init": "sh scripts/init.sh",
     "mapmatching": "cd map-matching && ./map-matching.sh action=start-server ; cd ..",
     "start": "npm run cleanup; npm run build && sh scripts/run.sh",
-    "start-dev": "npm run init && npm run build-dev",
+    "start-dev": "npm run init && flow && npm run build-dev",
     "cleanup": "killall -9 java",
-    "test": "jest --runInBand --noStackTrace --detectOpenHandles src/test",
-    "flow": "node_modules/.bin/flow",
-    "flow-stop": "node_modules/.bin/flow stop"
+    "test": "jest --runInBand --noStackTrace --detectOpenHandles src/test"
   },
   "repository": {
     "type": "git",
@@ -37,7 +35,6 @@
     "csvtojson": "^2.0.8",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
-    "flow-bin": "^0.80.0",
     "gps-to-gpx": "^1.1.0",
     "lru-cache": "^4.1.3",
     "moment": "^2.22.2",
@@ -64,6 +61,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
     "extra-watch-webpack-plugin": "^1.0.3",
+    "flow-bin": "^0.80.0",
     "jest": "^23.5.0",
     "nodemon": "^1.18.4",
     "nodemon-webpack-plugin": "^4.0.3",
