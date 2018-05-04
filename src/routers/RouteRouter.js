@@ -9,6 +9,8 @@ import csv from 'csvtojson';
 import fs from 'fs';
 import createGpx from 'gps-to-gpx';
 import type Request from 'express';
+import ErrorUtils from '../utils/ErrorUtils';
+
 
 class RouteRouter extends AppDevRouter<Array<Object>> {
 
@@ -68,8 +70,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
         } catch (routeErr) {
-            console.log('routing error');
-            TCATUtils.writeToRegister("routing_failed", {"parameters": JSON.stringify(parameters)});
+            ErrorUtils.logToRegister(routeErr.response.data.hints[0].message, parameters, 'routing_falied', true);
             busRoute = null;
         }
 
@@ -79,15 +80,13 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
         } catch (walkingErr) {
-            console.log('walking error');
-            TCATUtils.writeToRegister("walking_failed", {"parameters": JSON.stringify(walkingParameters)});
+            ErrorUtils.logToRegister(walkingErr.response.data.hints[0].message, parameters, 'walking_falied', true);
             walkingRoute = null;
         }
 
         if (!busRoute && !walkingRoute) {
-            return []
+            return [];
         }
-        
 
         let routeWalking = WalkingUtils.parseWalkingRoute(walkingRoute.data, departureTimeNowMs, destinationName);
         
@@ -136,6 +135,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         if (routeNow.length == 0) {
             return [routeWalking]
         }
+
         //throw out routes with over 2 hours time between each direction
         //also throw out routes that will depart before the query time if query is for 'leave at'
         routeNow = routeNow.filter(route => {

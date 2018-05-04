@@ -31,7 +31,7 @@ class API extends AppDevAPI {
             RouteRouter,
             AllStopsRouter,
             DelayRouter,
-            AlertsRouter
+            AlertsRouter,
         ];
     }
 }
