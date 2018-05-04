@@ -63,6 +63,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
 
         var busRoute;
         var walkingRoute;
+        let errors = [];
 
         try {
             busRoute = await axios.get('http://localhost:8988/route', {
@@ -70,7 +71,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
         } catch (routeErr) {
-            ErrorUtils.logToRegister(routeErr.response.data.hints[0].message, parameters, 'routing_falied', true);
+            errors.push(ErrorUtils.logToRegister(routeErr.response.data.hints[0].message, parameters, 'routing_falied', true));
             busRoute = null;
         }
 
@@ -80,12 +81,12 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
         } catch (walkingErr) {
-            ErrorUtils.logToRegister(walkingErr.response.data.hints[0].message, parameters, 'walking_falied', true);
+            errors.push(ErrorUtils.logToRegister(walkingErr.response.data.hints[0].message, parameters, 'walking_falied', true));
             walkingRoute = null;
         }
 
         if (!busRoute && !walkingRoute) {
-            return [];
+            return errors;
         }
 
         let routeWalking = WalkingUtils.parseWalkingRoute(walkingRoute.data, departureTimeNowMs, destinationName);
