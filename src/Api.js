@@ -26,12 +26,12 @@ class API extends AppDevAPI {
 
     routers(): Array<Router> {
         return [
-            HelloWorldRouter,
-            TrackingRouter,
-            RouteRouter,
+            AlertsRouter,
             AllStopsRouter,
             DelayRouter,
-            AlertsRouter,
+            HelloWorldRouter,
+            RouteRouter,
+            TrackingRouter,
         ];
     }
 }

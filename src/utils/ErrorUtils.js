@@ -7,13 +7,13 @@ function getErrorCode(message) {
     message = message.toLowerCase();
 
     if (message.includes('is out of bounds')) {
-        return ErrorCodes.OUT_OF_BOUNDS; //Point 0 is out of bounds: 42.4929015990742,-76.9723900315137
+        return ErrorCodes.OUT_OF_BOUNDS; // Point 0 is out of bounds: 42.4929015990742,-76.9723900315137
     } else if (message.includes('maximum number of nodes exceeded')) {
-        return ErrorCodes.MAX_NODES_EXCEEDED; //No path found - maximum number of nodes exceeded: 1000000
+        return ErrorCodes.MAX_NODES_EXCEEDED; // No path found - maximum number of nodes exceeded: 1000000
     } else if (message.includes('no route found')) {
         return ErrorCodes.NO_ROUTE_FOUND;
     } else {
-            return ErrorCodes.UNKNOWN;
+        return ErrorCodes.UNKNOWN;
     }
 }
 
@@ -26,7 +26,7 @@ function generateErrorResponse(message) {
 
 function logToRegister(message, parameters, note, logConsole) {
     let response = generateErrorResponse(message);
-    if(note) {
+    if (note) {
         TCATUtils.writeToRegister(response.errors,
             {
                 "parameters": JSON.stringify(parameters),
@@ -41,7 +41,7 @@ function logToRegister(message, parameters, note, logConsole) {
             });
     }
 
-    if(logConsole) {
+    if (logConsole) {
         console.log(JSON.stringify(response) + ' "note:"' + note);
     }
 
