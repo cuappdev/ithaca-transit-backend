@@ -26,11 +26,11 @@ writeToConfigFile() //make sure we write to config file first
 
 const server = new API().getServer();
 
-server.listen(port);
+server.listen(port, '0.0.0.0');
 
 function writeToConfigFile() {
     return new Promise(function(resolve, reject) {
-        fs.writeFile("config.json", JSON.stringify({basic_token: token}), function (err) {
+        fs.writeFile('config.json', JSON.stringify({basic_token: token}), function (err) {
             if(err) {
                 reject(err);
             }
