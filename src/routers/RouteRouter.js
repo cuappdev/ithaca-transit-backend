@@ -9,6 +9,8 @@ import csv from 'csvtojson';
 import fs from 'fs';
 import createGpx from 'gps-to-gpx';
 import type Request from 'express';
+import ErrorUtils from '../utils/ErrorUtils';
+
 
 class RouteRouter extends AppDevRouter<Array<Object>> {
 
@@ -61,6 +63,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
 
         var busRoute;
         var walkingRoute;
+        let errors = [];
 
         try {
             busRoute = await axios.get('http://' + process.env.GHOPPER_BUS + ':8988/route', {
@@ -68,8 +71,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
         } catch (routeErr) {
-            console.log('routing error');
-            TCATUtils.writeToRegister("routing_failed", {"parameters": JSON.stringify(parameters)});
+            errors.push(ErrorUtils.logToRegister(routeErr.response.data.hints[0].message, parameters, 'routing_failed', true));
             busRoute = null;
         }
 
@@ -79,15 +81,13 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' })
             });
         } catch (walkingErr) {
-            console.log('walking error');
-            TCATUtils.writeToRegister("walking_failed", {"parameters": JSON.stringify(walkingParameters)});
+            errors.push(ErrorUtils.logToRegister(walkingErr.response.data.hints[0].message, parameters, 'walking_failed', true));
             walkingRoute = null;
         }
 
         if (!busRoute && !walkingRoute) {
-            return []
+            return errors;
         }
-        
 
         let routeWalking = WalkingUtils.parseWalkingRoute(walkingRoute.data, departureTimeNowMs, destinationName);
         
@@ -136,6 +136,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         if (routeNow.length == 0) {
             return [routeWalking]
         }
+
         //throw out routes with over 2 hours time between each direction
         //also throw out routes that will depart before the query time if query is for 'leave at'
         routeNow = routeNow.filter(route => {
