@@ -29,7 +29,7 @@ class TrackingRouter extends AppDevRouter<Object> {
 
             if (realtimeData.noInfoYet) {
                 invalidData = true;
-                continue;//invalud data
+                continue;  // invalid data
             }
 
             try {
