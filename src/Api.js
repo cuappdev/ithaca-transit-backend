@@ -1,21 +1,17 @@
 // @flow
-
-import { AppDevAPI} from 'appdev';
-import { Router } from 'express';
+import { AppDevAPI } from 'appdev';
 import bodyParser from 'body-parser';
-import HelloWorldRouter from './routers/HelloWorldRouter';
-import TrackingRouter from './routers/TrackingRouter';
-import RouteRouter from './routers/RouteRouter';
+import { Router } from 'express';
+
+import AlertsRouter from './routers/AlertsRouter';
 import AllStopsRouter from './routers/AllStopsRouter';
 import DelayRouter from './routers/DelayRouter';
-import AlertsRouter from './routers/AlertsRouter';
+import HelloWorldRouter from './routers/HelloWorldRouter';
+import PlacesAutocompleteRouter from './routers/PlacesAutocompleteRouter';
+import RouteRouter from './routers/RouteRouter';
+import TrackingRouter from './routers/TrackingRouter';
 
 class API extends AppDevAPI {
-
-    constructor() {
-        super();
-    }
-
     getPath(): string {
         return '/api/v1/';
     }
@@ -30,6 +26,7 @@ class API extends AppDevAPI {
             AllStopsRouter,
             DelayRouter,
             HelloWorldRouter,
+            PlacesAutocompleteRouter,
             RouteRouter,
             TrackingRouter,
         ];

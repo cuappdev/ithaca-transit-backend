@@ -1,9 +1,9 @@
 // @flow
 import { AppDevRouter } from 'appdev';
+import type Request from 'express';
 import AlertsUtils from '../utils/AlertsUtils';
 
 class AlertsRouter extends AppDevRouter<Array<Object>> {
-
     constructor() {
         super('GET');
     }

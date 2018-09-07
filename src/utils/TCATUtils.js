@@ -1,36 +1,26 @@
-//@flow
-import fs, { write } from 'fs';
-import { RegisterSession } from 'appdev';
+// @flow
+import fs from 'fs';
 import csv from 'csvtojson';
-import createGpx from 'gps-to-gpx';
 import dotenv from 'dotenv';
 
 dotenv.config();
-var routeJson = [];
-
-
-const secret_key = process.env.REGISTER_TOKEN || "";
-var register = new RegisterSession("http://register.cornellappdev.com", secret_key, 5);
-
-function writeToRegister(event_type: string, payload: Object) {
-    register.logEvent(event_type, payload);
-}
+const routeJson = [];
 
 function readCSV(fileName: string) {
-    return new Promise(function (resolve, reject) {
-        fs.readFile("tcat-ny-us/" + fileName, "utf8", function (err, csvString) {
+    return new Promise(((resolve, reject) => {
+        fs.readFile(`tcat-ny-us/${fileName}`, 'utf8', (err, csvString) => {
             if (err) {
                 reject(err);
             } else {
                 resolve(csvString);
             }
         });
-    });
+    }));
 }
 
 function createRouteJson(fileName: string) {
     readCSV(fileName)
-        .then(csvString => {
+        .then((csvString) => {
             csv()
                 .fromString(csvString)
                 .on('json', (jsonObj) => {
@@ -41,11 +31,10 @@ function createRouteJson(fileName: string) {
                         console.log(error);
                     }
                 });
-        })
+        });
 }
 
 export default {
-    routeJson: routeJson,
-    createRouteJson: createRouteJson,
-    writeToRegister: writeToRegister
-}
+    routeJson,
+    createRouteJson,
+};
