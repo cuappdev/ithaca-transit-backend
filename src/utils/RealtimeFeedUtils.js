@@ -1,7 +1,7 @@
 // @flow
 import alarm from 'alarm';
-import axios from 'axios';
 import xml2js from 'xml2js';
+import request from 'request';
 import ErrorUtils from './ErrorUtils';
 
 const { parseString } = xml2js;
@@ -39,7 +39,7 @@ function xmlToJson(xml: String, forTrip: boolean) {
                 });
             } else if (result) { // means we are here for the vehicle realtime data
                 vehicleRealtimeFeed = result.FeedMessage.Entities[0].FeedEntity.map((entity) => {
-                    if (entity.Vehicle[0].Trip) {
+                    if (entity.Vehicle && entity.Vehicle[0].Trip) {
                         return entity.Vehicle[0].Trip[0].TripId[0];
                     }
                     return null;
@@ -54,17 +54,53 @@ function xmlToJson(xml: String, forTrip: boolean) {
 
 async function fetchVehicleRealtimeFeed() {
     try {
-        const realtimeReq = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=VehiclePosition&debug=true&serverid=0');
-        xmlToJson(realtimeReq.data, false);
+        const options = {
+            method: 'GET',
+            url: 'https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=TripUpdate&debug=true',
+            headers:
+                {
+                    'Cache-Control': 'no-cache',
+                },
+        };
+
+        const realtimeReq = await new Promise((resolve, reject) => {
+            request(options, (error, response, body) => {
+                if (error) reject(error);
+                resolve(body);
+            });
+        }).then(value => value).catch((error) => {
+            ErrorUtils.log(error, null, 'Vehicle realtime request failed');
+            return null;
+        });
+
+        xmlToJson(realtimeReq, false);
     } catch (err) {
-        ErrorUtils.log(err, null, 'Couldn\'t get vehicle realtime feed');
+        ErrorUtils.log(err, null, 'Couldn\'t fetch vehicle realtime feed');
     }
 }
 
 async function fetchTripRealtimeFeed() {
     try {
-        const realtimeReq = await axios.get('https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=TripUpdate&debug=true');
-        xmlToJson(realtimeReq.data, true);
+        const options = {
+            method: 'GET',
+            url: 'https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=TripUpdate&debug=true',
+            headers:
+                {
+                    'Cache-Control': 'no-cache',
+                },
+        };
+
+        const realtimeReq = await new Promise((resolve, reject) => {
+            request(options, (error, response, body) => {
+                if (error) reject(error);
+                resolve(body);
+            });
+        }).then(value => value).catch((error) => {
+            ErrorUtils.log(error, null, 'Trip realtime request failed');
+            return null;
+        });
+
+        xmlToJson(realtimeReq, true);
         // data is now stored in tripRealtimeFeed
     } catch (err) {
         ErrorUtils.log(err, null, 'Couldn\'t fetch trip realtime feed');

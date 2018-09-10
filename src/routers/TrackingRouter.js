@@ -2,10 +2,10 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import type Request from 'express';
-import axios from 'axios';
-import qs from 'qs';
+import request from 'request';
 import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 import TokenUtils from '../utils/TokenUtils';
+import ErrorUtils from '../utils/ErrorUtils';
 
 class TrackingRouter extends AppDevRouter<Object> {
     constructor() {
@@ -21,7 +21,7 @@ class TrackingRouter extends AppDevRouter<Object> {
         let foundTrackingData = false;
         const trackingInformation = [];
         let noData = false;
-        
+
         for (let index = 0; index < trackingArray.length; index++) {
             const data = trackingArray[index];
             const realtimeData = RealtimeFeedUtils.getTrackingInformation(data.stopID, data.tripIdentifiers);
@@ -29,14 +29,34 @@ class TrackingRouter extends AppDevRouter<Object> {
             if (!realtimeData.noInfoYet) {
                 try {
                     const authHeader = await TokenUtils.getAuthorizationHeader();
-                    const parameters: any = {
-                        routeID: data.routeID,
+
+                    const options = {
+                        method: 'GET',
+                        url: 'https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Vehicles/GetAllVehiclesForRoute',
+                        headers:
+                            {
+                                'Postman-Token': 'b688b636-87ea-4e04-9f3e-ba34e811e639',
+                                'Cache-Control': 'no-cache',
+                                Authorization: authHeader,
+                            },
+                        qs:
+                            {
+                                routeID: data.routeID,
+                            },
                     };
-                    const trackingRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Vehicles/GetAllVehiclesForRoute', {
-                        params: parameters,
-                        paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
-                        headers: { Authorization: authHeader },
-                    });
+
+                    const trackingRequest = JSON.parse(await new Promise((resolve, reject) => {
+                        request(options, (error, response, body) => {
+                            if (error) reject(error);
+                            console.log(response);
+                            resolve(body);
+                        });
+                    }).then(value => value).catch((error) => {
+                        ErrorUtils.log(error, null, 'Tracking request failed');
+                        return null;
+                    }));
+
+                    console.log('tracking req', trackingRequest);
 
                     const trackingData = trackingRequest.data.filter(busInfo => busInfo.VehicleId === realtimeData.vehicleID).map((busInfo) => {
                         let lastUpdated = busInfo.LastUpdated;
@@ -76,7 +96,7 @@ class TrackingRouter extends AppDevRouter<Object> {
                         noData = true;
                     }
                 } catch (err) {
-                    console.log(err);
+                    ErrorUtils.log(err, trackingArray, 'Tracking error');
                     throw err;
                 }
             }

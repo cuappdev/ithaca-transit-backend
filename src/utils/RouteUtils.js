@@ -4,6 +4,7 @@ import createGpx from 'gps-to-gpx';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import AllStopUtils from './AllStopUtils';
+import ErrorUtils from './ErrorUtils';
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
@@ -229,7 +230,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                         }));
                     } catch (error) {
                         // log error
-                        console.log(error.data);
+                        ErrorUtils.log(error.data, destinationName, 'Snap response failed');
                     }
 
                     // Trim Coordinates so they start/end at bus stops

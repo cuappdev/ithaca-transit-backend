@@ -2,6 +2,7 @@
 import fs from 'fs';
 import csv from 'csvtojson';
 import dotenv from 'dotenv';
+import ErrorUtils from './ErrorUtils';
 
 dotenv.config();
 const routeJson = [];
@@ -28,7 +29,7 @@ function createRouteJson(fileName: string) {
                 })
                 .on('done', (error) => {
                     if (error) {
-                        console.log(error);
+                        ErrorUtils.log(error, fileName, 'Could not create route JSON');
                     }
                 });
         });

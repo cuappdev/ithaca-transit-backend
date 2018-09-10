@@ -14,16 +14,15 @@ async function fetchAllStops() {
         const options = {
             method: 'GET',
             url: 'https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Stops/GetAllStops',
-            // qs: { grant_type: 'client_credentials' },
             headers:
                 {
+                    'Postman-Token': 'b688b636-87ea-4e04-9f3e-ba34e811e639',
+                    'Cache-Control': 'no-cache',
                     Authorization: authHeader,
                 },
         };
 
-        console.log(options);
-
-        const stopsRequest = await new Promise((resolve, reject) => {
+        const stopsRequest = JSON.parse(await new Promise((resolve, reject) => {
             request(options, (error, response, body) => {
                 if (error) reject(error);
                 resolve(body);
@@ -31,11 +30,9 @@ async function fetchAllStops() {
         }).then(value => value).catch((error) => {
             ErrorUtils.log(error, null, 'allStops request failed');
             return null;
-        });
+        }));
 
-        console.log(stopsRequest);
-
-        allStops = stopsRequest.data.map(stop => ({
+        allStops = stopsRequest.map(stop => ({
             name: stop.Name,
             lat: stop.Latitude,
             long: stop.Longitude,

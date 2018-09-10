@@ -12,7 +12,7 @@ class HelloWorldRouter extends AppDevRouter<string> {
     }
 
     async content(req: Request): Promise<string> {
-        return (`Hello World! Currently on ${process.env.NODE_ENV} environment`);
+        return (`Hello World! Currently on ${process.env.NODE_ENV} environment.`);
     }
 }
 

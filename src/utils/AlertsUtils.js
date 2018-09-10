@@ -1,6 +1,6 @@
 // @flow
-import axios from 'axios';
 import alarm from 'alarm';
+import request from 'request';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './ErrorUtils';
 
@@ -10,9 +10,28 @@ const THREE_MINUTES_IN_MS = 1000 * 60 * 3;
 async function fetchAlerts() {
     try {
         const authHeader = await TokenUtils.getAuthorizationHeader();
-        const alertsRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/PublicMessages/GetAllMessages',
-            { headers: { Authorization: authHeader } });
-        alerts = alertsRequest.data.map(alert => ({
+
+        const options = {
+            method: 'GET',
+            url: 'https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/PublicMessages/GetAllMessages',
+            headers:
+                {
+                    'Cache-Control': 'no-cache',
+                    Authorization: authHeader,
+                },
+        };
+
+        const alertsRequest = JSON.parse(await new Promise((resolve, reject) => {
+            request(options, (error, response, body) => {
+                if (error) reject(error);
+                resolve(body);
+            });
+        }).then(value => value).catch((error) => {
+            ErrorUtils.log(error, null, 'Alerts request failed');
+            return null;
+        }));
+
+        alerts = alertsRequest.map(alert => ({
             id: alert.MessageId,
             message: alert.Message,
             fromDate: parseMicrosoftFormatJSONDate(alert.FromDate),

@@ -67,7 +67,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
             });
         } catch (routeErr) {
-            errors.push(ErrorUtils.logToRegister(routeErr.response.data.hints[0].message, parameters, 'routing_failed'));
+            errors.push(ErrorUtils.log(routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS}`));
             busRoute = null;
         }
 
@@ -77,7 +77,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
             });
         } catch (walkingErr) {
-            errors.push(ErrorUtils.logToRegister(walkingErr.response.data.hints[0].message, parameters, 'walking_failed'));
+            errors.push(ErrorUtils.log(walkingErr.response.data.hints[0].message, parameters, `Walking failed: ${process.env.GHOPPER_WALKING}`));
             walkingRoute = null;
         }
 

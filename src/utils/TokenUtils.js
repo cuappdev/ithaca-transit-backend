@@ -3,41 +3,35 @@ import fs from 'fs';
 import request from 'request';
 import ErrorUtils from './ErrorUtils';
 
-let basicToken = null;
-let accessToken = null;
-let expiryDate = null;
+let credentials = { basic_token: null, access_token: null, expiry_date: null };
 
 async function getCredentials() {
-    let credentials;
-
-    if (!basicToken) {
-        credentials = await (JSON.parse(fs.readFileSync('config.json', 'utf8')))
+    if (!credentials.basic_token) {
+        const config = await (JSON.parse(fs.readFileSync('config.json', 'utf8')))
             || fs.readFile('file', 'utf8', (err, data) => {
                 if (err) ErrorUtils.log(err, null, 'Could not get credentials from file');
                 return JSON.parse(data);
             });
 
-        accessToken = credentials.access_token || null;
-        expiryDate = credentials.expiry_date || null;
-        basicToken = credentials.basic_token || null;
+        credentials.access_token = config.access_token || null;
+        credentials.expiry_date = config.expiry_date || null;
+        credentials.basic_token = config.basic_token || null;
     }
-
-    credentials = { basic_token: basicToken, access_token: accessToken, expiry_date: expiryDate };
 
     return credentials;
 }
 
 function isAccessTokenExpired() {
-    if (!accessToken || !expiryDate) { // we have yet to generate an access token
+    if (!credentials.access_token || !credentials.expiry_date) { // we have yet to generate an access token
         return true;
     }
     const currentDate = new Date();
     // 0.5 second expiration buffer
-    return (new Date(expiryDate)).getTime() - 500 < currentDate.getTime();
+    return (new Date(credentials.expiry_date)).getTime() - 500 < currentDate.getTime();
 }
 
 async function generateAccessToken() {
-    const credentials = await getCredentials();
+    await getCredentials();
 
     const basicAuthHeader = `Basic ${credentials.basic_token}`;
 
@@ -53,57 +47,43 @@ async function generateAccessToken() {
                 },
     };
 
-    const finish = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         request(options, (error, response, body) => {
             if (error) reject(error);
             resolve(body);
         });
-    });
-
-    finish.then((tokenRequest: any) => {
-        accessToken = tokenRequest;
-
-        console.log('Access token', accessToken);
+    }).then((tokenRequest: any) => {
+        const token = JSON.parse(tokenRequest);
 
         const currentDate = new Date();
         const newCredentials = {
             basic_token: credentials.basic_token,
-            tokenRequest,
-            expiry_date: new Date(currentDate.getTime() + tokenRequest.expires_in * 1000),
+            access_token: token.access_token,
+            expiry_date: token.expires_in && new Date(currentDate.getTime() + token.expires_in * 1000),
         };
 
-        console.log('New credidentials', newCredentials);
-
         if (newCredentials && newCredentials.basic_token) {
-            accessToken = newCredentials.tokenRequest.access_token;
-            expiryDate = newCredentials.tokenRequest.expiry_date;
-
+            credentials = newCredentials;
             fs.writeFile('config.json', JSON.stringify(newCredentials), 'utf8', (err) => {
                 if (err) ErrorUtils.log(err, null, 'Could not write access token');
             });
         }
 
         return newCredentials.access_token;
-    });
-
-    finish.catch((error) => {
+    }).catch((error) => {
         ErrorUtils.log(error, null, 'Token request failed');
         return null;
     });
 }
 
 async function getAuthorizationHeader() {
-    const credentials = await getCredentials();
+    await getCredentials(); // load from disk
 
-    if (isAccessTokenExpired(credentials)) {
-        accessToken = await generateAccessToken();
-    } else {
-        accessToken = credentials.access_token;
+    if (isAccessTokenExpired()) { // else get from API
+        await generateAccessToken();
     }
 
-    accessToken = accessToken || credentials.access_token || await generateAccessToken();
-
-    return `Bearer ${accessToken}`;
+    return `Bearer ${credentials.access_token}`;
 }
 
 export default {

@@ -1,5 +1,4 @@
 import { RegisterSession } from 'appdev';
-import TCATUtils from './TCATUtils';
 
 /**
  * Each error code is associated with a HTTP status code, message, and/or classification substrings
@@ -141,7 +140,7 @@ function log(error: string, requestParameters: ?Object, note: ?string) {
     };
 
     if (env === 'production') {
-        TCATUtils.writeToRegister(
+        writeToRegister(
             response.code,
             JSON.stringify({ registerPayload, stackTrace }, null, '\t'),
         );
