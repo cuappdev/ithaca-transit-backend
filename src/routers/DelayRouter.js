@@ -13,10 +13,8 @@ class DelayRouter extends AppDevRouter<Object> {
     }
 
     async content(req: Request): Promise<any> {
-        const { stopID } = req.query;
-        const { tripID } = req.query;
-        const delay = RealtimeFeedUtils.getDelay(stopID, tripID);
-        return { delay };
+        const { stopID, tripID } = req.query;
+        return RealtimeFeedUtils.getDelay(stopID, tripID).delay;
     }
 }
 

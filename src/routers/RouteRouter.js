@@ -18,9 +18,9 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
 
     async content(req: Request): Promise<Array<Object>> {
         const {
-            start,
-            end,
             destinationName,
+            end,
+            start,
             time: departureTimeQuery,
         } = req.query;
         const arriveBy: boolean = req.query.arriveBy === '1';
@@ -45,7 +45,8 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         parameters['pt.arrive_by'] = arriveBy;
         parameters['ch.disable'] = true;
 
-        // if this was set to > 3.0, sometimes the route would suggest getting off bus earlier and walk half a mile instead of waiting longer
+        // if this was set to > 3.0, sometimes the route would suggest getting off bus
+        // earlier and walk half a mile instead of waiting longer
         parameters['pt.walk_speed'] = 3.0;
         parameters['pt.earliest_departure_time'] = departureTimeDateNow;
         parameters['pt.profile'] = true;
@@ -96,8 +97,8 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
 
         routeNow = routeNow.filter((route) => {
             let isValid = true;
-            for (let index = 0; index < route.directions.length; index++) {
-                if (index !== 0 && route.directions[index].type === 'depart' && route.directions[index - 1].type === 'depart') {
+            for (let index = 1; index < route.directions.length; index++) {
+                if (route.directions[index].type === 'depart' && route.directions[index - 1].type === 'depart') {
                     const firstPT = route.directions[index - 1];
                     const secondPT = route.directions[index];
                     isValid = firstPT.stops[firstPT.stops.length - 1].stopID === secondPT.stops[0].stopID;

@@ -36,6 +36,6 @@ function createRouteJson(fileName: string) {
 }
 
 export default {
-    routeJson,
     createRouteJson,
+    routeJson,
 };

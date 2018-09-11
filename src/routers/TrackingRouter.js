@@ -19,7 +19,7 @@ class TrackingRouter extends AppDevRouter<Object> {
     async content(req: Request): Promise<any> {
         const trackingArray = req.body.data;
         let foundTrackingData = false;
-        const trackingInformation = [];
+        let trackingInformation = [];
         let noData = false;
 
         for (let index = 0; index < trackingArray.length; index++) {

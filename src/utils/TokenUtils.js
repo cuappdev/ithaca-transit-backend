@@ -54,7 +54,6 @@ async function generateAccessToken() {
         });
     }).then((tokenRequest: any) => {
         const token = JSON.parse(tokenRequest);
-
         const currentDate = new Date();
         const newCredentials = {
             basic_token: credentials.basic_token,
