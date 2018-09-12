@@ -12,11 +12,6 @@ import RouteRouter from './routers/RouteRouter';
 import TrackingRouter from './routers/TrackingRouter';
 
 class API extends AppDevAPI {
-
-    constructor() {
-        super();
-    }
-
     getPath(): string {
         return '/api/v1/';
     }

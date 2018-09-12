@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 npm install
 git clone https://github.com/graphhopper/graphhopper.git
 git clone https://github.com/graphhopper/map-matching.git

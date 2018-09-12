@@ -1,40 +1,38 @@
-//@flow
+// @flow
 
 function parseWalkingRoute(data: any, startDateMs: number, destinationName: string) {
-    let path = data.paths[0];
-    let endDateMs = startDateMs + path.time;
+    const path = data.paths[0];
+    const endDateMs = startDateMs + path.time;
 
-    let departureTime = new Date(startDateMs).toISOString().split('.')[0]+"Z";
-    let arrivalTime = new Date(endDateMs).toISOString().split('.')[0]+"Z";
+    const departureTime = `${new Date(startDateMs).toISOString().split('.')[0]}Z`;
+    const arrivalTime = `${new Date(endDateMs).toISOString().split('.')[0]}Z`;
 
-    let boundingBox = {
+    const boundingBox = {
         minLat: path.bbox[1],
         minLong: path.bbox[0],
         maxLat: path.bbox[3],
-        maxLong: path.bbox[2]
+        maxLong: path.bbox[2],
     };
 
-    let startCoords = {
+    const startCoords = {
         lat: path.points.coordinates[0][1],
-        long: path.points.coordinates[0][0]
+        long: path.points.coordinates[0][0],
     };
 
-    let endCoords = {
+    const endCoords = {
         lat: path.points.coordinates[path.points.coordinates.length - 1][1],
-        long: path.points.coordinates[path.points.coordinates.length - 1][0]
+        long: path.points.coordinates[path.points.coordinates.length - 1][0],
     };
 
-    let numberOfTransfers = 0
+    const numberOfTransfers = 0;
 
-    let walkingPath = path.points.coordinates.map(point => {
-        return {
-            lat: point[1],
-            long: point[0]
-        };
-    });
+    const walkingPath = path.points.coordinates.map(point => ({
+        lat: point[1],
+        long: point[0],
+    }));
 
-    let direction = {
-        type: "walk",
+    const direction = {
+        type: 'walk',
         name: destinationName,
         startTime: departureTime,
         endTime: arrivalTime,
@@ -45,20 +43,20 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
         routeNumber: null,
         stops: [],
         tripIdentifiers: null,
-        delay: null
+        delay: null,
     };
 
     return {
-       departureTime: departureTime,
-       arrivalTime: arrivalTime,
-       directions: [direction],
-       startCoords: startCoords,
-       endCoords: endCoords,
-       boundingBox: boundingBox,
-       numberOfTransfers: numberOfTransfers
+        departureTime,
+        arrivalTime,
+        directions: [direction],
+        startCoords,
+        endCoords,
+        boundingBox,
+        numberOfTransfers,
     };
 }
 
 export default {
-    parseWalkingRoute: parseWalkingRoute
-}
+    parseWalkingRoute,
+};
