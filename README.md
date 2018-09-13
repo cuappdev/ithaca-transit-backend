@@ -1,29 +1,25 @@
-# Transit Backend
+# Ithaca Transit Backend
 
 ## Pre-Req
 
 Check if you have Maven installed with `mvn -v`. If you don't, `brew install maven`.
 
-After cloning the repo, run `cp env.template .env`. This will copy env.template to .env which will allow you to run the server on port 3000. You need to do `vim .env` and add the value for `TOKEN`, which you can find pinned in the #transit-backend slack channel. You cannot run the server on port 80. When doing testing locally, you must use port 3000.
+After cloning the repo and entering the directory, run `cp env.template .env`. This will copy env.template to .env which will allow you to run the server on port 3000. You need to do `vim .env` and add the correct value for `TOKEN`, which you can find pinned in the #transit-backend Slack channel. You cannot run the server on port 80. When doing testing locally, you must use port 3000.
 
 ## Install
-Run `npm run setup` and `npm i` to setup all the necessary data. If you get an error about wget, `brew install wget`.
+Run `npm run setup` and `npm i` to setup all the necessary data. 
+
+If the install lags for an especially long time (> 30 min), kill the process (Ctrl-C) and retry. If you get an error about wget, use `brew install wget`. If you need npm (we won't judge), go [here](https://www.npmjs.com/get-npm).
 
 ## Running
 
-Upon completion, each of the steps will include the line `[main] INFO  com.graphhopper.xxxxxxxxxxxxxxxx - Started server at HTTP :8988`
-
-If at any of these points you get an exception along the lines of
-````
-Exception in thread "main" java.net.BindException: Address already in use
-````
-Run `npm run cleanup` to kill any GraphHopper processes. This is useful in case the GraphHopper server cannot be started if the port (default 8989) is already bound.
+Upon completion, each of the steps will include the line `[main] INFO  com.graphhopper.xxxxxxxxxxxxxxxx - Started server at HTTP :8988`. If you don't see this, see below for handling errors.
 
 1. Run `npm run graph` to build the graph. It starts up the GraphHopper Routing server, which builds the graph if a cache doesn't exist already. After the server has fully started and the graph is built, **kill the session using `Ctrl-C`**.
 
 2. Run `npm run mapmatching` to build the map matching graph (snapping to the road). It starts up the GraphHopper Map Matching server, which builds the graph for map matching if a cache doesn't exist already. After the server has fully started and the graph is built, **kill the session using `Ctrl-C`**.
  
- Run configurations:
+### Run Configurations
  
 * `npm start` runs cleanup, builds, and starts the program in production mode at `localhost:3000`. In production mode, all errors will be logged remotely to register, build times are much longer, and tests are not automatically run, so don't use this locally.
 
@@ -31,6 +27,14 @@ Run `npm run cleanup` to kill any GraphHopper processes. This is useful in case 
 Development mode also has faster build times and outputs errors and debugging information to the console.
 
 * `npm test` starts the program in test mode and runs tests once on any existing bundle in `build/`. It will not automatically start graphhopper or rebuild the bundle.
+
+### Errors
+
+If at any of these points you get an exception along the lines of
+````
+Exception in thread "main" java.net.BindException: Address already in use
+````
+Run `npm run cleanup` to kill any GraphHopper processes. This is useful in case the GraphHopper server cannot be started if the port (default 8989) is already bound.
 
 
 # Transit API v1 REST Interface
