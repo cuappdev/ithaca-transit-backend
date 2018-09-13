@@ -1,12 +1,10 @@
-# TCAT Backend
-
-This is our implementation of the TCAT backend. It is currently being rebuilt on top of the GraphHopper API.
+# Transit Backend
 
 ## Pre-Req
 
 Check if you have Maven installed with `mvn -v`. If you don't, `brew install maven`.
 
-After cloning the repo, run `cp env.template .env`. This will copy env.template to .env which will allow you to run the server on port 3000. You need to do `vim .env` and add the value for `TOKEN`, which you can find pinned in #tcat-backend. You cannot run the server on port 80. When doing testing locally, you must use port 3000.
+After cloning the repo, run `cp env.template .env`. This will copy env.template to .env which will allow you to run the server on port 3000. You need to do `vim .env` and add the value for `TOKEN`, which you can find pinned in the #tcat-backend slack channel. You cannot run the server on port 80. When doing testing locally, you must use port 3000.
 
 ## Install
 Run `npm run setup` and `npm i` to setup all the necessary data. If you get an error about wget, `brew install wget`.
@@ -25,7 +23,15 @@ Run `npm run cleanup` to kill any GraphHopper processes. This is useful in case 
 
 2. Run `npm run mapmatching` to build the map matching graph (snapping to the road). It starts up the GraphHopper Map Matching server, which builds the graph for map matching if a cache doesn't exist already. After the server has fully started and the graph is built, **kill the session using `Ctrl-C`**.
  
-Run `npm start` to startup the backend at `localhost:3000`.
+ Run configurations:
+ 
+* `npm start` runs cleanup, builds, and starts the program in production mode at `localhost:3000`. In production mode, all errors will be logged remotely to register, build times are much longer, and tests are not automatically run, so don't use this locally.
+
+* `npm run start-dev` runs the program in development mode. Use this while developing. Development mode will automatically build, restart the server, and run tests whenever a file is changed, so there should be no need to use Postman or other programs to test endpoints. 
+Development mode also has faster build times and outputs errors and debugging information to the console.
+
+* `npm test` starts the program in test mode and runs tests once on any existing bundle in `build/`. It will not automatically start graphhopper or rebuild the bundle.
+
 
 ### Supported requests
 
