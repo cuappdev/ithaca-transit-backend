@@ -37,7 +37,7 @@ Development mode also has faster build times and outputs errors and debugging in
 
 # Endpoints
 
-**Base URL: transit-backend.cornellappdev.com**
+**Base URL: example.your.url**
 **Path:** <Base URL>/api/v1/<endpoint>
 
 
