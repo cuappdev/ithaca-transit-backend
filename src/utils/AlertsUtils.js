@@ -21,29 +21,31 @@ async function fetchAlerts() {
                 },
         };
 
-        const alertsRequest = JSON.parse(await new Promise((resolve, reject) => {
+        const alertsRequest = await new Promise((resolve, reject) => {
             request(options, (error, response, body) => {
                 if (error) reject(error);
                 resolve(body);
             });
         }).then(value => value).catch((error) => {
-            ErrorUtils.log(error, null, 'Alerts request failed');
+            ErrorUtils.log(error, null, 'alerts request failed');
             return null;
-        }));
+        });
 
-        alerts = alertsRequest.map(alert => ({
-            id: alert.MessageId,
-            message: alert.Message,
-            fromDate: parseMicrosoftFormatJSONDate(alert.FromDate),
-            toDate: parseMicrosoftFormatJSONDate(alert.ToDate),
-            fromTime: parseMicrosoftFormatJSONDate(alert.FromTime),
-            toTime: parseMicrosoftFormatJSONDate(alert.ToTime),
-            priority: alert.Priority,
-            daysOfWeek: getWeekdayString(alert.DaysOfWeek),
-            routes: alert.Routes,
-            signs: alert.Signs,
-            channelMessages: alert.ChannelMessages,
-        }));
+        if (alertsRequest) {
+            alerts = JSON.parse(alertsRequest).map(alert => ({
+                id: alert.MessageId,
+                message: alert.Message,
+                fromDate: parseMicrosoftFormatJSONDate(alert.FromDate),
+                toDate: parseMicrosoftFormatJSONDate(alert.ToDate),
+                fromTime: parseMicrosoftFormatJSONDate(alert.FromTime),
+                toTime: parseMicrosoftFormatJSONDate(alert.ToTime),
+                priority: alert.Priority,
+                daysOfWeek: getWeekdayString(alert.DaysOfWeek),
+                routes: alert.Routes,
+                signs: alert.Signs,
+                channelMessages: alert.ChannelMessages,
+            }));
+        }
     } catch (err) {
         ErrorUtils.log(err, null, 'fetchAlerts error');
         throw err;
