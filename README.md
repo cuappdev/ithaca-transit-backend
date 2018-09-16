@@ -36,20 +36,6 @@ Exception in thread "main" java.net.BindException: Address already in use
 ````
 Run `npm run cleanup` to kill any GraphHopper processes. This is useful in case the GraphHopper server cannot be started if the port (default 8989) is already bound.
 
-
-<<<<<<< HEAD
-2. Run `npm run mapmatching` to build the map matching graph (snapping to the road). It starts up the GraphHopper Map Matching server, which builds the graph for map matching if a cache doesn't exist already. After the server has fully started and the graph is built, **kill the session using `Ctrl-C`**.
- 
- Run configurations:
- 
-* `npm start` runs cleanup, builds, and starts the program in production mode at `localhost:3000`. In production mode, all errors will be logged remotely to register, build times are much longer, and tests are not automatically run, so don't use this locally.
-
-* `npm run start-dev` runs the program in development mode. Use this while developing. Development mode will automatically build, restart the server, and run tests whenever a file is changed, so there should be no need to use Postman or other programs to test endpoints. 
-Development mode also has faster build times and outputs errors and debugging information to the console.
-
-* `npm test` starts the program in test mode and runs tests once on any existing bundle in `build/`. It will not automatically start graphhopper or rebuild the bundle.
-
-=======
 # Transit API v1 REST Interface
 
 # Endpoints
