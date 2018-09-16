@@ -22,7 +22,7 @@ async function fetchAllStops() {
                 },
         };
 
-        const stopsRequest = JSON.parse(await new Promise((resolve, reject) => {
+        const stopsRequest = await new Promise((resolve, reject) => {
             request(options, (error, response, body) => {
                 if (error) reject(error);
                 resolve(body);
@@ -30,13 +30,15 @@ async function fetchAllStops() {
         }).then(value => value).catch((error) => {
             ErrorUtils.log(error, null, 'allStops request failed');
             return null;
-        }));
+        });
 
-        allStops = stopsRequest.map(stop => ({
-            name: stop.Name,
-            lat: stop.Latitude,
-            long: stop.Longitude,
-        }));
+        if (stopsRequest) {
+            allStops = JSON.parse(stopsRequest).map(stop => ({
+                name: stop.Name,
+                lat: stop.Latitude,
+                long: stop.Longitude,
+            }));
+        }
     } catch (err) {
         ErrorUtils.log(err, null, 'allStops error');
         throw err;

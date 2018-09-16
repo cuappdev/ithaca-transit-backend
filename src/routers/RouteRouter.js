@@ -63,22 +63,22 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         const errors = [];
 
         try {
-            busRoute = await axios.get(`http://${process.env.GHOPPER_BUS}:8988/route`, {
+            busRoute = await axios.get(`http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`, {
                 params: parameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
             });
         } catch (routeErr) {
-            errors.push(ErrorUtils.log(routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS}`));
+            errors.push(ErrorUtils.log(routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`));
             busRoute = null;
         }
 
         try {
-            walkingRoute = await axios.get(`http://${process.env.GHOPPER_WALKING}:8987/route`, {
+            walkingRoute = await axios.get(`http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`, {
                 params: walkingParameters,
                 paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
             });
         } catch (walkingErr) {
-            errors.push(ErrorUtils.log(walkingErr.response.data.hints[0].message, parameters, `Walking failed: ${process.env.GHOPPER_WALKING}`));
+            errors.push(ErrorUtils.log(walkingErr.response.data.hints[0].message, parameters, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`));
             walkingRoute = null;
         }
 
@@ -86,7 +86,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             return errors;
         }
 
-        const routeWalking = WalkingUtils.parseWalkingRoute(walkingRoute.data, departureTimeNowMs, destinationName);
+        const routeWalking = WalkingUtils.parseWalkingRoute((walkingRoute && walkingRoute.data), departureTimeNowMs, destinationName);
 
         // if there are no bus routes, we should just return walking instead of crashing
         if (!busRoute) {

@@ -63,17 +63,16 @@ async function fetchVehicleRealtimeFeed() {
                 },
         };
 
-        const realtimeReq = await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             request(options, (error, response, body) => {
                 if (error) reject(error);
-                resolve(body);
+                resolve(xmlToJson(body, false));
             });
         }).then(value => value).catch((error) => {
             ErrorUtils.log(error, null, 'Vehicle realtime request failed');
             return null;
         });
 
-        xmlToJson(realtimeReq, false);
     } catch (err) {
         ErrorUtils.log(err, null, 'Couldn\'t fetch vehicle realtime feed');
     }
@@ -90,17 +89,16 @@ async function fetchTripRealtimeFeed() {
                 },
         };
 
-        const realtimeReq = await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             request(options, (error, response, body) => {
                 if (error) reject(error);
-                resolve(body);
+                resolve(xmlToJson(body, true));
             });
         }).then(value => value).catch((error) => {
             ErrorUtils.log(error, null, 'Trip realtime request failed');
             return null;
         });
 
-        xmlToJson(realtimeReq, true);
         // data is now stored in tripRealtimeFeed
     } catch (err) {
         ErrorUtils.log(err, null, 'Couldn\'t fetch trip realtime feed');
