@@ -81,17 +81,17 @@ fi
 if ( ! [ -d "tcat-ny-us" ] || [ -z "$(ls -p tcat-ny-us | grep -v /)" ] ); then
     echo "Unzipping TCAT data..."
     mkdir tcat-ny-us
-    tar xvf cache/tcat-ny-us.zip -C tcat-ny-us
+    unzip -o cache/tcat-ny-us.zip -d tcat-ny-us
 fi
 
-if ( ! [ -d "graphhopper" ]  || [ -z "$(ls -p graphhopper | grep -v /)" ] ); then
+if ( ! [ -d "graphhopper/web/target" ]  || [ -z "$(ls -p graphhopper/web/target | grep -v /)" ] ); then
     echo "Building graphhopper service..."
     cd graphhopper
     ./graphhopper.sh buildweb
     cd ..
 fi
 
-if ( ! [ -d "graphhopper-walking/graphhopper" ] || [ -z "$(ls -p graphhopper-walking/graphhopper | grep -v /)" ] ); then
+if ( ! [ -d "graphhopper-walking/graphhopper/web/target" ] || [ -z "$(ls -p graphhopper-walking/graphhopper/web/target | grep -v /)" ] ); then
     echo "Building graphhopper-walking service..."
     cd graphhopper-walking/graphhopper
     ./graphhopper.sh buildweb
