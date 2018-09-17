@@ -30,6 +30,11 @@ if ! [ -x "$(command -v tar)" ]; then
   exit 1
 fi
 
+if ! [ -x "$(command -v git)" ]; then
+  echo 'Error: git is not installed. Install then try again.' >&2
+  exit 1
+fi
+
 if ! [ -e ".env" ]; then
     echo "Creating .env file..."
     cp env.template .env
@@ -38,17 +43,17 @@ fi
 echo "Installing npm modules..."
 npm install
 
-if ! [ -d "graphhopper" ]; then
+if ! ( [ -d "graphhopper" ] && ! [ -x "$(git -C graphhopper rev-parse)" ] ); then
     echo "Cloning graphhopper repository..."
     git clone -b 0.10 https://github.com/graphhopper/graphhopper.git
 fi
 
-if ! [ -d "map-matching" ]; then
+if ! ( [ -d "map-matching" ] && ! [ -x "$(git -C map-matching rev-parse)" ] ); then
     echo "Cloning map matching repository..."
     git clone -b 0.9 https://github.com/graphhopper/map-matching.git
 fi
 
-if ! [ -d "graphhopper-walking" ]; then
+if ! ( [ -d "graphhopper-walking" ] && ! [ -x "$(git -C graphhopper-walking rev-parse)" ] ); then
     echo "Cloning graphhopper-walking repository..."
     mkdir graphhopper-walking
     cd graphhopper-walking
