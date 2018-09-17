@@ -16,7 +16,8 @@
     "cleanup": "killall -9 java",
     "test": "jest --runInBand --noStackTrace --detectOpenHandles src/test",
     "flow": "node_modules/.bin/flow",
-    "flow-stop": "node_modules/.bin/flow stop"
+    "flow-stop": "node_modules/.bin/flow stop",
+    "travis": "npm run build && npm test"
   },
   "repository": {
     "type": "git",

@@ -20,6 +20,16 @@ if ! [ -x "$(command -v npm)" ]; then
   exit 1
 fi
 
+if ! [ -x "$(command -v java)" ]; then
+  echo 'Error: java is not installed. Install then try again.' >&2
+  exit 1
+fi
+
+if ! [ -x "$(command -v tar)" ]; then
+  echo 'Error: tar is not installed. Install then try again.' >&2
+  exit 1
+fi
+
 if ! [ -e ".env" ]; then
     echo "Creating .env file..."
     cp env.template .env
@@ -77,13 +87,21 @@ if ! [ -d "graphhopper-walking/graphhopper" ]; then
     cd ../..
 fi
 
-if [[ $(ps aux | grep -E -c 'graphhopper|java') > 1 ]]; then
+if ! [ -d "graph-cache" ]; then
+    echo "Building graph cache..."
+    java -Xmx1g -Xms1g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm gtfs.file=tcat-ny-us.zip jetty.port=8988 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=pt prepare.ch.weightings=no graph.location=./graph-cache
+    sleep 5s
+fi
 
-    echo "Init complete!"
+if ! [ -d "graphhopper-walking/graph-cache" ]; then
+    echo "Building walking graph cache..."
+    java -Xmx1g -Xms1g -jar graphhopper-walking/graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm jetty.port=8987 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=foot prepare.ch.weightings=no graph.location=graphhopper-walking/graph-cache
+    sleep 5s
+fi
 
-else
+if ! [[ $(ps aux | grep -E -c 'graphhopper|java') > 1 ]]; then
 
-    echo "starting graphhopper"
+    echo "Starting graphhopper..."
 
     java -Xmx1g -Xms1g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm gtfs.file=tcat-ny-us.zip jetty.port=8988 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=pt prepare.ch.weightings=no graph.location=./graph-cache &>/dev/null &
     java -Xmx1g -Xms1g -jar graphhopper-walking/graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm jetty.port=8987 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=foot prepare.ch.weightings=no graph.location=graphhopper-walking/graph-cache &>/dev/null &
@@ -93,5 +111,9 @@ else
     cd ..
 
     sleep 3s
+
+else
+
+    echo "Init complete!"
 
 fi
