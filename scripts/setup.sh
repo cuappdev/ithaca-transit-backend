@@ -100,7 +100,7 @@ if ! [ -d "graphhopper-walking/graph-cache" ]; then
     sleep 5s
 fi
 
-if ! [[ $(ps aux | grep -E -c 'graphhopper|java') > 1 ]]; then
+if ! [ $(ps aux | grep -E -c 'graphhopper|java') -gt 1 ]; then
 
     echo "Starting graphhopper..."
 

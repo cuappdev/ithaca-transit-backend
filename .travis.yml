@@ -5,17 +5,13 @@ cache:
   directories:
   - .autoconf
   - $HOME/.m2
+  - $HOME/.cache
   - graphhopper
   - map-matching
   - graph-cache
   - osrm
   - tcat-ny-us
-before_install:
-  - command -v mvn
-  - command -v wget
-  - command -v npm
-  - command -v java
-  - command -v tar
+  - node_modules
 install:
   - npm run setup
 script:
