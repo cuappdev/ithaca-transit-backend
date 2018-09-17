@@ -1,6 +1,15 @@
 language: java
 node_js:
   - "10.9.0"
+cache:
+  directories:
+  - .autoconf
+  - $HOME/.m2
+  - graphhopper
+  - map-matching
+  - graph-cache
+  - osrm
+  - tcat-ny-us
 before_install:
   - command -v mvn
   - command -v wget
