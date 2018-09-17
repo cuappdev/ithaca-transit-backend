@@ -5,6 +5,8 @@
 #
 # Use setup.sh and run.sh to do a strict setup/run
 
+echo $PWD
+
 if ! [ -x "$(command -v mvn)" ]; then
   echo 'Error: mvn (Maven) is not installed. Install then try again.' >&2
   exit 1
@@ -61,45 +63,48 @@ if ! ( [ -d "graphhopper-walking" ] && ! [ -x "$(git -C graphhopper-walking rev-
     cd ..
 fi
 
-if ! [ -d "map-matching" ]; then
+if ( ! [ -d "map-matching" ] || [ -z "$(ls -p map-matching | grep -v /)" ] ); then
     echo "Setting up map-matching repository..."
     cd map-matching
     ./map-matching.sh action=import datasource=../osrm/map.osm vehicle=car,foot
     cd ..
 fi
 
-if ! [ -e "tcat-ny-us.zip" ]; then
+if ! ( [ -d "cache" ] && [ -e "cache/tcat-ny-us.zip" ] ); then
     echo "Downloading TCAT data..."
+    mkdir cache
+    cd cache
     wget https://s3.amazonaws.com/tcat-gtfs/tcat-ny-us.zip
+    cd ..
 fi
 
-if ! [ -d "tcat-ny-us" ]; then
+if ( ! [ -d "tcat-ny-us" ] || [ -z "$(ls -p tcat-ny-us | grep -v /)" ] ); then
     echo "Unzipping TCAT data..."
     mkdir tcat-ny-us
-    tar xvf tcat-ny-us.zip -C tcat-ny-us
+    tar xvf cache/tcat-ny-us.zip -C tcat-ny-us
 fi
 
-if ! [ -d "graphhopper" ]; then
+if ( ! [ -d "graphhopper" ]  || [ -z "$(ls -p graphhopper | grep -v /)" ] ); then
     echo "Building graphhopper service..."
     cd graphhopper
     ./graphhopper.sh buildweb
     cd ..
 fi
 
-if ! [ -d "graphhopper-walking/graphhopper" ]; then
+if ( ! [ -d "graphhopper-walking/graphhopper" ] || [ -z "$(ls -p graphhopper-walking/graphhopper | grep -v /)" ] ); then
     echo "Building graphhopper-walking service..."
     cd graphhopper-walking/graphhopper
     ./graphhopper.sh buildweb
     cd ../..
 fi
 
-if ! [ -d "graph-cache" ]; then
+if ( ! [ -d "graph-cache" ] || [ -z "$(ls -p graph-cache | grep -v /)" ] ); then
     echo "Building graph cache..."
     java -Xmx1g -Xms1g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm gtfs.file=tcat-ny-us.zip jetty.port=8988 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=pt prepare.ch.weightings=no graph.location=./graph-cache
     sleep 5s
 fi
 
-if ! [ -d "graphhopper-walking/graph-cache" ]; then
+if ( ! [ -d "graphhopper-walking/graph-cache" ] || [ -z "$(ls -p graphhopper-walking/graph-cache | grep -v /)" ] ); then
     echo "Building walking graph cache..."
     java -Xmx1g -Xms1g -jar graphhopper-walking/graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm jetty.port=8987 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=foot prepare.ch.weightings=no graph.location=graphhopper-walking/graph-cache
     sleep 5s

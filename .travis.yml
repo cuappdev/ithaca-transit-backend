@@ -12,6 +12,7 @@ cache:
   - osrm
   - tcat-ny-us
   - node_modules
+  - cache
 install:
   - npm run setup
 script:
