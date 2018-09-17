@@ -1,6 +1,12 @@
 language: node_js
 node_js:
   - "10.9.0"
+before_install:
+  - command -v mvn
+  - command -v wget
+  - command -v npm
+  - command -v java
+  - command -v tar
 install:
   - npm run setup
 script:

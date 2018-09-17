@@ -35,6 +35,7 @@ if ! [ -e ".env" ]; then
     cp env.template .env
 fi
 
+echo "Installing npm modules..."
 npm install
 
 if ! [ -d "graphhopper" ]; then
