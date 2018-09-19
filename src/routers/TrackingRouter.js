@@ -55,36 +55,40 @@ class TrackingRouter extends AppDevRouter<Object> {
                         return null;
                     });
 
+                    /**
+                     * Parse request to object and map valid realtime data to info for each bus
+                     */
                     const trackingData = trackingRequest
-                        && JSON.parse(trackingRequest).data.filter(
-                            busInfo => busInfo.VehicleId === realtimeData.vehicleID,
-                        ).map((busInfo) => {
-                            let lastUpdated = busInfo.LastUpdated;
-                            const firstParan = lastUpdated.indexOf('(') + 1;
-                            const secondParan = lastUpdated.indexOf('-');
-                            lastUpdated = parseInt(lastUpdated.slice(firstParan, secondParan));
-                            return {
-                                commStatus: busInfo.CommStatus,
-                                destination: busInfo.Destination,
-                                deviation: busInfo.Deviation,
-                                direction: busInfo.Direction,
-                                displayStatus: busInfo.DisplayStatus,
-                                gpsStatus: busInfo.GPSStatus,
-                                heading: busInfo.Heading,
-                                lastStop: busInfo.LastStop,
-                                lastUpdated,
-                                latitude: busInfo.Latitude,
-                                longitude: busInfo.Longitude,
-                                name: busInfo.Name,
-                                opStatus: busInfo.OpStatus,
-                                routeID: busInfo.RouteId,
-                                runID: busInfo.RunId,
-                                speed: busInfo.Speed,
-                                tripID: busInfo.TripId,
-                                vehicleID: busInfo.VehicleId,
-                                case: 'validData',
-                            };
-                        });
+                        && JSON.parse(trackingRequest).data
+                            .filter(
+                                busInfo => busInfo.VehicleId === realtimeData.vehicleID,
+                            ).map((busInfo) => {
+                                let lastUpdated = busInfo.LastUpdated;
+                                const firstParan = lastUpdated.indexOf('(') + 1;
+                                const secondParan = lastUpdated.indexOf('-');
+                                lastUpdated = parseInt(lastUpdated.slice(firstParan, secondParan));
+                                return {
+                                    case: 'validData',
+                                    commStatus: busInfo.CommStatus,
+                                    destination: busInfo.Destination,
+                                    deviation: busInfo.Deviation,
+                                    direction: busInfo.Direction,
+                                    displayStatus: busInfo.DisplayStatus,
+                                    gpsStatus: busInfo.GPSStatus,
+                                    heading: busInfo.Heading,
+                                    lastStop: busInfo.LastStop,
+                                    lastUpdated,
+                                    latitude: busInfo.Latitude,
+                                    longitude: busInfo.Longitude,
+                                    name: busInfo.Name,
+                                    opStatus: busInfo.OpStatus,
+                                    routeID: busInfo.RouteId,
+                                    runID: busInfo.RunId,
+                                    speed: busInfo.Speed,
+                                    tripID: busInfo.TripId,
+                                    vehicleID: busInfo.VehicleId,
+                                };
+                            });
 
                     // we have tracking data for the bus
                     if (trackingData && trackingData.length > 0) {
