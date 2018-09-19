@@ -100,14 +100,26 @@ fi
 
 if ( ! [ -d "graph-cache" ] || [ -z "$(ls -p graph-cache | grep -v /)" ] ); then
     echo "Building graph cache..."
-    java -Xmx1g -Xms1g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm gtfs.file=tcat-ny-us.zip jetty.port=8988 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=pt prepare.ch.weightings=no graph.location=./graph-cache
-    sleep 5s
+    java -Xmx1g -Xms1g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm gtfs.file=tcat-ny-us.zip jetty.port=8988 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=pt prepare.ch.weightings=no graph.location=./graph-cache &
+
+    # wait until open
+    while ! echo exit | nc localhost 8988; do
+        echo .
+        sleep 1
+    done
+
 fi
 
 if ( ! [ -d "graphhopper-walking/graph-cache" ] || [ -z "$(ls -p graphhopper-walking/graph-cache | grep -v /)" ] ); then
     echo "Building walking graph cache..."
-    java -Xmx1g -Xms1g -jar graphhopper-walking/graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm jetty.port=8987 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=foot prepare.ch.weightings=no graph.location=graphhopper-walking/graph-cache
-    sleep 5s
+    java -Xmx1g -Xms1g -jar graphhopper-walking/graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm jetty.port=8987 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=foot prepare.ch.weightings=no graph.location=graphhopper-walking/graph-cache &
+
+    # wait until open
+    while ! echo exit | nc localhost 8987; do
+        echo .
+        sleep 1
+    done
+
 fi
 
 if ! [ $(ps aux | grep -E -c 'graphhopper|java') -gt 1 ]; then
@@ -121,10 +133,12 @@ if ! [ $(ps aux | grep -E -c 'graphhopper|java') -gt 1 ]; then
     ./map-matching.sh action=start-server &>/dev/null &
     cd ..
 
-    sleep 3s
+    # wait until open
+    sleep 3
 
 else
 
+    echo "Graphhopper already running. "
     echo "Init complete!"
 
 fi
