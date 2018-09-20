@@ -39,7 +39,7 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
                     input: query,
                     radius: 24140,
                     strictbounds: '',
-                }
+                },
         };
 
         const AutocompleteRequest = JSON.parse(await new Promise((resolve, reject) => {

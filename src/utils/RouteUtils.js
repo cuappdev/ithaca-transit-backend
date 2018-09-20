@@ -1,5 +1,6 @@
 // @flow
 import axios from 'axios';
+import request from 'request';
 import createGpx from 'gps-to-gpx';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
@@ -222,7 +223,33 @@ async function parseRoute(resp: Object, destinationName: string) {
                     try {
                         // TODO refactor
                         // eslint-disable-next-line no-await-in-loop
-                        const snappingResponse = await axios.post(`http://${process.env.MAP_MATCHING || 'ERROR'}:8989/match`, gpx, config);
+
+                        const options = {
+                            method: 'POST',
+                            url: `http://${process.env.MAP_MATCHING || 'ERROR'}:8989/match`,
+                            body: gpx,
+                            headers:
+                                {
+                                    'Content-Type': 'application/xml',
+                                },
+                            qs:
+                                {
+                                    points_encoded: false,
+                                    vehicle: 'car',
+                                },
+                        };
+
+                        const snappingResponse = JSON.parse(await new Promise((resolve, reject) => {
+                            request(options, (error, response, body) => {
+                                if (error) reject(error);
+                                console.log(response);
+                                resolve(body);
+                            });
+                        }).then(value => value).catch((error) => {
+                            ErrorUtils.log(error, null, 'snappingResponse request failed');
+                            return null;
+                        }));
+
                         // need to handle errors more gracefully
                         path = snappingResponse.data.paths[0].points.coordinates.map(point => ({
                             lat: point[1],
