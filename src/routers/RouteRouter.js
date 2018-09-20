@@ -1,6 +1,7 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import axios from 'axios';
+import request from 'request';
 import qs from 'qs';
 import type Request from 'express';
 import WalkingUtils from '../utils/WalkingUtils';
@@ -63,20 +64,62 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         const errors = [];
 
         try {
-            busRoute = await axios.get(`http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`, {
-                params: parameters,
-                paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
-            });
+            const options = {
+                method: 'GET',
+                url: `http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`,
+                qs:
+                    {
+                        vehicle: 'pt',
+                        weighting: 'short_fastest',
+                        elevation: false,
+                        point: [start, end],
+                        points_encoded: false,
+                    },
+            };
+
+            busRoute = JSON.parse(await new Promise((resolve, reject) => {
+                request(options, (error, response, body) => {
+                    if (error) reject(error);
+                    console.log(response);
+                    resolve(body);
+                });
+            }).then(value => value).catch((error) => {
+                errors.push(ErrorUtils.log(routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`));
+                return null;
+            }));
+
+            console.log('busRoute req', busRoute);
+        
         } catch (routeErr) {
             errors.push(ErrorUtils.log(routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`));
             busRoute = null;
         }
 
         try {
-            walkingRoute = await axios.get(`http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`, {
-                params: walkingParameters,
-                paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
-            });
+            const options = {
+                method: 'GET',
+                url: `http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`,
+                qs:
+                    {
+                        vehicle: 'foot',
+                        point: [start, end],
+                        points_encoded: false,
+                    },
+            };
+
+            walkingRoute = JSON.parse(await new Promise((resolve, reject) => {
+                request(options, (error, response, body) => {
+                    if (error) reject(error);
+                    console.log(response);
+                    resolve(body);
+                });
+            }).then(value => value).catch((error) => {
+                errors.push(ErrorUtils.log(walkingErr.response.data.hints[0].message, parameters, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`));
+                return null;
+            }));
+
+            console.log('busRoute req', walkingRoute);
+        
         } catch (walkingErr) {
             errors.push(ErrorUtils.log(walkingErr.response.data.hints[0].message, parameters, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`));
             walkingRoute = null;
