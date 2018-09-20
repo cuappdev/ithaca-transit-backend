@@ -33,6 +33,10 @@ function isAccessTokenExpired() {
 async function generateAccessToken() {
     await getCredentials();
 
+    if (!credentials.basic_token) {
+        throw new Error(`Basic token ${credentials.access_token || 'unknown'}`);
+    }
+
     const basicAuthHeader = `Basic ${credentials.basic_token}`;
 
     const options = {
@@ -82,7 +86,10 @@ async function getAuthorizationHeader() {
         await generateAccessToken();
     }
 
-    return `Bearer ${credentials.access_token}`;
+    if (credentials.access_token) {
+        return `Bearer ${credentials.access_token}`;
+    }
+    throw new Error(`Access token ${credentials.access_token || 'unknown'}`);
 }
 
 export default {

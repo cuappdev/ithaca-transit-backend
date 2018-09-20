@@ -222,7 +222,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                     try {
                         // TODO refactor
                         // eslint-disable-next-line no-await-in-loop
-                        const snappingResponse = await axios.post(`http://${process.env.MAP_MATCHING}:8989/match`, gpx, config);
+                        const snappingResponse = await axios.post(`http://${process.env.MAP_MATCHING || 'ERROR'}:8989/match`, gpx, config);
                         // need to handle errors more gracefully
                         path = snappingResponse.data.paths[0].points.coordinates.map(point => ({
                             lat: point[1],
@@ -230,7 +230,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                         }));
                     } catch (error) {
                         // log error
-                        ErrorUtils.log(error.data, destinationName, 'Snap response failed');
+                        ErrorUtils.log(error.data, destinationName, `Snap response failed: ${process.env.MAP_MATCHING || 'undefined graphhopper mapmatching env'}`);
                     }
 
                     // Trim Coordinates so they start/end at bus stops
