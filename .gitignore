@@ -5,6 +5,7 @@
 *package-lock.json*
 *secret*
 *.osrm*
+osrm/
 .elasticbeanstalk/
 *.zip
 npm-debug.log
