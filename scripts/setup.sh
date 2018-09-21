@@ -142,9 +142,9 @@ if ( ! [ -d "graph-cache" ] || [ -z "$(ls -p graph-cache | grep -v /)" ] ); then
     java -Xmx1g -Xms1g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm gtfs.file=tcat-ny-us.zip jetty.port=8988 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=pt prepare.ch.weightings=no graph.location=./graph-cache &
 
     # wait until open
-     until nc -G 30 -z localhost 8988; do
-        echo "${OUT_COLOR}...${NC}"
-        sleep 1
+    until bash -c "echo > /dev/tcp/localhost/8988" &>/dev/null; do
+      sleep 1
+      echo "${OUT_COLOR}...${NC}"
     done
 
     npm run cleanup
@@ -156,9 +156,9 @@ if ( ! [ -d "graphhopper-walking/graph-cache" ] || [ -z "$(ls -p graphhopper-wal
     java -Xmx1g -Xms1g -jar graphhopper-walking/graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=osrm/map.osm jetty.port=8987 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=foot prepare.ch.weightings=no graph.location=graphhopper-walking/graph-cache &
 
     # wait until open
-    until nc -G 30 -z localhost 8987; do
-        echo "${OUT_COLOR}...${NC}"
-        sleep 1
+    until bash -c "echo > /dev/tcp/localhost/8987" &>/dev/null; do
+      sleep 1
+      echo "${OUT_COLOR}...${NC}"
     done
 
     npm run cleanup
@@ -180,9 +180,9 @@ if ! [ $(ps aux | grep -E -c 'graphhopper|java') -gt 1 ]; then
     cd ..
 
     # wait until open
-    until nc -G 30 -z localhost 8987 & nc -G 30 -z localhost 8988; do
-        echo "${OUT_COLOR}..."
-        sleep 1
+    until bash -c "echo > /dev/tcp/localhost/8987" &>/dev/null & bash -c "echo > /dev/tcp/localhost/8988" &>/dev/null; do
+      sleep 1
+      echo "${OUT_COLOR}...${NC}"
     done
 
 else

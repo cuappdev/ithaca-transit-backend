@@ -13,7 +13,7 @@
     "mapmatching": "cd map-matching && ./map-matching.sh action=start-server ; cd ..",
     "start": "npm run cleanup; npm run build && sh scripts/run.sh",
     "start-dev": "npm run setup && npm run build-dev",
-    "cleanup": "killall -9 java",
+    "cleanup": "killall -9 java ; printf ''",
     "test": "jest --runInBand --noStackTrace --detectOpenHandles --forceExit src/test",
     "flow": "node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop",
