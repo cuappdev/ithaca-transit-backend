@@ -143,9 +143,11 @@ if ( ! [ -d "graph-cache" ] || [ -z "$(ls -p graph-cache | grep -v /)" ] ); then
 
     # wait until open
     until bash -c "echo > /dev/tcp/localhost/8988" &>/dev/null; do
-      sleep 1
-      echo "${OUT_COLOR}...${NC}"
+        echo "${OUT_COLOR}...${NC}"
+        sleep 1
     done
+
+    ls graph-cache
 
     npm run cleanup
 fi
@@ -157,9 +159,11 @@ if ( ! [ -d "graphhopper-walking/graph-cache" ] || [ -z "$(ls -p graphhopper-wal
 
     # wait until open
     until bash -c "echo > /dev/tcp/localhost/8987" &>/dev/null; do
-      sleep 1
-      echo "${OUT_COLOR}...${NC}"
+        echo "${OUT_COLOR}...${NC}"
+        sleep 1
     done
+
+    ls graphhopper-walking/graph-cache
 
     npm run cleanup
 fi
@@ -168,7 +172,7 @@ fi
 # Start graphhopper service and finish
 
 # if no graphhopper/java processing running
-if ! [ $(ps aux | grep -E -c 'graphhopper|java') -gt 1 ]; then
+if ! [ $(ps aux | grep -c 'graphhopper') -gt 1 ]; then
 
     echo "${OUT_COLOR}Starting graphhopper...${NC}"
 
@@ -181,9 +185,11 @@ if ! [ $(ps aux | grep -E -c 'graphhopper|java') -gt 1 ]; then
 
     # wait until open
     until bash -c "echo > /dev/tcp/localhost/8987" &>/dev/null & bash -c "echo > /dev/tcp/localhost/8988" &>/dev/null; do
-      sleep 1
-      echo "${OUT_COLOR}...${NC}"
+        sleep 1
+        echo "${OUT_COLOR}...${NC}"
     done
+
+    ps aux | grep 'graphhopper'
 
 else
 
