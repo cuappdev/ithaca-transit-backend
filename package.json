@@ -13,9 +13,10 @@
     "init": "sh scripts/init.sh",
     "mapmatching": "cd map-matching && ./map-matching.sh action=start-server ; cd ..",
     "start": "npm run cleanup; npm run build && sh scripts/run.sh",
-    "start-dev": "npm run init && flow && npm run build-dev",
+    "start-dev": "npm run init && npm run build-dev",
     "cleanup": "killall -9 java",
-    "test": "jest --runInBand --noStackTrace --detectOpenHandles src/test"
+    "test": "jest --runInBand --noStackTrace --detectOpenHandles --forceExit src/test ; npm run flow",
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
@@ -61,7 +62,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
     "extra-watch-webpack-plugin": "^1.0.3",
-    "flow-bin": "^0.80.0",
+    "flow-bin": "^0.81.0",
     "jest": "^23.5.0",
     "nodemon": "^1.18.4",
     "nodemon-webpack-plugin": "^4.0.3",

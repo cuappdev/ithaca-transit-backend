@@ -72,7 +72,6 @@ async function fetchVehicleRealtimeFeed() {
             ErrorUtils.log(error, null, 'Vehicle realtime request failed');
             return null;
         });
-
     } catch (err) {
         ErrorUtils.log(err, null, 'Couldn\'t fetch vehicle realtime feed');
     }

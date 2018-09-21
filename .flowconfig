@@ -1,19 +1,9 @@
 [ignore]
-<PROJECT_ROOT>/node_modules/.*
-<PROJECT_ROOT>/osrm/.*
-<PROJECT_ROOT>/graphhopper/.*
-<PROJECT_ROOT>/cache/.*
-<PROJECT_ROOT>/map-matching/.*
-<PROJECT_ROOT>/graphhopper-walking/.*
-<PROJECT_ROOT>/docker/.*
-<PROJECT_ROOT>/tcat-ny-us/.*
-<PROJECT_ROOT>/build/.*
 
 [include]
 
 [libs]
-<PROJECT_ROOT>/node_modules/.*
 
-[options]
-module.system.node.resolve_dirname=node_modules
-module.system.node.resolve_dirname=src
+[lints]
+
+[strict]
