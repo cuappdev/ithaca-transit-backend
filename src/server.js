@@ -6,6 +6,7 @@ import AllStopUtils from './utils/AllStopUtils';
 import API from './Api';
 import RealtimeFeedUtils from './utils/RealtimeFeedUtils';
 import TCATUtils from './utils/TCATUtils';
+import ErrorUtils from './utils/ErrorUtils';
 
 TCATUtils.createRouteJson('routes.txt');
 dotenv.config();
@@ -29,6 +30,9 @@ const init = new Promise((resolve, reject) => {
     server.listen(port, '0.0.0.0', () => {
         resolve('init');
     });
+}).then(value => value).catch((error) => {
+    ErrorUtils.log(error, null, 'Server init failed');
+    return null;
 });
 
 function writeToConfigFile() {
