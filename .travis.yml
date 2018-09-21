@@ -1,6 +1,7 @@
 language: java
 node_js:
   - "10.9.0"
+sudo: required
 cache:
   directories:
   - .autoconf
