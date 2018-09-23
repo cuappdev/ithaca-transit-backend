@@ -1,7 +1,8 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import type Request from 'express';
-import axios from 'axios';
+import request from 'request';
+import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 import LRU from 'lru-cache';
 
 const options = {
@@ -28,27 +29,34 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
         }
 
         // not in cache
-        const response = await axios.get(
-            'https://maps.googleapis.com/maps/api/place/autocomplete/json',
-            {
-                params: {
-                    location: '42.4440,-76.5019',
-                    key: process.env.PLACES_KEY,
-                    input: query,
-                    radius: 24140,
-                    strictbounds: '',
-                },
+        const options = {
+            method: 'GET',
+            url: 'https://maps.googleapis.com/maps/api/place/autocomplete/json',
+            qs: {
+                input: query,
+                key: process.env.PLACES_KEY,
+                location: '42.4440,-76.5019',
+                radius: 24140,
+                strictbounds: '',
             },
-        );
+        };
 
-        const { predictions } = response.data;
-        const formattedPredictions = predictions.map(p => ({
-            address: p.structured_formatting.secondary_text,
-            name: p.structured_formatting.main_text,
-            place_id: p.place_id,
-        }));
-        cache.set(query, formattedPredictions);
-        return formattedPredictions;
+        const autocompleteRequest = await HTTPRequestUtils.createRequest(options, 'Autocomplete request failed');
+
+        if (autocompleteRequest) {
+            const autocompleteResult = JSON.parse(autocompleteRequest);
+
+            const { predictions } = autocompleteResult.data;
+            const formattedPredictions = predictions.map(p => ({
+                address: p.structured_formatting.secondary_text,
+                name: p.structured_formatting.main_text,
+                place_id: p.place_id,
+            }));
+            cache.set(query, formattedPredictions);
+            return formattedPredictions;
+        } else {
+            return null;
+        }
     }
 }
 

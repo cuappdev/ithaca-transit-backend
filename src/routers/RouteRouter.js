@@ -1,6 +1,7 @@
 // @flow
 import { AppDevRouter } from 'appdev';
-import axios from 'axios';
+import request from 'request';
+import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 import qs from 'qs';
 import type Request from 'express';
 import WalkingUtils from '../utils/WalkingUtils';
@@ -36,11 +37,11 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         const oneHourInMilliseconds = 3600000;
 
         const parameters: any = {
-            vehicle: 'pt',
-            weighting: 'short_fastest',
             elevation: false,
             point: [start, end],
             points_encoded: false,
+            vehicle: 'pt',
+            weighting: 'short_fastest',
         };
         parameters['pt.arrive_by'] = arriveBy;
         parameters['ch.disable'] = true;
@@ -53,9 +54,9 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         parameters['pt.max_walk_distance_per_leg'] = 2000;
 
         const walkingParameters: any = {
-            vehicle: 'foot',
             point: [start, end],
             points_encoded: false,
+            vehicle: 'foot',
         };
 
         let busRoute;
@@ -63,22 +64,59 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         const errors = [];
 
         try {
-            busRoute = await axios.get(`http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`, {
-                params: parameters,
-                paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
-            });
+            const options = {
+                method: 'GET',
+                url: `http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`,
+                qs: {
+                    elevation: false,
+                    point: [start, end],
+                    points_encoded: false,
+                    vehicle: 'pt',
+                    weighting: 'short_fastest',
+                },
+            };
+
+            const busRouteRequest = await HTTPRequestUtils.createRequest(
+                options, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`);
+            
+            if (busRouteRequest) {
+                busRoute = JSON.parse(busRouteRequest);
+            } else {
+                busRoute = null;
+            }
+        
         } catch (routeErr) {
-            errors.push(ErrorUtils.log(routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`));
+            errors.push(ErrorUtils.log(
+                routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`)
+            );
             busRoute = null;
         }
 
         try {
-            walkingRoute = await axios.get(`http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`, {
-                params: walkingParameters,
-                paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
-            });
+            const options = {
+                method: 'GET',
+                url: `http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`,
+                qs: {
+                    point: [start, end],
+                    points_encoded: false,
+                    vehicle: 'foot',
+                },
+            };
+
+            const walkingRouteRequest = await HTTPRequestUtils.createRequest(
+                options, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`);
+            
+            if (walkingRouteRequest) {
+                walkingRoute = JSON.parse(walkingRouteRequest);
+            } else {
+                walkingRoute = null;
+            }
+
         } catch (walkingErr) {
-            errors.push(ErrorUtils.log(walkingErr.response.data.hints[0].message, parameters, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`));
+            errors.push(ErrorUtils.log(
+                walkingErr.response.data.hints[0].message, parameters,
+                `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`)
+            );
             walkingRoute = null;
         }
 
