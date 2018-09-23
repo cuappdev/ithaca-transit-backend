@@ -30,7 +30,6 @@
   "dependencies": {
     "alarm": "^2.0.0",
     "appdev": "^0.4.2",
-    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "csvtojson": "^2.0.8",
     "dotenv": "^6.0.0",

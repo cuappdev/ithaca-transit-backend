@@ -1,5 +1,4 @@
 // @flow
-import axios from 'axios';
 import request from 'request';
 import createGpx from 'gps-to-gpx';
 import TCATUtils from './TCATUtils';
@@ -228,21 +227,18 @@ async function parseRoute(resp: Object, destinationName: string) {
                             method: 'POST',
                             url: `http://${process.env.MAP_MATCHING || 'ERROR'}:8989/match`,
                             body: gpx,
-                            headers:
-                                {
-                                    'Content-Type': 'application/xml',
-                                },
-                            qs:
-                                {
-                                    points_encoded: false,
-                                    vehicle: 'car',
-                                },
+                            headers: {
+                                'Content-Type': 'application/xml'
+                            },
+                            qs: {
+                                points_encoded: false,
+                                vehicle: 'car',
+                            },
                         };
 
                         const snappingResponse = JSON.parse(await new Promise((resolve, reject) => {
                             request(options, (error, response, body) => {
                                 if (error) reject(error);
-                                console.log(response);
                                 resolve(body);
                             });
                         }).then(value => value).catch((error) => {

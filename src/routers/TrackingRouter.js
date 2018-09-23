@@ -3,6 +3,7 @@
 import { AppDevRouter } from 'appdev';
 import type Request from 'express';
 import request from 'request';
+import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 import TokenUtils from '../utils/TokenUtils';
 import ErrorUtils from '../utils/ErrorUtils';
@@ -45,15 +46,7 @@ class TrackingRouter extends AppDevRouter<Object> {
                             },
                     };
 
-                    const trackingRequest = await new Promise((resolve, reject) => {
-                        request(options, (error, response, body) => {
-                            if (error) reject(error);
-                            resolve(body);
-                        });
-                    }).then(value => value).catch((error) => {
-                        ErrorUtils.log(error, null, 'Tracking request failed');
-                        return null;
-                    });
+                    const trackingRequest = HTTPRequestUtils.createRequest(options, null, 'Tracking request failed');
 
                     /**
                      * Parse request to object and map valid realtime data to info for each bus

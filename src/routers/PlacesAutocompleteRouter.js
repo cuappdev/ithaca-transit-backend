@@ -1,8 +1,8 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import type Request from 'express';
-import axios from 'axios';
 import request from 'request';
+import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 import LRU from 'lru-cache';
 
 const options = {
@@ -32,30 +32,18 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
         const options = {
             method: 'GET',
             url: 'https://maps.googleapis.com/maps/api/place/autocomplete/json',
-            qs:
-                {
-                    location: '42.4440,-76.5019',
-                    key: process.env.PLACES_KEY,
-                    input: query,
-                    radius: 24140,
-                    strictbounds: '',
-                },
+            qs: {
+                input: query,
+                key: process.env.PLACES_KEY,
+                location: '42.4440,-76.5019',
+                radius: 24140,
+                strictbounds: '',
+            },
         };
 
-        const AutocompleteRequest = JSON.parse(await new Promise((resolve, reject) => {
-            request(options, (error, response, body) => {
-                if (error) reject(error);
-                console.log(response);
-                resolve(body);
-            });
-        }).then(value => value).catch((error) => {
-            ErrorUtils.log(error, null, 'Autocomplete request failed');
-            return null;
-        }));
+        const autocompleteRequest = JSON.parse(HTTPRequestUtils.createRequest(options, null, 'Autocomplete request failed'));
 
-        console.log('autocomplete req', AutocompleteRequest);
-
-        const { predictions } = AutocompleteRequest.data;
+        const { predictions } = autocompleteRequest.data;
         const formattedPredictions = predictions.map(p => ({
             address: p.structured_formatting.secondary_text,
             name: p.structured_formatting.main_text,
