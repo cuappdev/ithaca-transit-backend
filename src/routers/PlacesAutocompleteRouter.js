@@ -41,16 +41,22 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
             },
         };
 
-        const autocompleteRequest = JSON.parse(HTTPRequestUtils.createRequest(options, null, 'Autocomplete request failed'));
+        const autocompleteRequest = await HTTPRequestUtils.createRequest(options, 'Autocomplete request failed');
 
-        const { predictions } = autocompleteRequest.data;
-        const formattedPredictions = predictions.map(p => ({
-            address: p.structured_formatting.secondary_text,
-            name: p.structured_formatting.main_text,
-            place_id: p.place_id,
-        }));
-        cache.set(query, formattedPredictions);
-        return formattedPredictions;
+        if (autocompleteRequest) {
+            const autocompleteResult = JSON.parse(autocompleteRequest);
+
+            const { predictions } = autocompleteResult.data;
+            const formattedPredictions = predictions.map(p => ({
+                address: p.structured_formatting.secondary_text,
+                name: p.structured_formatting.main_text,
+                place_id: p.place_id,
+            }));
+            cache.set(query, formattedPredictions);
+            return formattedPredictions;
+        } else {
+            return null;
+        }
     }
 }
 

@@ -3,6 +3,7 @@ import request from 'request';
 import createGpx from 'gps-to-gpx';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
+import HTTPRequestUtils from './HTTPRequestUtils';
 import AllStopUtils from './AllStopUtils';
 import ErrorUtils from './ErrorUtils';
 
@@ -236,21 +237,21 @@ async function parseRoute(resp: Object, destinationName: string) {
                             },
                         };
 
-                        const snappingResponse = JSON.parse(await new Promise((resolve, reject) => {
-                            request(options, (error, response, body) => {
-                                if (error) reject(error);
-                                resolve(body);
-                            });
-                        }).then(value => value).catch((error) => {
-                            ErrorUtils.log(error, null, 'snappingResponse request failed');
-                            return null;
-                        }));
+                        const snappingResponseRequest = await HTTPRequestUtils.createRequest(
+                            options, 'snappingResponse request failed');
+                        
+                        let snappingResponse = null;
 
-                        // need to handle errors more gracefully
-                        path = snappingResponse.data.paths[0].points.coordinates.map(point => ({
-                            lat: point[1],
-                            long: point[0],
-                        }));
+                        if (snappingResponseRequest) {
+                            snappingResponse = JSON.parse(snappingResponseRequest);
+                            
+                            // need to handle errors more gracefully
+                            path = snappingResponse.data.paths[0].points.coordinates.map(point => ({
+                                lat: point[1],
+                                long: point[0],
+                            }));
+                        }
+
                     } catch (error) {
                         // log error
                         ErrorUtils.log(error.data, destinationName, `Snap response failed: ${process.env.MAP_MATCHING || 'undefined graphhopper mapmatching env'}`);

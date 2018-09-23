@@ -76,8 +76,14 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 },
             };
 
-            busRoute = JSON.parse(HTTPRequestUtils.createRequest(
-                options, null, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`));
+            const busRouteRequest = await HTTPRequestUtils.createRequest(
+                options, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`);
+            
+            if (busRouteRequest) {
+                busRoute = JSON.parse(busRouteRequest);
+            } else {
+                busRoute = null;
+            }
         
         } catch (routeErr) {
             errors.push(ErrorUtils.log(
@@ -97,8 +103,14 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 },
             };
 
-            walkingRoute = JSON.parse(HTTPRequestUtils.createRequest(
-                options, null, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`));
+            const walkingRouteRequest = await HTTPRequestUtils.createRequest(
+                options, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`);
+            
+            if (walkingRouteRequest) {
+                walkingRoute = JSON.parse(walkingRouteRequest);
+            } else {
+                walkingRoute = null;
+            }
 
         } catch (walkingErr) {
             errors.push(ErrorUtils.log(

@@ -46,7 +46,7 @@ class TrackingRouter extends AppDevRouter<Object> {
                             },
                     };
 
-                    const trackingRequest = HTTPRequestUtils.createRequest(options, null, 'Tracking request failed');
+                    const trackingRequest = await HTTPRequestUtils.createRequest(options, 'Tracking request failed');
 
                     /**
                      * Parse request to object and map valid realtime data to info for each bus
