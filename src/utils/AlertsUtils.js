@@ -1,6 +1,5 @@
 // @flow
 import alarm from 'alarm';
-import request from 'request';
 import HTTPRequestUtils from './HTTPRequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './ErrorUtils';

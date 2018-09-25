@@ -1,5 +1,4 @@
 // @flow
-import request from 'request';
 import createGpx from 'gps-to-gpx';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
@@ -211,15 +210,6 @@ async function parseRoute(resp: Object, destinationName: string) {
                         startTime: gpxJson.startTime,
                     });
 
-                    const config = {
-                        headers: {
-                            'Content-Type': 'application/xml',
-                        },
-                        params: {
-                            points_encoded: false,
-                            vehicle: 'car',
-                        },
-                    };
                     try {
                         // TODO refactor
                         // eslint-disable-next-line no-await-in-loop
@@ -229,7 +219,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                             url: `http://${process.env.MAP_MATCHING || 'ERROR'}:8989/match`,
                             body: gpx,
                             headers: {
-                                'Content-Type': 'application/xml'
+                                'Content-Type': 'application/xml',
                             },
                             qs: {
                                 points_encoded: false,
@@ -237,21 +227,22 @@ async function parseRoute(resp: Object, destinationName: string) {
                             },
                         };
 
+                        // eslint-disable-next-line no-await-in-loop
                         const snappingResponseRequest = await HTTPRequestUtils.createRequest(
-                            options, 'snappingResponse request failed');
-                        
+                            options, 'snappingResponse request failed',
+                        );
+
                         let snappingResponse = null;
 
                         if (snappingResponseRequest) {
                             snappingResponse = JSON.parse(snappingResponseRequest);
-                            
+
                             // need to handle errors more gracefully
                             path = snappingResponse.data.paths[0].points.coordinates.map(point => ({
                                 lat: point[1],
                                 long: point[0],
                             }));
                         }
-
                     } catch (error) {
                         // log error
                         ErrorUtils.log(error.data, destinationName, `Snap response failed: ${process.env.MAP_MATCHING || 'undefined graphhopper mapmatching env'}`);
