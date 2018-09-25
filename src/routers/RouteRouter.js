@@ -51,6 +51,12 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         parameters['pt.profile'] = true;
         parameters['pt.max_walk_distance_per_leg'] = 2000;
 
+        const walkingParameters: any = {
+            point: [start, end],
+            points_encoded: false,
+            vehicle: 'foot',
+        };
+
         let busRoute;
         let walkingRoute;
         const errors = [];
@@ -59,18 +65,15 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             const options = {
                 method: 'GET',
                 url: `http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`,
-                qs: {
-                    elevation: false,
-                    point: [start, end],
-                    points_encoded: false,
-                    vehicle: 'pt',
-                    weighting: 'short_fastest',
-                },
+                qs: parameters,
+                qsStringifyOptions: { arrayFormat: 'repeat' },
             };
 
             const busRouteRequest = await HTTPRequestUtils.createRequest(
                 options, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
             );
+
+            /* ErrorUtils.log(busRouteRequest, options, 'routeRequest'); */
 
             if (busRouteRequest) {
                 busRoute = JSON.parse(busRouteRequest);
@@ -88,11 +91,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             const options = {
                 method: 'GET',
                 url: `http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`,
-                qs: {
-                    point: [start, end],
-                    points_encoded: false,
-                    vehicle: 'foot',
-                },
+                qs: walkingParameters,
             };
 
             const walkingRouteRequest = await HTTPRequestUtils.createRequest(
@@ -116,6 +115,9 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             return errors;
         }
 
+        console.log('busRoute', busRoute);
+        console.log('walkingRoute', busRoute);
+
         const routeWalking = WalkingUtils.parseWalkingRoute((walkingRoute && walkingRoute.data), departureTimeNowMs, destinationName);
 
         // if there are no bus routes, we should just return walking instead of crashing
@@ -124,6 +126,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         }
 
         let routeNow = await RouteUtils.parseRoute(busRoute.data, destinationName);
+        console.log('I AM HERE2');
 
         routeNow = routeNow.filter((route) => {
             let isValid = true;

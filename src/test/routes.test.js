@@ -6,6 +6,7 @@ const ErrorUtils = require('../utils/ErrorUtils');
 
 let ready = false;
 const root = '/api/v1';
+const epochTime = (new Date()).getTime() / 1000;
 
 beforeAll(async () => init.then((res) => {
     ready = true;
@@ -48,11 +49,19 @@ describe('delay', () => {
 });
 
 describe('route', () => {
-    const places = `${root}/route/`;
+    const route = `${root}/route`;
 
-    test(places, () => request(server).get(places).expect((res) => {
+    test(route, () => request(server).get(route).expect((res) => {
         if (res.statusCode !== 200) throw new Error('Bad status code ', res.statusCode);
         if (res.body.success === true) throw new Error('Empty request body returned successfully', res.statusCode);
+    }));
+
+    const route1 = `?start=42.444759,-76.484183&end=42.442503,-76.485845&time=${epochTime}&arriveBy=false&destinationName="Schwartz"`;
+
+    test(route + route1, () => request(server).get(route + route1).expect((res) => {
+        console.log(res.body);
+        if (res.statusCode !== 200) throw new Error('Bad status code ', res.statusCode);
+        if (res.body.success === false) throw new Error('Route request success:false', res.statusCode);
     }));
 
     // TODO
