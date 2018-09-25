@@ -1,9 +1,7 @@
 // @flow
 import { AppDevRouter } from 'appdev';
-import request from 'request';
-import HTTPRequestUtils from '../utils/HTTPRequestUtils';
-import qs from 'qs';
 import type Request from 'express';
+import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 import WalkingUtils from '../utils/WalkingUtils';
 import RouteUtils from '../utils/RouteUtils';
 import ErrorUtils from '../utils/ErrorUtils';
@@ -53,12 +51,6 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         parameters['pt.profile'] = true;
         parameters['pt.max_walk_distance_per_leg'] = 2000;
 
-        const walkingParameters: any = {
-            point: [start, end],
-            points_encoded: false,
-            vehicle: 'foot',
-        };
-
         let busRoute;
         let walkingRoute;
         const errors = [];
@@ -77,18 +69,18 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             };
 
             const busRouteRequest = await HTTPRequestUtils.createRequest(
-                options, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`);
-            
+                options, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+            );
+
             if (busRouteRequest) {
                 busRoute = JSON.parse(busRouteRequest);
             } else {
                 busRoute = null;
             }
-        
         } catch (routeErr) {
             errors.push(ErrorUtils.log(
-                routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`)
-            );
+                routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+            ));
             busRoute = null;
         }
 
@@ -104,19 +96,19 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             };
 
             const walkingRouteRequest = await HTTPRequestUtils.createRequest(
-                options, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`);
-            
+                options, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+            );
+
             if (walkingRouteRequest) {
                 walkingRoute = JSON.parse(walkingRouteRequest);
             } else {
                 walkingRoute = null;
             }
-
         } catch (walkingErr) {
             errors.push(ErrorUtils.log(
                 walkingErr.response.data.hints[0].message, parameters,
-                `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`)
-            );
+                `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+            ));
             walkingRoute = null;
         }
 

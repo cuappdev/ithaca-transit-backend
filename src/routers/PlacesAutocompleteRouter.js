@@ -1,15 +1,14 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import type Request from 'express';
-import request from 'request';
-import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 import LRU from 'lru-cache';
+import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 
-const options = {
+const cacheOptions = {
     max: 10000,
     maxAge: 1000 * 60 * 60 * 24 * 5,
 };
-const cache = LRU(options);
+const cache = LRU(cacheOptions);
 
 class PlacesAutocompleteRouter extends AppDevRouter<string> {
     constructor() {
@@ -54,9 +53,8 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
             }));
             cache.set(query, formattedPredictions);
             return formattedPredictions;
-        } else {
-            return null;
         }
+        return null;
     }
 }
 

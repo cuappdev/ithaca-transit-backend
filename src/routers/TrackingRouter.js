@@ -2,7 +2,6 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import type Request from 'express';
-import request from 'request';
 import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 import TokenUtils from '../utils/TokenUtils';
