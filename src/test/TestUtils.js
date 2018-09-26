@@ -46,7 +46,7 @@ function checkRouteValid(res) {
         throw new Error(`No route response body: ${s(res)}`);
     }
     if (res.body.success === false) {
-        throw new Error(`Route request success:false${s(res.body.success)}`);
+        throw new Error(`Route request success:false; ${s(res.body)}`);
     }
     if (!res.body.data || res.body.data.length === 0) {
         throw new Error(`Route request data empty: ${s(res.body)}`);
@@ -79,8 +79,11 @@ function checkRouteValid(res) {
         }
 
         for (let j = 0; j < route.directions.length; j++) {
-            const dir = route.directions[i];
+            const dir = route.directions[j];
 
+            if (!dir) {
+                throw new Error(`Directions empty: ${s(route)}`);
+            }
             if (!dir.path || !(dir.path.length > 0)) {
                 throw new Error(`Directions path empty: ${s(dir)}`);
             }
