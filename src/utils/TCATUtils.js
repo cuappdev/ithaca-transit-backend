@@ -1,41 +1,28 @@
 // @flow
-import fs from 'fs';
 import csv from 'csvtojson';
 import dotenv from 'dotenv';
 import ErrorUtils from './ErrorUtils';
 
 dotenv.config();
-const routeJson = [];
+let routeJson = [];
+const routeFilename = 'routes.txt';
 
-function readCSV(fileName: string) {
-    return new Promise(((resolve, reject) => {
-        fs.readFile(`tcat-ny-us/${fileName}`, 'utf8', (err, csvString) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(csvString);
-            }
-        });
-    }));
-}
+async function getRouteJson(fileName: string = routeFilename, refreshFromFile: boolean = false) {
+    return new Promise((resolve, reject) => {
+        if (!refreshFromFile && routeJson && routeJson.length > 0 && routeFilename === fileName) {
+            resolve(routeJson);
+        }
 
-function createRouteJson(fileName: string) {
-    readCSV(fileName)
-        .then((csvString) => {
-            csv()
-                .fromString(csvString)
-                .on('json', (jsonObj) => {
-                    routeJson.push(jsonObj);
-                })
-                .on('done', (error) => {
-                    if (error) {
-                        ErrorUtils.log(error, fileName, 'Could not create route JSON');
-                    }
-                });
+        csv().fromFile(`tcat-ny-us/${fileName}`).then((jsonObj) => {
+            routeJson = jsonObj;
+            resolve(routeJson);
         });
+    }).then(value => value).catch((error) => {
+        ErrorUtils.log(error, fileName, 'Could not get route json');
+        return [];
+    });
 }
 
 export default {
-    createRouteJson,
-    routeJson,
+    getRouteJson,
 };

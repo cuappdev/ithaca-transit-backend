@@ -1,8 +1,7 @@
 // @flow
 import { AppDevRouter } from 'appdev';
-import axios from 'axios';
-import qs from 'qs';
 import type Request from 'express';
+import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 import WalkingUtils from '../utils/WalkingUtils';
 import RouteUtils from '../utils/RouteUtils';
 import ErrorUtils from '../utils/ErrorUtils';
@@ -36,11 +35,11 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         const oneHourInMilliseconds = 3600000;
 
         const parameters: any = {
-            vehicle: 'pt',
-            weighting: 'short_fastest',
             elevation: false,
             point: [start, end],
             points_encoded: false,
+            vehicle: 'pt',
+            weighting: 'short_fastest',
         };
         parameters['pt.arrive_by'] = arriveBy;
         parameters['ch.disable'] = true;
@@ -53,47 +52,78 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         parameters['pt.max_walk_distance_per_leg'] = 2000;
 
         const walkingParameters: any = {
-            vehicle: 'foot',
             point: [start, end],
             points_encoded: false,
+            vehicle: 'foot',
         };
 
         let busRoute;
         let walkingRoute;
         const errors = [];
 
-        try {
-            busRoute = await axios.get(`http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`, {
-                params: parameters,
-                paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
-            });
-        } catch (routeErr) {
-            errors.push(ErrorUtils.log(routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`));
+        const options = {
+            method: 'GET',
+            url: `http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`,
+            qs: parameters,
+            qsStringifyOptions: { arrayFormat: 'repeat' },
+        };
+
+        const busRouteRequest = await HTTPRequestUtils.createRequest(
+            options,
+            `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+            true,
+        );
+
+        if (busRouteRequest && busRouteRequest.statusCode < 300) {
+            busRoute = JSON.parse(busRouteRequest.body);
+        } else {
+            errors.push(ErrorUtils.log(
+                busRouteRequest && busRouteRequest.body,
+                parameters,
+                `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+            ));
             busRoute = null;
         }
 
-        try {
-            walkingRoute = await axios.get(`http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`, {
-                params: walkingParameters,
-                paramsSerializer: (params: any) => qs.stringify(params, { arrayFormat: 'repeat' }),
-            });
-        } catch (walkingErr) {
-            errors.push(ErrorUtils.log(walkingErr.response.data.hints[0].message, parameters, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`));
+        const walkingOptions = {
+            method: 'GET',
+            url: `http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`,
+            qs: walkingParameters,
+            qsStringifyOptions: { arrayFormat: 'repeat' },
+        };
+
+        const walkingRouteRequest = await HTTPRequestUtils.createRequest(
+            walkingOptions,
+            `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+            true,
+        );
+
+        if (walkingRouteRequest && walkingRouteRequest.statusCode < 300) {
+            walkingRoute = JSON.parse(walkingRouteRequest.body);
+        } else {
+            errors.push(ErrorUtils.log(
+                walkingRouteRequest && walkingRouteRequest.body,
+                parameters,
+                `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+            ));
             walkingRoute = null;
         }
 
-        if (!busRoute && !walkingRoute) {
-            return errors;
+        // if no bus or walking routes or errors in results
+        if (!(busRoute || walkingRoute) || errors.length > 0) {
+            ErrorUtils.log(errors, parameters, 'Routing requests failed');
+            throw new Error(errors);
         }
 
-        const routeWalking = WalkingUtils.parseWalkingRoute((walkingRoute && walkingRoute.data), departureTimeNowMs, destinationName);
+        const routeWalking = WalkingUtils.parseWalkingRoute(walkingRoute, departureTimeNowMs, destinationName);
 
         // if there are no bus routes, we should just return walking instead of crashing
-        if (!busRoute) {
+        if (!busRoute && routeWalking) {
             return [routeWalking];
         }
 
-        let routeNow = await RouteUtils.parseRoute(busRoute.data, destinationName);
+        // create the final route
+        let routeNow = await RouteUtils.parseRoute(busRoute || {}, destinationName);
 
         routeNow = routeNow.filter((route) => {
             let isValid = true;
@@ -121,11 +151,11 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             walkingTotals.forEach((element) => {
                 totalWalkingForRoute += element;
             });
-            return totalWalkingForRoute <= routeWalking.directions[0].distance;
+            return totalWalkingForRoute <= (routeWalking ? routeWalking.directions[0].distance : 0);
         });
 
-        if (routeNow.length === 0) {
-            return [routeWalking];
+        if (routeNow.length === 0 && routeWalking) {
+            return routeWalking ? [routeWalking] : [];
         }
 
         // throw out routes with over 2 hours time between each direction

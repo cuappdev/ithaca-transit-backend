@@ -14,10 +14,11 @@
     "start": "npm run cleanup; npm run build && sh scripts/run.sh",
     "start-dev": "npm run setup && npm run build-dev",
     "cleanup": "killall -9 java ; printf ''",
-    "test": "jest --runInBand --noStackTrace --detectOpenHandles --forceExit src/test",
-    "flow": "node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop",
-    "travis": "npm run build && npm test"
+    "travis": "npm run build && npm test",
+    "test": "jest --noStackTrace --detectOpenHandles --forceExit src/test ; npm run flow",
+    "test-no-exit": "jest --noStackTrace --detectOpenHandles src/test ; npm run flow",
+    "flow": "echo 'Flow:' ; node_modules/.bin/flow"
   },
   "repository": {
     "type": "git",
@@ -32,7 +33,6 @@
   "dependencies": {
     "alarm": "^2.0.0",
     "appdev": "^0.4.2",
-    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "csvtojson": "^2.0.8",
     "dotenv": "^6.0.0",
@@ -63,7 +63,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
     "extra-watch-webpack-plugin": "^1.0.3",
-    "flow-bin": "^0.80.0",
+    "flow-bin": "^0.81.0",
     "jest": "^23.5.0",
     "nodemon": "^1.18.4",
     "nodemon-webpack-plugin": "^4.0.3",

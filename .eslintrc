@@ -1,11 +1,10 @@
-module.exports = {
+{
     "extends": "airbnb",
     "parser": "babel-eslint",
     "plugins": ["jest"],
     "env": {
         "jest/globals": true
     },
-    "extends": "airbnb",
     "rules": {
         // for babel-eslint
         "strict": 0,
@@ -62,6 +61,10 @@ module.exports = {
         "no-trailing-spaces": ["error", { "skipBlankLines": true }],
 
         // allow reassignment of param properties
-        "no-param-reassign": [2, { "props": false }]
+        "no-param-reassign": [2, { "props": false }],
+
+        "import/extensions": "never",
+
+        "function-paren-newline": ["error", "consistent"]
     }
-};
+}

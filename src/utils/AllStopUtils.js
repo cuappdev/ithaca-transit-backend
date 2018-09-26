@@ -1,6 +1,6 @@
 // @flow
 import alarm from 'alarm';
-import request from 'request';
+import HTTPRequestUtils from './HTTPRequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './ErrorUtils';
 
@@ -22,15 +22,7 @@ async function fetchAllStops() {
                 },
         };
 
-        const stopsRequest = await new Promise((resolve, reject) => {
-            request(options, (error, response, body) => {
-                if (error) reject(error);
-                resolve(body);
-            });
-        }).then(value => value).catch((error) => {
-            ErrorUtils.log(error, null, 'allStops request failed');
-            return null;
-        });
+        const stopsRequest = await HTTPRequestUtils.createRequest(options, 'allStops request failed');
 
         if (stopsRequest) {
             allStops = JSON.parse(stopsRequest).map(stop => ({

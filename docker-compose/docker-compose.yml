@@ -1,0 +1,53 @@
+version: "3.4"
+
+services:
+  node:
+    build: node
+    image: node
+    env_file: node.env
+    ports:
+      - "80:3000"
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        order: start-first
+      restart_policy:
+        condition: any
+
+  ghopper:
+    build: ghopper
+    image: ghopper
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        order: start-first
+      restart_policy:
+        condition: any
+
+  map:
+    build: map
+    image: map
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        order: start-first
+      restart_policy:
+        condition: any
+
+  ghopper-walking:
+    build: ghopper-walking
+    image: ghopper-walking
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        order: start-first
+      restart_policy:
+        condition: any
