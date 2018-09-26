@@ -58,10 +58,10 @@ describe('route', () => {
         if (res.body.success === true) throw new Error('Empty request body returned successfully', res.statusCode);
     }));
 
-    const route1 = `?start=42.444759,-76.484183&end=42.442503,-76.485845&time=${epochTime}&arriveBy=false&destinationName="Schwartz"`;
-    test(`now: ${route}${route1}`, () => request(server).get(route + route1).expect((res) => {
-        checkRouteValid(res);
-    }));
+    // const route1 = `?start=42.444759,-76.484183&end=42.442503,-76.485845&time=${epochTime}&arriveBy=false&destinationName="Schwartz"`;
+    // test(`now: ${route}${route1}`, () => request(server).get(route + route1).expect((res) => {
+    //     checkRouteValid(res);
+    // }));
 
     const afternoonYesterday = moment().endOf('day').subtract(36, 'hours').unix();
     const route2 = `?start=42.444759,-76.484183&end=42.442503,-76.485845&time=${afternoonYesterday}&arriveBy=false&destinationName="Schwartz"`;

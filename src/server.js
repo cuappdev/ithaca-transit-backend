@@ -8,7 +8,7 @@ import RealtimeFeedUtils from './utils/RealtimeFeedUtils';
 import TCATUtils from './utils/TCATUtils';
 import ErrorUtils from './utils/ErrorUtils';
 
-TCATUtils.createRouteJson('routes.txt');
+TCATUtils.getRouteJson('routes.txt');
 dotenv.config();
 
 const port: number = parseInt(process.env.PORT) || 80;

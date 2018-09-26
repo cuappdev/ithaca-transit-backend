@@ -111,6 +111,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
 
         // if no bus or walking routes or errors in results
         if (!(busRoute || walkingRoute) || errors.length > 0) {
+            ErrorUtils.log(errors, parameters, 'Routing requests failed');
             throw new Error(errors);
         }
 
