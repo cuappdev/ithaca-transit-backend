@@ -12,7 +12,9 @@ class HelloWorldRouter extends AppDevRouter<string> {
     }
 
     async content(req: Request): Promise<string> {
-        return (`Hello World! Currently on ${process.env.NODE_ENV || 'unknown'} environment.`);
+        return (`Hello World! Environment: ${process.env.NODE_ENV || 'unknown'} | `
+         + `Graphhopper bus: http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/ | `
+         + `Graphhopper walking: http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987 `);
     }
 }
 
