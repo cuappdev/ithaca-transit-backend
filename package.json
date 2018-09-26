@@ -15,8 +15,8 @@
     "start": "npm run cleanup; npm run build && sh scripts/run.sh",
     "start-dev": "npm run init && npm run build-dev",
     "cleanup": "killall -9 java",
-    "test": "jest --runInBand --noStackTrace --detectOpenHandles src/test ; npm run flow",
-    "flow": "flow"
+    "test": "jest --noStackTrace --detectOpenHandles --forceExit src/test ; npm run flow",
+    "flow": "echo 'Flow:' ; flow"
   },
   "repository": {
     "type": "git",
