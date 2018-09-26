@@ -8,7 +8,7 @@ const { checkRouteValid } = require('./TestUtils');
 
 let ready = false;
 const root = '/api/v1';
-const epochTime = (new Date()).getTime() / 1000; // ex: 1537919412.036
+// const epochTime = (new Date()).getTime() / 1000; // ex: 1537919412.036
 
 beforeAll(async () => init.then((res) => {
     ready = true;

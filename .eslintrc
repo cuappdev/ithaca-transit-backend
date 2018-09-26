@@ -63,6 +63,8 @@
         // allow reassignment of param properties
         "no-param-reassign": [2, { "props": false }],
 
-        "import/extensions": "never"
+        "import/extensions": "never",
+
+        "function-paren-newline": ["error", "consistent"]
     }
 }
