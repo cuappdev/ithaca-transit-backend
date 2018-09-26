@@ -3,7 +3,7 @@ version: "3.4"
 services:
   node:
     build: node
-    image: 104.236.60.90:443/transit-node:0.1.3
+    image: node
     env_file: node.env
     ports:
       - "80:3000"
@@ -18,7 +18,7 @@ services:
 
   ghopper:
     build: ghopper
-    image: 104.236.60.90:443/transit-ghopper:0.1.2
+    image: ghopper
     deploy:
       replicas: 1
       update_config:
@@ -30,7 +30,7 @@ services:
 
   map:
     build: map
-    image: 104.236.60.90:443/transit-map:0.1.2
+    image: map
     deploy:
       replicas: 1
       update_config:
@@ -42,7 +42,7 @@ services:
 
   ghopper-walking:
     build: ghopper-walking
-    image: 104.236.60.90:443/transit-ghopper-walking:0.1.2
+    image: ghopper-walking
     deploy:
       replicas: 1
       update_config:
