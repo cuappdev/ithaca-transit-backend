@@ -117,11 +117,11 @@ function getStackTrace() {
  * or console if dev environment
  *
  * @param error
- * @param requestParameters
+ * @param data
  * @param note
  * @returns {{error: *, message: *}}
  */
-function log(error: string, requestParameters: ?Object, note: ?string) {
+function log(error: string, data: ?Object, note: ?string) {
     if (!error) {
         return null;
     }
@@ -135,7 +135,7 @@ function log(error: string, requestParameters: ?Object, note: ?string) {
 
     const registerPayload = {
         ...response,
-        ...(requestParameters ? { requestParameters } : {}),
+        ...(data ? { requestParameters: data } : {}),
         ...(note ? { note } : {}),
     };
 

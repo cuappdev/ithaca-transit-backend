@@ -59,9 +59,9 @@ describe('route', () => {
     const route1 = `?start=42.444759,-76.484183&end=42.442503,-76.485845&time=${epochTime}&arriveBy=false&destinationName="Schwartz"`;
 
     test(route + route1, () => request(server).get(route + route1).expect((res) => {
-        console.log(res.body);
         if (res.statusCode !== 200) throw new Error('Bad status code ', res.statusCode);
         if (res.body.success === false) throw new Error('Route request success:false', res.statusCode);
+        if (res.body.data && res.body.data.length === 0) throw new Error('Route request data empty', res.statusCode);
     }));
 
     // TODO

@@ -61,72 +61,68 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         let walkingRoute;
         const errors = [];
 
-        try {
-            const options = {
-                method: 'GET',
-                url: `http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`,
-                qs: parameters,
-                qsStringifyOptions: { arrayFormat: 'repeat' },
-            };
+        const options = {
+            method: 'GET',
+            url: `http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`,
+            qs: parameters,
+            qsStringifyOptions: { arrayFormat: 'repeat' },
+        };
 
-            const busRouteRequest = await HTTPRequestUtils.createRequest(
-                options, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
-            );
+        const busRouteRequest = await HTTPRequestUtils.createRequest(
+            options,
+            `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+            true,
+        );
 
-            /* ErrorUtils.log(busRouteRequest, options, 'routeRequest'); */
-
-            if (busRouteRequest) {
-                busRoute = JSON.parse(busRouteRequest);
-            } else {
-                busRoute = null;
-            }
-        } catch (routeErr) {
+        if (busRouteRequest && busRouteRequest.statusCode < 300) {
+            busRoute = JSON.parse(busRouteRequest.body);
+        } else {
             errors.push(ErrorUtils.log(
-                routeErr, parameters, `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+                busRouteRequest && busRouteRequest.body,
+                parameters,
+                `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
             ));
             busRoute = null;
         }
 
-        try {
-            const options = {
-                method: 'GET',
-                url: `http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`,
-                qs: walkingParameters,
-            };
+        const walkingOptions = {
+            method: 'GET',
+            url: `http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`,
+            qs: walkingParameters,
+            qsStringifyOptions: { arrayFormat: 'repeat' },
+        };
 
-            const walkingRouteRequest = await HTTPRequestUtils.createRequest(
-                options, `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
-            );
+        const walkingRouteRequest = await HTTPRequestUtils.createRequest(
+            walkingOptions,
+            `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+            true,
+        );
 
-            if (walkingRouteRequest) {
-                walkingRoute = JSON.parse(walkingRouteRequest);
-            } else {
-                walkingRoute = null;
-            }
-        } catch (walkingErr) {
+        if (walkingRouteRequest && walkingRouteRequest.statusCode < 300) {
+            walkingRoute = JSON.parse(walkingRouteRequest.body);
+        } else {
             errors.push(ErrorUtils.log(
-                walkingErr.response.data.hints[0].message, parameters,
+                walkingRouteRequest && walkingRouteRequest.body,
+                parameters,
                 `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
             ));
             walkingRoute = null;
         }
 
-        if (!busRoute && !walkingRoute) {
-            return errors;
+        // if no bus or walking routes or errors in results
+        if (!(busRoute || walkingRoute) || errors.length > 0) {
+            throw new Error(errors);
         }
 
-        console.log('busRoute', busRoute);
-        console.log('walkingRoute', busRoute);
-
-        const routeWalking = WalkingUtils.parseWalkingRoute((walkingRoute && walkingRoute.data), departureTimeNowMs, destinationName);
+        const routeWalking = WalkingUtils.parseWalkingRoute(walkingRoute, departureTimeNowMs, destinationName);
 
         // if there are no bus routes, we should just return walking instead of crashing
-        if (!busRoute) {
+        if (!busRoute && routeWalking) {
             return [routeWalking];
         }
 
-        let routeNow = await RouteUtils.parseRoute(busRoute.data, destinationName);
-        console.log('I AM HERE2');
+        // create the final route
+        let routeNow = await RouteUtils.parseRoute(busRoute || {}, destinationName);
 
         routeNow = routeNow.filter((route) => {
             let isValid = true;
@@ -154,11 +150,11 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             walkingTotals.forEach((element) => {
                 totalWalkingForRoute += element;
             });
-            return totalWalkingForRoute <= routeWalking.directions[0].distance;
+            return totalWalkingForRoute <= (routeWalking ? routeWalking.directions[0].distance : 0);
         });
 
-        if (routeNow.length === 0) {
-            return [routeWalking];
+        if (routeNow.length === 0 && routeWalking) {
+            return routeWalking ? [routeWalking] : [];
         }
 
         // throw out routes with over 2 hours time between each direction
