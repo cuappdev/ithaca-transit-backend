@@ -1,7 +1,7 @@
 FROM node:8
 
 RUN mkdir /usr/src/app
-RUN git clone git@github.com:cuappdev/ithaca-transit-backend.git /usr/src/app
+RUN git clone https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app
 
 WORKDIR /usr/src/app
 RUN npm install
