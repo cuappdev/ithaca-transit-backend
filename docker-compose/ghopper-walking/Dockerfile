@@ -8,15 +8,13 @@ WORKDIR /usr/src/app
 RUN apt-get update
 RUN apt-get -y install maven wget
 
-RUN mkdir graphhopper-walking
-WORKDIR /usr/src/app/graphhopper-walking
 RUN git clone -b 0.10 https://github.com/graphhopper/graphhopper.git
 
-WORKDIR /usr/src/app/graphhopper-walking/graphhopper
+WORKDIR /usr/src/app/graphhopper
 RUN ./graphhopper.sh buildweb
 
 WORKDIR /usr/src/app
 
 EXPOSE 8987
 
-CMD java -Xmx1g -Xms1g -jar graphhopper-walking/graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=map.osm jetty.port=8987 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=foot prepare.ch.weightings=no graph.location=graphhopper-walking/graph-cache
+CMD java -Xmx1g -Xms1g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=map.osm jetty.port=8987 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=foot prepare.ch.weightings=no graph.location=./graph-cache
