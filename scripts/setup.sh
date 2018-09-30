@@ -1,9 +1,22 @@
 #!/usr/bin/env bash
 
-# This init script will only setup, create, or run anything that it detects isn"t
-# already setup, created, or running
+##############################################################################
 #
-# Use setup.sh and run.sh to do a strict setup/run
+# WHAT THIS SCRIPT DOES
+# This setup/init script will only setup, create, or run anything that it detects isn't
+# already setup, created, or running. Use setup.sh and run.sh to do a strict setup/run.
+#
+# Tasks:
+# 1. Check for required programs
+# 2. Install npm packages
+# 3. Download OSRM data
+# 4. Download GTFS from TCAT and unzip it
+# 5. Clone graphhopper repositories (0.10) for walking, bus navigation, and map-matching
+# 6. Build all graphhopper .jar files
+# 7. Create/update graph cache for graphhopper services
+# 8. Start graphhopper bus and walking navigation services
+#
+##############################################################################
 
 OUT_COLOR="\033[1;34m" #blue
 ERR_COLOR="\033[0;31m" #red
