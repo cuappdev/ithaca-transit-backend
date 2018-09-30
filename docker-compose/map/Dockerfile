@@ -1,7 +1,7 @@
 FROM openjdk:8
 
 RUN mkdir /usr/src/app
-RUN git clone https://github.com/cuappdev/tcat-map.git /usr/src/app
+RUN git clone -b tcat-map https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app
 
 WORKDIR /usr/src/app
 
