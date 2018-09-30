@@ -33,6 +33,7 @@
   "dependencies": {
     "alarm": "^2.0.0",
     "appdev": "^0.4.2",
+    "babel-plugin-transform-flow-comments": "^6.22.0",
     "body-parser": "^1.18.3",
     "csvtojson": "^2.0.8",
     "dotenv": "^6.0.0",
