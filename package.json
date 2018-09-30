@@ -10,13 +10,15 @@
     "setup": "sh scripts/setup.sh",
     "graph": "sh scripts/graph.sh",
     "graph-walking": "sh scripts/graph-walking.sh",
-    "init": "sh scripts/init.sh",
     "mapmatching": "cd map-matching && ./map-matching.sh action=start-server ; cd ..",
     "start": "npm run cleanup; npm run build && sh scripts/run.sh",
-    "start-dev": "npm run init && npm run build-dev",
-    "cleanup": "killall -9 java",
+    "start-dev": "npm run setup && npm run build-dev",
+    "cleanup": "killall -9 java ; printf ''",
+    "flow-stop": "node_modules/.bin/flow stop",
+    "travis": "npm run build && npm test",
     "test": "jest --runInBand --noStackTrace --detectOpenHandles --forceExit src/test ; npm run flow",
-    "flow": "flow"
+    "test-no-exit": "jest --noStackTrace --detectOpenHandles src/test ; npm run flow",
+    "flow": "echo 'Flow:' ; node_modules/.bin/flow"
   },
   "repository": {
     "type": "git",
