@@ -22,4 +22,4 @@ WORKDIR /usr/src/app/map-matching
 EXPOSE 8989
 
 # CMD ./map-matching.sh action=start-server
-CMD ./map-matching.sh action=test
+CMD ./map-matching.sh
