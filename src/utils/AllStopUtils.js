@@ -9,7 +9,7 @@ const HOUR_IN_MS = 1000 * 60 * 60;
 
 async function fetchAllStops() {
     try {
-        const authHeader = await TokenUtils.getAuthorizationHeader();
+        const authHeader = await TokenUtils.authHeader;
 
         const options = {
             method: 'GET',

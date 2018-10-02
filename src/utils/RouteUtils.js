@@ -205,7 +205,7 @@ async function parseRoute(resp: Object, destinationName: string) {
 
                     tripID = [currLeg.trip_id];
 
-                    const routeJson = await TCATUtils.getRouteJson();
+                    const routeJson = await TCATUtils.routeJson;
                     const route = routeJson.filter(routeObj => routeObj.route_id.toString() === currLeg.route_id.toString());
 
                     path = currLeg.stops.map(stop => ({

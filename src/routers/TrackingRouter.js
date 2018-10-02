@@ -28,7 +28,7 @@ class TrackingRouter extends AppDevRouter<Object> {
 
             if (!realtimeData.noInfoYet) {
                 try {
-                    const authHeader = await TokenUtils.getAuthorizationHeader();
+                    const authHeader = await TokenUtils.authHeader;
 
                     const options = {
                         method: 'GET',

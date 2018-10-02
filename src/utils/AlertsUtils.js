@@ -9,7 +9,7 @@ const THREE_MINUTES_IN_MS = 1000 * 60 * 3;
 
 async function fetchAlerts() {
     try {
-        const authHeader = await TokenUtils.getAuthorizationHeader();
+        const authHeader = await TokenUtils.authHeader;
 
         const options = {
             method: 'GET',
