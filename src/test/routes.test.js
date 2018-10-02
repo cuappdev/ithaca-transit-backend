@@ -16,7 +16,7 @@ beforeAll(async () => init.then((res) => {
 }).catch((res) => {
     ErrorUtils.log(res, null, 'Server init failed!');
     return false;
-}), 1000);
+}), 1200000);
 
 describe('Initialization and root path', () => {
     const helloWorld = `${root}/`;
