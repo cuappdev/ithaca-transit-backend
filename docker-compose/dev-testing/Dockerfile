@@ -14,4 +14,5 @@ RUN apt-get install unzip
 RUN unzip tcat-ny-us.zip
 
 EXPOSE 3000
+WORKDIR /usr/src/app
 CMD npm run travis
