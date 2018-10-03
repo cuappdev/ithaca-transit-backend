@@ -215,7 +215,7 @@ async function parseRoute(resp: Object, destinationName: string) {
 
                     if (route.length === 1) {
                         // this gets the correct route number for the gtfs data
-                        routeNumber = route[0].route_short_name;
+                        routeNumber = route[0].route_short_name.match(/\d+/g).map(Number)[0];
                     }
 
                     if (path.length >= 2) {

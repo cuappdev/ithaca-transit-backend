@@ -119,7 +119,7 @@ function checkRouteValid(res) {
                     throw new Error(`Directions walk data invalid: ${s(dir)}`);
                 }
             } else { // type === 'depart'
-                if (!dir.routeNumber || dir.routeNumber === 0) {
+                if (!dir.routeNumber || dir.routeNumber === 0 || !(typeof dir.routeNumber === 'number')) {
                     throw new Error(`Directions routeNumber invalid: ${s(dir)}`);
                 }
                 if (!dir.stops || dir.stops.length === 0) {
@@ -160,7 +160,4 @@ function checkRouteValid(res) {
 module.exports = {
     s,
     checkRouteValid,
-    isNum,
-    isDateValid,
-    isCoordsValid,
 };
