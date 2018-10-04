@@ -205,7 +205,7 @@ async function parseRoute(resp: Object, destinationName: string) {
 
                     tripID = [currLeg.trip_id];
 
-                    const routeJson = await TCATUtils.getRouteJson();
+                    const routeJson = await TCATUtils.routeJson;
                     const route = routeJson.filter(routeObj => routeObj.route_id.toString() === currLeg.route_id.toString());
 
                     path = currLeg.stops.map(stop => ({
@@ -215,7 +215,7 @@ async function parseRoute(resp: Object, destinationName: string) {
 
                     if (route.length === 1) {
                         // this gets the correct route number for the gtfs data
-                        routeNumber = route[0].route_short_name;
+                        routeNumber = route[0].route_short_name.match(/\d+/g).map(Number)[0];
                     }
 
                     if (path.length >= 2) {

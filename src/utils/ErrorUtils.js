@@ -122,34 +122,41 @@ function getStackTrace() {
  * @returns {{error: *, message: *}}
  */
 function log(error: string, data: ?Object, note: ?string) {
-    if (!error) {
-        return null;
+    try { // try block because if the error logging has an error... ?
+        if (!error) {
+            return null;
+        }
+
+        const errorStr = error.toString();
+        const stackTrace = error.stack || getStackTrace();
+
+        const response = generateErrorResponse(errorStr);
+
+        const env = process.env.NODE_ENV || 'development';
+
+        const registerPayload = {
+            ...response,
+            ...(data ? { requestParameters: data } : {}),
+            ...(note ? { note } : {}),
+        };
+
+        if (env === 'production') {
+            writeToRegister(
+                response.code,
+                JSON.stringify({
+                    registerPayload,
+                    stackTrace,
+                }, null, '\t'),
+            );
+        } else {
+            // eslint-disable-next-line no-console
+            console.error(`${JSON.stringify(registerPayload, null, '\t')}\n${stackTrace}`);
+        }
+
+        return response;
+    } catch (e) {
+        return error;
     }
-
-    const errorStr = error.toString();
-    const stackTrace = error.stack || getStackTrace();
-
-    const response = generateErrorResponse(errorStr);
-
-    const env = process.env.NODE_ENV || 'development';
-
-    const registerPayload = {
-        ...response,
-        ...(data ? { requestParameters: data } : {}),
-        ...(note ? { note } : {}),
-    };
-
-    if (env === 'production') {
-        writeToRegister(
-            response.code,
-            JSON.stringify({ registerPayload, stackTrace }, null, '\t'),
-        );
-    } else {
-        // eslint-disable-next-line no-console
-        console.error(`${JSON.stringify(registerPayload, null, '\t')}\n${stackTrace}`);
-    }
-
-    return response;
 }
 
 export default {
