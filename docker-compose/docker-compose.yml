@@ -18,9 +18,3 @@ services:
     image: ghopper-walking
     ports:
       - "8987:8987"
-  
-  dev-testing:
-    build: dev-testing
-    image: dev-testing
-    ports:
-    - "3000:3000"
