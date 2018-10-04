@@ -17,7 +17,7 @@ cache:
   - cache
 install:
 - docker-compose -f docker-compose/docker-compose.yml up -d
-- sleep 10m
+- sleep 1
 script:
 - npm run travis
 env:
