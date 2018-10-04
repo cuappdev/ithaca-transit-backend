@@ -75,9 +75,9 @@ function getWeekdayString(daysOfWeek) {
     }
 }
 
-function getAlerts() {
+async function getAlerts() {
     if (alerts.length === 0) {
-        fetchAlerts();
+        await fetchAlerts();
     }
     return alerts;
 }

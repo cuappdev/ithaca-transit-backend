@@ -59,7 +59,7 @@ done
 
 echo "${OUT_COLOR}Starting graphhopper docker containers...${NC}"
 
-./scripts/run_graphhopper.sh &
+./scripts/run_ghopper.sh &
 
 docker ps
 

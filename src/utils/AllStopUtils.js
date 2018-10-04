@@ -37,9 +37,9 @@ async function fetchAllStops() {
     }
 }
 
-function getAllStops() {
+async function getAllStops() {
     if (allStops.length === 0) {
-        fetchAllStops();
+        await fetchAllStops();
     }
     return allStops;
 }

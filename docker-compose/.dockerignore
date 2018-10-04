@@ -11,3 +11,5 @@ README.md
 LICENSE
 .vscode
 .idea
+.graphhopper.log
+*.log

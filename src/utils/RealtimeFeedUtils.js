@@ -15,6 +15,13 @@ function xmlToJson(xml: String, forTrip: boolean) {
             ErrorUtils.log(err, null, 'Parse XML string error');
         }
 
+        if (!result
+            || !result.FeedMessage
+            || !result.FeedMessage.Entities.length > 0
+            || !result.FeedMessage.Entities[0].FeedEntity) {
+            return null;
+        }
+
         try {
             if (result && forTrip) {
                 tripRealtimeFeed = result.FeedMessage.Entities[0].FeedEntity.map((entity) => {
@@ -46,7 +53,7 @@ function xmlToJson(xml: String, forTrip: boolean) {
                 });
             }
         } catch (e) {
-            ErrorUtils.log(e, result, 'Could not convert xml to JSON');
+            ErrorUtils.log(e, { result, forTrip }, 'Could not convert xml to JSON');
         }
         return null;
     });
@@ -104,10 +111,10 @@ async function fetchTripRealtimeFeed() {
     }
 }
 
-function getDelay(stopID: String, tripID: String) {
+async function getDelay(stopID: String, tripID: String) {
     let delay = null;
-    if (vehicleRealtimeFeed.indexOf(tripID) === -1) {
-        return delay;
+    if (!stopID || !tripID || vehicleRealtimeFeed.indexOf(tripID) === -1) {
+        return null;
     }
 
     const filteredTrips = tripRealtimeFeed.filter(trip => trip.tripID === tripID);

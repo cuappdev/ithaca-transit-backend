@@ -6,7 +6,7 @@
   "scripts": {
     "build": "./node_modules/.bin/webpack --env.NODE_ENV=production --mode=production -p",
     "build-dev": "./node_modules/.bin/webpack --watch --env.NODE_ENV=dev --progress --mode=development --debug --devtool cheap-eval-source-map --output-pathinfo",
-    "graphhopper": "sh ./scripts/run_graphhopper.sh",
+    "graphhopper": "sh ./scripts/run_ghopper.sh",
     "stop": "cd docker-compose && docker-compose stop && cd .. ; printf ''",
     "kill": "cd docker-compose && docker-compose kill && cd .. ; printf ''",
     "clean": "npm run stop && docker system prune",

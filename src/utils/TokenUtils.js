@@ -81,7 +81,7 @@ async function generateAccessToken() {
 
         return newCredentials.access_token;
     }).catch((error) => {
-        ErrorUtils.log(error, null, 'Token request failed');
+        ErrorUtils.log(error, credentials, 'Token request failed');
         return null;
     });
 }

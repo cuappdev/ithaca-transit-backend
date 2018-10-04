@@ -1,7 +1,6 @@
 /* eslint-disable no-await-in-loop */ // TODO refactor awaits in loop
 // @flow
 import { AppDevRouter } from 'appdev';
-import type Request from 'express';
 import HTTPRequestUtils from '../utils/HTTPRequestUtils';
 import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 import TokenUtils from '../utils/TokenUtils';
@@ -16,7 +15,13 @@ class TrackingRouter extends AppDevRouter<Object> {
         return '/tracking/';
     }
 
-    async content(req: Request): Promise<any> {
+    async content(req): Promise<any> {
+        if (!req.body || !req.body.data) {
+            return {
+                case: 'invalidData',
+            };
+        }
+
         const trackingArray = req.body.data;
         let foundTrackingData = false;
         const trackingInformation = [];
@@ -47,11 +52,12 @@ class TrackingRouter extends AppDevRouter<Object> {
 
                     const trackingRequest = await HTTPRequestUtils.createRequest(options, 'Tracking request failed');
 
+                    console.log(trackingRequest);
                     /**
                      * Parse request to object and map valid realtime data to info for each bus
                      */
                     const trackingData = trackingRequest
-                        && JSON.parse(trackingRequest).data
+                        && JSON.parse(trackingRequest)
                             .filter(
                                 busInfo => busInfo.VehicleId === realtimeData.vehicleID,
                             ).map((busInfo) => {

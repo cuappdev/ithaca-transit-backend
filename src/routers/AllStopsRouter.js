@@ -1,6 +1,5 @@
 // @flow
 import { AppDevRouter } from 'appdev';
-import type Request from 'express';
 import AllStopUtils from '../utils/AllStopUtils';
 
 class AllStopsRouter extends AppDevRouter<Array<Object>> {
@@ -12,7 +11,7 @@ class AllStopsRouter extends AppDevRouter<Array<Object>> {
         return '/allStops/';
     }
 
-    async content(req: Request): Promise<any> {
+    async content(req): Promise<any> {
         return AllStopUtils.getAllStops();
     }
 }
