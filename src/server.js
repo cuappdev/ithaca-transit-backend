@@ -12,7 +12,7 @@ import TokenUtils from './utils/TokenUtils';
 // load environment variables
 if (!process.env.GHOPPER_BUS && !fs.existsSync('.env')) {
     fs.copyFileSync('env.template', '.env', (err) => {
-        if (err) throw ErrorUtils.log(err, '.env', 'Failed to find or create .env file');
+        if (err) throw ErrorUtils.logErr(err, '.env', 'Failed to find or create .env file');
     });
 }
 dotenv.load();
@@ -36,24 +36,33 @@ const server = new API().getServer();
 const init = new Promise((resolve, reject) => {
     server.listen(port, '0.0.0.0', () => {
         TokenUtils.authHeader.then(() => {
+            // start endpoints that cache data
+            RealtimeFeedUtils.start();
+            AllStopUtils.start();
+            AlertsUtils.start();
+
+            Promise.all([
+                RealtimeFeedUtils.vehicleRealtimeFeed,
+                RealtimeFeedUtils.tripRealtimeFeed,
+                AllStopUtils.allStops,
+                AlertsUtils.alerts,
+                TokenUtils.authHeader,
+            ]).then(() => {
+                console.log('Init successful: authHeader, vehicleRealtimeFeed, tripRealtimeFeed, allStops, alerts');
+            });
+
             // then wait for graphhopper services
             waitOn(waitOptions, (err) => {
                 if (err) {
-                    throw ErrorUtils.log(err, waitOptions, 'Failed to connect to graphhopper services');
+                    throw ErrorUtils.logErr(err, waitOptions, 'Failed to connect to graphhopper services');
                 }
                 // graphhopper is running
-
-                // start endpoints that cache data
-                RealtimeFeedUtils.start();
-                AllStopUtils.start();
-                AlertsUtils.start();
-
                 resolve(port);
             });
         });
     });
 }).then(value => value).catch((error) => {
-    ErrorUtils.log(error, null, 'Transit init failed');
+    ErrorUtils.logErr(error, null, 'Transit init failed');
     return null;
 });
 

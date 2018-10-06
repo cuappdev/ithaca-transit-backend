@@ -1,10 +1,10 @@
 // @flow
 import alarm from 'alarm';
-import HTTPRequestUtils from './HTTPRequestUtils';
+import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './ErrorUtils';
 
-let allStops = [];
+let allStops = RequestUtils.fetchRetry(fetchAllStops);
 const HOUR_IN_MS = 1000 * 60 * 60;
 
 async function fetchAllStops() {
@@ -22,30 +22,25 @@ async function fetchAllStops() {
                 },
         };
 
-        const stopsRequest = await HTTPRequestUtils.createRequest(options, 'allStops request failed');
+        const stopsRequest = await RequestUtils.createRequest(options, 'allStops request failed');
 
         if (stopsRequest) {
-            allStops = JSON.parse(stopsRequest).map(stop => ({
+            return JSON.parse(stopsRequest).map(stop => ({
                 name: stop.Name,
                 lat: stop.Latitude,
                 long: stop.Longitude,
             }));
         }
     } catch (err) {
-        ErrorUtils.log(err, null, 'allStops error');
+        ErrorUtils.logErr(err, null, 'allStops error');
         throw err;
     }
+
+    return null;
 }
 
-async function getAllStops() {
-    if (allStops.length === 0) {
-        await fetchAllStops();
-    }
-    return allStops;
-}
-
-function isStop(point: Object, name: string, distance: number) {
-    let stops = allStops;
+async function isStop(point: Object, name: string, distance: number) {
+    let stops = await allStops;
     stops = stops.filter(stop => stop.lat === point.lat && stop.long === point.long);
     if (stops.length > 0) {
         return stops[0].name.toLowerCase() === name.toLowerCase() && distance < 15.0;
@@ -54,12 +49,13 @@ function isStop(point: Object, name: string, distance: number) {
 }
 
 function start() {
-    alarm.recurring(HOUR_IN_MS, fetchAllStops);
-    fetchAllStops();
+    alarm.recurring(HOUR_IN_MS, () => {
+        allStops = RequestUtils.fetchRetry(fetchAllStops);
+    });
 }
 
 export default {
     start,
     isStop,
-    getAllStops,
+    allStops,
 };

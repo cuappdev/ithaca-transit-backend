@@ -1,7 +1,7 @@
 // @flow
 import { AppDevRouter } from 'appdev';
 import LRU from 'lru-cache';
-import HTTPRequestUtils from '../utils/HTTPRequestUtils';
+import RequestUtils from '../utils/RequestUtils';
 
 const cacheOptions = {
     max: 10000,
@@ -43,7 +43,7 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
             },
         };
 
-        const autocompleteRequest = await HTTPRequestUtils.createRequest(options, 'Autocomplete request failed');
+        const autocompleteRequest = await RequestUtils.createRequest(options, 'Autocomplete request failed');
 
         if (autocompleteRequest) {
             const autocompleteResult = JSON.parse(autocompleteRequest);

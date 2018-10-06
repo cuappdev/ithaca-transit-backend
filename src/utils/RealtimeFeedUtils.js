@@ -2,61 +2,77 @@
 import alarm from 'alarm';
 import xml2js from 'xml2js';
 import request from 'request';
+import RequestUtils from './RequestUtils';
 import ErrorUtils from './ErrorUtils';
 
-const { parseString } = xml2js;
+let tripRealtimeFeed = RequestUtils.fetchRetry(fetchTripRealtimeFeed);
+let vehicleRealtimeFeed = RequestUtils.fetchRetry(fetchTripRealtimeFeed);
 
-let tripRealtimeFeed = [];
-let vehicleRealtimeFeed = [];
-
-function xmlToJson(xml: String, forTrip: boolean) {
-    parseString(xml, (err, result) => {
+function xmlToJSON(xml: String) {
+    let r = null;
+    xml2js.parseString(xml, (err, result) => {
         if (err) {
-            ErrorUtils.log(err, null, 'Parse XML string error');
+            throw ErrorUtils.logErr(err, null, 'Parse XML string error');
         }
-
-        if (!result
-            || !result.FeedMessage
-            || !result.FeedMessage.Entities.length > 0
-            || !result.FeedMessage.Entities[0].FeedEntity) {
-            return null;
-        }
-
-        try {
-            if (result && forTrip) {
-                tripRealtimeFeed = result.FeedMessage.Entities[0].FeedEntity.map((entity) => {
-                    let vehicleID = null;
-                    const tripUpdate = entity.TripUpdate[0];
-                    const trip = tripUpdate.Trip[0];
-                    if (tripUpdate.Vehicle != null) {
-                        const vehicle = tripUpdate.Vehicle[0];
-                        vehicleID = vehicle.Id[0];
-                    }
-                    const stopTimeUpdates = tripUpdate.StopTimeUpdates[0];
-                    let stopUpdates = stopTimeUpdates.StopTimeUpdate;
-                    stopUpdates = stopUpdates.map(stopInfo => ({
-                        stopID: stopInfo.StopId[0],
-                        delay: stopInfo.Departure[0].Delay[0],
-                    }));
-                    return {
-                        tripID: trip.TripId[0],
-                        vehicleID,
-                        stopUpdates,
-                    };
-                });
-            } else if (result) { // means we are here for the vehicle realtime data
-                vehicleRealtimeFeed = result.FeedMessage.Entities[0].FeedEntity.map((entity) => {
-                    if (entity.Vehicle && entity.Vehicle[0].Trip) {
-                        return entity.Vehicle[0].Trip[0].TripId[0];
-                    }
-                    return null;
-                });
-            }
-        } catch (e) {
-            ErrorUtils.log(e, { result, forTrip }, 'Could not convert xml to JSON');
-        }
-        return null;
+        r = result;
     });
+    return r;
+}
+
+function parseTripFeedJSON(result) {
+    if (!result
+        || !result.FeedMessage
+        || !result.FeedMessage.Entities.length > 0
+        || !result.FeedMessage.Entities[0].FeedEntity) {
+        return null;
+    }
+    // tripRealtimeFeed =
+    try {
+        return result.FeedMessage.Entities[0].FeedEntity.map((entity) => {
+            let vehicleID = null;
+            const tripUpdate = entity.TripUpdate[0];
+            const trip = tripUpdate.Trip[0];
+            if (tripUpdate.Vehicle && tripUpdate.Vehicle.length > 0) {
+                const vehicle = tripUpdate.Vehicle[0];
+                vehicleID = vehicle.Id[0];
+            }
+            const stopTimeUpdates = tripUpdate.StopTimeUpdates[0];
+            let stopUpdates = stopTimeUpdates.StopTimeUpdate;
+            stopUpdates = stopUpdates.map(stopInfo => ({
+                stopID: stopInfo.StopId[0],
+                delay: stopInfo.Departure[0].Delay[0],
+            }));
+            return {
+                tripID: trip.TripId[0],
+                vehicleID,
+                stopUpdates,
+            };
+        });
+    } catch (e) {
+        ErrorUtils.logErr(e, result, 'Could not parse trip feed JSON');
+    }
+    return null;
+}
+
+function parseVehicleFeedJSON(result) {
+    if (!result
+        || !result.FeedMessage
+        || !result.FeedMessage.Entities.length > 0
+        || !result.FeedMessage.Entities[0].FeedEntity) {
+        return null;
+    }
+    // vehicleRealtimeFeed =
+    try {
+        return result.FeedMessage.Entities[0].FeedEntity.map((entity) => {
+            if (entity.Vehicle && entity.Vehicle[0].Trip) {
+                return entity.Vehicle[0].Trip[0].TripId[0];
+            }
+            return null;
+        });
+    } catch (e) {
+        ErrorUtils.logErr(e, result, 'Could not parse vehicle feed JSON');
+    }
+    return null;
 }
 
 async function fetchVehicleRealtimeFeed() {
@@ -70,18 +86,20 @@ async function fetchVehicleRealtimeFeed() {
                 },
         };
 
-        await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             request(options, (error, response, body) => {
                 if (error) reject(error);
-                resolve(xmlToJson(body, false));
+                resolve(parseVehicleFeedJSON(xmlToJSON(body)));
             });
-        }).then(value => value).catch((error) => {
-            ErrorUtils.log(error, null, 'Vehicle realtime request failed');
-            return null;
-        });
+        }).then(value => value)
+            .catch((error) => {
+                ErrorUtils.logErr(error, null, 'Vehicle realtime request failed');
+                return null;
+            });
     } catch (err) {
-        ErrorUtils.log(err, null, 'Couldn\'t fetch vehicle realtime feed');
+        ErrorUtils.logErr(err, null, 'Couldn\'t fetch vehicle realtime feed');
     }
+    return null;
 }
 
 async function fetchTripRealtimeFeed() {
@@ -95,87 +113,68 @@ async function fetchTripRealtimeFeed() {
                 },
         };
 
-        await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             request(options, (error, response, body) => {
                 if (error) reject(error);
-                resolve(xmlToJson(body, true));
+                resolve(parseTripFeedJSON(xmlToJSON(body)));
             });
-        }).then(value => value).catch((error) => {
-            ErrorUtils.log(error, null, 'Trip realtime request failed');
-            return null;
-        });
+        }).then(value => value)
+            .catch((error) => {
+                ErrorUtils.logErr(error, null, 'Trip realtime request failed');
+                return null;
+            });
 
         // data is now stored in tripRealtimeFeed
     } catch (err) {
-        ErrorUtils.log(err, null, 'Couldn\'t fetch trip realtime feed');
+        ErrorUtils.logErr(err, null, 'Couldn\'t fetch trip realtime feed');
     }
+    return null;
 }
 
-async function getDelay(stopID: String, tripID: String) {
-    let delay = null;
-    if (!stopID || !tripID || vehicleRealtimeFeed.indexOf(tripID) === -1) {
+/**
+ * Returns a { vehicleID, delay, tripID } object
+ * @param stopID
+ * @param tripID
+ * @returns {Promise<*>}
+ */
+async function getTrackingInformation(stopID: String, tripID: String) {
+    // if invalid params or the trip is inactive
+    if (!stopID || !tripID || !(await vehicleRealtimeFeed).find(v => v.tripID === tripID)) {
         return null;
     }
 
-    const filteredTrips = tripRealtimeFeed.filter(trip => trip.tripID === tripID);
-
-    if (filteredTrips.length > 0) {
-        const trip = filteredTrips[0];
-        const filteredStops = trip.stopUpdates.filter(stop => stop.stopID === stopID);
-
-        if (filteredStops.length > 0) {
-            const stop = filteredStops[0];
-            delay = stop.delay;
-        }
-    }
-    return parseInt(delay);
-}
-
-// returns the vehicleID, the delay, and anything else required
-function getTrackingInformation(stopID: String, tripIDs: String[]) {
     const resp = {
         vehicleID: null,
         delay: null,
-        noInfoYet: false,
+        tripID: null,
     };
 
-    let foundTripInfo = false;
-    for (let index = 0; index < tripIDs.length; index++) {
-        if (foundTripInfo) {
-            break;
-        }
-        const tripID = tripIDs[index];
-        const filteredTrips = tripRealtimeFeed.filter(trip => trip.tripID === tripID);
+    const realtimeTrip = (await tripRealtimeFeed).find(trip => trip.tripID === tripID);
 
-        // we found a tripID in the realtime feed and it is an active trip
-        if (filteredTrips.length > 0 && vehicleRealtimeFeed.indexOf(tripID) !== -1) {
-            foundTripInfo = true;
-            const trip = filteredTrips[0];
-            const filteredStops = trip.stopUpdates.filter(stop => stop.stopID === stopID);
-            resp.vehicleID = trip.vehicleID;
+    if (realtimeTrip && realtimeTrip.stopUpdates) {
+        const filteredStop = realtimeTrip.stopUpdates.find(stop => stop.stopID === stopID);
+        resp.vehicleID = realtimeTrip.vehicleID;
 
-            if (filteredStops.length > 0) {
-                const stop = filteredStops[0];
-                resp.delay = stop.delay;
-            }
+        if (filteredStop) {
+            resp.delay = parseInt(filteredStop.delay);
         }
     }
-
-    if (foundTripInfo) {
-        return resp;
-    }
-    return {
-        vehicleID: null,
-        delay: null,
-        noInfoYet: true,
-    };
+    return resp;
 }
 
-function start() {
-    alarm.recurring(30000, fetchTripRealtimeFeed);
-    alarm.recurring(15000, fetchVehicleRealtimeFeed);
-    fetchTripRealtimeFeed();
-    fetchVehicleRealtimeFeed();
+async function start() {
+    alarm.recurring(30000, () => {
+        tripRealtimeFeed = RequestUtils.fetchRetry(fetchTripRealtimeFeed, 5);
+    });
+    alarm.recurring(15000, () => {
+        vehicleRealtimeFeed = RequestUtils.fetchRetry(fetchVehicleRealtimeFeed, 5);
+    });
+
+    // eslint-disable-next-line no-console
+    // tripRealtimeFeed.then(console.log(tripRealtimeFeed));
+
+    // eslint-disable-next-line no-console
+    // vehicleRealtimeFeed.then(console.log((await vehicleRealtimeFeed)));
 }
 
 // call realtimeFeedAlarm() to cancel recurring call
@@ -183,5 +182,6 @@ function start() {
 export default {
     start,
     getTrackingInformation,
-    getDelay,
+    vehicleRealtimeFeed,
+    tripRealtimeFeed,
 };

@@ -12,7 +12,7 @@ class AlertsRouter extends AppDevRouter<Array<Object>> {
     }
 
     async content(req): Promise<any> {
-        return AlertsUtils.getAlerts();
+        return AlertsUtils.alerts;
     }
 }
 

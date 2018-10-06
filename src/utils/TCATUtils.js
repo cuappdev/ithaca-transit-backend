@@ -47,7 +47,7 @@ async function getTCATData(useCache: boolean = true) {
                 });
         }
     }).then(value => value).catch((error) => {
-        ErrorUtils.log(error, zipFile, `Could not get ${zipFile} from ${zipUrl}`);
+        ErrorUtils.logErr(error, zipFile, `Could not get ${zipFile} from ${zipUrl}`);
         return [];
     });
 }
@@ -70,7 +70,7 @@ async function getRouteJson(useCache: boolean = true) {
             resolve(routeData);
         });
     }).then(value => value).catch((error) => {
-        ErrorUtils.log(error, routeFilename, 'Could not get route json');
+        ErrorUtils.logErr(error, routeFilename, 'Could not get route json');
         return [];
     });
 }

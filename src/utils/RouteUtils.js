@@ -3,7 +3,7 @@
 import createGpx from 'gps-to-gpx';
 import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
-import HTTPRequestUtils from './HTTPRequestUtils';
+import RequestUtils from './RequestUtils';
 import AllStopUtils from './AllStopUtils';
 import ErrorUtils from './ErrorUtils';
 import WalkingUtils from './WalkingUtils';
@@ -61,7 +61,7 @@ function mergeDirections(first, second) {
         };
     } catch (error) {
         throw new Error(
-            ErrorUtils.log(error, { first, second }, 'mergeDirections failed'),
+            ErrorUtils.logErr(error, { first, second }, 'mergeDirections failed'),
         );
     }
 }
@@ -106,7 +106,7 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
         route.directions = updatedDirections;
     } catch (error) {
         throw new Error(
-            ErrorUtils.log(error, route, 'Condense final route failed'),
+            ErrorUtils.logErr(error, route, 'Condense final route failed'),
         );
     }
     return route;
@@ -247,7 +247,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                             };
 
                             // eslint-disable-next-line no-await-in-loop
-                            const snappingResponseRequest = await HTTPRequestUtils.createRequest(
+                            const snappingResponseRequest = await RequestUtils.createRequest(
                                 options, 'snappingResponse request failed',
                             );
 
@@ -264,7 +264,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                             }
                         } catch (error) {
                             // log error
-                            ErrorUtils.log(error, destinationName, `Snap response failed: ${process.env.MAP_MATCHING || 'undefined graphhopper mapmatching env'}`);
+                            ErrorUtils.logErr(error, destinationName, `Snap response failed: ${process.env.MAP_MATCHING || 'undefined graphhopper mapmatching env'}`);
                         }
 
                         // Trim Coordinates so they start/end at bus stops
@@ -288,7 +288,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                         stopID: stop.stop_id,
                     }));
 
-                    delay = RealtimeFeedUtils.getDelay(stops[0].stopID, tripID[0]);
+                    delay = RealtimeFeedUtils.getTrackingInformation(stops[0].stopID, tripID[0]).delay;
                 }
 
                 directions.push({
@@ -319,7 +319,7 @@ async function parseRoute(resp: Object, destinationName: string) {
             });
         } catch (error) {
             throw new Error(
-                ErrorUtils.log(error, paths.length, 'Parse final route failed'),
+                ErrorUtils.logErr(error, paths.length, 'Parse final route failed'),
             );
         }
     }
@@ -373,7 +373,7 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
         qsStringifyOptions: { arrayFormat: 'repeat' },
     };
 
-    const busRouteRequest = await HTTPRequestUtils.createRequest(
+    const busRouteRequest = await RequestUtils.createRequest(
         options,
         `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
         true,
@@ -382,7 +382,7 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
     if (busRouteRequest && busRouteRequest.statusCode < 300) {
         busRoute = JSON.parse(busRouteRequest.body);
     } else {
-        errors.push(ErrorUtils.log(
+        errors.push(ErrorUtils.logErr(
             busRouteRequest && busRouteRequest.body,
             parameters,
             `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
@@ -397,7 +397,7 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
         qsStringifyOptions: { arrayFormat: 'repeat' },
     };
 
-    const walkingRouteRequest = await HTTPRequestUtils.createRequest(
+    const walkingRouteRequest = await RequestUtils.createRequest(
         walkingOptions,
         `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
         true,
@@ -406,7 +406,7 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
     if (walkingRouteRequest && walkingRouteRequest.statusCode < 300) {
         walkingRoute = JSON.parse(walkingRouteRequest.body);
     } else {
-        errors.push(ErrorUtils.log(
+        errors.push(ErrorUtils.logErr(
             walkingRouteRequest && walkingRouteRequest.body,
             parameters,
             `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,

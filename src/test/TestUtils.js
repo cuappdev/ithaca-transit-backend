@@ -114,7 +114,7 @@ function checkDelayResponseValid(res) {
 function checkRouteValid(res, checkResponseData = true, returnTrackingBody = false) {
     if (checkResponseData) checkResponseValid(res);
 
-    const trackingBody = [];
+    let trackingBody = new Set();
 
     for (let i = 0; i < res.body.data.length; i++) {
         const route = res.body.data[i];
@@ -202,10 +202,10 @@ function checkRouteValid(res, checkResponseData = true, returnTrackingBody = fal
                     if (!stop.stopID || !isNum(stop.stopID)) {
                         throw new Error(`Stops stopID invalid: ${s(dir)}`);
                     } else if (returnTrackingBody) {
-                        trackingBody.push({
+                        trackingBody.add({
                             stopID: stop.stopID,
                             routeID: dir.routeNumber,
-                            tripIdentifuers: dir.tripIdentifiers,
+                            tripIdentifiers: dir.tripIdentifiers,
                         });
                     }
                     if (!stop.name) {
@@ -223,6 +223,8 @@ function checkRouteValid(res, checkResponseData = true, returnTrackingBody = fal
             }
         }
     }
+
+    trackingBody = trackingBody && Array.from(trackingBody);
 
     if (returnTrackingBody && trackingBody.length > 0) {
         return trackingBody;

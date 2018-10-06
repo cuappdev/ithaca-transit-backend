@@ -2,7 +2,8 @@
 const request = require('supertest');
 const moment = require('moment');
 const { init, server } = require('../server');
-const ErrorUtils = require('../utils/ErrorUtils');
+const ErrorUtils = require('../utils/ErrorUtils').default;
+
 const {
     checkRouteValid,
     checkResponseValid,
@@ -10,6 +11,8 @@ const {
     checkDataResponseValid,
     checkPlacesResponseValid,
 } = require('./TestUtils');
+
+// ======================================== CONFIG ========================================
 
 let ready = false;
 
@@ -38,30 +41,95 @@ const route3 = time => `?arriveBy=false&end=42.483673,-76.485535&start=42.468266
 // baker flagpole->ithaca commons-seneca street
 const route4 = time => `?arriveBy=false&end=42.440502,-76.496506&start=42.447533,-76.487709&time=${time}&destinationName=Ithaca Commons - Seneca St"`;
 
-const route1yesterday = route1(afternoonYesterday);
-const route1noon = route1(afternoonToday);
+const routeTests = [
+    {
+        query: route1(afternoonYesterday),
+        name: 'carpenter->schwartz @ 12pm yesterday',
+    },
+    {
+        query: route1(afternoonToday),
+        name: 'carpenter->schwartz @ 12pm today',
+    },
+    {
+        query: route2(eveningToday),
+        name: 'rpcc->chipotle @ now',
+    },
+    {
+        query: route2(now),
+        name: 'rpcc->chipotle @ 6pm today',
+    },
+    {
+        query: route3(morningToday),
+        name: 'cayuga medical center->cayuga mall @ 8am today',
+    },
+    {
+        query: route4(lateToday),
+        name: 'baker flagpole->ithaca commons-seneca street @ 11pm today',
+    },
+    {
+        query: route4(now),
+        name: 'baker flagpole->ithaca commons-seneca street @ now',
+    },
+];
 
-const route2evening = route2(eveningToday);
-const route2now = route2(now);
+let delayDataFoundCount = 0;
+let validTrackingDataCount = 0;
+let invalidTrackingDataCount = 0;
+let noTrackingDataCount = 0;
 
-const route3morning = route3(morningToday);
+// ======================================== TESTS ========================================
 
-const route4late = route4(lateToday);
+async function testDelay(routeResponseBusData) {
+    const { stopID, tripIdentifiers } = routeResponseBusData;
 
-let delays = 0;
+    return Promise.all(tripIdentifiers.map(async (tripID): Promise<number> => {
+        const delayReq = `${delay}?stopID=${stopID}&tripID=${tripID}`;
+        await request(server).get(delayReq).expect((delayRes) => {
+            checkDelayResponseValid(delayRes);
+            delayDataFoundCount += (delayRes.body.data === null) ? 0 : 1;
+        });
+    }));
+}
+
+async function testTracking(routeResponseBusDataArr) {
+    return request(server)
+        .post(tracking)
+        .send({ data: routeResponseBusDataArr })
+        .set('Content-Type', 'application/json')
+        .expect((res) => {
+            checkResponseValid(res);
+            validTrackingDataCount += (res.body.data.case === 'validData') ? 1 : 0;
+            invalidTrackingDataCount += (res.body.data.case === 'invalidData') ? 1 : 0;
+            noTrackingDataCount += (res.body.data.case === 'noData') ? 1 : 0;
+        });
+}
+
+async function testPlaces(queryStr) {
+    return request(server)
+        .post(places)
+        .send({ query: queryStr })
+        .set('Content-Type', 'application/json')
+        .expect(res => checkPlacesResponseValid(res));
+}
 
 beforeAll(async () => init.then((res) => {
     ready = true;
     return true;
 }).catch((res) => {
-    ErrorUtils.log(res, null, 'Server init failed!');
+    ErrorUtils.logErr(res, null, 'Server init failed!');
     return false;
 }), 1200000);
 
 afterAll(() => {
-    if (delays === 0) {
+    if (delayDataFoundCount === 0) {
         // eslint-disable-next-line
         console.warn('/delay/ may not be working as intended: only null returned in all tests');
+    }
+    if (validTrackingDataCount === 0) {
+        // eslint-disable-next-line
+        console.warn(`/tracking/ may not be working as intended: no data or invalid in all tests\n`
+        + `${invalidTrackingDataCount} invalidData (trip too far in future, no bus assigned yet)\n`
+        + `${noTrackingDataCount} noData (bus does not support live tracking)`);
     }
 });
 
@@ -88,93 +156,44 @@ describe('alerts endpoint', () => {
 });
 
 describe('route, delay, & tracking endpoints', () => {
-    test('No error response on empty route request', () => request(server).get(route).expect((res) => {
-        if (res.statusCode !== 200) throw new Error('Bad status code ', res.statusCode);
-        if (res.body.success === true) throw new Error('Empty request body returned successfully', res.statusCode);
-    }));
-
-    test('carpenter->schwartz @ 12pm yesterday', async () => request(server).get(route + route1yesterday).expect((res) => {
-        const busInfo = checkRouteValid(res, true, true);
-        testDelay(busInfo[0]);
-        testTracking(busInfo);
-    }));
-
-    test('carpenter->schwartz @ 12pm today', async () => request(server).get(route + route1noon).expect((res) => {
-        const busInfo = checkRouteValid(res, true, true);
-        testDelay(busInfo[0]);
-        testTracking(busInfo);
-    }));
-
-    test('rpcc->chipotle @ now', async () => request(server).get(route + route2now).expect((res) => {
-        const busInfo = checkRouteValid(res, true, true);
-        testDelay(busInfo[0]);
-        testTracking(busInfo);
-    }));
-
-    test('rpcc->chipotle @ 6pm today', async () => request(server).get(route + route2evening).expect((res) => {
-        const busInfo = checkRouteValid(res, true, true);
-        testDelay(busInfo[0]);
-        testTracking(busInfo);
-    }));
-
-    test('cayuga medical center->cayuga mall @ 8am today', async () => request(server).get(route + route3morning).expect((res) => {
-        const busInfo = checkRouteValid(res, true, true);
-        testDelay(busInfo[0]);
-        testTracking(busInfo);
-    }));
-
-    test('baker flagpole->ithaca commons-seneca street @ 11pm today', async () => request(server).get(route + route4late).expect((res) => {
-        const busInfo = checkRouteValid(res, true, true);
-        testDelay(busInfo[0]);
-        testTracking(busInfo);
-    }));
-});
-
-async function testDelay(routeResponseBusData) {
-    const { stopID, tripIdentifuers } = routeResponseBusData;
-    await Promise.all(tripIdentifuers.map(async (tripID): Promise<number> => {
-        const delayReq = `${delay}?stopID=${stopID}&tripID=${tripID}`;
-        await request(server).get(delayReq).expect((delayRes) => {
-            checkDelayResponseValid(delayRes);
-            delays += (delayRes.body.data === null) ? 0 : 1;
-        });
-    }));
-    return false;
-}
-
-async function testTracking(routeResponseBusDataArr) {
-    await request(server).post(tracking, { data: routeResponseBusDataArr }).expect((res) => {
-        checkResponseValid(res);
+    describe('routes', () => {
+        test('No error response on empty route request', () => request(server)
+            .get(route)
+            .expect((res) => {
+                if (res.statusCode !== 200) throw new Error('Bad status code ', res.statusCode);
+                if (res.body.success === true) throw new Error('Empty request body returned successfully', res.statusCode);
+            }));
     });
-    return false;
-}
+
+    routeTests.forEach((routeParams) => {
+        describe(routeParams.name, () => {
+            let res = null;
+            let busInfo = null;
+            beforeAll(async () => {
+                res = await request(server).get(route + routeParams.query);
+            });
+            test('route', () => {
+                busInfo = checkRouteValid(res, true, true);
+                expect(busInfo).toBeTruthy();
+            });
+            test('delay', async () => {
+                await testDelay(busInfo[0]).catch((err) => {
+                    throw ErrorUtils.logErr(err, busInfo[0], 'Delay test failed');
+                });
+            });
+            test('tracking', async () => {
+                await testTracking(busInfo).catch((err) => {
+                    throw ErrorUtils.logErr(err, busInfo[0], 'Tracking test failed');
+                });
+            });
+        });
+    });
+});
 
 describe('delay endpoint', () => {
     test(`${delay}empty params`, () => request(server).get(delay).expect((res) => {
         checkDelayResponseValid(res);
     }));
-
-    // not needed, use route data from before
-    /*
-    test(`${delay}route1noon`, async () => {
-        await request(server).get(route + route1noon).then(async (res) => {
-            const busData = checkRouteValid(res, true, true);
-            const { stopID, tripIdentifuers } = busData;
-            console.log(busData);
-
-            await Promise.all(tripIdentifuers.map(async (tripID): Promise<number> => {
-                const delayReq = `${delay}?stopID=${stopID}&tripID=${tripID}`;
-                console.log(delayReq);
-                await request(server).get(delayReq).expect((delayRes) => {
-                    console.log(delayRes.body);
-                    checkDelayResponseValid(delayRes);
-                });
-            }));
-        });
-    });
-    */
-
-    // TODO
 });
 
 describe('places endpoint', () => {
@@ -182,51 +201,18 @@ describe('places endpoint', () => {
         request(server).post(places).expect(res => checkResponseValid(res));
     });
 
-    test('chipotle', () => {
-        request(server)
-            .post(places)
-            .send({ query: 'chipo' })
-            .set('Content-Type', 'application/json')
-            .expect(res => checkPlacesResponseValid(res))
-            .end((err, res) => { if (err) throw err; });
-    });
+    test('chipotle', () => testPlaces('chipotle'));
 
     test('cayu?g?a?', () => {
-        request(server)
-            .post(places)
-            .send({ query: 'cayu' })
-            .set('Content-Type', 'application/json')
-            .expect(res => checkPlacesResponseValid(res))
-            .end((err, res) => { if (err) throw err; });
-        request(server)
-            .post(places)
-            .send({ query: 'cay' })
-            .set('Content-Type', 'application/json')
-            .expect(res => checkPlacesResponseValid(res))
-            .end((err, res) => { if (err) throw err; });
-        request(server)
-            .post(places)
-            .send({ query: 'cayug' })
-            .set('Content-Type', 'application/json')
-            .expect(res => checkPlacesResponseValid(res))
-            .end((err, res) => { if (err) throw err; });
-        request(server)
-            .post(places)
-            .send({ query: ' cayuga ?&*' })
-            .set('Content-Type', 'application/json')
-            .expect(res => checkPlacesResponseValid(res))
-            .end((err, res) => { if (err) throw err; });
+        testPlaces('cayu');
+        testPlaces('cay');
+        testPlaces('cayug');
+        testPlaces(' cayuga ?&* ');
     });
 
     test('cornell', () => {
-        request(server).post(places)
-            .send({ query: 'cornell' })
-            .set('Content-Type', 'application/json')
-            .expect(res => checkPlacesResponseValid(res))
-            .end((err, res) => { if (err) throw err; });
+        testPlaces('cornell');
     });
-
-    // TODO
 });
 
 describe('tracking endpoint', () => {
