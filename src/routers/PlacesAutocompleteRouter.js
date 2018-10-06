@@ -1,8 +1,7 @@
 // @flow
 import { AppDevRouter } from 'appdev';
-import type Request from 'express';
 import LRU from 'lru-cache';
-import HTTPRequestUtils from '../utils/HTTPRequestUtils';
+import RequestUtils from '../utils/RequestUtils';
 
 const cacheOptions = {
     max: 10000,
@@ -19,7 +18,11 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
         return '/places/';
     }
 
-    async content(req: Request): Promise<any> {
+    async content(req): Promise<any> {
+        if (!req.body || !req.body.query || typeof req.body.query !== 'string') {
+            return null;
+        }
+
         const query = req.body.query.toLowerCase();
         const cachedValue = cache.get(query);
 
@@ -40,12 +43,12 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
             },
         };
 
-        const autocompleteRequest = await HTTPRequestUtils.createRequest(options, 'Autocomplete request failed');
+        const autocompleteRequest = await RequestUtils.createRequest(options, 'Autocomplete request failed');
 
         if (autocompleteRequest) {
             const autocompleteResult = JSON.parse(autocompleteRequest);
 
-            const { predictions } = autocompleteResult.data;
+            const { predictions } = autocompleteResult;
             const formattedPredictions = predictions.map(p => ({
                 address: p.structured_formatting.secondary_text,
                 name: p.structured_formatting.main_text,

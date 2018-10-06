@@ -62,7 +62,7 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
         };
     } catch (e) {
         throw new Error(
-            ErrorUtils.log(e, { data, startDateMs, destinationName }, 'Parse walking route failed'),
+            ErrorUtils.logErr(e, { data, startDateMs, destinationName }, 'Parse walking route failed'),
         );
     }
 }

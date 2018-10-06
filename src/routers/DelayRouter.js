@@ -1,6 +1,5 @@
 // @flow
 import { AppDevRouter } from 'appdev';
-import type Request from 'express';
 import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 
 class DelayRouter extends AppDevRouter<Object> {
@@ -12,9 +11,9 @@ class DelayRouter extends AppDevRouter<Object> {
         return '/delay/';
     }
 
-    async content(req: Request): Promise<any> {
+    async content(req): Promise<any> {
         const { stopID, tripID } = req.query;
-        return RealtimeFeedUtils.getDelay(stopID, tripID);
+        return RealtimeFeedUtils.getTrackingInformation(stopID, tripID).delay;
     }
 }
 

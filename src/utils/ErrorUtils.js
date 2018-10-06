@@ -67,7 +67,7 @@ const register = new RegisterSession('http://register.cornellappdev.com', secret
  * @param message
  * @returns {{ code:'*', ...(ErrorCodes.*) }}
  */
-export function classifyError(message: string) {
+function classifyError(message: string) {
     const messageStr = message.toString().toLowerCase();
     const errorCode = (Object.entries(ErrorCodes).find(([code, info]) => {
         if (info.substrings) {
@@ -121,7 +121,7 @@ function getStackTrace() {
  * @param note
  * @returns {{error: *, message: *}}
  */
-function log(error: string, data: ?Object, note: ?string) {
+function logErr(error: string, data: ?Object, note: ?string) {
     try { // try block because if the error logging has an error... ?
         if (!error) {
             return null;
@@ -160,9 +160,8 @@ function log(error: string, data: ?Object, note: ?string) {
 }
 
 export default {
-    ErrorCodes,
     classifyError,
     generateErrorResponse,
     writeToRegister,
-    log,
+    logErr,
 };

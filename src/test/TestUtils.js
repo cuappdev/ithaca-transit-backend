@@ -35,22 +35,86 @@ function isDateValid(date) {
     return moment(date).isValid();
 }
 
-function checkRouteValid(res) {
+function checkResponseValid(res) {
     if (!res) {
         throw new Error('No response');
     }
     if (!res.statusCode || res.statusCode >= 300) {
-        throw new Error(`Bad route status code: ${s(res.statusCode)}`);
+        throw new Error(`Bad response status code: ${s(res.statusCode)}`);
     }
     if (!res.body) {
-        throw new Error(`No route response body: ${s(res)}`);
+        throw new Error(`No response body: ${s(res)}`);
     }
     if (res.body.success === false) {
-        throw new Error(`Route request success:false; ${s(res.body)}`);
+        throw new Error(`Request success:false; ${s(res.body)}`);
     }
     if (!res.body.data || res.body.data.length === 0) {
-        throw new Error(`Route request data empty: ${s(res.body)}`);
+        throw new Error(`Request data empty: ${s(res.body)}`);
     }
+
+    return true;
+}
+
+function checkPlacesResponseValid(res) {
+    checkDataResponseValid(res);
+
+    const suggestions = res.body.data;
+
+    for (let i = 0; i < suggestions.length; i++) {
+        const place = suggestions[i];
+
+        if (!place) {
+            throw new Error(`Place data empty: ${s(suggestions)}`);
+        }
+        if (!place.name || !place.place_id || !place.address) {
+            throw new Error(`Place data invalid: ${s(place)}`);
+        }
+    }
+
+    return true;
+}
+
+function checkDataResponseValid(res) {
+    if (!res) {
+        throw new Error('No response');
+    }
+    if (!res.statusCode || res.statusCode >= 300) {
+        throw new Error(`Bad response status code: ${s(res.statusCode)}`);
+    }
+    if (!res.body) {
+        throw new Error(`No response body: ${s(res)}`);
+    }
+    if (res.body.success === false) {
+        throw new Error(`Request success:false; ${s(res.body)}`);
+    }
+    if (!res.body.data) {
+        throw new Error(`Request data empty: ${s(res.body)}`);
+    }
+
+    return true;
+}
+
+function checkDelayResponseValid(res) {
+    if (!res) {
+        throw new Error('No response');
+    }
+    if (!res.statusCode || res.statusCode >= 300) {
+        throw new Error(`Bad response status code: ${s(res.statusCode)}`);
+    }
+    if (!res.body) {
+        throw new Error(`No response body: ${s(res)}`);
+    }
+    if (res.body.success === false) {
+        throw new Error(`Request success:false; ${s(res.body)}`);
+    }
+
+    return true;
+}
+
+function checkRouteValid(res, checkResponseData = true, returnTrackingBody = false) {
+    if (checkResponseData) checkResponseValid(res);
+
+    let trackingBody = new Set();
 
     for (let i = 0; i < res.body.data.length; i++) {
         const route = res.body.data[i];
@@ -137,6 +201,12 @@ function checkRouteValid(res) {
                     }
                     if (!stop.stopID || !isNum(stop.stopID)) {
                         throw new Error(`Stops stopID invalid: ${s(dir)}`);
+                    } else if (returnTrackingBody) {
+                        trackingBody.add({
+                            stopID: stop.stopID,
+                            routeID: dir.routeNumber,
+                            tripIdentifiers: dir.tripIdentifiers,
+                        });
                     }
                     if (!stop.name) {
                         throw new Error(`Stop name invalid: ${s(dir)}`);
@@ -154,10 +224,23 @@ function checkRouteValid(res) {
         }
     }
 
+    trackingBody = trackingBody && Array.from(trackingBody);
+
+    if (returnTrackingBody && trackingBody.length > 0) {
+        return trackingBody;
+    }
+
     return true;
 }
 
 module.exports = {
     s,
     checkRouteValid,
+    checkResponseValid,
+    checkDataResponseValid,
+    checkDelayResponseValid,
+    checkPlacesResponseValid,
+    isNum,
+    isDateValid,
+    isCoordsValid,
 };

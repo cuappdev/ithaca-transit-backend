@@ -12,11 +12,24 @@ async function createRequest(options: any, errorMessage: ?string = 'Request fail
             resolve(body);
         });
     }).then(value => value).catch((error) => {
-        ErrorUtils.log(error, options, errorMessage);
+        ErrorUtils.logErr(error, options, errorMessage);
         return null;
     });
 }
 
+async function fetchRetry(fn, n = 5) {
+    let error;
+    for (let i = 0; i < n; i++) {
+        try {
+            return fn();
+        } catch (err) {
+            error = err;
+        }
+    }
+    throw error;
+}
+
 export default {
     createRequest,
+    fetchRetry,
 };

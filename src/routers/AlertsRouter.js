@@ -1,6 +1,5 @@
 // @flow
 import { AppDevRouter } from 'appdev';
-import type Request from 'express';
 import AlertsUtils from '../utils/AlertsUtils';
 
 class AlertsRouter extends AppDevRouter<Array<Object>> {
@@ -12,8 +11,8 @@ class AlertsRouter extends AppDevRouter<Array<Object>> {
         return '/alerts/';
     }
 
-    async content(req: Request): Promise<any> {
-        return AlertsUtils.getAlerts();
+    async content(req): Promise<any> {
+        return AlertsUtils.alerts;
     }
 }
 
