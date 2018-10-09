@@ -2,7 +2,7 @@ language: node_js
 services:
 - docker
 node_js:
-- "10.9.0"
+- 10.9.0
 cache:
   directories:
   - ".autoconf"
@@ -23,6 +23,7 @@ script:
 env:
   global:
     - PORT=3000
+    - TOKEN=$TOKEN
     - REGISTER_TOKEN=REGISTER_TOKEN
     - GHOPPER_BUS=localhost
     - GHOPPER_WALKING=localhost
