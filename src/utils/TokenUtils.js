@@ -74,6 +74,7 @@ async function generateAccessToken() {
 
         if (newCredentials && newCredentials.basic_token) {
             credentials = newCredentials;
+            console.log(credentials);
             fs.writeFile(configFile, JSON.stringify(newCredentials), 'utf8', (err) => {
                 if (err) ErrorUtils.log(err, null, 'Could not write access token');
             });
