@@ -20,3 +20,4 @@ install:
   - docker-compose -f docker-compose/docker-compose.yml up -d
 script:
   - npm run travis
+  - docker-compose -f docker-compose/docker-compose.yml down
