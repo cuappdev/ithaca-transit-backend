@@ -64,7 +64,11 @@ async function generateAccessToken() {
             resolve(body);
         });
     }).then((tokenRequest: any) => {
+        console.log("tokenRequest");
+        console.log(tokenRequest);
         const token = JSON.parse(tokenRequest);
+        console.log("token");
+        console.log(token);
         const currentDate = new Date();
         const newCredentials = {
             basic_token: credentials.basic_token,
@@ -74,6 +78,7 @@ async function generateAccessToken() {
 
         if (newCredentials && newCredentials.basic_token) {
             credentials = newCredentials;
+            console.log("credentials");
             console.log(credentials);
             fs.writeFile(configFile, JSON.stringify(newCredentials), 'utf8', (err) => {
                 if (err) ErrorUtils.log(err, null, 'Could not write access token');
