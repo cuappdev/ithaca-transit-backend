@@ -11,9 +11,11 @@ import TokenUtils from './utils/TokenUtils';
 
 // load environment variables
 if (!process.env.GHOPPER_BUS && !fs.existsSync('.env')) {
-    fs.copyFileSync('env.template', '.env', (err) => {
-        if (err) throw ErrorUtils.log(err, '.env', 'Failed to find or create .env file');
-    });
+    try {
+        fs.copyFileSync('env.template', '.env');
+    } catch (error) {
+        throw ErrorUtils.log(error, '.env', 'Failed to find or create .env file');
+    }
 }
 dotenv.load();
 

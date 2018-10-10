@@ -14,7 +14,7 @@
     "start-prod": "npm run build && node --require dotenv/config build/bundle.js",
     "start-dev": "sh ./scripts/run.sh",
     "start": "sh ./scripts/run.sh",
-    "test": "./node_modules/.bin/jest --noStackTrace --detectOpenHandles src/test ; npm run flow",
+    "test": "./node_modules/.bin/jest --noStackTrace --detectOpenHandles --forceExit src/test ; npm run flow",
     "travis": "npm run build && npm test",
     "flow": "echo 'Flow:' ; node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop"
