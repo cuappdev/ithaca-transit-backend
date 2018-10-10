@@ -1,8 +1,8 @@
 language: node_js
 services:
-- docker
+  - docker
 node_js:
-- 10.9.0
+  - 10.9.0
 cache:
   directories:
   - ".autoconf"
@@ -16,16 +16,7 @@ cache:
   - node_modules
   - cache
 install:
-- npm install
-- docker-compose -f docker-compose/docker-compose.yml up -d
+  - npm install
+  - docker-compose -f docker-compose/docker-compose.yml up -d
 script:
-- npm run travis
-env:
-  global:
-    - PORT=3000
-    - REGISTER_TOKEN=REGISTER_TOKEN
-    - GHOPPER_BUS=localhost
-    - GHOPPER_WALKING=localhost
-    - MAP_MATCHING=localhost
-    - PLACES_KEY=PLACES_KEY
-    - secure: NYdri7ZCRShIOz5DW3VVbJFEqkANK72VR6lTlsgd3wPQF3LumeLviO/NijvkThzXRAH0efUr32HFs7BlTO7Bd2Q5KLW8U7RPMU8DYsB0FkDjRrjZOV1EXz/OdHnPcl2+FmqTzBG7Ao14vZZd4137mru6saAfgWt4WyUCUdxD83zQ3xiDStBm+BdpG5CnG/w3xikdBEG6gmYnm1HEcsMIE4Z69KDPq2S9vQtqSiNq+yi87teXZBtz8EIEvZUEwKu22tpQNUsFwuOmm6lT+u8xRJmIFgKlY+K279z+KXkA7wQ0vqLMDb01jIyraeJvTWOMbE2WpiqPC2BKzO1Gvz0qgPzsDjkUWs72ue5E1t8izeBrIHC2YoRgu7Oux8NpfTGZccAyWs21h8i54wzbJQtdMOOdyCSV+XA/rXpEuQ0n88ebS5e3PRFwcCzPxzpNK6M6QldEB3Vg2KnlXm1RNGKMXlfxW+LD4iPP5+E6Ej2LqOpIon1AtC0AwbbRZuaTfmv2kNx/l+4EHNzcMWZifYIj1hlx23cBex3eFXxDr4jsLTMxLEqwQ4ryUjXZyj52h7hPvP4iPcqz+qvNZSwx3ju44oScIhCmPnIc/OJuqmSUeSlSSKX2sjKk8NBfdxb5+uV5dKYGYJ1fqIdAjYgZtFfVzMP6XlDSNeWJVihDMiretR4=
+  - npm run travis
