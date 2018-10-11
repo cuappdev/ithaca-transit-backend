@@ -3,7 +3,6 @@ import { AppDevRouter } from 'appdev';
 import AlertsUtils from '../utils/AlertsUtils';
 
 class AlertsRouter extends AppDevRouter<Array<Object>> {
-
     constructor() {
         super('GET');
     }

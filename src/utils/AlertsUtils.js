@@ -1,7 +1,7 @@
-//@flow
+// @flow
 import axios from 'axios';
-import TokenUtils from './TokenUtils';
 import alarm from 'alarm';
+import TokenUtils from './TokenUtils';
 
 let alerts = [];
 const THREE_MINUTES_IN_MS = 1000 * 60 * 3;
@@ -9,24 +9,22 @@ let allStopsAlarm;
 
 async function fetchAlerts() {
     try {
-        let authHeader = await TokenUtils.getAuthorizationHeader();
-        let alertsRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/PublicMessages/GetAllMessages',
-            {headers: {Authorization: authHeader}});
-        alerts = alertsRequest.data.map(alert => {
-            return {
-                id: alert.MessageId,
-                message: alert.Message,
-                fromDate: parseMicrosoftFormatJSONDate(alert.FromDate),
-                toDate: parseMicrosoftFormatJSONDate(alert.ToDate),
-                fromTime: parseMicrosoftFormatJSONDate(alert.FromTime),
-                toTime: parseMicrosoftFormatJSONDate(alert.ToTime),
-                priority: alert.Priority,
-                daysOfWeek: getWeekdayString(alert.DaysOfWeek),
-                routes: alert.Routes,
-                signs: alert.Signs,
-                channelMessages: alert.ChannelMessages
-            }
-        });
+        const authHeader = await TokenUtils.getAuthorizationHeader();
+        const alertsRequest = await axios.get('https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/PublicMessages/GetAllMessages',
+            { headers: { Authorization: authHeader } });
+        alerts = alertsRequest.data.map(alert => ({
+            id: alert.MessageId,
+            message: alert.Message,
+            fromDate: parseMicrosoftFormatJSONDate(alert.FromDate),
+            toDate: parseMicrosoftFormatJSONDate(alert.ToDate),
+            fromTime: parseMicrosoftFormatJSONDate(alert.FromTime),
+            toTime: parseMicrosoftFormatJSONDate(alert.ToTime),
+            priority: alert.Priority,
+            daysOfWeek: getWeekdayString(alert.DaysOfWeek),
+            routes: alert.Routes,
+            signs: alert.Signs,
+            channelMessages: alert.ChannelMessages,
+        }));
     } catch (err) {
         console.log('got error from fetchAlerts');
         throw err;
@@ -38,7 +36,7 @@ function parseMicrosoftFormatJSONDate(dateStr) {
 }
 
 function getWeekdayString(daysOfWeek) {
-    switch(daysOfWeek) {
+    switch (daysOfWeek) {
         case 127:
             return 'Every day';
         case 65:
@@ -68,7 +66,7 @@ function getAlerts() {
     if (alerts.length == 0) {
         fetchAlerts();
     }
-    return alerts
+    return alerts;
 }
 
 function start() {
@@ -77,6 +75,6 @@ function start() {
 }
 
 export default {
-    start: start,
-    getAlerts: getAlerts
+    start,
+    getAlerts,
 };

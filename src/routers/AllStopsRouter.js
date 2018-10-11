@@ -3,7 +3,6 @@ import { AppDevRouter } from 'appdev';
 import AllStopUtils from '../utils/AllStopUtils';
 
 class AllStopsRouter extends AppDevRouter<Array<Object>> {
-
     constructor() {
         super('GET');
     }
