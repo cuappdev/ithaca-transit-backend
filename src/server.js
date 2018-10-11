@@ -3,6 +3,7 @@ import http from 'http';
 import TCATUtils from './utils/TCATUtils';
 import RealtimeFeedUtils from './utils/RealtimeFeedUtils';
 import AllStopUtils from './utils/AllStopUtils';
+import AlertsUtils from './utils/AlertsUtils';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import API from './Api';

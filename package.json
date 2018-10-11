@@ -11,6 +11,7 @@
     "graph-walking": "sh scripts/graph-walking.sh",
     "mapmatching": "sh scripts/mapmatching.sh",
     "start": "killall -9 java; webpack -p && sh scripts/run.sh",
+    "start-prod": "killall -9 java; webpack -p && npm run serve",
     "cleanup": "sh scripts/cleanup.sh",
     "test": "jest",
     "flow": "node_modules/.bin/flow",
