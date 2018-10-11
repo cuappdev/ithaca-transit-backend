@@ -4,7 +4,8 @@
   "description": "Backend for Cornell AppDev's TCAT application",
   "main": "",
   "scripts": {
-    "build": "webpack -p",
+    "build": "./node_modules/.bin/webpack --env.NODE_ENV=production --mode=production -p",
+    "build-dev": "./node_modules/.bin/webpack --watch --env.NODE_ENV=dev --progress --mode=development --debug --devtool cheap-eval-source-map --output-pathinfo",
     "serve": "node build/bundle.js",
     "setup": "sh scripts/setup.sh",
     "graph": "sh scripts/graph.sh",
@@ -13,8 +14,9 @@
     "start": "killall -9 java; webpack -p && sh scripts/run.sh",
     "start-prod": "killall -9 java; webpack -p && npm run serve",
     "cleanup": "sh scripts/cleanup.sh",
-    "test": "jest",
-    "flow": "node_modules/.bin/flow",
+    "test": "./node_modules/.bin/jest --noStackTrace --detectOpenHandles --forceExit src/test ; npm run flow",
+    "travis": "npm run build && npm test",
+    "flow": "echo 'Flow:' ; node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop"
   },
   "repository": {
