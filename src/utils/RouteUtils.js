@@ -234,7 +234,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                         }
                     };
                     try {
-                        const snappingResponse = await axios.post('http://' + process.env.MAP_MATCHING + ':8989/match', gpx, config);
+                        const snappingResponse = await axios.post(`http://${process.env.MAP_MATCHING || 'ERROR'}:8989/match`, gpx, config);
                         //need to handle errors more gracefully
                         path = snappingResponse.data.paths[0].points.coordinates.map(point => {
                             return {
