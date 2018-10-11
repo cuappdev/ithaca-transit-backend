@@ -1,9 +1,9 @@
 [ignore]
-*./node_modules/.*
-.*/osrm/.*
 
 [include]
 
 [libs]
 
-[options]
+[lints]
+
+[strict]
