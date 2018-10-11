@@ -3,7 +3,7 @@ import alarm from 'alarm';
 import axios from 'axios';
 import xml2js from 'xml2js';
 
-const parseString = xml2js.parseString;
+const { parseString } = xml2js;
 let realtimeTripFeedAlarm;
 let realtimeVehicleFeedAlarm;
 
@@ -71,15 +71,15 @@ async function fetchTripRealtimeFeed() {
 
 function getDelay(stopID: String, tripID: String) {
     let delay = null;
-    if (vehicleRealtimeFeed.indexOf(tripID) == -1) {
+    if (vehicleRealtimeFeed.indexOf(tripID) === -1) {
         return delay;
     }
 
-    const filteredTrips = tripRealtimeFeed.filter(trip => trip.tripID == tripID);
+    const filteredTrips = tripRealtimeFeed.filter(trip => trip.tripID === tripID);
 
     if (filteredTrips.length > 0) {
         const trip = filteredTrips[0];
-        const filteredStops = trip.stopUpdates.filter(stop => stop.stopID == stopID);
+        const filteredStops = trip.stopUpdates.filter(stop => stop.stopID === stopID);
 
         if (filteredStops.length > 0) {
             const stop = filteredStops[0];
@@ -103,13 +103,13 @@ function getTrackingInformation(stopID: String, tripIDs: String[]) {
             break;
         }
         const tripID = tripIDs[index];
-        const filteredTrips = tripRealtimeFeed.filter(trip => trip.tripID == tripID);
+        const filteredTrips = tripRealtimeFeed.filter(trip => trip.tripID === tripID);
 
         // we found a tripID in the realtime feed and it is an active trip
-        if (filteredTrips.length > 0 && vehicleRealtimeFeed.indexOf(tripID) != -1) {
+        if (filteredTrips.length > 0 && vehicleRealtimeFeed.indexOf(tripID) !== -1) {
             foundTripInfo = true;
             const trip = filteredTrips[0];
-            const filteredStops = trip.stopUpdates.filter(stop => stop.stopID == stopID);
+            const filteredStops = trip.stopUpdates.filter(stop => stop.stopID === stopID);
             resp.vehicleID = trip.vehicleID;
 
             if (filteredStops.length > 0) {

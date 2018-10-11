@@ -72,12 +72,12 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
 
     for (let index = 0; index < route.directions.length; index++) {
         const direction = route.directions[index];
-        if (index != 0) {
+        if (index !== 0) {
             const firstDirection = route.directions[index - 1];
             const secondDirection = route.directions[index];
-            if (direction.type == 'depart' && route.directions[index - 1].type == 'depart') {
+            if (direction.type === 'depart' && route.directions[index - 1].type === 'depart') {
                 // if we are here, we have a possible merge
-                if (firstDirection.routeNumber == secondDirection.routeNumber) {
+                if (firstDirection.routeNumber === secondDirection.routeNumber) {
                     // this means both directions have the same routeNumber.
                     // No real transfer, probably just change in trip_ids
                     const combinedDirection = mergeDirections(firstDirection, secondDirection);
@@ -101,23 +101,20 @@ async function parseRoute(resp: Object, destinationName: string) {
     // array of parsed routes
     const possibleRoutes = [];
 
-    const paths = resp.paths;
+    const { paths } = resp;
 
     for (let index = 0; index < paths.length; index++) {
         const currPath = paths[index];
-
-        // total time for journey, in milliseconds
-        const totalTime = currPath.time;
 
         // this won't increment if the passenger 'stays on bus'
         const numberOfTransfers = currPath.transfers;
 
         // array containing legs of journey. e.g. walk, bus ride, walk
-        const legs = currPath.legs;
+        const { legs } = currPath;
         const amountOfLegs = legs.length;
 
         // string 2018-02-21T17:27:00Z
-        const departureTime = legs[0].departureTime;
+        const { departureTime } = legs[0];
         const arriveTime = legs[amountOfLegs - 1].arrivalTime;
 
         const startingLocationGeometry = legs[0].geometry;
@@ -149,20 +146,20 @@ async function parseRoute(resp: Object, destinationName: string) {
         const directions: Array<Object> = [];
         for (let j = 0; j < amountOfLegs; j++) {
             const currLeg = legs[j];
-            let type = currLeg.type;
-            if (type == 'pt') {
+            let { type } = currLeg;
+            if (type === 'pt') {
                 type = 'depart';
             }
 
             let name = '';
-            if (type == 'walk') {
+            if (type === 'walk') {
                 // means we are at the last direction aka a walk. name needs to equal final destination
-                if (j == amountOfLegs - 1) {
+                if (j === amountOfLegs - 1) {
                     name = destinationName;
                 } else {
                     name = legs[j + 1].departureLocation;
                 }
-            } else if (type == 'depart') {
+            } else if (type === 'depart') {
                 name = currLeg.departureLocation;
             }
 
@@ -182,15 +179,15 @@ async function parseRoute(resp: Object, destinationName: string) {
             let stops = [];
             let stayOnBusForTransfer = false;
 
-            const distance = currLeg.distance;
-            if (type == 'depart') {
+            const { distance } = currLeg;
+            if (type === 'depart') {
                 if (currLeg.isInSameVehicleAsPrevious) {
                     // last depart was a transfer
                     stayOnBusForTransfer = true;
                 }
 
                 tripID = [currLeg.trip_id];
-                const route = TCATUtils.routeJson.filter(routeObj => routeObj.route_id == currLeg.route_id);
+                const route = TCATUtils.routeJson.filter(routeObj => routeObj.route_id === currLeg.route_id);
 
                 path = currLeg.stops.map(stop => ({
                     lat: stop.geometry.coordinates[1],

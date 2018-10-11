@@ -63,7 +63,7 @@ function getWeekdayString(daysOfWeek) {
 }
 
 function getAlerts() {
-    if (alerts.length == 0) {
+    if (alerts.length === 0) {
         fetchAlerts();
     }
     return alerts;

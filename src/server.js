@@ -1,5 +1,4 @@
 // @flow
-import http from 'http';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import TCATUtils from './utils/TCATUtils';

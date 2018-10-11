@@ -1,18 +1,17 @@
 // @flow
-import fs, { write } from 'fs';
+import fs from 'fs';
 import { RegisterSession } from 'appdev';
 import csv from 'csvtojson';
-import createGpx from 'gps-to-gpx';
 import dotenv from 'dotenv';
 
 dotenv.config();
 const routeJson = [];
 
-const secret_key = process.env.REGISTER_TOKEN || '';
-const register = new RegisterSession('http://register.cornellappdev.com', secret_key, 5);
+const secretKey = process.env.REGISTER_TOKEN || '';
+const register = new RegisterSession('http://register.cornellappdev.com', secretKey, 5);
 
-function writeToRegister(event_type: string, payload: Object) {
-    register.logEvent(event_type, payload);
+function writeToRegister(eventType: string, payload: Object) {
+    register.logEvent(eventType, payload);
 }
 
 function readCSV(fileName: string) {

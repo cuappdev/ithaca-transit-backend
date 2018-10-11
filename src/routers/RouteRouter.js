@@ -1,10 +1,7 @@
 // @flow
-import { AppDevRouter, RegisterSession } from 'appdev';
+import { AppDevRouter } from 'appdev';
 import axios from 'axios';
 import qs from 'qs';
-import csv from 'csvtojson';
-import fs from 'fs';
-import createGpx from 'gps-to-gpx';
 import type Request from 'express';
 import TCATUtils from '../utils/TCATUtils';
 import WalkingUtils from '../utils/WalkingUtils';
@@ -20,10 +17,8 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
     }
 
     async content(req: Request): Promise<Array<Object>> {
-        const start: string = req.query.start;
-        const end: string = req.query.end;
-        const arriveBy: boolean = req.query.arriveBy == '1';
-        const destinationName = req.query.destinationName;
+        const { destinationName, end, start } = req.query;
+        const arriveBy: boolean = req.query.arriveBy === '1';
         const departureTimeQuery: string = req.query.time;
         let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
         let departureDelayBuffer: boolean = false;
@@ -100,10 +95,10 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         routeNow = routeNow.filter((route) => {
             let isValid = true;
             for (let index = 0; index < route.directions.length; index++) {
-                if (index != 0 && route.directions[index].type == 'depart' && route.directions[index - 1].type == 'depart') {
+                if (index !== 0 && route.directions[index].type === 'depart' && route.directions[index - 1].type === 'depart') {
                     const firstPT = route.directions[index - 1];
                     const secondPT = route.directions[index];
-                    isValid = firstPT.stops[firstPT.stops.length - 1].stopID == secondPT.stops[0].stopID;
+                    isValid = firstPT.stops[firstPT.stops.length - 1].stopID === secondPT.stops[0].stopID;
                 }
             }
             return isValid;
@@ -117,7 +112,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
 
         // now need to compare if walking route is better
         routeNow = routeNow.filter((route) => {
-            const walkingDirections = route.directions.filter(direction => direction.type == 'walk');
+            const walkingDirections = route.directions.filter(direction => direction.type === 'walk');
             const walkingTotals = walkingDirections.map(walk => walk.distance);
             let totalWalkingForRoute = 0;
             walkingTotals.forEach((element) => {
@@ -126,7 +121,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             return totalWalkingForRoute <= routeWalking.directions[0].distance;
         });
 
-        if (routeNow.length == 0) {
+        if (routeNow.length === 0) {
             return [routeWalking];
         }
         // throw out routes with over 2 hours time between each direction
@@ -141,7 +136,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                     keepRoute = false;
                 }
 
-                if (index != 0) { // means we can access the previous direction endTime
+                if (index !== 0) { // means we can access the previous direction endTime
                     const prevEndTime = Date.parse(route.directions[index - 1].endTime);
                     if (prevEndTime + oneHourInMilliseconds < startTime) {
                         keepRoute = false;
@@ -149,8 +144,8 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
                 }
 
                 if (departureDelayBuffer) { // make sure user can catch the bus
-                    if (direction.type == 'depart') {
-                        const busActualDepartTime = startTime + (direction.delay != null ? direction.delay * 1000 : 0);
+                    if (direction.type === 'depart') {
+                        const busActualDepartTime = startTime + (direction.delay !== null ? direction.delay * 1000 : 0);
                         if (busActualDepartTime < departureTimeNowActualMs) {
                             keepRoute = false;
                         }

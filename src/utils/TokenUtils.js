@@ -22,7 +22,7 @@ async function generateAccessToken() {
     try {
         const basicAuthHeader = `Basic ${credentials.basic_token}`;
         const agent = new https.Agent({
-		  rejectUnauthorized: false,
+            rejectUnauthorized: false,
         });
         const tokenRequest = await axios.post('https://gateway.api.cloud.wso2.com:443/token', qs.stringify({ grant_type: 'client_credentials' }), {
             httpsAgent: agent,
@@ -31,8 +31,8 @@ async function generateAccessToken() {
         const currentDate = new Date();
         const newCredentials = {
             basic_token: credentials.basic_token,
-							  access_token: tokenRequest.data.access_token,
-							  expiry_date: new Date(currentDate.getTime() + tokenRequest.data.expires_in * 1000),
+            access_token: tokenRequest.data.access_token,
+            expiry_date: new Date(currentDate.getTime() + tokenRequest.data.expires_in * 1000),
         };
         fs.writeFile('config.json', JSON.stringify(newCredentials), 'utf8', (err) => {
             if (err) console.log(err);

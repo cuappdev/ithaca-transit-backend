@@ -41,7 +41,7 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
             },
         );
 
-        const predictions = response.data.predictions;
+        const { predictions } = response.data;
         const formattedPredictions = predictions.map(p => ({
             address: p.structured_formatting.secondary_text,
             name: p.structured_formatting.main_text,
