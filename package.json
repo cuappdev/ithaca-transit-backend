@@ -13,7 +13,8 @@
     "start": "killall -9 java; webpack -p && sh scripts/run.sh",
     "start-prod": "killall -9 java; webpack -p && npm run serve",
     "cleanup": "sh scripts/cleanup.sh",
-    "test": "jest",
+    "test": "jest --noStackTrace --detectOpenHandles --forceExit src/test ; npm run flow",
+    "travis": "npm run build && npm test",
     "flow": "node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop"
   },
@@ -43,7 +44,7 @@
     "express": "^4.16.2",
     "flow-bin": "^0.66.0",
     "gps-to-gpx": "^1.1.0",
-    "jest": "^22.4.2",
+    "jest": "^23.6.0",
     "lru-cache": "^4.1.3",
     "moment": "^2.21.0",
     "moment-timezone": "^0.5.14",
