@@ -13,7 +13,8 @@
     "start": "killall -9 java; webpack -p && sh scripts/run.sh",
     "start-prod": "killall -9 java; webpack -p && npm run serve",
     "cleanup": "sh scripts/cleanup.sh",
-    "test": "./node_modules/.bin/jest --noStackTrace --detectOpenHandles --forceExit src/test ; npm run flow",
+    "test": "jest --noStackTrace --detectOpenHandles --forceExit src/test ; npm run flow",
+    "travis": "npm run build && npm test",
     "flow": "node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop"
   },
