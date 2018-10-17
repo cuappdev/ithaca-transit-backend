@@ -2,6 +2,10 @@
 import { AppDevRouter } from 'appdev';
 import type Request from 'express';
 
+/**
+ * Handler for responding to a GET request on the root route.
+ * @extends AppDevRouter
+ */
 class HelloWorldRouter extends AppDevRouter<string> {
     constructor() {
         super('GET');

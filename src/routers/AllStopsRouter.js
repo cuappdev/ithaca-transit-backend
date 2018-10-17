@@ -3,6 +3,10 @@ import { AppDevRouter } from 'appdev';
 import type Request from 'express';
 import AllStopUtils from '../utils/AllStopUtils';
 
+/**
+ * Router object for retrieving data of all TCAT bus stops.
+ * @extends AppDevRouter
+ */
 class AllStopsRouter extends AppDevRouter<Array<Object>> {
     constructor() {
         super('GET');
