@@ -18,9 +18,8 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
             end,
             start,
             time: departureTimeQuery,
+            arriveBy,
         } = req.query;
-        const arriveBy: boolean = req.query.arriveBy === '1';
-
         return RouteUtils.getRoute(destinationName, end, start, departureTimeQuery, arriveBy);
     }
 }

@@ -1,15 +1,15 @@
 // @flow
 import alarm from 'alarm';
-import HTTPRequestUtils from './HTTPRequestUtils';
+import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
-import ErrorUtils from './ErrorUtils';
+import ErrorUtils from './LogUtils';
 
-let alerts = [];
+let alerts = RequestUtils.fetchRetry(fetchAlerts);
 const THREE_MINUTES_IN_MS = 1000 * 60 * 3;
 
 async function fetchAlerts() {
     try {
-        const authHeader = await TokenUtils.authHeader;
+        const authHeader = await TokenUtils.fetchAuthHeader();
 
         const options = {
             method: 'GET',
@@ -21,10 +21,10 @@ async function fetchAlerts() {
                 },
         };
 
-        const alertsRequest = await HTTPRequestUtils.createRequest(options, 'alerts request failed');
+        const alertsRequest = await RequestUtils.createRequest(options, 'alerts request failed');
 
         if (alertsRequest) {
-            alerts = JSON.parse(alertsRequest).map(alert => ({
+            return JSON.parse(alertsRequest).map(alert => ({
                 id: alert.MessageId,
                 message: alert.Message,
                 fromDate: parseMicrosoftFormatJSONDate(alert.FromDate),
@@ -39,9 +39,11 @@ async function fetchAlerts() {
             }));
         }
     } catch (err) {
-        ErrorUtils.log(err, null, 'fetchAlerts error');
+        ErrorUtils.logErr(err, null, 'fetchAlerts error');
         throw err;
     }
+
+    return null;
 }
 
 function parseMicrosoftFormatJSONDate(dateStr) {
@@ -75,19 +77,13 @@ function getWeekdayString(daysOfWeek) {
     }
 }
 
-async function getAlerts() {
-    if (alerts.length === 0) {
-        await fetchAlerts();
-    }
-    return alerts;
-}
-
 function start() {
-    alarm.recurring(THREE_MINUTES_IN_MS, fetchAlerts);
-    fetchAlerts();
+    alarm.recurring(THREE_MINUTES_IN_MS, async () => {
+        alerts = await RequestUtils.fetchRetry(fetchAlerts);
+    });
 }
 
 export default {
     start,
-    getAlerts,
+    alerts,
 };

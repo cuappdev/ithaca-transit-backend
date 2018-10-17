@@ -1,10 +1,12 @@
 {
   "presets": [
+    "babel-preset-env",
     "env",
     "flow"
   ],
   "plugins": [
     "transform-object-rest-spread",
     "babel-plugin-syntax-dynamic-import"
-  ]
+  ],
+  "sourceMap": "inline"
 }

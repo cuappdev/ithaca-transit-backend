@@ -12,7 +12,7 @@ class AllStopsRouter extends AppDevRouter<Array<Object>> {
     }
 
     async content(req): Promise<any> {
-        return AllStopUtils.getAllStops();
+        return AllStopUtils.allStops;
     }
 }
 

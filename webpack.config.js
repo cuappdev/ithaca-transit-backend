@@ -7,11 +7,12 @@ module.exports = env => ({
     target: 'node',
     context: __dirname,
     externals: [nodeExternals()],
-    entry: ['babel-polyfill', path.resolve(__dirname, 'src/server.js')],
+    entry: ['babel-polyfill', './src/server.js'],
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'bundle.js',
     },
+    devtool: 'source-map',
     module: {
         rules: [
             {
@@ -27,7 +28,8 @@ module.exports = env => ({
         ],
     },
     devServer: {
-        contentBase: path.join(__dirname, 'build'), // serve your static files from here
+        contentBase: './build', // serve your static files from here
+        publicPath: './src',
         watchContentBase: true, // initiate a page refresh if static content changes
         hot: true,
         open: true,
@@ -36,13 +38,13 @@ module.exports = env => ({
     plugins: [
         new NodemonPlugin({
             // What to watch.
-            watch: [path.join(__dirname, 'build'), 'src/test', 'src/server.js'],
+            watch: ['./build', './src/test', './src/server.js'],
 
             // Detailed log.
             verbose: false,
 
             // run tests after dev build complete
-            exec: 'npm test',
+            exec: 'npm run test-dev',
         }),
         new ExtraWatchWebpackPlugin({
             dirs: ['./'],

@@ -35,210 +35,252 @@ function isDateValid(date) {
     return moment(date).isValid();
 }
 
-function checkResponseValid(res) {
-    if (!res) {
-        throw new Error('No response');
-    }
-    if (!res.statusCode || res.statusCode >= 300) {
-        throw new Error(`Bad response status code: ${s(res.statusCode)}`);
-    }
-    if (!res.body) {
-        throw new Error(`No response body: ${s(res)}`);
-    }
-    if (res.body.success === false) {
-        throw new Error(`Request success:false; ${s(res.body)}`);
-    }
-    if (!res.body.data || res.body.data.length === 0) {
-        throw new Error(`Request data empty: ${s(res.body)}`);
-    }
-
-    return true;
+/**
+ * fail message
+ */
+function fm(msg) {
+    return { pass: false, message: () => msg };
 }
 
-function checkPlacesResponseValid(res) {
-    checkDataResponseValid(res);
-
-    const suggestions = res.body.data;
-
-    for (let i = 0; i < suggestions.length; i++) {
-        const place = suggestions[i];
-
-        if (!place) {
-            throw new Error(`Place data empty: ${s(suggestions)}`);
+expect.extend({
+    toBeValid(res) {
+        if (!res) {
+            return fm('No response');
         }
-        if (!place.name || !place.place_id || !place.address) {
-            throw new Error(`Place data invalid: ${s(place)}`);
+        if (!res.statusCode || res.statusCode >= 300) {
+            return fm(`Bad response status code: ${s(res.statusCode)}`);
         }
-    }
-
-    return true;
-}
-
-function checkDataResponseValid(res) {
-    if (!res) {
-        throw new Error('No response');
-    }
-    if (!res.statusCode || res.statusCode >= 300) {
-        throw new Error(`Bad response status code: ${s(res.statusCode)}`);
-    }
-    if (!res.body) {
-        throw new Error(`No response body: ${s(res)}`);
-    }
-    if (res.body.success === false) {
-        throw new Error(`Request success:false; ${s(res.body)}`);
-    }
-    if (!res.body.data) {
-        throw new Error(`Request data empty: ${s(res.body)}`);
-    }
-
-    return true;
-}
-
-function checkDelayResponseValid(res) {
-    if (!res) {
-        throw new Error('No response');
-    }
-    if (!res.statusCode || res.statusCode >= 300) {
-        throw new Error(`Bad response status code: ${s(res.statusCode)}`);
-    }
-    if (!res.body) {
-        throw new Error(`No response body: ${s(res)}`);
-    }
-    if (res.body.success === false) {
-        throw new Error(`Request success:false; ${s(res.body)}`);
-    }
-
-    return true;
-}
-
-function checkRouteValid(res, checkResponseData = true, returnTrackingBody = false) {
-    if (checkResponseData) checkResponseValid(res);
-
-    const trackingBody = [];
-
-    for (let i = 0; i < res.body.data.length; i++) {
-        const route = res.body.data[i];
-
-        if (!route) {
-            throw new Error(`Route body has empty routes: ${s(route.body)}`);
+        if (!res.body) {
+            return fm(`No response body: ${s(res)}`);
         }
-        if (!(route.departureTime && route.arrivalTime)) {
-            throw new Error(`Route departureTime or arrivalTime empty: ${route.body}`);
+        if (res.body.success === false) {
+            return fm(`Request success:false; ${s(res.body)}`);
         }
-        if (!isCoordsValid(route.endCoords)) {
-            throw new Error(`Route endCoords invalid: ${s(route)}`);
-        }
-        if (!isCoordsValid(route.startCoords)) {
-            throw new Error(`Route startCoords invalid: ${s(route)}`);
-        }
-        if (!route.boundingBox
-            || !(route.boundingBox.minLat
-                && route.boundingBox.minLong
-                && route.boundingBox.maxLat
-                && route.boundingBox.maxLong)) {
-            throw new Error(`Route boundingBox invalid: ${s(route)}`);
-        }
-        if ((route.numberOfTransfers && !isNum(route.numberOfTransfers)) || route.numberOfTransfers < 0) {
-            throw new Error(`Route numberOfTransfers invalid: ${s(route)}`);
+        if (!res.body.data || res.body.data.length === 0) {
+            return fm(`Request data empty: ${s(res.body)}`);
         }
 
-        for (let j = 0; j < route.directions.length; j++) {
-            const dir = route.directions[j];
+        return { pass: true };
+    },
+    placesToBeValid(res) {
+        if (!res) {
+            return fm('No response');
+        }
+        if (!res.statusCode || res.statusCode >= 300) {
+            return fm(`Bad response status code: ${s(res.statusCode)}`);
+        }
+        if (!res.body) {
+            return fm(`No response body: ${s(res)}`);
+        }
+        if (res.body.success === false) {
+            return fm(`Request success:false; ${s(res.body)}`);
+        }
+        if (!res.body.data || res.body.data.length === 0) {
+            return fm(`Request data empty: ${s(res.body)}`);
+        }
 
-            if (!dir) {
-                throw new Error(`Directions empty: ${s(route)}`);
+        const suggestions = res.body.data;
+
+        for (let i = 0; i < suggestions.length; i++) {
+            const place = suggestions[i];
+
+            if (!place) {
+                return fm(`Place data empty: ${s(suggestions)}`);
             }
-            if (!dir.path || !(dir.path.length > 0)) {
-                throw new Error(`Directions path empty: ${s(dir)}`);
+            if (!place.name || !place.place_id || !place.address) {
+                return fm(`Place data invalid: ${s(place)}`);
             }
-            if (!isCoordsValid(dir.endLocation)) {
-                throw new Error(`Directions endLocation invalid: ${s(dir)}`);
+        }
+
+        return { pass: true };
+    },
+    dataToBeValid(res) {
+        if (!res) {
+            return fm('No response');
+        }
+        if (!res.statusCode || res.statusCode >= 300) {
+            return fm(`Bad response status code: ${s(res.statusCode)}`);
+        }
+        if (!res.body) {
+            return fm(`No response body: ${s(res)}`);
+        }
+        if (res.body.success === false) {
+            return fm(`Request success:false; ${s(res.body)}`);
+        }
+        if (!res.body.data) {
+            return fm(`Request data empty: ${s(res.body)}`);
+        }
+
+        return { pass: true };
+    },
+    delayToBeValid(res) {
+        if (!res) {
+            return fm('No response');
+        }
+        if (!res.statusCode || res.statusCode >= 300) {
+            return fm(`Bad response status code: ${s(res.statusCode)}`);
+        }
+        if (!res.body) {
+            return fm(`No response body: ${s(res)}`);
+        }
+        if (res.body.success === false) {
+            return fm(`Request success:false; ${s(res.body)}`);
+        }
+
+        return { pass: true };
+    },
+    routeToBeValid(res, trackingBody = new Set(), routeParams = { name: '', warning: false }) {
+        if (!res) {
+            return fm('No response');
+        }
+        if (!res.statusCode || res.statusCode >= 300) {
+            return fm(`Bad response status code: ${s(res.statusCode)}`);
+        }
+        if (!res.body) {
+            return fm(`No response body: ${s(res)}`);
+        }
+        if (res.body.success === false) {
+            return fm(`Request success:false; ${s(res.body)}`);
+        }
+        if (!res.body.data || res.body.data.length === 0) {
+            return fm(`Request data empty: ${s(res.body)}`);
+        }
+
+        let walkingDirs = 0;
+        let busDirs = 0;
+
+        for (let i = 0; i < res.body.data.length; i++) {
+            const route = res.body.data[i];
+
+            if (!route) {
+                return fm(`Route body has empty routes: ${s(route.body)}`);
             }
-            if (!isCoordsValid(dir.startLocation)) {
-                throw new Error(`Directions startLocation invalid: ${s(dir)}`);
+            if (!(route.departureTime && route.arrivalTime)) {
+                return fm(`Route departureTime or arrivalTime empty: ${route.body}`);
             }
-            if (!isDateValid(dir.startTime)) {
-                throw new Error(`Directions startTime invalid: ${s(dir)}`);
+            if (!isCoordsValid(route.endCoords)) {
+                return fm(`Route endCoords invalid: ${s(route)}`);
             }
-            if (!isDateValid(dir.endTime)) {
-                throw new Error(`Directions endTime invalid: ${s(dir)}`);
+            if (!isCoordsValid(route.startCoords)) {
+                return fm(`Route startCoords invalid: ${s(route)}`);
             }
-            if (!dir.name) {
-                throw new Error(`Directions name invalid: ${s(dir)}`);
+            if (!route.boundingBox
+                || !(route.boundingBox.minLat
+                    && route.boundingBox.minLong
+                    && route.boundingBox.maxLat
+                    && route.boundingBox.maxLong)) {
+                return fm(`Route boundingBox invalid: ${s(route)}`);
             }
-            if (!dir.distance || !isNum(dir.distance)) {
-                throw new Error(`Directions distance invalid: ${s(dir)}`);
-            }
-            if (!dir.type || !(dir.type === 'walk' || dir.type === 'depart')) {
-                throw new Error(`Directions type invalid: ${s(dir)}`);
+            if ((route.numberOfTransfers && !isNum(route.numberOfTransfers)) || route.numberOfTransfers < 0) {
+                return fm(`Route numberOfTransfers invalid: ${s(route)}`);
             }
 
-            if (dir.type === 'walk') {
-                if ((dir.stops && dir.stops.length > 0)
-                    || dir.stayOnBusForTransfer
-                    || dir.routeNumber
-                    || dir.delay
-                    || dir.tripIdentifiers
-                ) {
-                    throw new Error(`Directions walk data invalid: ${s(dir)}`);
+            for (let j = 0; j < route.directions.length; j++) {
+                const dir = route.directions[j];
+                if (!dir) {
+                    return fm(`Directions empty: ${s(route)}`);
                 }
-            } else { // type === 'depart'
-                if (!dir.routeNumber || dir.routeNumber === 0 || !(typeof dir.routeNumber === 'number')) {
-                    throw new Error(`Directions routeNumber invalid: ${s(dir)}`);
+                if (!dir.path || !(dir.path.length > 0)) {
+                    return fm(`Directions path empty: ${s(dir)}`);
                 }
-                if (!dir.stops || dir.stops.length === 0) {
-                    throw new Error(`Directions stops invalid: ${s(dir)}`);
+                if (!isCoordsValid(dir.endLocation)) {
+                    return fm(`Directions endLocation invalid: ${s(dir)}`);
                 }
-                if (!dir.tripIdentifiers) {
-                    throw new Error(`Directions tripIdentifiers invalid: ${s(dir)}`);
+                if (!isCoordsValid(dir.startLocation)) {
+                    return fm(`Directions startLocation invalid: ${s(dir)}`);
+                }
+                if (!isDateValid(dir.startTime)) {
+                    return fm(`Directions startTime invalid: ${s(dir)}`);
+                }
+                if (!isDateValid(dir.endTime)) {
+                    return fm(`Directions endTime invalid: ${s(dir)}`);
+                }
+                if (!dir.name) {
+                    return fm(`Directions name invalid: ${s(dir)}`);
+                }
+                if (!dir.distance || !isNum(dir.distance)) {
+                    return fm(`Directions distance invalid: ${s(dir)}`);
+                }
+                if (!dir.type || !(dir.type === 'walk' || dir.type === 'depart')) {
+                    return fm(`Directions type invalid: ${s(dir)}`);
                 }
 
-                for (let k = 0; k < dir.stops.length; k++) {
-                    const stop = dir.stops[k];
-
-                    if (!isCoordsValid(stop)) {
-                        throw new Error(`Stops coordinates invalid: ${s(dir)}`);
+                if (dir.type === 'walk') {
+                    walkingDirs += 1;
+                    if ((dir.stops && dir.stops.length > 0)
+                        || dir.stayOnBusForTransfer
+                        || dir.routeNumber
+                        || dir.delay
+                        || dir.tripIdentifiers
+                    ) {
+                        return fm(`Directions walk data invalid: ${s(dir)}`);
                     }
-                    if (!stop.stopID || !isNum(stop.stopID)) {
-                        throw new Error(`Stops stopID invalid: ${s(dir)}`);
-                    } else if (returnTrackingBody) {
-                        trackingBody.push({
+                } else { // type === 'depart'
+                    busDirs += 1;
+                    if (!dir.routeNumber || dir.routeNumber === 0 || !(typeof dir.routeNumber === 'number')) {
+                        return fm(`Directions routeNumber invalid: ${s(dir)}`);
+                    }
+                    if (!dir.stops || dir.stops.length === 0) {
+                        return fm(`Directions stops invalid: ${s(dir)}`);
+                    }
+                    if (!dir.tripIdentifiers) {
+                        return fm(`Directions tripIdentifiers invalid: ${s(dir)}`);
+                    }
+
+                    for (let k = 0; k < dir.stops.length; k++) {
+                        const stop = dir.stops[k];
+
+                        if (!isCoordsValid(stop)) {
+                            return fm(`Stops coordinates invalid: ${s(dir)}`);
+                        }
+                        if (!stop.stopID || !isNum(stop.stopID)) {
+                            return fm(`Stops stopID invalid: ${s(dir)}`);
+                        }
+
+                        trackingBody.add({
                             stopID: stop.stopID,
                             routeID: dir.routeNumber,
-                            tripIdentifuers: dir.tripIdentifiers,
+                            tripIdentifiers: dir.tripIdentifiers,
                         });
-                    }
-                    if (!stop.name) {
-                        throw new Error(`Stop name invalid: ${s(dir)}`);
+
+                        if (!stop.name) {
+                            return fm(`Stop name invalid: ${s(dir)}`);
+                        }
                     }
                 }
-            }
 
-            for (let k = 0; k < dir.path.length; k++) {
-                const path = dir.path[k];
+                for (let k = 0; k < dir.path.length; k++) {
+                    const path = dir.path[k];
 
-                if (!isCoordsValid(path)) {
-                    throw new Error(`Path coordinates invalid: ${s(dir)}`);
+                    if (!isCoordsValid(path)) {
+                        return fm(`Path coordinates invalid: ${s(dir)}`);
+                    }
                 }
             }
         }
-    }
 
-    if (returnTrackingBody && trackingBody.length > 0) {
-        return trackingBody;
-    }
+        if (busDirs === 0) {
+            console.warn(`WARNING: No bus route/directions found for route ${routeParams.name}`);
+            // console.log((res.body.data.map(route => ({
+            //     type: route.directions.type,
+            //     name: route.directions.name,
+            //     route: route.directions.routeNumber,
+            // }))));
+            // console.log((res.body.data.map(route => route.directions)));
+            routeParams.warning = true;
+        } else {
+            // console.log((res.body.data.map(route => route.directions)));
+        }
 
-    return true;
-}
+        if (walkingDirs === 0) {
+            console.warn(`WARNING: No walking route/directions found for route ${routeParams.name}`);
+            // console.log(res.body.data.map(route => route.directions));
+            routeParams.warning = true;
+        }
 
-module.exports = {
-    s,
-    checkRouteValid,
-    checkResponseValid,
-    checkDataResponseValid,
-    checkDelayResponseValid,
-    checkPlacesResponseValid,
-    isNum,
-    isDateValid,
-    isCoordsValid,
-};
+        return {
+            pass: true,
+            message: 'Route should not be valid',
+        };
+    },
+});

@@ -6,13 +6,13 @@ import AlertsUtils from './utils/AlertsUtils';
 import AllStopUtils from './utils/AllStopUtils';
 import API from './Api';
 import RealtimeFeedUtils from './utils/RealtimeFeedUtils';
-import ErrorUtils from './utils/ErrorUtils';
+import ErrorUtils from './utils/LogUtils';
 import TokenUtils from './utils/TokenUtils';
 
 // load environment variables
 if (!process.env.GHOPPER_BUS && !fs.existsSync('.env')) {
     fs.copyFileSync('env.template', '.env', (err) => {
-        if (err) throw ErrorUtils.log(err, '.env', 'Failed to find or create .env file');
+        if (err) throw ErrorUtils.logErr(err, '.env', 'Failed to find or create .env file');
     });
 }
 dotenv.load();
@@ -35,25 +35,39 @@ const server = new API().getServer();
 
 const init = new Promise((resolve, reject) => {
     server.listen(port, '0.0.0.0', () => {
-        TokenUtils.authHeader.then(() => {
+        TokenUtils.fetchAuthHeader().then(() => {
+            // start endpoints that cache data
+            RealtimeFeedUtils.start();
+            AllStopUtils.start();
+            AlertsUtils.start();
+
+            Promise.all([
+                RealtimeFeedUtils.realtimeFeed,
+                AllStopUtils.allStops,
+                AlertsUtils.alerts,
+                TokenUtils.fetchAuthHeader(),
+            ]).then(() => {
+                console.log('Init successful: authHeader, realtimeFeed, allStops, alerts');
+                // console.log(
+                //     RealtimeFeedUtils.realtimeFeed,
+                //     AllStopUtils.allStops,
+                //     AlertsUtils.alerts,
+                //     TokenUtils.authHeader,
+                // );
+            });
+
             // then wait for graphhopper services
             waitOn(waitOptions, (err) => {
                 if (err) {
-                    throw ErrorUtils.log(err, waitOptions, 'Failed to connect to graphhopper services');
+                    throw ErrorUtils.logErr(err, waitOptions, 'Failed to connect to graphhopper services');
                 }
                 // graphhopper is running
-
-                // start endpoints that cache data
-                RealtimeFeedUtils.start();
-                AllStopUtils.start();
-                AlertsUtils.start();
-
                 resolve(port);
             });
         });
     });
 }).then(value => value).catch((error) => {
-    ErrorUtils.log(error, null, 'Transit init failed');
+    ErrorUtils.logErr(error, null, 'Transit init failed');
     return null;
 });
 

@@ -4,7 +4,8 @@
 # grep -E -i "^((?!download|points?|maven).)*$" # grep blacklist lines
 
 cd docker-compose
+echo "Initializing Graphhopper Services..."
 docker-compose up --no-start --force-recreate ghopper # | grep -v -i 'points?0?\|download'
-docker-compose up | rotatelogs -f -l .graphhopper.log 604800 1M
+docker-compose up | rotatelogs -f -l  -n 5 ./logs/.graphhopper.log 86400 1M
 cd ..
 echo "Exiting"

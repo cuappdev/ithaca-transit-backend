@@ -2,7 +2,7 @@
 import fs from 'fs';
 import request from 'request';
 import dotenv from 'dotenv';
-import ErrorUtils from './ErrorUtils';
+import ErrorUtils from './LogUtils';
 
 dotenv.load();
 
@@ -10,14 +10,12 @@ let credentials = { basic_token: process.env.TOKEN || null, access_token: null, 
 
 const configFile = 'config.json';
 
-const authHeader = getAuthorizationHeader();
-
-async function getCredentials() {
+function checkCredentials() {
     if (!credentials.basic_token || credentials.basic_token === 'token') {
         credentials.basic_token = process.env.TOKEN || null;
 
         throw new Error(
-            ErrorUtils.log(
+            ErrorUtils.logErr(
                 'Invalid or missing TOKEN in .env',
                 credentials,
                 'getCredentials failed. Missing basic_token',
@@ -37,8 +35,8 @@ function isAccessTokenExpired() {
     return (new Date(credentials.expiry_date)).getTime() - 500 < currentDate.getTime();
 }
 
-async function generateAccessToken() {
-    await getCredentials();
+async function fetchAccessToken() {
+    checkCredentials();
 
     if (!credentials.basic_token) {
         throw new Error(`Basic token ${credentials.access_token || 'unknown'}`);
@@ -75,22 +73,22 @@ async function generateAccessToken() {
         if (newCredentials && newCredentials.basic_token) {
             credentials = newCredentials;
             fs.writeFile(configFile, JSON.stringify(newCredentials), 'utf8', (err) => {
-                if (err) ErrorUtils.log(err, null, 'Could not write access token');
+                if (err) ErrorUtils.logErr(err, null, 'Could not write access token');
             });
         }
 
         return newCredentials.access_token;
     }).catch((error) => {
-        ErrorUtils.log(error, credentials, 'Token request failed');
+        ErrorUtils.logErr(error, credentials, 'Token request failed');
         return null;
     });
 }
 
-async function getAuthorizationHeader() {
-    await getCredentials();
+async function fetchAuthHeader() {
+    checkCredentials();
 
     if (isAccessTokenExpired()) { // else get from API
-        await generateAccessToken();
+        await fetchAccessToken();
     }
 
     if (credentials.access_token) {
@@ -100,5 +98,5 @@ async function getAuthorizationHeader() {
 }
 
 export default {
-    authHeader,
+    fetchAuthHeader,
 };

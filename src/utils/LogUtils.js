@@ -1,4 +1,7 @@
 import { RegisterSession } from 'appdev';
+import fs from 'fs';
+
+const LOG_PATH = 'logs';
 
 /**
  * Each error code is associated with a HTTP status code, message, and/or classification substrings
@@ -67,7 +70,7 @@ const register = new RegisterSession('http://register.cornellappdev.com', secret
  * @param message
  * @returns {{ code:'*', ...(ErrorCodes.*) }}
  */
-export function classifyError(message: string) {
+function classifyError(message: string) {
     const messageStr = message.toString().toLowerCase();
     const errorCode = (Object.entries(ErrorCodes).find(([code, info]) => {
         if (info.substrings) {
@@ -115,20 +118,20 @@ function getStackTrace() {
 /**
  * Log to register if production environment
  * or console if dev environment
- *
  * @param error
  * @param data
  * @param note
- * @returns {{error: *, message: *}}
+ * @param stackTrace
+ * @returns {*}
  */
-function log(error: string, data: ?Object, note: ?string) {
+function logErr(error: string, data: ?Object, note: ?string, showStackTrace: ?boolean = true) {
     try { // try block because if the error logging has an error... ?
         if (!error) {
             return null;
         }
 
         const errorStr = error.toString();
-        const stackTrace = error.stack || getStackTrace();
+        const stackTrace = showStackTrace && (error.stack || getStackTrace());
 
         const response = generateErrorResponse(errorStr);
 
@@ -150,7 +153,7 @@ function log(error: string, data: ?Object, note: ?string) {
             );
         } else {
             // eslint-disable-next-line no-console
-            console.error(`${JSON.stringify(registerPayload, null, '\t')}\n${stackTrace}`);
+            console.error(`${JSON.stringify(registerPayload, null, '\t')}\n${showStackTrace && stackTrace}`);
         }
 
         return response;
@@ -159,10 +162,29 @@ function log(error: string, data: ?Object, note: ?string) {
     }
 }
 
+/**
+ * Log to file at the given location. No need to stringify
+ * @param fileName
+ * @param data
+ */
+function logToFile(fileName: string, data: ?Object) {
+    fs.writeFile(
+        `${LOG_PATH}/${fileName}`,
+        (typeof data === 'string') ? data : JSON.stringify(data, null, '\t'),
+        (err) => {
+            if (err) {
+                // eslint-disable-next-line no-console
+                return console.error(err);
+            }
+            return true;
+        },
+    );
+}
+
 export default {
-    ErrorCodes,
     classifyError,
     generateErrorResponse,
     writeToRegister,
-    log,
+    logErr,
+    logToFile,
 };

@@ -67,10 +67,10 @@ docker ps
 
 if ${RUN_TRANSIT} ; then
     if ${PROD}; then
-        echo "${OUT_COLOR}Starting Transit in production mode.${NC}"
+        echo "${OUT_COLOR}Starting Transit in production mode...${NC}"
         npm run start-prod
     else
-        echo "${OUT_COLOR}Starting Transit in development mode.${NC}"
+        echo "${OUT_COLOR}Starting Transit in development mode...${NC}"
         npm run build-dev
     fi
 fi

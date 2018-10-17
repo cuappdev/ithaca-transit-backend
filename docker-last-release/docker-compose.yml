@@ -1,0 +1,12 @@
+version: "3.4"
+
+services:
+  last-release:
+    env_file: .env
+    build:
+      context: last-release
+      args:
+        RELEASE_COMMIT: ${RELEASE_COMMIT}
+    image: last-release
+    ports:
+      - "${RELEASE_PORT}:3000"
