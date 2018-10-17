@@ -34,6 +34,7 @@ const JsonDiff = jsondiffpatch.create({
 let alertsCount = 0;
 const routeDataCounts = {
     busInfoFound: 0,
+    warning: 0,
     total: 0,
 };
 const delayDataCounts = {
@@ -57,28 +58,38 @@ beforeAll(async () => {
 afterAll(() => {
     if (delayDataCounts.found === 0) {
         // eslint-disable-next-line
-        console.warn(`WARNING: api/v1/delay/ may not be working as intended: only null returned in ${delayDataCounts.total} total tests`);
+        console.warn('WARNING: api/v1/delay/ may not be working as intended:\n'
+            + `Only null returned in ${delayDataCounts.total} total tests`);
     }
     if (trackingDataCounts.valid === 0) {
         // eslint-disable-next-line
-        console.warn(`WARNING: api/v1/tracking/ may not be working as intended: no data or invalid in all tests\n`
+        console.warn('WARNING: api/v1/tracking/ may not be working as intended:\n'
+            + 'No data or invalid data in all tests\n'
             + `${trackingDataCounts.invalid} invalidData (trip too far in future or no bus assigned yet)\n`
             + `${trackingDataCounts.none} noData (bus does not support live tracking)\n`
             + `${trackingDataCounts.total} total tracking tests`);
     }
     if (trackingDataCounts.none !== 0) {
         // eslint-disable-next-line
-        console.warn(`WARNING: api/v1/tracking/ may not be working as intended: "noData" returned in one or more tests\n`
+        console.warn('WARNING: api/v1/tracking/ may not be working as intended:\n'
+            + '"noData" returned in one or more tests\n'
             + `${trackingDataCounts.invalid} invalidData (trip too far in future or no bus assigned yet)\n`
             + `${trackingDataCounts.none} noData (bus does not support live tracking)\n`
             + `${trackingDataCounts.total} total tracking tests`);
     }
     if (alertsCount === 0) {
-        console.warn('WARNING: api/v1/alerts/ may not be working as inteded: no alerts found');
+        console.warn('WARNING: api/v1/alerts/ may not be working as inteded:\n'
+            + 'No alerts found');
     }
     if (routeDataCounts.busInfoFound === 0) {
-        console.error(`ERROR: api/v1/route/ may not be working as intended: no non-walking routes found in ${routeDataCounts.total} total tests.\n`
+        console.error('ERROR: api/v1/route/ may not be working as intended:\n'
+            + `No non-walking routes found in ${routeDataCounts.total} total tests.\n`
             + 'Delay and tracking were not tested!');
+    }
+    if (routeDataCounts.warning > 0) {
+        console.error('ERROR: api/v1/route/ may not be working as intended:\n'
+            + `${routeDataCounts.warning} warning(s) recorded in ${routeDataCounts.total} total route validation tests.\n`
+            + 'See logs/out folder for most recent warning output');
     }
 });
 
@@ -121,7 +132,7 @@ async function testTracking(routeResponseBusDataArr) {
 async function printReleaseDiff(res, routeParams) {
     const options = {
         method: 'GET',
-        url: `http://transit-backend.cornellappdev.com/api/v1/route${routeParams.query}`,
+        url: `${process.env.RELEASE_URL}${route}${routeParams.query}`,
         qsStringifyOptions: { arrayFormat: 'repeat' },
     };
     const rel = JSON.parse(await RequestUtils.createRequest(options));
@@ -143,10 +154,12 @@ async function testRoute(res, routeParams, busInfo: Set) {
     }
 
     // write res to file for visual check
-    if (routeParams.warning) {
-        console.log(`logging ${routeParams.name} to file`);
+    if (!routeParams.warning) {
+        routeDataCounts.warning += 1;
+        console.log(`Warning ${routeDataCounts.warning}: Logging ${routeParams.name} to file`);
         printReleaseDiff(res.body, routeParams);
-        LogUtils.logToFile('out/routes.test.warning.output.json', res);
+        LogUtils.logToFile('out/routes.test.warning.output.json',
+            ((res && res.status < 300 && res.text) ? JSON.parse(res.text) : res));
     }
 
     return busInfo;

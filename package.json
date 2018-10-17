@@ -15,7 +15,6 @@
     "start-prod": "npm run build && node --require dotenv/config build/bundle.js",
     "start-dev": "sh ./scripts/run.sh",
     "start": "npm run run-ghopper & npm run build && node --require dotenv/config build/bundle.js",
-    "release": "sh ./scripts/run_last_release.sh",
     "test": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --forceExit --detectOpenHandles test ; npm run flow",
     "test-dev": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --verbose --runInBand --detectOpenHandles test ; npm run flow",
     "travis": "npm run build && npm test",
