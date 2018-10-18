@@ -4,11 +4,11 @@ const moment = require('moment');
 
 const root = '/api/v1';
 const helloWorld = `${root}/`;
-const allStops = `${root}/allStops/`;
-const alerts = `${root}/alerts/`;
-const delay = `${root}/delay/`;
-const places = `${root}/places/`;
-const tracking = `${root}/tracking/`;
+const allStops = `${root}/allStops`;
+const alerts = `${root}/alerts`;
+const delay = `${root}/delay`;
+const places = `${root}/places`;
+const tracking = `${root}/tracking`;
 const route = `${root}/route`;
 
 const now = moment().unix();

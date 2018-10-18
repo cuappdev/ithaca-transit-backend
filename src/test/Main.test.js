@@ -2,8 +2,10 @@
 const request = require('supertest');
 const http = require('http');
 const jsondiffpatch = require('jsondiffpatch');
+const morganBody = require('morgan-body');
+const url = require('url');
 
-const { server, init } = require('../server');
+const { server, init, express } = require('../server');
 const {
     helloWorld,
     allStops,
@@ -16,7 +18,7 @@ const {
 } = require('./TestGlobals').default;
 const LogUtils = require('../utils/LogUtils').default;
 // eslint-disable-next-line no-unused-vars
-const TestUtils = require('./TestUtils');
+const { expectTests } = require('./TestUtils').default;
 const RequestUtils = require('../utils/RequestUtils.js').default;
 
 // ======================================== CONFIG/DATA ========================================
@@ -48,14 +50,56 @@ const trackingDataCounts = {
     total: 0,
 };
 
+let running = false;
+
+const endpointValidityTestMap = {
+    [helloWorld](res) { return expectTests.toBeValid(res); },
+    [allStops](res) { return expectTests.toBeValid(res); },
+    [alerts](res) { return expectTests.dataToBeValid(res); },
+    [delay](res) { return expectTests.delayToBeValid(res); },
+    [places](res) { return expectTests.placesToBeValid(res); },
+    [tracking](res) { return expectTests.toBeValid(res); },
+    [route](res) { return expectTests.routeToBeValid(res); },
+};
+
 // ======================================== BEFORE/AFTER ========================================
 
 beforeAll(async () => {
     await init;
+    morganBody(express, {
+        skip: (req, res) => {
+            if (!running) {
+                describe('Incoming/Outgoing', () => {
+                    const parsedUrl = url.parse(req.url);
+                    const pathName = `${parsedUrl.pathname}`;
+                    const query = `${parsedUrl.path}`;
+
+                    if (query) {
+                        // eslint-disable-next-line no-underscore-dangle
+                        res.body = JSON.parse(res.__morgan_body_response);
+                        const test = endpointValidityTestMap[pathName](res);
+                        if (test.pass) {
+                            console.log('\x1b[36m%s\x1b[0m', `Pass ${query}`);
+                        } else {
+                            console.error(`FAIL: ${query}`, test.message());
+                        }
+                        return true;
+                    }
+                    return false;
+                });
+            }
+            return true;
+        },
+        logRequestBody: false,
+        logResponseBody: true,
+    });
+    running = true;
     return true;
 }, 1200000);
 
 afterAll(() => {
+    running = false;
+
     if (delayDataCounts.found === 0) {
         // eslint-disable-next-line
         console.warn('WARNING: api/v1/delay/ may not be working as intended:\n'
@@ -96,23 +140,33 @@ afterAll(() => {
 // ======================================== TESTS ========================================
 
 describe('Initialization and root path', () => {
-    test('Initialized', async () => expect(await server).toBeInstanceOf(http.Server));
+    test('Server instance', async () => expect(await server).toBeInstanceOf(http.Server));
 
     test(helloWorld, async () => {
         expect(await request(server).get(helloWorld)).toBeValid();
     });
+
+    test('Initialized', async () => {
+        expect(await request(server).get(`${helloWorld}?awaitInit`)).toBeValid();
+    });
 });
 
-async function testDelay(routeResponseBusDataSet) {
+async function testDelay(delayReq) {
+    if (!delayReq) return null;
+    delayDataCounts.total += 1;
+    const res = await request(server).get(delayReq);
+    expect(res).delayToBeValid();
+    delayDataCounts.found += (res.body.data === null || res.body.data === undefined) ? 0 : 1;
+    return true;
+}
+
+async function testDelayArr(routeResponseBusDataSet) {
     if (!routeResponseBusDataSet || routeResponseBusDataSet.size === 0) return null;
     return Promise.all(Array.from(routeResponseBusDataSet).map(async (routeResponseBusData) => {
         const { stopID, tripIdentifiers } = routeResponseBusData;
         await Promise.all(tripIdentifiers.map(async (tripID): Promise<number> => {
             const delayReq = `${delay}?stopID=${stopID}&tripID=${tripID}`;
-            delayDataCounts.total += 1;
-            const res = await request(server).get(delayReq);
-            expect(res).delayToBeValid();
-            delayDataCounts.found += (res.body.data === null || res.body.data === undefined) ? 0 : 1;
+            await testDelay(delayReq);
         }));
     }));
 }
@@ -136,7 +190,7 @@ async function printReleaseDiff(res, routeParams) {
         qsStringifyOptions: { arrayFormat: 'repeat' },
     };
     const rel = JSON.parse(await RequestUtils.createRequest(options));
-    console.log(`${routeParams.name}:`);
+    console.warn(`${routeParams.name}:`);
     const delta = JsonDiff.diff(rel.data[0], res.data[0]);
     jsondiffpatch.console.log(delta);
 }
@@ -156,7 +210,7 @@ async function testRoute(res, routeParams, busInfo: Set) {
     // write res to file for visual check
     if (!routeParams.warning) {
         routeDataCounts.warning += 1;
-        console.log(`Warning ${routeDataCounts.warning}: Logging ${routeParams.name} to file`);
+        console.warn(`Warning ${routeDataCounts.warning}: Logging ${routeParams.name} to file`);
         printReleaseDiff(res.body, routeParams);
         LogUtils.logToFile('out/routes.test.warning.output.json',
             ((res && res.status < 300 && res.text) ? JSON.parse(res.text) : res));
@@ -177,7 +231,7 @@ describe('route, delay, & tracking endpoints', () => {
                 await testRoute(res, routeParams, busInfo);
             });
             test('delay endpoint', async () => {
-                await testDelay(busInfo);
+                await testDelayArr(busInfo);
             });
             test('tracking endpoint', async () => {
                 await testTracking(busInfo);
@@ -237,7 +291,3 @@ describe('alerts endpoint', () => {
 describe('tracking endpoint', () => {
     // TODO
 });
-
-module.exports = async () => {
-    process.SERVER = server;
-};

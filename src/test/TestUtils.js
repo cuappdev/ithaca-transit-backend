@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 const moment = require('moment');
+const util = require('util');
 
 // stringify and/or format a value
 function s(v) {
     if (typeof v === 'string') return v;
-    if (v) return JSON.stringify(v, null, '\t');
+    if (v) return util.inspect(v); // return JSON.stringify(v, null, '\t');
     if (v === null) return 'null';
     if (typeof v === 'undefined') return 'undefined';
     if (Number.isNaN(v)) return 'NaN';
@@ -42,12 +43,12 @@ function fm(msg) {
     return { pass: false, message: () => msg };
 }
 
-expect.extend({
+const expectTests = {
     toBeValid(res) {
         if (!res) {
             return fm('No response');
         }
-        if (!res.statusCode || res.statusCode >= 300) {
+        if (!res.statusCode || res.statusCode >= 305) {
             return fm(`Bad response status code: ${s(res.statusCode)}`);
         }
         if (!res.body) {
@@ -66,7 +67,7 @@ expect.extend({
         if (!res) {
             return fm('No response');
         }
-        if (!res.statusCode || res.statusCode >= 300) {
+        if (!res.statusCode || res.statusCode >= 305) {
             return fm(`Bad response status code: ${s(res.statusCode)}`);
         }
         if (!res.body) {
@@ -98,7 +99,7 @@ expect.extend({
         if (!res) {
             return fm('No response');
         }
-        if (!res.statusCode || res.statusCode >= 300) {
+        if (!res.statusCode || res.statusCode >= 305) {
             return fm(`Bad response status code: ${s(res.statusCode)}`);
         }
         if (!res.body) {
@@ -117,7 +118,7 @@ expect.extend({
         if (!res) {
             return fm('No response');
         }
-        if (!res.statusCode || res.statusCode >= 300) {
+        if (!res.statusCode || res.statusCode >= 305) {
             return fm(`Bad response status code: ${s(res.statusCode)}`);
         }
         if (!res.body) {
@@ -133,7 +134,7 @@ expect.extend({
         if (!res) {
             return fm('No response');
         }
-        if (!res.statusCode || res.statusCode >= 300) {
+        if (!res.statusCode || res.statusCode >= 305) {
             return fm(`Bad response status code: ${s(res.statusCode)}`);
         }
         if (!res.body) {
@@ -283,4 +284,10 @@ expect.extend({
             message: 'Route should not be valid',
         };
     },
-});
+};
+
+expect.extend(expectTests);
+
+export default {
+    expectTests,
+};

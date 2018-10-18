@@ -31,10 +31,13 @@ const waitOptions = {
     log: true, // output progress to stdout
 };
 
-const server = new API().getServer();
+const app = new API();
+const server = app.getServer();
+const { express } = app;
 
 const init = new Promise((resolve, reject) => {
     server.listen(port, '0.0.0.0', () => {
+        console.log('\x1b[36m%s\x1b[0m', 'Initializing TCAT data and waiting for Graphhopper services...');
         TokenUtils.fetchAuthHeader().then(() => {
             // start endpoints that cache data
             RealtimeFeedUtils.start();
@@ -47,7 +50,7 @@ const init = new Promise((resolve, reject) => {
                 AlertsUtils.alerts,
                 TokenUtils.fetchAuthHeader(),
             ]).then(() => {
-                console.log('Init successful: authHeader, realtimeFeed, allStops, alerts');
+                console.log('Init data successful: authHeader, realtimeFeed, allStops, alerts');
                 // console.log(
                 //     RealtimeFeedUtils.realtimeFeed,
                 //     AllStopUtils.allStops,
@@ -71,4 +74,4 @@ const init = new Promise((resolve, reject) => {
     return null;
 });
 
-export { server, init };
+export { server, init, express };

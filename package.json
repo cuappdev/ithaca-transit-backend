@@ -16,7 +16,7 @@
     "start-dev": "sh ./scripts/run.sh",
     "start": "npm run run-ghopper & npm run build && node --require dotenv/config build/bundle.js",
     "test": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --forceExit --detectOpenHandles test ; npm run flow",
-    "test-dev": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --verbose --runInBand --detectOpenHandles test ; npm run flow",
+    "test-dev": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --verbose --runInBand --detectOpenHandles test ; npm run flow ; printf 'Server closed'",
     "travis": "npm run build && npm test",
     "flow": "echo 'Flow:' ; node_modules/.bin/flow",
     "flow-stop": "node_modules/.bin/flow stop"
@@ -46,6 +46,7 @@
     "lru-cache": "^4.1.3",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21",
+    "morgan-body": "^2.4.5",
     "qs": "^6.5.1",
     "request": "^2.88.0",
     "wait-on": "^3.0.1",

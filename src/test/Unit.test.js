@@ -44,10 +44,16 @@ describe('Route unit tests', () => {
                 });
                 test('RouteUtils.getDepartureTime', async () => {
                     // TODO check departure time is the same as in the request
-                    expect(typeof RouteUtils.getDepartureTime(time, arriveBy)).toBe('number');
+                    const t = RouteUtils.getDepartureTime(time, arriveBy);
+                    // console.log(moment(time).format());
+                    // console.log(moment(t).format());
+                    expect(typeof t).toBe('number');
+                    expect(typeof t).toBe('number');
                 });
                 test('RouteUtils.getDepartureTimeDateNow', async () => {
                     // TODO check departure time is the same as in the request
+                    // console.log(moment(time).format());
+                    // console.log(moment(RouteUtils.getDepartureTimeDateNow(time, arriveBy)).format());
                     expect(typeof RouteUtils.getDepartureTimeDateNow(time, arriveBy)).toBe('string');
                 });
 
