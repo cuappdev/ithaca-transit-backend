@@ -35,6 +35,7 @@ const app = new API();
 const server = app.getServer();
 const { express } = app;
 
+/* eslint-disable no-console */
 const init = new Promise((resolve, reject) => {
     server.listen(port, '0.0.0.0', () => {
         console.log('\x1b[36m%s\x1b[0m', 'Initializing TCAT data and waiting for Graphhopper services...');
@@ -51,12 +52,6 @@ const init = new Promise((resolve, reject) => {
                 TokenUtils.fetchAuthHeader(),
             ]).then(() => {
                 console.log('Init data successful: authHeader, realtimeFeed, allStops, alerts');
-                // console.log(
-                //     RealtimeFeedUtils.realtimeFeed,
-                //     AllStopUtils.allStops,
-                //     AlertsUtils.alerts,
-                //     TokenUtils.authHeader,
-                // );
             });
 
             // then wait for graphhopper services

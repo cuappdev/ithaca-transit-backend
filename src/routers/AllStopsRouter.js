@@ -11,6 +11,7 @@ class AllStopsRouter extends AppDevRouter<Array<Object>> {
         return '/allStops/';
     }
 
+    // eslint-disable-next-line require-await
     async content(req): Promise<any> {
         return AllStopUtils.allStops;
     }

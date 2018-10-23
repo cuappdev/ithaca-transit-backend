@@ -35,7 +35,7 @@ function isAccessTokenExpired() {
     return (new Date(credentials.expiry_date)).getTime() - 500 < currentDate.getTime();
 }
 
-async function fetchAccessToken() {
+function fetchAccessToken() {
     checkCredentials();
 
     if (!credentials.basic_token) {

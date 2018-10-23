@@ -10,6 +10,7 @@ import HelloWorldRouter from './routers/HelloWorldRouter';
 import PlacesAutocompleteRouter from './routers/PlacesAutocompleteRouter';
 import RouteRouter from './routers/RouteRouter';
 import TrackingRouter from './routers/TrackingRouter';
+import TestMiddleware from './test/TestMiddleware.js';
 
 class API extends AppDevAPI {
     getPath(): string {
@@ -17,7 +18,9 @@ class API extends AppDevAPI {
     }
 
     middleware(): Array<any> {
-        return [bodyParser.json()];
+        return [
+            bodyParser.json(),
+        ].concat(TestMiddleware);
     }
 
     routers(): Array<Router> {

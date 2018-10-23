@@ -3,6 +3,7 @@ import alarm from 'alarm';
 import xml2js from 'xml2js';
 import JsonFind from 'json-find';
 import jsonQuery from 'json-query';
+import fs from 'fs';
 import RequestUtils from './RequestUtils';
 import ErrorUtils from './LogUtils';
 import TokenUtils from './TokenUtils';
@@ -91,7 +92,7 @@ import TokenUtils from './TokenUtils';
 
 let realtimeFeed = RequestUtils.fetchRetry(fetchRealtimeFeed);
 
-async function xmlToJSON(xml: String) {
+function xmlToJSON(xml: String) {
     const normalize = name => name.toLowerCase();
     return new Promise((resolve, reject) => {
         xml2js.parseString(xml,
@@ -99,7 +100,7 @@ async function xmlToJSON(xml: String) {
                 tagNameProcessors: [normalize],
                 attrNameProcessors: [normalize],
                 trim: true,
-            }, async (err, result) => {
+            }, (err, result) => {
                 if (err) {
                     throw ErrorUtils.logErr(err, null, 'Parse XML string error');
                 }
@@ -110,6 +111,7 @@ async function xmlToJSON(xml: String) {
                     || !result.feedmessage.entities.length > 0
                     || !result.feedmessage.entities[0].feedentity) {
                     // ErrorUtils.logErr('null or undefined feed result', result, 'Feed result invalid');
+                    resolve(null);
                     return null;
                 }
 
@@ -122,101 +124,98 @@ async function xmlToJSON(xml: String) {
                 };
 
                 // tripRealtimeFeed =
-                try {
-                    await Promise.all(result.feedmessage.entities[0].feedentity.map(async (entity) => {
-                        const search = JsonFind(entity);
-                        const trip = search.findValues(
-                            'id',
-                            'tripid',
-                            'delay',
-                            'vehicle',
-                            'routeid',
-                            'stoptimeupdate',
-                        );
+                result.feedmessage.entities[0].feedentity.map((entity) => {
+                    const search = JsonFind(entity);
+                    const trip = search.findValues(
+                        'id',
+                        'tripid',
+                        'delay',
+                        'vehicle',
+                        'routeid',
+                        'stoptimeupdate',
+                    );
 
-                        const realtimeTrip = {};
+                    const realtimeTrip = {};
 
-                        const tripId = jsonQuery('id:unpack:isTripId', {
-                            data: trip,
-                            allowRegexp: true,
-                            locals: helpers,
-                        }).value
-                            || jsonQuery('tripId:unpack:isTripId', {
-                                data: trip,
-                                allowRegexp: true,
-                                locals: helpers,
-                            }).value;
-
-                        realtimeTrip.delay = jsonQuery('delay:unpack', {
+                    const tripId = jsonQuery('id:unpack:isTripId', {
+                        data: trip,
+                        allowRegexp: true,
+                        locals: helpers,
+                    }).value
+                        || jsonQuery('tripId:unpack:isTripId', {
                             data: trip,
                             allowRegexp: true,
                             locals: helpers,
                         }).value;
 
-                        realtimeTrip.routeId = jsonQuery('routeid:unpack', {
-                            data: trip,
+                    realtimeTrip.delay = jsonQuery('delay:unpack', {
+                        data: trip,
+                        allowRegexp: true,
+                        locals: helpers,
+                    }).value;
+
+                    realtimeTrip.routeId = jsonQuery('routeid:unpack', {
+                        data: trip,
+                        allowRegexp: true,
+                        locals: helpers,
+                    }).value;
+
+                    realtimeTrip.vehicleId = jsonQuery('vehicle:unpack.id:unpack', {
+                        data: trip,
+                        allowRegexp: true,
+                        locals: helpers,
+                    }).value;
+
+                    const stopUpdates = jsonQuery('stoptimeupdate', {
+                        data: trip,
+                        allowRegexp: true,
+                        locals: helpers,
+                    }).value;
+
+                    const stopDelays = {};
+
+                    // if all delays are the same, set delay to that delay instead of per-stop
+                    let delayAll = null;
+                    (stopUpdates || []).map((stopUpdate) => {
+                        const stopId = jsonQuery('stopid:unpack', {
+                            data: stopUpdate,
                             allowRegexp: true,
                             locals: helpers,
                         }).value;
 
-                        realtimeTrip.vehicleId = jsonQuery('vehicle:unpack.id:unpack', {
-                            data: trip,
+                        const delay = jsonQuery('departure:unpack.delay:unpack', {
+                            data: stopUpdate,
                             allowRegexp: true,
                             locals: helpers,
                         }).value;
 
-                        const stopUpdates = jsonQuery('stoptimeupdate', {
-                            data: trip,
-                            allowRegexp: true,
-                            locals: helpers,
-                        }).value;
-
-                        const stopDelays = {};
-
-                        // if all delays are the same, set delay to that delay instead of per-stop
-                        let delayAll = null;
-                        (stopUpdates || []).map((stopUpdate) => {
-                            const stopId = jsonQuery('stopid:unpack', {
-                                data: stopUpdate,
-                                allowRegexp: true,
-                                locals: helpers,
-                            }).value;
-
-                            const delay = jsonQuery('departure:unpack.delay:unpack', {
-                                data: stopUpdate,
-                                allowRegexp: true,
-                                locals: helpers,
-                            }).value;
-
-                            if (stopDelays && !stopDelays[stopId]) {
-                                if (delayAll === null) {
-                                    delayAll = delay;
-                                } else if (delayAll !== delay) {
-                                    delayAll = false;
-                                }
-                                stopDelays[stopId] = delay;
+                        if (stopDelays && !stopDelays[stopId]) {
+                            if (delayAll === null) {
+                                delayAll = delay;
+                            } else if (delayAll !== delay) {
+                                delayAll = false;
                             }
-                            return true;
-                        });
-                        if (!Number.isNaN(parseInt(delayAll))) {
-                            realtimeTrip.delayAll = delayAll;
-                        } else {
-                            realtimeTrip.stopUpdates = stopDelays;
+                            stopDelays[stopId] = delay;
                         }
-                        if (realtimeNew && !realtimeNew[tripId]) {
-                            realtimeNew[tripId] = realtimeTrip;
-                        }
-
                         return true;
-                    }));
-                } catch (e) {
-                    throw ErrorUtils.logErr(e,
-                        result.feedmessage.entities[0].feedentity && 'JSON found',
-                        'Could not parse trip feed JSON');
-                }
+                    });
+                    if (!Number.isNaN(parseInt(delayAll))) {
+                        realtimeTrip.delayAll = delayAll;
+                    } else {
+                        realtimeTrip.stopUpdates = stopDelays;
+                    }
+                    if (realtimeNew && !realtimeNew[tripId]) {
+                        realtimeNew[tripId] = realtimeTrip;
+                    }
+
+                    return true;
+                });
+
                 resolve(realtimeNew);
                 return realtimeNew;
             });
+    }).catch((err) => {
+        throw ErrorUtils.logErr(err, xml, 'Could not parse trip feed JSON');
     });
 }
 
@@ -356,15 +355,10 @@ function getTrackingInformation(stopID: String, tripID: String, rtf: Object) {
     let delay = parseInt(info.stopUpdates && info.stopUpdates[stopID]);
     if (Number.isNaN(delay)) delay = parseInt(info.delayAll);
 
-    const res = {
+    return {
         vehicleId: parseInt(info.vehicleId),
         delay,
     };
-
-    // console.log(stopID, tripID, rtf[tripID], res);
-    // console.log(res);
-
-    return res;
 }
 
 async function fetchRealtimeFeed() {
@@ -376,19 +370,24 @@ async function fetchRealtimeFeed() {
                 'Cache-Control': 'no-cache',
             },
     };
-
     const xml = await RequestUtils.createRequest(options, 'Trip realtime request failed');
-
     if (xml) {
-        return xmlToJSON(xml);
+        const obj = await xmlToJSON(xml);
+
+        if (obj === null || !obj) {
+            // no current delay/tracking data
+            if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+                const xmlPlaceholder = fs.readFileSync('src/test/test_data/GTFS-Realtime-test.xml');
+                // eslint-disable-next-line no-console
+                console.warn('WARNING: USING TEST REALTIME DATA, NO RESPONSE DATA RECIEVED');
+                return xmlToJSON(xmlPlaceholder);
+            }
+            return {};
+        }
+        return obj;
     }
 
     return null;
-}
-
-async function fetchAndSetRealtimeFeed() {
-    await realtimeFeed; // if initializing, don't try again
-    realtimeFeed = (await RequestUtils.fetchRetry(fetchRealtimeFeed));
 }
 
 /**
@@ -396,7 +395,9 @@ async function fetchAndSetRealtimeFeed() {
  */
 function start() {
     alarm.recurring(3000, async () => {
-        fetchAndSetRealtimeFeed();
+        // fetch and set realtime feed
+        await realtimeFeed; // if initializing, don't try again
+        realtimeFeed = (await RequestUtils.fetchRetry(fetchRealtimeFeed));
     });
 }
 

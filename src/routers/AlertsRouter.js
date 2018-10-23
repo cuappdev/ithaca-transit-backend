@@ -11,6 +11,7 @@ class AlertsRouter extends AppDevRouter<Array<Object>> {
         return '/alerts/';
     }
 
+    // eslint-disable-next-line require-await
     async content(req): Promise<any> {
         return AlertsUtils.alerts;
     }

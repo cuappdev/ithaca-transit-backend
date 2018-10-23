@@ -11,6 +11,7 @@ class TrackingRouter extends AppDevRouter<Object> {
         return '/tracking/';
     }
 
+    // eslint-disable-next-line require-await
     async content(req): Promise<any> {
         if (!req.body || !req.body.data || !req.body.data.length || req.body.data.length === 0) {
             return {

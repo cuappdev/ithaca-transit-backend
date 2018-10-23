@@ -1,6 +1,16 @@
 /* eslint-disable no-console */
 const moment = require('moment');
 const util = require('util');
+const jsondiffpatch = require('jsondiffpatch');
+const RequestUtils = require('../utils/RequestUtils.js').default;
+
+// jsondiffpatch config
+const JsonDiff = jsondiffpatch.create({
+    objectHash(obj, index) {
+        // try to find an id property, otherwise just use the index in the array
+        return obj.name || obj;
+    },
+});
 
 // stringify and/or format a value
 function s(v) {
@@ -10,6 +20,17 @@ function s(v) {
     if (typeof v === 'undefined') return 'undefined';
     if (Number.isNaN(v)) return 'NaN';
     return `${typeof v}`;
+}
+
+function printDeep(obj) {
+    console.log(util.inspect(obj, {
+        showHidden: false,
+        depth: null,
+        colors: true,
+        maxArrayLength: 10,
+        breakLength: Infinity,
+        compact: false,
+    }));
 }
 
 function isNum(num) {
@@ -41,6 +62,77 @@ function isDateValid(date) {
  */
 function fm(msg) {
     return { pass: false, message: () => msg };
+}
+
+/**
+ * Remove all specified keys from an object, no matter how deep they are.
+ * The removal is done in place, so run it on a copy if you don't want to modify the original object.
+ * This function has no limit so circular objects will probably crash the browser
+ *
+ * @param obj The object from where you want to remove the keys
+ * @param keys An array of property names (strings) to remove
+ */
+function removeKeys(obj, keys) {
+    let index;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const prop in obj) {
+        // important check that this is objects own property
+        // not from prototype prop inherited
+        if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+            switch (typeof (obj[prop])) {
+                case 'string':
+                    index = keys.indexOf(prop);
+                    if (index > -1) {
+                        delete obj[prop];
+                    }
+                    break;
+                case 'object':
+                    index = keys.indexOf(prop);
+                    if (index > -1) {
+                        delete obj[prop];
+                    } else {
+                        removeKeys(obj[prop], keys);
+                    }
+                    break;
+                default:
+            }
+        }
+    }
+}
+
+async function getReleaseRes(query) {
+    const options = {
+        method: 'GET',
+        url: `${process.env.RELEASE_URL}${query}`,
+        qsStringifyOptions: { arrayFormat: 'repeat' },
+    };
+    return JSON.parse(await RequestUtils.createRequest(options));
+}
+
+async function printReleaseDiff(res, query) {
+    try {
+        const options = {
+            method: 'GET',
+            url: `${process.env.RELEASE_URL}${query}`,
+            qsStringifyOptions: { arrayFormat: 'repeat' },
+        };
+        const rel = await RequestUtils.createRequest(options);
+        if (JSON.stringify(res) !== rel) {
+            let relJSON;
+            try {
+                relJSON = JSON.parse(rel);
+                const resCpy = Object.assign({ }, res);
+                // removeKeys(relJSON, ['path', 'stops']);
+                // removeKeys(resCpy, ['path', 'stops']);
+                const delta = JsonDiff.diff(relJSON, resCpy);
+                jsondiffpatch.console.log(delta);
+            } catch (e) {
+                // console.log(res, rel);
+            }
+        }
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 const expectTests = {
@@ -176,6 +268,10 @@ const expectTests = {
                 return fm(`Route numberOfTransfers invalid: ${s(route)}`);
             }
 
+            if (!route.directions || route.directions.length === 0) {
+                return fm(`No route directions: ${s(route)}`);
+            }
+
             for (let j = 0; j < route.directions.length; j++) {
                 const dir = route.directions[j];
                 if (!dir) {
@@ -290,4 +386,7 @@ expect.extend(expectTests);
 
 export default {
     expectTests,
+    printDeep,
+    getReleaseRes,
+    printReleaseDiff,
 };

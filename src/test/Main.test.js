@@ -1,7 +1,6 @@
 // must use require with supertest...
 const request = require('supertest');
 const http = require('http');
-const jsondiffpatch = require('jsondiffpatch');
 const morganBody = require('morgan-body');
 const url = require('url');
 
@@ -18,18 +17,12 @@ const {
 } = require('./TestGlobals').default;
 const LogUtils = require('../utils/LogUtils').default;
 // eslint-disable-next-line no-unused-vars
-const { expectTests } = require('./TestUtils').default;
-const RequestUtils = require('../utils/RequestUtils.js').default;
+const {
+    expectTests,
+    printReleaseDiff,
+} = require('./TestUtils').default;
 
 // ======================================== CONFIG/DATA ========================================
-
-// jsondiffpatch config
-const JsonDiff = jsondiffpatch.create({
-    objectHash(obj, index) {
-        // try to find an id property, otherwise just use the index in the array
-        return obj.name || obj;
-    },
-});
 
 // collect stats for tests
 // should be used to determine correctness if responses pass all tests
@@ -62,6 +55,8 @@ const endpointValidityTestMap = {
     [route](res) { return expectTests.routeToBeValid(res); },
 };
 
+const seenReq = new Set(); // only print results of new queries
+
 // ======================================== BEFORE/AFTER ========================================
 
 beforeAll(async () => {
@@ -73,16 +68,20 @@ beforeAll(async () => {
                     const parsedUrl = url.parse(req.url);
                     const pathName = `${parsedUrl.pathname}`;
                     const query = `${parsedUrl.path}`;
-
-                    if (query) {
+                    if (query && !seenReq.has(query)) {
+                        seenReq.add(query);
                         // eslint-disable-next-line no-underscore-dangle
                         res.body = JSON.parse(res.__morgan_body_response);
-                        const test = endpointValidityTestMap[pathName](res);
-                        if (test.pass) {
-                            console.log('\x1b[36m%s\x1b[0m', `Pass ${query}`);
-                        } else {
-                            console.error(`FAIL: ${query}`, test.message());
-                        }
+                        const out = async () => {
+                            await printReleaseDiff(res.body, query);
+                            const test = endpointValidityTestMap[pathName](res);
+                            if (test.pass) {
+                                // console.log('\x1b[36m%s\x1b[0m', `Passed Test: ${query}`);
+                            } else {
+                                console.error(`FAIL: ${query}`, test.message());
+                            }
+                        };
+                        out();
                         return true;
                     }
                     return false;
@@ -98,8 +97,6 @@ beforeAll(async () => {
 }, 1200000);
 
 afterAll(() => {
-    running = false;
-
     if (delayDataCounts.found === 0) {
         // eslint-disable-next-line
         console.warn('WARNING: api/v1/delay/ may not be working as intended:\n'
@@ -135,6 +132,7 @@ afterAll(() => {
             + `${routeDataCounts.warning} warning(s) recorded in ${routeDataCounts.total} total route validation tests.\n`
             + 'See logs/out folder for most recent warning output');
     }
+    running = false;
 });
 
 // ======================================== TESTS ========================================
@@ -160,7 +158,7 @@ async function testDelay(delayReq) {
     return true;
 }
 
-async function testDelayArr(routeResponseBusDataSet) {
+function testDelayArr(routeResponseBusDataSet) {
     if (!routeResponseBusDataSet || routeResponseBusDataSet.size === 0) return null;
     return Promise.all(Array.from(routeResponseBusDataSet).map(async (routeResponseBusData) => {
         const { stopID, tripIdentifiers } = routeResponseBusData;
@@ -183,18 +181,6 @@ async function testTracking(routeResponseBusDataArr) {
     }
 }
 
-async function printReleaseDiff(res, routeParams) {
-    const options = {
-        method: 'GET',
-        url: `${process.env.RELEASE_URL}${route}${routeParams.query}`,
-        qsStringifyOptions: { arrayFormat: 'repeat' },
-    };
-    const rel = JSON.parse(await RequestUtils.createRequest(options));
-    console.warn(`${routeParams.name}:`);
-    const delta = JsonDiff.diff(rel.data[0], res.data[0]);
-    jsondiffpatch.console.log(delta);
-}
-
 /* eslint-disable no-param-reassign */
 async function testRoute(res, routeParams, busInfo: Set) {
     routeDataCounts.total += 1;
@@ -211,7 +197,7 @@ async function testRoute(res, routeParams, busInfo: Set) {
     if (!routeParams.warning) {
         routeDataCounts.warning += 1;
         console.warn(`Warning ${routeDataCounts.warning}: Logging ${routeParams.name} to file`);
-        printReleaseDiff(res.body, routeParams);
+        // printReleaseDiff(res.body, `${route}${routeParams.query}`);
         LogUtils.logToFile('out/routes.test.warning.output.json',
             ((res && res.status < 300 && res.text) ? JSON.parse(res.text) : res));
     }
@@ -247,7 +233,7 @@ describe('delay endpoint', () => {
 });
 
 describe('places endpoint', () => {
-    const getPlace = async queryStr => request(server)
+    const getPlace = queryStr => request(server)
         .post(places)
         .send({ query: queryStr })
         .set('Content-Type', 'application/json');

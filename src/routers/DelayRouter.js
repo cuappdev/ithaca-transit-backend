@@ -18,7 +18,7 @@ class DelayRouter extends AppDevRouter<Object> {
             tripID,
             await RealtimeFeedUtils.realtimeFeed,
         );
-        return (res && res.delay);
+        return res;
     }
 }
 

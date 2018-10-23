@@ -38,6 +38,56 @@ function getDepartureTimeDateNow(departureTimeQuery, arriveBy, delayBuffer = 5) 
 
 /**
  * Return { busRoute, walkingRoute } from graphhopper given the parameters
+ * walkingRoute contains an array with length 1 containing the shortest possible walking path
+ * busRoute contains an array of length 5 with possible paths
+ * Example return object:
+ {
+ busRoute:
+    { hints:
+       { 'visited_nodes.average': '2539', 'visited_nodes.sum': '2539' },
+      paths:
+       [ { instructions: [Array],
+           descend: 0,
+           fare: '¤ 1.50',
+           ascend: 0,
+           distance: 2390.366,
+           bbox: [Array],
+           weight: 0,
+           points_encoded: false,
+           points: [Object],
+           transfers: 0,
+           legs: [Array],
+           details: {},
+           time: 1425000,
+           snapped_waypoints: [Object] },
+           ...
+           ],
+      info:
+       { took: 329,
+         copyrights: [ 'GraphHopper', 'OpenStreetMap contributors' ] } },
+
+ walkingRoute:
+    { hints:
+       { 'visited_nodes.average': '3684.0',
+         'visited_nodes.sum': '3684' },
+      paths:
+       [ { instructions: [Array],
+           descend: 0,
+           ascend: 0,
+           distance: 4862.396,
+           bbox: [Array],
+           weight: 2956.908416,
+           points_encoded: false,
+           points: [Object],
+           transfers: 0,
+           legs: [],
+           details: {},
+           time: 3500866,
+           snapped_waypoints: [Object] } ],
+      info:
+       { took: 6,
+         copyrights: [ 'GraphHopper', 'OpenStreetMap contributors' ] } },
+ }
  * @param end
  * @param start
  * @param departureTimeDateNow
@@ -123,10 +173,10 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
     }
 
     // parse the graphhopper bus route
-    busRoute = await ParseRouteUtils.parseRoute(busRoute || {}, destinationName);
+    busRoute = await ParseRouteUtils.parseRoute(busRoute, destinationName);
 
     // combine and filter to create the final route
-    ParseRouteUtils.filterRoute(
+    busRoute = await ParseRouteUtils.createFinalRoute(
         busRoute,
         walkingRoute,
         start,

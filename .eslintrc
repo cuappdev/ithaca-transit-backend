@@ -65,6 +65,8 @@
 
         "import/extensions": "never",
 
-        "function-paren-newline": ["error", "consistent"]
+        "function-paren-newline": ["error", "consistent"],
+
+        "require-await": "error"
     }
 }

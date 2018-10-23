@@ -12,6 +12,7 @@ class RouteRouter extends AppDevRouter<Array<Object>> {
         return '/route/';
     }
 
+    // eslint-disable-next-line require-await
     async content(req: Request): Promise<Array<Object>> {
         const {
             destinationName,

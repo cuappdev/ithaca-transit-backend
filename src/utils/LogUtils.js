@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 import { RegisterSession } from 'appdev';
 import fs from 'fs';
+import util from 'util';
 
 const LOG_PATH = 'logs';
 
@@ -181,10 +183,22 @@ function logToFile(fileName: string, data: ?Object) {
     );
 }
 
+function printDeep(obj) {
+    console.log(util.inspect(obj, {
+        showHidden: false,
+        depth: null,
+        colors: true,
+        maxArrayLength: 10,
+        breakLength: Infinity,
+        compact: false,
+    }));
+}
+
 export default {
     classifyError,
     generateErrorResponse,
     writeToRegister,
     logErr,
     logToFile,
+    printDeep,
 };

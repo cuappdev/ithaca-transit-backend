@@ -40,10 +40,10 @@ async function fetchAllStops() {
 }
 
 async function isStop(point: Object, name: string, distance: number) {
-    let stops = await allStops;
-    stops = stops.filter(stop => stop.lat === point.lat && stop.long === point.long);
-    if (stops.length > 0) {
-        return stops[0].name.toLowerCase() === name.toLowerCase() && distance < 15.0;
+    const stops = await allStops;
+    const found = stops.find(stop => stop.lat === point.lat && stop.long === point.long);
+    if (found) {
+        return found.name.toLowerCase() === name.toLowerCase() && distance < 15.0;
     }
     return false;
 }

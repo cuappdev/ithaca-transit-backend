@@ -29,7 +29,7 @@ checkGTFSDatesValid();
  * @param useCache
  * @returns {Promise<any>}
  */
-async function getTCATData(useCache: boolean = true) {
+function getTCATData(useCache: boolean = true) {
     return new Promise((resolve, reject) => {
         if (useCache && fs.existsSync(`${extractDir}`)) {
             resolve(extractDir);

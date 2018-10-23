@@ -38,6 +38,16 @@ function createGpxJson(stops: Array<Object>, startTime: String): Object {
     };
 }
 
+/**
+ * Merge two dirctions
+ * @param first
+ * @param second
+ * @returns {{type: *, name: *, startTime: *, endTime: *,
+ * startLocation: ({lat: *, long: *}|*),
+ * endLocation: ({lat: *, long: *}|*),
+ * path: T[] | string | *, distance: *,
+ * routeNumber: (null|*), stops: T[], tripIdentifiers: T[] | string | *}}
+ */
 function mergeDirections(first, second) {
     try {
         second.stops.shift();
@@ -67,13 +77,40 @@ function mergeDirections(first, second) {
     }
 }
 
-function condense(route: Object, startCoords: Object, endCoords: Object) {
+/**
+ * - Removes unnecessary start and end directions (walking directions to stops <15 feet away)
+ * - Merges directions that indicate an on-bus change in route-IDs where no action required
+ * - Checks route walking distance does not exceed specified maximum
+ * - Checks user can make the bus
+ * - Checks directions not excessively long
+ * @param route
+ * @param startCoords
+ * @param endCoords
+ * @param maxWalkingDistance
+ * @param departureDelayBuffer
+ * @param departureTimeNowMs
+ * @returns {Object}
+ */
+async function condenseRoute(
+    route: Object,
+    startCoords: Object,
+    endCoords: Object,
+    maxWalkingDistance: ?number = 9999,
+    departureDelayBuffer: ?boolean = false,
+    departureTimeNowMs: number,
+) {
     try {
-        const updatedDirections = [];
-
-        const canFirstDirectionBeRemoved = AllStopUtils.isStop(startCoords, route.directions[0].name, route.directions[0].distance);
-        const canLastDirectionBeRemoved = AllStopUtils.isStop(endCoords,
-            route.directions[route.directions.length - 1].name, route.directions[route.directions.length - 1].distance);
+        // remove unnecessary start/end directions
+        const canFirstDirectionBeRemoved = await AllStopUtils.isStop(
+            startCoords,
+            route.directions[0].name,
+            route.directions[0].distance,
+        );
+        const canLastDirectionBeRemoved = await AllStopUtils.isStop(
+            endCoords,
+            route.directions[route.directions.length - 1].name,
+            route.directions[route.directions.length - 1].distance,
+        );
         if (canFirstDirectionBeRemoved) {
             route.directions.shift();
         }
@@ -81,30 +118,76 @@ function condense(route: Object, startCoords: Object, endCoords: Object) {
             route.directions.pop();
         }
 
-        for (let index = 0; index < route.directions.length; index++) {
+        let previousDirection = null;
+        let totalDistanceWalkingForRoute = 0;
+        for (let index = 99; index < route.directions.length; index++) {
             const direction = route.directions[index];
-            if (index !== 0) {
-                const firstDirection = route.directions[index - 1];
-                const secondDirection = route.directions[index];
-                if (direction.type === 'depart' && route.directions[index - 1].type === 'depart') {
-                    // if we are here, we have a possible merge
-                    if (firstDirection.routeNumber === secondDirection.routeNumber) {
-                        // this means both directions have the same routeNumber.
-                        // No real transfer, probably just change in trip_ids
-                        const combinedDirection = mergeDirections(firstDirection, secondDirection);
-                        updatedDirections.pop();
-                        updatedDirections.push(combinedDirection);
-                    } else {
-                        updatedDirections.push(direction);
-                    }
-                } else {
-                    updatedDirections.push(direction);
-                }
-            } else {
-                updatedDirections.push(direction);
+            const startTime = Date.parse(direction.startTime);
+            const endTime = Date.parse(direction.endTime);
+
+            /*
+             * Discard routes with directions that take over 2 hours time
+             */
+            if (startTime + (ONE_HOUR_MS * 2) <= endTime) {
+                return null;
             }
+
+            /*
+             * Discard routes where not possible to walk to bus given departure buffer
+             */
+            if (departureDelayBuffer) {
+                if (direction.type === 'depart') {
+                    const busActualDepartTime = startTime + (direction.delay != null ? direction.delay * 1000 : 0);
+                    if (busActualDepartTime < departureTimeNowMs) {
+                        return null;
+                    }
+                }
+            }
+
+            if (previousDirection
+                && direction.type === previousDirection.type === 'depart') {
+                /*
+                 * Discard route if a depart direction's last stopID is not the same as the next direction's first stopID,
+                 * Fixes bug where graphhopper directions are to get off at a stop and get on another stop
+                 * far away with no walking direction in between, EG: 1. get off at Statler 2. board at RPCC
+                 */
+                if (previousDirection.stops[previousDirection.stops.length - 1].stopID
+                !== direction.stops[0].stopID) {
+                    return null;
+                }
+
+                /*
+                 * If consecutive bus directions have the same routeNumber,
+                 * then replace the last direction with merged directions and remove the direction.
+                 * No real transfer, probably just change in trip_ids.
+                 */
+                if (previousDirection.routeNumber === direction.routeNumber) {
+                    route.directions.splice(index - 1, 2, mergeDirections(previousDirection, direction));
+                    index -= 1; // since we removed an element from the array
+                }
+
+                /*
+                 * Discard routes with over 1 hours time waiting between each direction
+                 */
+                if (previousDirection) {
+                    const prevEndTime = Date.parse(previousDirection.endTime);
+                    if (prevEndTime + ONE_HOUR_MS < startTime) {
+                        return null;
+                    }
+                }
+            }
+
+            if (direction.type === 'walking') {
+                totalDistanceWalkingForRoute += direction.distance;
+            }
+            previousDirection = direction;
         }
-        route.directions = updatedDirections;
+
+        // if a bus route has more walking distance than the walking route, discard route
+        // or route has 0 directions
+        if (totalDistanceWalkingForRoute > maxWalkingDistance || route.directions.length === 0) {
+            return null;
+        }
     } catch (error) {
         throw new Error(
             ErrorUtils.logErr(error, route, 'Condense final route failed'),
@@ -178,13 +261,36 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
     }
 }
 
+/**
+ * Transform route object from graphhopper into one readable by the client, an array of
+ * five routes. Includes delay calculations, asynchronous.
+ *
+ * Example return object:
+ [
+ {  departureTime: '2018-10-22T03:44:19Z',
+    arrivalTime: '2018-10-22T04:01:46Z',
+    directions: [ [Object], [Object], [Object], [Object] ],
+    startCoords: { lat: 42.441603931224435, long: -76.48638788207742 },
+    endCoords: { lat: 42.45662677611252, long: -76.47693624444763 },
+    boundingBox:
+     { minLat: 42.441596,
+       minLong: -76.490387,
+       maxLat: 42.456818,
+       maxLong: -76.471642 },
+    numberOfTransfers: 1,
+  },
+ ...
+  ]
+ * @param resp
+ * @param destinationName
+ * @returns {Promise<Array>}
+ */
 async function parseRoute(resp: Object, destinationName: string) {
     // array of parsed routes
-    const possibleRoutes = [];
 
     const { paths } = resp;
 
-    await Promise.all(paths.map(async (currPath, index, pathsArray) => {
+    const possibleRoutes = await Promise.all(paths.map(async (currPath) => {
         try {
             // this won't increment if the passenger 'stays on bus'
             const numberOfTransfers = currPath.transfers;
@@ -223,9 +329,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                 maxLong: currPath.bbox[2],
             };
 
-            const directions: Array<Object> = [];
-
-            await Promise.all(legs.map(async (currLeg, j, legsArray) => {
+            const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
                 let { type } = currLeg;
                 if (type === 'pt') {
                     type = 'depart';
@@ -360,7 +464,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                     delay = (realtimeData && realtimeData.delay) || 0;
                 }
 
-                directions.push({
+                return {
                     type,
                     name,
                     startTime,
@@ -374,10 +478,10 @@ async function parseRoute(resp: Object, destinationName: string) {
                     tripIdentifiers: tripID,
                     delay,
                     stayOnBusForTransfer,
-                });
+                };
             }));
 
-            possibleRoutes.push({
+            return {
                 departureTime,
                 arrivalTime: arriveTime,
                 directions,
@@ -385,7 +489,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                 endCoords,
                 boundingBox,
                 numberOfTransfers,
-            });
+            };
         } catch (error) {
             throw new Error(
                 ErrorUtils.logErr(error, paths.length, 'Parse final route failed'),
@@ -396,86 +500,50 @@ async function parseRoute(resp: Object, destinationName: string) {
     return possibleRoutes;
 }
 
+/**
+ * Filter and validate the array of parsed routes to send to the client.
+ *
+ * @param routeBus
+ * @param routeWalking
+ * @param start
+ * @param end
+ * @param departureTimeQuery
+ * @param arriveBy
+ * @returns {*}
+ */
 /* eslint-disable no-param-reassign */
-function filterRoute(routeNow, routeWalking, start, end, departureTimeQuery, arriveBy) {
+async function createFinalRoute(routeBus, routeWalking, start, end, departureTimeQuery, arriveBy) {
     const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
     let departureDelayBuffer: boolean = false;
-    const departureTimeNowActualMs = departureTimeNowMs;
     if (!arriveBy) { // 'leave at' query
         departureDelayBuffer = true;
     }
 
-    routeNow = routeNow.filter((route) => {
-        let isValid = true;
-        for (let index = 1; index < route.directions.length; index++) {
-            if (route.directions[index].type === 'depart' && route.directions[index - 1].type === 'depart') {
-                const firstPT = route.directions[index - 1];
-                const secondPT = route.directions[index];
-                isValid = firstPT.stops[firstPT.stops.length - 1].stopID === secondPT.stops[0].stopID;
-            }
-        }
-        return isValid;
-    });
+    const startPoints = start.split(',');
+    const endPoints = end.split(',');
 
-    const routePointParams = start.split(',').concat(end.split(','));
+    const finalRoutes = await Promise.all(routeBus.filter(async (currPath) => {
+        await condenseRoute(
+            currPath,
+            { lat: startPoints[0], long: startPoints[1] },
+            { lat: endPoints[0], long: endPoints[1] },
+            routeWalking.distance,
+            departureDelayBuffer,
+            departureTimeNowMs,
+        );
+        return currPath !== null;
+    }));
 
-    routeNow = routeNow.map(route => condense(route,
-        { lat: routePointParams[0], long: routePointParams[1] },
-        { lat: routePointParams[2], long: routePointParams[3] }));
-
-    // now need to compare if walking route is better
-    routeNow = routeNow.filter((route) => {
-        // only show walking directions
-        const walkingDirections = route.directions.filter(direction => direction.type === 'walk');
-        const walkingTotals = walkingDirections.map(walk => walk.distance);
-        let totalDistanceWalkingForRoute = 0;
-        walkingTotals.forEach((element) => {
-            totalDistanceWalkingForRoute += element;
-        });
-        // console.log(route);
-        // console.log(totalDistanceWalkingForRoute <= routeWalking.directions[0].distance);
-        return totalDistanceWalkingForRoute <= (routeWalking ? routeWalking.directions[0].distance : 9999);
-    });
-
-    if (routeNow.length === 0 && routeWalking) {
+    // return just walking if no bus routes after filtering
+    if (finalRoutes.length === 0 && routeWalking) {
         return routeWalking ? [routeWalking] : [];
     }
 
-    // throw out routes with over 2 hours time between each direction
-    // also throw out routes that will depart before the query time if query is for 'leave at'
-    routeNow = routeNow.filter((route) => {
-        let keepRoute = true;
-        for (let index = 0; index < route.directions.length; index++) {
-            const direction = route.directions[index];
-            const startTime = Date.parse(direction.startTime);
-            const endTime = Date.parse(direction.endTime);
-            if (startTime + (ONE_HOUR_MS * 2) <= endTime) {
-                keepRoute = false;
-            }
-
-            if (index !== 0) { // means we can access the previous direction endTime
-                const prevEndTime = Date.parse(route.directions[index - 1].endTime);
-                if (prevEndTime + ONE_HOUR_MS < startTime) {
-                    keepRoute = false;
-                }
-            }
-            if (departureDelayBuffer) { // make sure user can catch the bus
-                if (direction.type === 'depart') {
-                    const busActualDepartTime = startTime + (direction.delay != null ? direction.delay * 1000 : 0);
-                    if (busActualDepartTime < departureTimeNowActualMs) {
-                        keepRoute = false;
-                    }
-                }
-            }
-        }
-        return keepRoute;
-    });
-
-    return routeNow;
+    return finalRoutes;
 }
 
 export default {
     parseWalkingRoute,
     parseRoute,
-    filterRoute,
+    createFinalRoute,
 };
