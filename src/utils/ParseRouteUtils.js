@@ -461,7 +461,7 @@ async function parseRoute(resp: Object, destinationName: string) {
                         (await RealtimeFeedUtils.realtimeFeed),
                     );
 
-                    delay = (realtimeData && realtimeData.delay) || 0;
+                    delay = (realtimeData && realtimeData.delay);
                 }
 
                 return {
