@@ -42,6 +42,7 @@ function getTCATData(useCache: boolean = true) {
         if (useCache && fs.existsSync(zipFile)) {
             unzipper.extract({ path: extractDir });
         } else {
+            console.log('Downloading TCAT GTFS data...');
             request
                 .get(zipUrl)
                 .pipe(fs.createWriteStream(zipFile))
@@ -49,6 +50,7 @@ function getTCATData(useCache: boolean = true) {
                     throw err;
                 })
                 .on('finish', () => {
+                    console.log('Extracting TCAT GTFS data...');
                     unzipper.extract({ path: extractDir });
                 });
         }
