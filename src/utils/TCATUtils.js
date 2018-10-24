@@ -19,6 +19,7 @@ const dataInfo = [ // [ (data obj name in GTFSdata), (filename of data to be par
     ['routes', 'routes.txt'],
 ];
 
+const TCATData = getTCATData();
 const GTFSData = getGTFSData(dataInfo);
 const validGTFSBufferDays = 7 * 4; // error this many days before GTFS data expires
 checkGTFSDatesValid();
@@ -31,9 +32,11 @@ checkGTFSDatesValid();
  * @returns {Promise<any>}
  */
 function getTCATData(useCache: boolean = true) {
+    // eslint-disable-next-line consistent-return
     return new Promise((resolve, reject) => {
-        if (useCache && fs.existsSync(`${extractDir}`)) {
+        if (useCache && fs.existsSync(`./${extractDir}`)) {
             resolve(extractDir);
+            return extractDir;
         }
 
         const unzipper = new DecompressZip(zipFile)
@@ -41,6 +44,7 @@ function getTCATData(useCache: boolean = true) {
             .on('extract', (log) => {
                 console.log(`Finshed extracting TCAT GTFS data to ${extractDir}`);
                 resolve(extractDir);
+                return extractDir;
             });
 
         if (useCache && fs.existsSync(zipFile)) {
@@ -73,15 +77,18 @@ function getTCATData(useCache: boolean = true) {
  * @returns {Promise<*>}
  */
 async function getGTFSJson(dataName, fileName, useCache: boolean = true) {
-    const path = (await getTCATData(useCache)) && extractDir;
+    let path = (await TCATData) && extractDir;
 
     if (useCache && GTFSData[dataName] && GTFSData[dataName].length > 0 && path) {
         return GTFSData[dataName];
     }
 
     return new Promise((resolve, reject) => {
-        csv().fromFile(`${path}/${fileName}`).then((jsonObj) => {
-            resolve(jsonObj);
+        TCATData.then((result) => {
+            csv().fromFile(`${path}/${fileName}`).then((jsonObj) => {
+                resolve(jsonObj);
+                return jsonObj;
+            });
         });
     }).then(value => value).catch((error) => {
         ErrorUtils.logErr(error, fileName, `Could not get json from ${fileName}`);
@@ -90,7 +97,7 @@ async function getGTFSJson(dataName, fileName, useCache: boolean = true) {
 }
 
 async function getGTFSData() {
-    await getTCATData();
+    await TCATData;
 
     const GTFSobj = {};
 
