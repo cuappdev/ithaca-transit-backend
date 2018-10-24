@@ -78,7 +78,7 @@ function getTCATData(useCache: boolean = true) {
  * @returns {Promise<*>}
  */
 async function getGTFSJson(dataName, fileName, useCache: boolean = true) {
-    const path = (await TCATData) && extractDir;
+    const path = (await TCATData);
 
     if (useCache && GTFSData[dataName] && GTFSData[dataName].length > 0 && path) {
         return GTFSData[dataName];
