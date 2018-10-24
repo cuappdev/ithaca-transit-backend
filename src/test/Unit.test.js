@@ -13,7 +13,7 @@ describe('Route unit tests', () => {
     beforeAll(async () => {
         await GhopperUtils.ghopperReady;
     }, 1200000);
-    
+
     routeTests.forEach((routeParams) => {
         describe(routeParams.name, () => {
             const { arriveBy, destinationName } = routeParams.params;
