@@ -10,6 +10,7 @@ import ErrorUtils from './LogUtils';
 
 dotenv.config();
 
+const root = '.';
 const zipFile = 'tcat-ny-us.zip';
 const zipUrl = 'https://s3.amazonaws.com/tcat-gtfs/tcat-ny-us.zip';
 const extractDir = 'tcat-ny-us';
@@ -33,38 +34,38 @@ checkGTFSDatesValid();
  */
 function getTCATData(useCache: boolean = true) {
     // eslint-disable-next-line consistent-return
-    return new Promise((resolve, reject) => {
-        if (useCache && fs.existsSync(`./${extractDir}`)) {
-            resolve(extractDir);
-            return extractDir;
+    return new Promise(async (resolve, reject) => {
+        if (useCache && fs.existsSync(`${root}/${extractDir}`)) {
+            resolve(`${root}/${extractDir}`);
+            return `${root}/${extractDir}`;
         }
 
         const unzipper = new DecompressZip(zipFile)
             .on('error', (err) => { throw err; })
             .on('extract', (log) => {
-                console.log(`Finshed extracting TCAT GTFS data to ${extractDir}`);
-                resolve(extractDir);
-                return extractDir;
+                console.log(`Finshed extracting TCAT GTFS data to ${root}/${extractDir}`);
+                resolve(`${root}/${extractDir}`);
+                return `${root}/${extractDir}`;
             });
 
-        if (useCache && fs.existsSync(zipFile)) {
+        if (useCache && fs.existsSync(`${root}/${zipFile}`)) {
             console.log('Extracting TCAT GTFS data...');
-            unzipper.extract({ path: extractDir });
+            await unzipper.extract({ path: `${root}/${extractDir}` });
         } else {
             console.log('Downloading TCAT GTFS data...');
             request
                 .get(zipUrl)
-                .pipe(fs.createWriteStream(zipFile))
+                .pipe(fs.createWriteStream(`${root}/${zipFile}`))
                 .on('error', (err) => {
                     throw err;
                 })
-                .on('finish', () => {
+                .on('finish', async () => {
                     console.log('Extracting TCAT GTFS data...');
-                    unzipper.extract({ path: extractDir });
+                    await unzipper.extract({ path: `${root}/${extractDir}` });
                 });
         }
     }).then(value => value).catch((error) => {
-        ErrorUtils.logErr(error, zipFile, `Could not get ${zipFile} from ${zipUrl}`);
+        ErrorUtils.logErr(error, zipFile, `Could not get ${root}/${zipFile} from ${zipUrl}`);
         return [];
     });
 }
@@ -77,7 +78,7 @@ function getTCATData(useCache: boolean = true) {
  * @returns {Promise<*>}
  */
 async function getGTFSJson(dataName, fileName, useCache: boolean = true) {
-    let path = (await TCATData) && extractDir;
+    const path = (await TCATData) && extractDir;
 
     if (useCache && GTFSData[dataName] && GTFSData[dataName].length > 0 && path) {
         return GTFSData[dataName];
@@ -91,7 +92,7 @@ async function getGTFSJson(dataName, fileName, useCache: boolean = true) {
             });
         });
     }).then(value => value).catch((error) => {
-        ErrorUtils.logErr(error, fileName, `Could not get json from ${fileName}`);
+        ErrorUtils.logErr(error, fileName, `Could not get json from ${path}/${fileName}`);
         return [];
     });
 }
