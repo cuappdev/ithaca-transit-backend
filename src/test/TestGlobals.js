@@ -18,11 +18,11 @@ const afternoonToday = moment().endOf('day').subtract(12, 'hours').unix();
 const eveningToday = moment().endOf('day').subtract(6, 'hours').unix();
 const lateToday = moment().endOf('day').subtract(1, 'hours').unix();
 
-const toQS = routeInfo => `?arriveBy=${routeInfo.arriveBy}
-&end=${routeInfo.end.lat},${routeInfo.end.long}
-&start=${routeInfo.start.lat},${routeInfo.start.long}
-&time=${routeInfo.time}
-&destinationName=${routeInfo.destinationName}`;
+const toQS = routeInfo => `?arriveBy=${routeInfo.arriveBy}`
+                        + `&end=${routeInfo.end.lat},${routeInfo.end.long}`
+                        + `&start=${routeInfo.start.lat},${routeInfo.start.long}`
+                        + `&time=${routeInfo.time}`
+                        + `&destinationName=${routeInfo.destinationName}`;
 
 // carpenter->schwartz
 const route1Params = {

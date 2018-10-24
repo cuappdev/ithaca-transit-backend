@@ -124,8 +124,8 @@ async function printReleaseDiff(res, query) {
                 const resCpy = Object.assign({ }, res);
                 // removeKeys(relJSON, ['path', 'stops']);
                 // removeKeys(resCpy, ['path', 'stops']);
-                const delta = JsonDiff.diff(relJSON, resCpy);
-                jsondiffpatch.console.log(delta);
+                // const delta = JsonDiff.diff(relJSON, resCpy);
+                // jsondiffpatch.console.log(delta);
             } catch (e) {
                 // console.log(res, rel);
             }

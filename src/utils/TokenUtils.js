@@ -3,6 +3,7 @@ import fs from 'fs';
 import request from 'request';
 import dotenv from 'dotenv';
 import ErrorUtils from './LogUtils';
+import RequestUtils from './RequestUtils';
 
 dotenv.load();
 
@@ -88,7 +89,7 @@ async function fetchAuthHeader() {
     checkCredentials();
 
     if (isAccessTokenExpired()) { // else get from API
-        await fetchAccessToken();
+        await RequestUtils.fetchRetry(fetchAccessToken);
     }
 
     if (credentials.access_token) {

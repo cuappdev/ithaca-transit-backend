@@ -7,8 +7,13 @@ const {
     routeTests,
 } = require('./TestGlobals').default;
 const RouteUtils = require('../utils/RouteUtils.js').default;
+const GhopperUtils = require('../utils/GraphhopperUtils.js').default;
 
 describe('Route unit tests', () => {
+    beforeAll(async () => {
+        await GhopperUtils.ghopperReady;
+    }, 1200000);
+    
     routeTests.forEach((routeParams) => {
         describe(routeParams.name, () => {
             const { arriveBy, destinationName } = routeParams.params;
@@ -20,7 +25,7 @@ describe('Route unit tests', () => {
 
             describe('RouteUtils', () => {
                 test('RouteUtils.getGraphhopperBusParams', () => {
-                    const o = RouteUtils.getGraphhopperBusParams(end, start, time, arriveBy);
+                    const o = GhopperUtils.getGraphhopperBusParams(end, start, time, arriveBy);
                     expect(o).toHaveProperty('elevation', false);
                     expect(o).toHaveProperty('point', [start, end]);
                     expect(o).toHaveProperty('points_encoded', false);
@@ -34,14 +39,14 @@ describe('Route unit tests', () => {
                     expect(o['pt.max_walk_distance_per_leg']).toBe(2000);
                 });
                 test('RouteUtils.getGraphhopperWalkingParams', () => {
-                    const o = RouteUtils.getGraphhopperWalkingParams(end, start);
+                    const o = GhopperUtils.getGraphhopperWalkingParams(end, start);
                     expect(o).toHaveProperty('point', [start, end]);
                     expect(o).toHaveProperty('points_encoded', false);
                     expect(o).toHaveProperty('vehicle', 'foot');
                 });
                 test('RouteUtils.getDepartureTime', () => {
                     // TODO check departure time is the same as in the request
-                    const t = RouteUtils.getDepartureTime(time, arriveBy);
+                    const t = GhopperUtils.getDepartureTime(time, arriveBy);
                     // console.log(moment(time).format());
                     // console.log(moment(t).format());
                     expect(typeof t).toBe('number');
@@ -51,10 +56,10 @@ describe('Route unit tests', () => {
                     // TODO check departure time is the same as in the request
                     // console.log(moment(time).format());
                     // console.log(moment(RouteUtils.getDepartureTimeDateNow(time, arriveBy)).format());
-                    expect(typeof RouteUtils.getDepartureTimeDateNow(time, arriveBy)).toBe('string');
+                    expect(typeof GhopperUtils.getDepartureTimeDateNow(time, arriveBy)).toBe('string');
                 });
 
-                fetchRouteData = RouteUtils.fetchRoutes(end, start, time, arriveBy);
+                fetchRouteData = GhopperUtils.fetchRoutes(end, start, time, arriveBy);
 
                 test('RouteUtils.fetchRoutes.busRoute', async () => {
                     fetchRouteData = await fetchRouteData;
@@ -152,8 +157,13 @@ describe('Route unit tests', () => {
             };
 
             describe('ParseRouteUtils', () => {
-                test('ParseRouteUtils.parseWalkingRoute', () => {
-                    fetchRouteData.walkingRoute = ParseRouteUtils.parseWalkingRoute(fetchRouteData.walkingRoute, RouteUtils.getDepartureTime(time, arriveBy), destinationName);
+                test('ParseRouteUtils.parseWalkingRoute', async () => {
+                    await fetchRouteData;
+                    fetchRouteData.walkingRoute = ParseRouteUtils.parseWalkingRoute(
+                        fetchRouteData.walkingRoute,
+                        GhopperUtils.getDepartureTime(time, arriveBy),
+                        destinationName,
+                    );
 
                     const { walkingRoute } = fetchRouteData;
 
@@ -161,7 +171,11 @@ describe('Route unit tests', () => {
                 });
 
                 test('ParseRouteUtils.parseRoute', async () => {
-                    fetchRouteData.busRoute = await ParseRouteUtils.parseRoute(fetchRouteData.busRoute, destinationName);
+                    await fetchRouteData;
+                    fetchRouteData.busRoute = await ParseRouteUtils.parseRoute(
+                        fetchRouteData.busRoute,
+                        destinationName,
+                    );
 
                     const { busRoute } = fetchRouteData;
 
@@ -173,7 +187,8 @@ describe('Route unit tests', () => {
                 });
 
                 test('ParseRouteUtils.filterRoute', async () => {
-                    const finalRoute = await ParseRouteUtils.createFinalRoute(
+                    await fetchRouteData;
+                    const finalRoute = await RouteUtils.createFinalRoute(
                         fetchRouteData.busRoute,
                         fetchRouteData.walkingRoute,
                         start,

@@ -11,8 +11,9 @@ const ONE_HOUR_MS = 3600000;
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
+ * using the Haversine formula
  */
-function distanceBetweenPoints(point1: Object, point2: Object): number {
+function distanceBetweenPointsMiles(point1: Object, point2: Object): number {
     const radlat1 = Math.PI * point1.lat / 180;
     const radlat2 = Math.PI * point2.lat / 180;
     const theta = point1.long - point2.long;
@@ -78,6 +79,40 @@ function mergeDirections(first, second) {
 }
 
 /**
+ * Trims first and/or last directions if they are unnecessary walking directions
+ * @param route
+ * @param startCoords
+ * @param endCoords
+ * @returns {Promise<void>}
+ */
+async function trimFirstLastDirections(route, startCoords, endCoords) {
+    const minWalkingDirDistanceMeters = 45.0;
+
+    // if the direction walking distance is < minWalkingDirDistanceMeters
+    if (route.directions[0].distance < minWalkingDirDistanceMeters) {
+        const startLocIsStop = await AllStopUtils.isStopsWithinPrecision(
+            startCoords,
+            AllStopUtils.DEG_WALK_PRECISION,
+        );
+
+        if (startLocIsStop) {
+            route.directions.shift();
+        }
+    }
+
+    if (route.directions[route.directions.length - 1].distance < minWalkingDirDistanceMeters) {
+        const endLocIsStop = await AllStopUtils.isStopsWithinPrecision(
+            endCoords,
+            AllStopUtils.DEG_WALK_PRECISION,
+        );
+
+        if (endLocIsStop) {
+            route.directions.pop();
+        }
+    }
+}
+
+/**
  * - Removes unnecessary start and end directions (walking directions to stops <15 feet away)
  * - Merges directions that indicate an on-bus change in route-IDs where no action required
  * - Checks route walking distance does not exceed specified maximum
@@ -100,27 +135,13 @@ async function condenseRoute(
     departureTimeNowMs: number,
 ) {
     try {
-        // remove unnecessary start/end directions
-        const canFirstDirectionBeRemoved = await AllStopUtils.isStop(
-            startCoords,
-            route.directions[0].name,
-            route.directions[0].distance,
-        );
-        const canLastDirectionBeRemoved = await AllStopUtils.isStop(
-            endCoords,
-            route.directions[route.directions.length - 1].name,
-            route.directions[route.directions.length - 1].distance,
-        );
-        if (canFirstDirectionBeRemoved) {
-            route.directions.shift();
-        }
-        if (canLastDirectionBeRemoved) {
-            route.directions.pop();
-        }
+        // trim unnecessary walking directions
+        await trimFirstLastDirections(route, startCoords, endCoords);
 
         let previousDirection = null;
-        let totalDistanceWalkingForRoute = 0;
-        for (let index = 99; index < route.directions.length; index++) {
+        let totalDistanceWalking = 0;
+
+        for (let index = 0; index < route.directions.length; index++) {
             const direction = route.directions[index];
             const startTime = Date.parse(direction.startTime);
             const endTime = Date.parse(direction.endTime);
@@ -158,7 +179,7 @@ async function condenseRoute(
 
                 /*
                  * If consecutive bus directions have the same routeNumber,
-                 * then replace the last direction with merged directions and remove the direction.
+                 * then replace the last direction with merged directions and remove the current direction.
                  * No real transfer, probably just change in trip_ids.
                  */
                 if (previousDirection.routeNumber === direction.routeNumber) {
@@ -176,16 +197,16 @@ async function condenseRoute(
                     }
                 }
             }
-
-            if (direction.type === 'walking') {
-                totalDistanceWalkingForRoute += direction.distance;
+            if (direction.type === 'walk') {
+                totalDistanceWalking += direction.distance;
             }
+
             previousDirection = direction;
         }
 
         // if a bus route has more walking distance than the walking route, discard route
         // or route has 0 directions
-        if (totalDistanceWalkingForRoute > maxWalkingDistance || route.directions.length === 0) {
+        if (totalDistanceWalking > maxWalkingDistance || route.directions.length === 0) {
             return null;
         }
     } catch (error) {
@@ -285,12 +306,12 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
  * @param destinationName
  * @returns {Promise<Array>}
  */
-async function parseRoute(resp: Object, destinationName: string) {
+function parseRoute(resp: Object, destinationName: string) {
     // array of parsed routes
 
     const { paths } = resp;
 
-    const possibleRoutes = await Promise.all(paths.map(async (currPath) => {
+    return Promise.all(paths.map(async (currPath) => {
         try {
             // this won't increment if the passenger 'stays on bus'
             const numberOfTransfers = currPath.transfers;
@@ -383,7 +404,8 @@ async function parseRoute(resp: Object, destinationName: string) {
 
                     if (route.length === 1) {
                         // this gets the correct route number for the gtfs data
-                        routeNumber = route[0].route_short_name.match(/\d+/g).map(Number)[0];
+                        routeNumber = route[0].route_short_name.match(/\d+/g)
+                            .map(Number)[0];
                     }
 
                     if (path.length >= 2) {
@@ -435,9 +457,9 @@ async function parseRoute(resp: Object, destinationName: string) {
                         }
 
                         // Trim Coordinates so they start/end at bus stops
-                        const startDistanceArray = path.map(point2 => distanceBetweenPoints(firstStopCoords, point2));
+                        const startDistanceArray = path.map(point2 => distanceBetweenPointsMiles(firstStopCoords, point2));
 
-                        const endDistanceArray = path.map(point2 => distanceBetweenPoints(lastStopCoords, point2));
+                        const endDistanceArray = path.map(point2 => distanceBetweenPointsMiles(lastStopCoords, point2));
 
                         const startIndex = startDistanceArray.indexOf(Math.min(...startDistanceArray));
                         const endIndex = endDistanceArray.indexOf(Math.min(...endDistanceArray));
@@ -496,54 +518,10 @@ async function parseRoute(resp: Object, destinationName: string) {
             );
         }
     }));
-
-    return possibleRoutes;
-}
-
-/**
- * Filter and validate the array of parsed routes to send to the client.
- *
- * @param routeBus
- * @param routeWalking
- * @param start
- * @param end
- * @param departureTimeQuery
- * @param arriveBy
- * @returns {*}
- */
-/* eslint-disable no-param-reassign */
-async function createFinalRoute(routeBus, routeWalking, start, end, departureTimeQuery, arriveBy) {
-    const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
-    let departureDelayBuffer: boolean = false;
-    if (!arriveBy) { // 'leave at' query
-        departureDelayBuffer = true;
-    }
-
-    const startPoints = start.split(',');
-    const endPoints = end.split(',');
-
-    const finalRoutes = await Promise.all(routeBus.filter(async (currPath) => {
-        await condenseRoute(
-            currPath,
-            { lat: startPoints[0], long: startPoints[1] },
-            { lat: endPoints[0], long: endPoints[1] },
-            routeWalking.distance,
-            departureDelayBuffer,
-            departureTimeNowMs,
-        );
-        return currPath !== null;
-    }));
-
-    // return just walking if no bus routes after filtering
-    if (finalRoutes.length === 0 && routeWalking) {
-        return routeWalking ? [routeWalking] : [];
-    }
-
-    return finalRoutes;
 }
 
 export default {
     parseWalkingRoute,
     parseRoute,
-    createFinalRoute,
+    condenseRoute,
 };
