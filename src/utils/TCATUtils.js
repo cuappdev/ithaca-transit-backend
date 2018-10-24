@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // @flow
 import csv from 'csvtojson';
 import dotenv from 'dotenv';
@@ -37,9 +38,13 @@ function getTCATData(useCache: boolean = true) {
 
         const unzipper = new DecompressZip(zipFile)
             .on('error', (err) => { throw err; })
-            .on('extract', (log) => { resolve(extractDir); });
+            .on('extract', (log) => {
+                console.log(`Finshed extracting TCAT GTFS data to ${extractDir}`);
+                resolve(extractDir);
+            });
 
         if (useCache && fs.existsSync(zipFile)) {
+            console.log('Extracting TCAT GTFS data...');
             unzipper.extract({ path: extractDir });
         } else {
             console.log('Downloading TCAT GTFS data...');
@@ -68,7 +73,7 @@ function getTCATData(useCache: boolean = true) {
  * @returns {Promise<*>}
  */
 async function getGTFSJson(dataName, fileName, useCache: boolean = true) {
-    const path = await getTCATData(useCache) && extractDir;
+    const path = (await getTCATData(useCache)) && extractDir;
 
     if (useCache && GTFSData[dataName] && GTFSData[dataName].length > 0 && path) {
         return GTFSData[dataName];
