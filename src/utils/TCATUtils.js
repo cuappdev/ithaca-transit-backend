@@ -89,6 +89,8 @@ async function getGTFSJson(dataName, fileName, useCache: boolean = true) {
             csv().fromFile(`${path}/${fileName}`).then((jsonObj) => {
                 resolve(jsonObj);
                 return jsonObj;
+            }).catch((error) => {
+                ErrorUtils.logErr(error, `${path}/${fileName}`, `Could not get json from csv ${path}/${fileName}`);
             });
         });
     }).then(value => value).catch((error) => {
