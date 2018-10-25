@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { RegisterSession } from 'appdev';
+// import { RegisterSession } from '../appdev/RegisterSession';
 import fs from 'fs';
 import util from 'util';
 
@@ -62,8 +62,8 @@ const ErrorCodes = Object.freeze({
     },
 });
 
-const secretKey = process.env.REGISTER_TOKEN || '';
-const register = new RegisterSession('http://register.cornellappdev.com', secretKey, 5);
+// const secretKey = process.env.REGISTER_TOKEN || '';
+// const register = new RegisterSession('http://register.cornellappdev.com', secretKey, 5);
 
 /**
  * Classify an error code from string
@@ -102,7 +102,31 @@ function generateErrorResponse(error: string) {
  * @param payload
  */
 function writeToRegister(eventType: string, payload: Object) {
-    register.logEvent(eventType, payload);
+    // register.logEvent(eventType, payload);
+    log(payload, true);
+}
+
+/**
+ * Write object to console
+ * @param obj
+ * @param error
+ */
+function log(obj: Object, error: ?boolean = false) {
+    // register.logEvent(eventType, payload);
+    const options = {
+        showHidden: false,
+        depth: null,
+        colors: true,
+        maxArrayLength: 10,
+        breakLength: Infinity,
+        compact: false,
+    };
+
+    if (error) {
+        console.error(util.inspect(obj, options));
+    } else {
+        console.log(util.inspect(obj, options));
+    }
 }
 
 /**
@@ -198,6 +222,7 @@ export default {
     classifyError,
     generateErrorResponse,
     writeToRegister,
+    log,
     logErr,
     logToFile,
     printDeep,

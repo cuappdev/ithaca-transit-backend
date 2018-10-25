@@ -44,7 +44,7 @@ const init = new Promise((resolve, reject) => {
             AlertsUtils.alerts,
             TokenUtils.fetchAuthHeader(),
         ]).then(() => {
-            console.log('Initializing data successful: authHeader, realtimeFeed, allStops, alerts');
+            console.log('Initialized data successfully: authHeader, realtimeFeed, allStops, alerts');
         });
 
         // await full initialization then listen on the port
@@ -53,7 +53,8 @@ const init = new Promise((resolve, reject) => {
             GhopperUtils.ghopperReady,
         ]).then(() => {
             server.listen(port, address, () => {
-                console.log('Initialized Graphhopper and all data successfully!\n'
+                console.log('\x1b[36m%s\x1b[0m',
+                    'Initialized Graphhopper and all data successfully!\n'
                                 + `Transit Backend listening on ${address}:${port}`);
                 resolve(port);
             });

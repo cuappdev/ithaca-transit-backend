@@ -1,8 +1,8 @@
 // @flow
-import { AppDevAPI } from 'appdev';
 import bodyParser from 'body-parser';
 import { Router } from 'express';
 
+import AppDevAPI from './appdev/AppDevAPI';
 import AlertsRouter from './routers/AlertsRouter';
 import AllStopsRouter from './routers/AllStopsRouter';
 import DelayRouter from './routers/DelayRouter';
@@ -10,7 +10,6 @@ import HelloWorldRouter from './routers/HelloWorldRouter';
 import PlacesAutocompleteRouter from './routers/PlacesAutocompleteRouter';
 import RouteRouter from './routers/RouteRouter';
 import TrackingRouter from './routers/TrackingRouter';
-import TestMiddleware from './test/TestMiddleware.js';
 
 class API extends AppDevAPI {
     getPath(): string {
@@ -20,7 +19,7 @@ class API extends AppDevAPI {
     middleware(): Array<any> {
         return [
             bodyParser.json(),
-        ].concat(TestMiddleware);
+        ];
     }
 
     routers(): Array<Router> {
