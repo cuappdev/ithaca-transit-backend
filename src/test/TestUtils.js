@@ -121,13 +121,13 @@ async function printReleaseDiff(res, query) {
             let relJSON;
             try {
                 relJSON = JSON.parse(rel);
-                const resCpy = Object.assign({ }, res);
-                // removeKeys(relJSON, ['path', 'stops']);
-                // removeKeys(resCpy, ['path', 'stops']);
-                // const delta = JsonDiff.diff(relJSON, resCpy);
-                // jsondiffpatch.console.log(delta);
+                const resCpy = JSON.parse(JSON.stringify(res.data[0] || res));
+                removeKeys(relJSON, ['path', 'stops']);
+                removeKeys(resCpy, ['path', 'stops']);
+                const delta = JsonDiff.diff(relJSON.data[0] || relJSON, resCpy);
+                jsondiffpatch.console.log(delta);
             } catch (e) {
-                // console.log(res, rel);
+                console.log(`WARNING: Current release: ${rel}\nLocal: ${JSON.stringify(res)}`);
             }
         }
     } catch (e) {

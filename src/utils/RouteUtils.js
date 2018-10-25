@@ -43,8 +43,11 @@ async function createFinalRoute(routeBus, routeWalking, start, end, departureTim
     }
 
     // if walking is > 5 mins faster than the bus, append the walking route
-    const walkArr = moment(routeWalking.arrivalTime);
-    if (walkArr.diff(finalRoutes[0].arrivalTime, 'minutes') > 5) {
+    const busRouteArr = moment(finalRoutes[0].arrivalTime);
+    // console.log(busRouteArr.diff(routeWalking.arrivalTime, 'minutes'));
+    // if (best bus arrival time) - (walk arrive time) > 5 minutes
+    // EX: 6:48am - 6:25am = 23 minutes > 5 minutes
+    if (busRouteArr.diff(routeWalking.arrivalTime, 'minutes') > 5) {
         finalRoutes.push(routeWalking);
     }
 

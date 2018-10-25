@@ -227,13 +227,6 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
         const arrivalTime = `${new Date(endDateMs).toISOString()
             .split('.')[0]}Z`;
 
-        const boundingBox = {
-            minLat: path.bbox[1],
-            minLong: path.bbox[0],
-            maxLat: path.bbox[3],
-            maxLong: path.bbox[2],
-        };
-
         const startCoords = {
             lat: path.points.coordinates[0][1],
             long: path.points.coordinates[0][0],
@@ -243,6 +236,24 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
             lat: path.points.coordinates[path.points.coordinates.length - 1][1],
             long: path.points.coordinates[path.points.coordinates.length - 1][0],
         };
+
+        let boundingBox;
+        if (path.distance === 0) {
+            boundingBox = {
+                minLat: startCoords.lat,
+                minLong: startCoords.long,
+                maxLat: endCoords.lat,
+                maxLong: endCoords.long,
+            };
+            path.distance = 1;
+        } else {
+            boundingBox = {
+                minLat: path.bbox[1],
+                minLong: path.bbox[0],
+                maxLat: path.bbox[3],
+                maxLong: path.bbox[2],
+            };
+        }
 
         const numberOfTransfers = 0;
 
