@@ -24,9 +24,39 @@
 usage()
 {
     echo "Options:
-    [-p | --prod] use Transit production mode (without running Transit in its own docker image/container)
-    [-s | --setup] do not start Transit when finished
-    [-h | --help] display these options"
+    [-p | --prod]
+        Run Graphhopper and use Transit production mode.
+        Alias (same as in CLI): npm run serve
+        Features:
+            - optimized builds
+            - remote logging
+            - no console output
+
+    [-d | --dev]
+        Run Graphhopper and use Transit development mode.
+        Alias (same as in CLI): npm run build-dev
+        Features:
+            - fast builds
+            - hot reload
+            - no remote logging
+            - verbose console output
+            - automatic restart/testing on file change
+            - simulator integration middleware
+            - current release response comparison middleware
+        DO NOT USE DEVELOPMENT MODE IN DEPLOYMENT/DEPLOYMENT!!!!!!
+
+    [-t | --test]
+        Run Graphhopper and use Transit test mode.
+        Alias (same as npm command in CLI): npm run test-dev
+        Features:
+            - production mode testing
+            - test once with minimal output then quit
+
+    [-s | --setup]
+        Run Graphhopper and initialization tasks but do not start Transit.
+
+    [-h | --help]
+        Display these options."
 }
 
 OUT_COLOR="\033[1;34m" #blue
@@ -36,6 +66,8 @@ echo "${OUT_COLOR} --- Initializing Transit Backend --- ${NC}"
 echo $PWD
 
 PROD=false
+DEV=false
+TEST=false
 RUN_TRANSIT=true
 
 # parse args
@@ -45,6 +77,10 @@ while [ "$1" != "" ]; do
                                 exit
                                 ;;
         -p | --prod )           PROD=true
+                                ;;
+        -d | --dev )            DEV=true
+                                ;;
+        -t | --test )           TEST=true
                                 ;;
         -s | --setup )          RUN_TRANSIT=false
                                 ;;
@@ -68,9 +104,16 @@ docker ps
 if ${RUN_TRANSIT} ; then
     if ${PROD}; then
         echo "${OUT_COLOR}Starting Transit in production mode...${NC}"
-        npm run start-prod
-    else
+        npm run serve
+    elif ${DEV}; then
         echo "${OUT_COLOR}Starting Transit in development mode...${NC}"
         npm run build-dev
+    elif ${TEST}; then
+        echo "${OUT_COLOR}Starting Transit in test mode...${NC}"
+        npm run test-dev
+    else
+        npm run init
     fi
+else
+    npm run init
 fi

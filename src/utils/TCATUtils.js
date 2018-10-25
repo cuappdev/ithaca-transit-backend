@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // @flow
 import csv from 'csvtojson';
 import dotenv from 'dotenv';
@@ -9,6 +10,7 @@ import ErrorUtils from './LogUtils';
 
 dotenv.config();
 
+const root = '.';
 const zipFile = 'tcat-ny-us.zip';
 const zipUrl = 'https://s3.amazonaws.com/tcat-gtfs/tcat-ny-us.zip';
 const extractDir = 'tcat-ny-us';
@@ -18,6 +20,7 @@ const dataInfo = [ // [ (data obj name in GTFSdata), (filename of data to be par
     ['routes', 'routes.txt'],
 ];
 
+const TCATData = getTCATData();
 const GTFSData = getGTFSData(dataInfo);
 const validGTFSBufferDays = 7 * 4; // error this many days before GTFS data expires
 checkGTFSDatesValid();
@@ -30,30 +33,39 @@ checkGTFSDatesValid();
  * @returns {Promise<any>}
  */
 function getTCATData(useCache: boolean = true) {
-    return new Promise((resolve, reject) => {
-        if (useCache && fs.existsSync(`${extractDir}`)) {
-            resolve(extractDir);
+    // eslint-disable-next-line consistent-return
+    return new Promise(async (resolve, reject) => {
+        if (useCache && fs.existsSync(`${root}/${extractDir}`)) {
+            resolve(`${root}/${extractDir}`);
+            return `${root}/${extractDir}`;
         }
 
         const unzipper = new DecompressZip(zipFile)
             .on('error', (err) => { throw err; })
-            .on('extract', (log) => { resolve(extractDir); });
+            .on('extract', (log) => {
+                console.log(`Finshed extracting TCAT GTFS data to ${root}/${extractDir}`);
+                resolve(`${root}/${extractDir}`);
+                return `${root}/${extractDir}`;
+            });
 
-        if (useCache && fs.existsSync(zipFile)) {
-            unzipper.extract({ path: extractDir });
+        if (useCache && fs.existsSync(`${root}/${zipFile}`)) {
+            console.log('Extracting TCAT GTFS data...');
+            await unzipper.extract({ path: `${root}/${extractDir}` });
         } else {
+            console.log('Downloading TCAT GTFS data...');
             request
                 .get(zipUrl)
-                .pipe(fs.createWriteStream(zipFile))
+                .pipe(fs.createWriteStream(`${root}/${zipFile}`))
                 .on('error', (err) => {
                     throw err;
                 })
-                .on('finish', () => {
-                    unzipper.extract({ path: extractDir });
+                .on('finish', async () => {
+                    console.log('Extracting TCAT GTFS data...');
+                    await unzipper.extract({ path: `${root}/${extractDir}` });
                 });
         }
     }).then(value => value).catch((error) => {
-        ErrorUtils.logErr(error, zipFile, `Could not get ${zipFile} from ${zipUrl}`);
+        ErrorUtils.logErr(error, zipFile, `Could not get ${root}/${zipFile} from ${zipUrl}`);
         return [];
     });
 }
@@ -66,24 +78,29 @@ function getTCATData(useCache: boolean = true) {
  * @returns {Promise<*>}
  */
 async function getGTFSJson(dataName, fileName, useCache: boolean = true) {
-    const path = await getTCATData(useCache) && extractDir;
+    const path = (await TCATData);
 
     if (useCache && GTFSData[dataName] && GTFSData[dataName].length > 0 && path) {
         return GTFSData[dataName];
     }
 
     return new Promise((resolve, reject) => {
-        csv().fromFile(`${path}/${fileName}`).then((jsonObj) => {
-            resolve(jsonObj);
+        TCATData.then((result) => {
+            csv().fromFile(`${path}/${fileName}`).then((jsonObj) => {
+                resolve(jsonObj);
+                return jsonObj;
+            }).catch((error) => {
+                ErrorUtils.logErr(error, `${path}/${fileName}`, `Could not get json from csv ${path}/${fileName}`);
+            });
         });
     }).then(value => value).catch((error) => {
-        ErrorUtils.logErr(error, fileName, `Could not get json from ${fileName}`);
+        ErrorUtils.logErr(error, fileName, `Could not get json from ${path}/${fileName}`);
         return [];
     });
 }
 
 async function getGTFSData() {
-    await getTCATData();
+    await TCATData;
 
     const GTFSobj = {};
 
