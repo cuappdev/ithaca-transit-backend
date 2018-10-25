@@ -1,6 +1,6 @@
 // @flow
-import { AppDevRouter } from 'appdev';
 import LRU from 'lru-cache';
+import AppDevRouter from '../appdev/AppDevRouter';
 import RequestUtils from '../utils/RequestUtils';
 
 const cacheOptions = {

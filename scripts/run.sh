@@ -26,7 +26,7 @@ usage()
     echo "Options:
     [-p | --prod]
         Run Graphhopper and use Transit production mode.
-        Alias (same as in CLI): npm run serve
+        Alias (same as in CLI): npm start
         Features:
             - optimized builds
             - remote logging
@@ -104,7 +104,7 @@ docker ps
 if ${RUN_TRANSIT} ; then
     if ${PROD}; then
         echo "${OUT_COLOR}Starting Transit in production mode...${NC}"
-        npm run serve
+        npm start
     elif ${DEV}; then
         echo "${OUT_COLOR}Starting Transit in development mode...${NC}"
         npm run build-dev

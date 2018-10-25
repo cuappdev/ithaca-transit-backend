@@ -1,6 +1,6 @@
 // @flow
-import { AppDevRouter } from 'appdev';
 import type Request from 'express';
+import AppDevRouter from '../appdev/AppDevRouter';
 import RouteUtils from '../utils/RouteUtils';
 
 class RouteRouter extends AppDevRouter<Array<Object>> {

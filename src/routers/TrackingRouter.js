@@ -1,5 +1,5 @@
 // @flow
-import { AppDevRouter } from 'appdev';
+import AppDevRouter from '../appdev/AppDevRouter';
 import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 
 class TrackingRouter extends AppDevRouter<Object> {
