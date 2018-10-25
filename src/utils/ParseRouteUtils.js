@@ -145,7 +145,6 @@ async function condenseRoute(
             const direction = route.directions[index];
             const startTime = Date.parse(direction.startTime);
             const endTime = Date.parse(direction.endTime);
-
             /*
              * Discard routes with directions that take over 2 hours time
              */
@@ -166,7 +165,8 @@ async function condenseRoute(
             }
 
             if (previousDirection
-                && direction.type === previousDirection.type === 'depart') {
+                && previousDirection.type === 'depart'
+                && direction.type === 'depart') {
                 /*
                  * Discard route if a depart direction's last stopID is not the same as the next direction's first stopID,
                  * Fixes bug where graphhopper directions are to get off at a stop and get on another stop
@@ -214,6 +214,7 @@ async function condenseRoute(
             ErrorUtils.logErr(error, route, 'Condense final route failed'),
         );
     }
+
     return route;
 }
 
