@@ -1,4 +1,3 @@
-import waitOn from 'wait-on';
 import ErrorUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 
@@ -6,23 +5,8 @@ const ghopperMapMatchingAddr = `http://${process.env.MAP_MATCHING || 'ERROR'}:89
 const ghopperWalkingAddr = `http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/`;
 const ghopperBusAddr = `http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/`;
 
-const waitOptions = {
-    resources: [
-        ghopperBusAddr,
-        ghopperWalkingAddr,
-        ghopperMapMatchingAddr,
-    ],
-    // timeout: 60000, // timeout in ms, default Infinity
-    log: false, // output progress to stdout
-};
-
 // await graphhopper services, true if found
-const ghopperReady = waitOn(waitOptions).then(() => true).catch((err) => {
-    if (err) {
-        throw ErrorUtils.logErr(err, waitOptions, 'Failed to connect to graphhopper services');
-    }
-    return false;
-});
+const ghopperReady = true;
 
 const getGraphhopperBusParams = (end, start, departureTimeQuery, arriveBy) => ({
     elevation: false,
