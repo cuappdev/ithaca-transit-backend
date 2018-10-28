@@ -165,7 +165,8 @@ Time is in epoch (seconds since 1/1/1970) |
 | startCoords       | {  lat: Double,  long: Double  }                                                | Starting location of user                                                                       |
 | endCoords         | {  lat: Double,  long: Double  }                                                | Ending location of user                                                                         |
 | boundingBox       | {  maxLat: Double,  maxLong: Double,  minLat: Double,  minLong: Double  } | The most extreme points of the route. Used to center the map on client-side (with some padding) |
-| numberOfTransfers | Int                                                                               | Number of transfers in route. Default 0.                                                        |
+| numberOfTransfers | Int                                                                               | Number of transfers in route. Default 0.                                                        |        
+
 
 
 *class* **Direction**
@@ -185,6 +186,65 @@ Time is in epoch (seconds since 1/1/1970) |
 | stayOnBusForTransfer | Bool                                  | Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective **routeNumber** in the next .depart Direction.                        |
 | tripIdentifiers      | [String]?                             | The unique identifier(s) for the specific bus related to the direction. Only exists when **type** is .depart.                                                                                             |
 | delay                | Int?                                  | The bus delay for **stops**[0]. If delay is nil, means we don’t have delay information yet                                                                                                                |
+
+
+
+----------
+# **/multiroute** • GET
+
+**Description**: Returns the best available route for each destination specified from a single start location
+
+## Parameters
+
+*required* **start** : String - “< latitude Double >,< longitude Double >”
+
+| **description** | The starting point of the journey.                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **default**     | current location (set by client)                                                                                             |
+| **notes**       | This can be a bus stop, a location found in Google Places (see Place ID docs), or coordinates (e.g. user’s current location) |
+
+*required* **time** : Int
+
+| **description** | The relevant time in the request.                                                                                                                                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **default**     | now (set by client)                                                                                                                                                                                                                      |
+| **notes**       | If **arriveBy** is false, departBy functionality is used. The time is when the journey should at earliest begin by.
+Otherwise, the time is when the route should arrive to the destination by
+
+Time is in epoch (seconds since 1/1/1970) |
+
+*required* **end** : [{Double, Double}] - “[{< latitude1 Double >,< longitude1 Double >}]”
+
+| **description** | An array of latitude-longitude pair objects to specify ending points. Must contain at least one ending point. |
+| --------------- | -------------------------------- |
+| **default**     | n/a                              |
+| **notes**       | See Start notes                  |
+
+*required* **destinationNames** : [String] - “[< destinationName1 >]”
+
+| **description** | The names of the destinations. Must contain at least one.                                                                    |
+| --------------- | --------------------------------------------------------------------------------------------------------- |
+| **default**     | n/a                                                                                                       |
+| **notes**       | Each destination is used to change the final direction to the destination, as well as check if the destination is a bus stop. |
+
+*optional*
+**Add more destinations as needed, each must be in order and have an end location and name**
+
+## Returns: [Route]
+
+Returns an array of Routes, one for each destination.
+
+*class* **Route**
+
+| **Name**          | **Type**                                                                          | **Description**                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| departureTime     | String                                                                            | The time a user begins their journey (e.g. when to start walking)                               |
+| arrivalTime       | String                                                                            | The time a user arrives at their destination.                                                   |
+| directions        | [Direction]                                                                       | A list of Direction objects (used for the Route Detail page). See Direction object              |
+| startCoords       | {  lat: Double,  long: Double  }                                                | Starting location of user                                                                       |
+| endCoords         | {  lat: Double,  long: Double  }                                                | Ending location of user                                                                         |
+| boundingBox       | {  maxLat: Double,  maxLong: Double,  minLat: Double,  minLong: Double  } | The most extreme points of the route. Used to center the map on client-side (with some padding) |
+| numberOfTransfers | Int                                                                               | Number of transfers in route. Default 0.    
 
 
 
