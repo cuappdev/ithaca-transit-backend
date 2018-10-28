@@ -29,9 +29,9 @@ class API extends AppDevAPI {
             AllStopsRouter,
             DelayRouter,
             HelloWorldRouter,
+            MultiRouteRouter,
             PlacesAutocompleteRouter,
             RouteRouter,
-            MultiRouteRouter,
             TrackingRouter,
         ];
     }
