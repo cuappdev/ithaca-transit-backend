@@ -1,35 +1,64 @@
 # Ithaca Transit Backend
 
-## Install
-
-Please ensure `npm` ([npm](https://www.npmjs.com/get-npm)), `wget`, and `mvn` ([Maven](https://maven.apache.org/download.cgi)) are installed by checking `wget -V`, `npm -v`, and `mvn -v`. Install any missing programs or the process will be unable to run.
-
-To correctly configure your environment, clone the repository and navigate to the directory in your terminal. Run `cp env.template .env` or manually copy the `env.template` file to `.env`. (Note: The server cannot be bound to port 80 and must use port 3000 when running locally.) Then add the correct value for `TOKEN` in `.env` with `vim .env` or another text editor. The `TOKEN` value is pinned in the #transit-backend Slack channel. 
-
-Finally, run `npm run setup` and `npm i` to run the setup shell script and install all required npm packages. 
-
 ## Setup
 
-The Transit API relies on the graphhopper service for navigation directions, so the following steps must be completed each time before running:
+Please ensure `npm` ([npm](https://www.npmjs.com/get-npm)) and `docker` ([docker](https://www.docker.com/)) is installed by checking `npm -v` and `docker -v` and that Docker is running.
 
-1. Run `npm run graph` to build the graph. This starts the GraphHopper Routing server which builds the routing graph if one doesn't already exist. After the server has fully started with ...`[main] INFO  com.graphhopper.http.GHServer - Started server at HTTP :8988`, **exit the session using `Ctrl-C`**.
+Clone the repository and navigate to the directory in your terminal. Run `cp env.template .env` or manually copy the `env.template` file to `.env`. Then add the correct value for `TOKEN` and others in the `.env` file. The `TOKEN` value is pinned in the #transit-backend Slack channel.
 
-2. Run `npm run mapmatching` to build the map matching graph (snapping coordinates to the road). It starts up the GraphHopper Map Matching server, which builds the graph for map matching if a cache doesn't exist already. After the server has fully started with ...`[main] INFO  com.graphhopper.matching.http.MatchServer - Started server at HTTP :8989`, **exit the session using `Ctrl-C`**.
+Run `npm install` to install the necessary dependencies.
+ 
+## Run
+
+`package.json` contains all necessary run, build, test, and utility scripts for the project. **Type `npm run` before a script name to execute.** `npm run` by itself shows a list of available scripts.
+
+#### Development 
+`start-dev` runs the program in development mode with all necessary Graphhopper serivices at the location specified in the `.env` file. Use development mode while developing and **DO NOT USE THIS MODE IN DEPLOYMENT/PRODUCTION**.
+Features:
+    - automatic server restart and testing run on file change
+    - automatic Graphhopper initialization/start/stop
+    - compatible with node debugging features like breakpoints
+    - simulator or test client integration middleware
+    - current release response comparison
+    - faster builds
+    - hot reload
+    - local verbose output/logging to file and console, not remote
+    - flow type checking
+
+#### Production
+`start-prod` runs the program in production mode. This is the mode built and started in the `Dockerfile`, hosted on the server, and by used the Transit frontend. It **does not start or check for the Graphhopper services needed by the Transit navigation program** (must be run separately) and it **logs all errors silently and remotely**.
+Features:
+    - optimized builds
+    - remote logging
+    - run independent of local Graphhopper services
+
+#### More Scripts
+| **Script Name** | Description |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| `ghopper` | runs the Graphhopper processes required for route calculation |
+| `stop-ghopper`| stops any running Graphhopper processes |
+| `kill-ghopper` | SIGKILL any running Graphhopper processes |
+| `clean-docker` | prune unused docker data on your system |
+| `reset-docker` | prune **all** docker data on your system |
+| `build` | build Transit with Webpack default settings |
+| `build-image` | build a production Transit Docker image as `transit-node` using the `Dockerfile` |
+| `build-dev` | build Transit with Webpack default settings, same as `start-dev` but without running Graphhopper services |
+| `setup` | start Graphhopper services and `init` |
+| `init` | `npm install` then `build` |
+| `serve` | run the existing build using Node |
+| `start-dev` | [Development](#development) |
+| `start-prod` | [Production](#production) |
+| `test-dev` | run tests on an existing build in order and with console output using Jest and Node in debug mode then `flow` type checking |
+| `test` | `init` for clean install and build then run tests and exit |
+| `flow` | Run Flow type checking service |
+| `flow-stop` | Stop Flow service |
 
 ### Known Errors
 
 ````
 Exception in thread "main" java.net.BindException: Address already in use
 ````
-Run `npm run cleanup` to kill any GraphHopper processes and try again. The GraphHopper services cannot be restarted if the ports (default 8989 and 8988) are already in use.
- 
-## Run
- 
-* `npm run start-dev` runs the program in development mode at `localhost:3000`. Use this while developing. Development mode will automatically build, restart the server, and run tests whenever a file is changed, so there should be no need to use Postman or other programs to test endpoints. Development mode also builds faster and outputs errors and debugging information directly to the console.
-
-* `npm start` runs cleanup, builds, and starts the program in production mode. In production mode, all errors will be logged remotely to register, build times are much longer, and tests are not automatically run, so don't use this locally.
-
-* `npm test` starts the program in test mode and runs tests once on any existing bundle in `build/`. It will not automatically start graphhopper or rebuild the bundle.
+Run `npm run stop-ghopper` to kill any GraphHopper processes and try again. The GraphHopper services cannot be restarted if the ports (default 8989 and 8988) are already in use.
 
 # Transit API v1 REST Interface
 
