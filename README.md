@@ -15,22 +15,22 @@ Run `npm install` to install the necessary dependencies.
 #### Development 
 `start-dev` runs the program in development mode with all necessary Graphhopper serivices at the location specified in the `.env` file. Use development mode while developing and **DO NOT USE THIS MODE IN DEPLOYMENT/PRODUCTION**.
 Features:
-    - automatic server restart and testing run on file change
-    - automatic Graphhopper initialization/start/stop
-    - compatible with node debugging features like breakpoints
-    - simulator or test client integration middleware
-    - current release response comparison
-    - faster builds
-    - hot reload
-    - local verbose output/logging to file and console, not remote
-    - flow type checking
+* Automatic server restart and testing run on file change
+* Automatic Graphhopper initialization/start/stop
+* Source map and Node debugging features like breakpoints
+* Simulator or test client integration middleware
+* Current release response comparison
+* Faster build
+* Hot reload
+* Local verbose output/logging to file and console, not remote
+* Flow type checking
 
 #### Production
 `start-prod` runs the program in production mode. This is the mode built and started in the `Dockerfile`, hosted on the server, and by used the Transit frontend. It **does not start or check for the Graphhopper services needed by the Transit navigation program** (must be run separately) and it **logs all errors silently and remotely**.
 Features:
-    - optimized builds
-    - remote logging
-    - run independent of local Graphhopper services
+* Optimized builds
+* Remote logging
+* Run independent of local Graphhopper services
 
 #### More Scripts
 | **Script Name** | Description |
