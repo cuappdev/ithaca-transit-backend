@@ -24,33 +24,33 @@
 usage()
 {
     echo "Options:
-    [-p | --prod]
-        Run Graphhopper and use Transit production mode.
-        Alias (same as in CLI): npm start
+    [-p | --production]
+        Run all Graphhopper services and Transit in production mode.
         Features:
             - optimized builds
             - remote logging
-            - no console output
+            - run independent of local Graphhopper services
 
-    [-d | --dev]
-        Run Graphhopper and use Transit development mode.
-        Alias (same as in CLI): npm run build-dev
+    [-d | --development]
+        Run all Graphhopper services and Transit in development mode.
+        DO NOT USE DEVELOPMENT MODE IN DEPLOYMENT/PRODUCTION!!!
+        To run without Graphhopper: npm run build-dev
         Features:
-            - fast builds
+            - automatic server restart and testing run on file change
+            - automatic Graphhopper initialization/start/stop
+            - compatible with node debugging features like breakpoints
+            - simulator or test client integration middleware
+            - current release response comparison
+            - faster builds
             - hot reload
-            - no remote logging
-            - verbose console output
-            - automatic restart/testing on file change
-            - simulator integration middleware
-            - current release response comparison middleware
-        DO NOT USE DEVELOPMENT MODE IN DEPLOYMENT/DEPLOYMENT!!!!!!
+            - local verbose output/logging to file and console, not remote
+            - flow type checking
 
     [-t | --test]
-        Run Graphhopper and use Transit test mode.
+        Run Transit production mode.
         Alias (same as npm command in CLI): npm run test-dev
         Features:
             - production mode testing
-            - test once with minimal output then quit
 
     [-s | --setup]
         Run Graphhopper and initialization tasks but do not start Transit.
@@ -73,19 +73,19 @@ RUN_TRANSIT=true
 # parse args
 while [ "$1" != "" ]; do
     case $1 in
-        -h | --help )           usage
-                                exit
-                                ;;
-        -p | --prod )           PROD=true
-                                ;;
-        -d | --dev )            DEV=true
-                                ;;
-        -t | --test )           TEST=true
-                                ;;
-        -s | --setup )          RUN_TRANSIT=false
-                                ;;
-        * )                     usage
-                                exit 1
+        -h | --help )                   usage
+                                        exit
+                                        ;;
+        -p | --production )             PROD=true
+                                        ;;
+        -d | --development )            DEV=true
+                                        ;;
+        -t | --test )                   TEST=true
+                                        ;;
+        -s | --setup )                  RUN_TRANSIT=false
+                                        ;;
+        * )                             usage
+                                        exit 1
     esac
     shift
 done
@@ -104,7 +104,7 @@ docker ps
 if ${RUN_TRANSIT} ; then
     if ${PROD}; then
         echo "${OUT_COLOR}Starting Transit in production mode...${NC}"
-        npm start
+        npm run start-prod
     elif ${DEV}; then
         echo "${OUT_COLOR}Starting Transit in development mode...${NC}"
         npm run build-dev
