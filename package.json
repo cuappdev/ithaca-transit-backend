@@ -16,7 +16,7 @@
     "setup": "sh ./scripts/run.sh --setup",
     "init": "npm install && npm run build",
     "serve": "node --require dotenv/config build/bundle.js",
-    "start-dev": "sh ./scripts/run.sh --dev",
+    "start-dev": "sh ./scripts/run.sh --development",
     "start-prod": "npm run init && npm run serve",
     "test-dev": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --verbose --runInBand --detectOpenHandles test ; npm run flow ; echo 'Exiting.'",
     "test": "npm run init && node ./node_modules/.bin/jest --verbose --forceExit --detectOpenHandles test ; echo 'Exiting.'",

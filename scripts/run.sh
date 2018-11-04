@@ -24,14 +24,14 @@
 usage()
 {
     echo "Options:
-    [-p | --prod]
+    [-p | --production]
         Run all Graphhopper services and Transit in production mode.
         Features:
             - optimized builds
             - remote logging
             - run independent of local Graphhopper services
 
-    [-d | --dev]
+    [-d | --development]
         Run all Graphhopper services and Transit in development mode.
         DO NOT USE DEVELOPMENT MODE IN DEPLOYMENT/PRODUCTION!!!
         To run without Graphhopper: npm run build-dev
@@ -76,9 +76,9 @@ while [ "$1" != "" ]; do
         -h | --help )                   usage
                                         exit
                                         ;;
-        -p | --prod | --production )    PROD=true
+        -p | --production )             PROD=true
                                         ;;
-        -d | --dev | --development )    DEV=true
+        -d | --development )            DEV=true
                                         ;;
         -t | --test )                   TEST=true
                                         ;;
