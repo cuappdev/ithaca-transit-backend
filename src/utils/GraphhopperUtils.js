@@ -16,28 +16,44 @@ const waitOptions = {
     log: false, // output progress to stdout
 };
 
-// await graphhopper services, true if found
-const ghopperReady = waitOn(waitOptions).then(() => true).catch((err) => {
-    if (err) {
-        throw ErrorUtils.logErr(err, waitOptions, 'Failed to connect to graphhopper services');
-    }
-    return false;
-});
+/**
+ * True if ready, awaits graphhopper services in non-production environments
+ */
+const ghopperReady = (process.env.NODE_ENV === 'production')
+    || (waitOn(waitOptions).then(() => true).catch((err) => {
+        if (err) {
+            throw ErrorUtils.logErr(err, waitOptions, 'Failed to connect to graphhopper services');
+        }
+        return false;
+    }));
 
+/**
+ * https://graphhopper.com/api/1/docs/routing/#output
+ * @param end
+ * @param start
+ * @param departureTimeQuery
+ * @param arriveBy
+ */
 const getGraphhopperBusParams = (end, start, departureTimeQuery, arriveBy) => ({
     elevation: false,
     point: [start, end],
     points_encoded: false,
     vehicle: 'pt',
+    'ch.disable': true,
     weighting: 'short_fastest',
     'pt.arrive_by': arriveBy,
-    'ch.disable': true,
     'pt.walk_speed': 3.0, // > 3.0 suggests getting off bus earlier and walk half a mile instead of waiting longer
     'pt.earliest_departure_time': getDepartureTimeDateNow(departureTimeQuery, arriveBy),
     'pt.profile': true,
     'pt.max_walk_distance_per_leg': 2000,
 });
 
+/**
+ * https://graphhopper.com/api/1/docs/routing/#output
+ * @param end
+ * @param start
+ * @returns {{point: *[], points_encoded: boolean, vehicle: string}}
+ */
 const getGraphhopperWalkingParams = (end, start) => ({
     point: [start, end],
     points_encoded: false,
