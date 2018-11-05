@@ -1,8 +1,8 @@
 // @flow
-import AppDevRouter from '../appdev/AppDevRouter';
+import ApplicationRouter from '../appdev/ApplicationRouter';
 import AllStopUtils from '../utils/AllStopUtils';
 
-class AllStopsRouter extends AppDevRouter<Array<Object>> {
+class AllStopsRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
         super('GET');
     }

@@ -2,7 +2,7 @@
 import {
     NextFunction, Request, Response, Router,
 } from 'express';
-import AppDevUtilities from './AppDevUtilities';
+import AppDevUtilities from './ApplicationUtils';
 
 /**
  * RequestType - the HTTP methods supported by AppDevRouter
@@ -32,7 +32,7 @@ class AppDevResponse<T> {
  * hook to compute response data. This pattern is cleaner than raw Express
  * Router initialization with callbacks.
  */
-class AppDevRouter<T> {
+class ApplicationRouter<T> {
     router: Router;
 
     requestType: RequestType;
@@ -112,4 +112,4 @@ class AppDevRouter<T> {
     }
 }
 
-export default AppDevRouter;
+export default ApplicationRouter;

@@ -1,8 +1,8 @@
 // @flow
-import AppDevRouter from '../appdev/AppDevRouter';
+import ApplicationRouter from '../appdev/ApplicationRouter';
 import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 
-class DelayRouter extends AppDevRouter<Object> {
+class DelayRouter extends ApplicationRouter<Object> {
     constructor() {
         super('GET');
     }

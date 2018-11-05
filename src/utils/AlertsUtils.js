@@ -1,5 +1,5 @@
 // @flow
-import alarm from 'alarm';
+import interval from 'interval-promise';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './LogUtils';
@@ -78,9 +78,11 @@ function getWeekdayString(daysOfWeek) {
 }
 
 function start() {
-    alarm.recurring(THREE_MINUTES_IN_MS, async () => {
+    interval(async () => {
+        // fetch and set alerts
+        await alerts; // if initializing, don't try again
         alerts = await RequestUtils.fetchRetry(fetchAlerts);
-    });
+    }, THREE_MINUTES_IN_MS, { stopOnError: false });
 }
 
 export default {

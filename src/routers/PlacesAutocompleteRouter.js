@@ -1,6 +1,6 @@
 // @flow
 import LRU from 'lru-cache';
-import AppDevRouter from '../appdev/AppDevRouter';
+import ApplicationRouter from '../appdev/ApplicationRouter';
 import RequestUtils from '../utils/RequestUtils';
 
 const cacheOptions = {
@@ -9,7 +9,7 @@ const cacheOptions = {
 };
 const cache = LRU(cacheOptions);
 
-class PlacesAutocompleteRouter extends AppDevRouter<string> {
+class PlacesAutocompleteRouter extends ApplicationRouter<string> {
     constructor() {
         super('POST');
     }

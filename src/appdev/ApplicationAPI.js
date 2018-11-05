@@ -3,7 +3,7 @@ import http from 'http';
 import express, {
     Application, NextFunction, Request, Response, Router,
 } from 'express';
-import AppDevUtilities from './AppDevUtilities';
+import AppDevUtilities from './ApplicationUtils';
 
 /**
  * ExpressHandlerFunction - the function signature of callbacks for Express
@@ -19,7 +19,7 @@ export type ExpressCallback = (Request, Response, NextFunction) => any;
  * the backend's API. This pattern is cleaner than than raw Express Application
  * initialization with middleware functions and routers.
  */
-class AppDevAPI {
+class ApplicationAPI {
     express: Application;
 
     /**
@@ -92,4 +92,4 @@ class AppDevAPI {
     }
 }
 
-export default AppDevAPI;
+export default ApplicationAPI;

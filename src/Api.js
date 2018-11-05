@@ -2,7 +2,7 @@
 import bodyParser from 'body-parser';
 import { Router } from 'express';
 
-import AppDevAPI from './appdev/AppDevAPI';
+import ApplicationAPI from './appdev/ApplicationAPI';
 import AlertsRouter from './routers/AlertsRouter';
 import AllStopsRouter from './routers/AllStopsRouter';
 import DelayRouter from './routers/DelayRouter';
@@ -12,7 +12,7 @@ import RouteRouter from './routers/RouteRouter';
 import MultiRouteRouter from './routers/MultiRouteRouter';
 import TrackingRouter from './routers/TrackingRouter';
 
-class API extends AppDevAPI {
+class API extends ApplicationAPI {
     getPath(): string {
         return '/api/v1/';
     }
