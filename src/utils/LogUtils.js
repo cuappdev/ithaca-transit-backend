@@ -1,69 +1,99 @@
 /* eslint-disable no-console */
+import dotenv from 'dotenv';
 import fs from 'fs';
 import util from 'util';
-import rfs from 'rotating-file-stream';
+import { ParquetSchema } from 'parquetjs';
 import ChronicleSession from '../appdev/ChronicleSession';
 
-const LOG_REMOTELY = process.env.NODE_ENV && process.env.NODE_ENV === 'production';
-
-const LOG_PATH = 'logs'; // path to log files
-const LOG_DATA_PATH = `${LOG_PATH}/data`; // path to data log files
-const APPLICATION_LOG_FILE = '.app.log'; // general output file name
-
-// Log data to file instead of remote AWS/Chronicle when not in production mode
-const logStream = rfs(APPLICATION_LOG_FILE, {
-    path: LOG_DATA_PATH, // path to data log files
-    size: '1M', // rotate every 1 megabytes written
-    interval: '1d', // rotate daily
-    compress: true, // compress rotated files
-});
+dotenv.load();
+const CHRONICLE_PROD_ENV = 'production';
+const CHRONICLE_DEV_ENV = 'development';
+const CHRONICLE_APP_NAME = 'IthacaTransit';
+const LOG_REMOTE_ONLY = process.env.NODE_ENV && process.env.NODE_ENV === CHRONICLE_PROD_ENV;
+const CHRONICLE_ENV = LOG_REMOTE_ONLY ? CHRONICLE_PROD_ENV : CHRONICLE_DEV_ENV;
+const LOG_PATH = 'logs'; // path to local log files
 
 const chronicleTransit = new ChronicleSession(
     process.env.CHRONICLE_ACCESS_KEY,
     process.env.CHRONICLE_SECRET_KEY,
-    'IthacaTransit',
+    CHRONICLE_APP_NAME,
 );
 
-// define common parquet schema types
-const uid = { type: 'UTF8' }; // anonymous user id
-const time = { type: 'TIMESTAMP_MILLIS' }; // epoch time, new Date()
-const point = { type: 'UTF8' }; // point, string with comma separated latitude and longitude
-const boolean = { type: 'BOOLEAN' };
-const string = { type: 'UTF8' }; // string
-const JSON = { type: 'JSON' }; // generic object in JSON format
+// define common parquet types
+const time = { type: 'TIMESTAMP_MILLIS' }; // INT64 - epoch time
+const boolean = { type: 'BOOLEAN' }; // BOOLEAN
+const string = { type: 'UTF8' }; // BYTE_ARRAY
+const float = { type: 'FLOAT' }; // FLOAT32 - is within 1.7m lat/long precision
+const JSON = { type: 'JSON' }; // BYTE_ARRAY - encoded JSON obj
+const int = { type: 'INT32' }; // INT32
 
-// request schema
-const routeRequestSchema = {
+// define common nested row types
+const pointObj: ParquetSchema = { lat: float, long: float }; // lat long point object
+
+const path: ParquetSchema = { repeated: true, fields: pointObj }; // array of points is a path
+
+const boundingBox: ParquetSchema = {
+    maxLat: float,
+    maxLong: float,
+    minLat: float,
+    minLong: float,
+};
+
+const uid: ParquetSchema = { type: 'UTF8', optional: true }; // optional anonymous user id
+
+const stop: ParquetSchema = { name: string, id: string };
+
+const direction: ParquetSchema = {
+    dirType: string,
+    name: string,
+    startTime: time,
+    endTime: time,
+    startLocation: pointObj,
+    endLocation: pointObj,
+    path,
+    distance: float,
+    routeNumber: { optional: true, type: 'INT32' },
+    stops: { repeated: true, fields: stop },
+    stayOnBusForTransfer: boolean,
+    tripIdentifiers: { optional: true, repeated: true, fields: string },
+    delay: { optional: true, type: 'INT32' },
+};
+
+// route request schema
+const routeRequestSchema: ParquetSchema = {
     uid,
-    start: point,
-    end: point,
+    start: pointObj,
+    end: pointObj,
     time,
     arriveBy: boolean,
     destinationName: string,
 };
 
-const shortRoutes = {
-    rid: { type: 'INT64' },
-};
-
-const routeResultSchema = {
-
+// route result schema
+const routeResultSchema: ParquetSchema = {
+    uid,
+    departureTime: time,
+    arrivalTime: time,
+    directions: { repeated: true, fields: direction },
+    startCoords: pointObj,
+    endCoords: pointObj,
+    boundingBox,
+    numberOfTransfers: int,
 };
 
 // user selection table
-const userSelectionSchema = {
+const userSelectionSchema: ParquetSchema = {
     uid,
-    // start, dest names, route times, etc
-    rids: { type: 'LIST' },
+    arrivalTime: time, // arrivalTime of a route is basically route ID
 };
 
 // cache hits/misses for Google places
-const cacheSchema = {
+const cacheSchema: ParquetSchema = {
     time,
     hit: boolean,
 };
 
-const errorSchema = {
+const errorSchema: ParquetSchema = {
     time,
     error: JSON,
     data: JSON,
@@ -109,15 +139,17 @@ function logErr(error: Object, data: ?Object, note: ?string, showStackTrace: ?bo
         }
 
         const responseJSON = {
+            date: Date.now(),
             error,
             ...(data ? { requestParameters: data } : {}),
             ...(note ? { note } : {}),
         };
 
-        if (LOG_REMOTELY) {
-            logToChronicle(error, data, note);
+        if (LOG_REMOTE_ONLY) {
+            logToChronicle('error', errorSchema, error);
         } else {
             log(responseJSON, true);
+            logToChronicle('error', errorSchema, error);
         }
 
         return responseJSON;
@@ -132,32 +164,35 @@ function logErr(error: Object, data: ?Object, note: ?string, showStackTrace: ?bo
  * @param fileName
  * @param data
  */
-async function logToFile(fileName: string, data: ?Object) {
-    try {
-        await fs.writeFile(
-            `${LOG_PATH}/${fileName}`,
-            (typeof data === 'string') ? data : JSON.stringify((await data), null, '\t'),
-            (err) => {
-                if (err) {
-                    // eslint-disable-next-line no-console
-                    return console.error(err);
-                }
-                return true;
-            },
-        );
-    } catch (e) {
-        return logErr(e, data, `Could not log to file ${fileName}`);
-    }
-    return false;
+async function writeToFile(fileName: string, data: ?Object) {
+    return fs.writeFile(
+        `${LOG_PATH}/${fileName}`,
+        ((typeof data === 'string') ? data : JSON.stringify((await data), null, '\t')),
+        (err) => {
+            if (err) {
+                // eslint-disable-next-line no-console
+                return logErr(err, data, `Could not log to file ${fileName}`);
+            }
+            return true;
+        },
+    );
 }
 
-async function logToChronicle(error: Object, data: ?Object, note: ?string) {
-    console.log('logging remotely');
+function logToChronicle(eventName: string, eventSchema: ParquetSchema, event: Object) {
+    return chronicleTransit
+        .log(`${CHRONICLE_ENV}/${eventName}`, eventSchema, event)
+        .catch((err) => {
+            logErr(err, event, `Failed to log to Chronicle ${eventName}`);
+        });
 }
 
 export default {
     log,
     logErr,
-    logToFile,
+    writeToFile,
     logToChronicle,
+    routeRequestSchema,
+    routeResultSchema,
+    userSelectionSchema,
+    cacheSchema,
 };

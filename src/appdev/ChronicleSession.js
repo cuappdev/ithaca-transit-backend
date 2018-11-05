@@ -25,6 +25,10 @@ class ChronicleSession {
         this.logMap = new Map();
         this.cacheSize = cacheSize;
 
+        if (!accessKey || !secretKey) {
+            throw new Error(`Undefined Chronicle key(s)! accessKey: ${accessKey} secretKey: ${secretKey}`);
+        }
+
         config.update({
             accessKeyId: accessKey,
             secretAccessKey: secretKey,

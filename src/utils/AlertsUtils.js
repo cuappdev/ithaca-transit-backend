@@ -5,7 +5,7 @@ import TokenUtils from './TokenUtils';
 import ErrorUtils from './LogUtils';
 
 let alerts = RequestUtils.fetchRetry(fetchAlerts);
-const THREE_MINUTES_IN_MS = 1000 * 60 * 3;
+const ONE_MINUTE_MS = 1000 * 60;
 
 async function fetchAlerts() {
     try {
@@ -82,7 +82,7 @@ function start() {
         // fetch and set alerts
         await alerts; // if initializing, don't try again
         alerts = await RequestUtils.fetchRetry(fetchAlerts);
-    }, THREE_MINUTES_IN_MS, { stopOnError: false });
+    }, ONE_MINUTE_MS, { stopOnError: false });
 }
 
 export default {
