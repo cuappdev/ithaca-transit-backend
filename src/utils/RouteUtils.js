@@ -77,8 +77,10 @@ async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQu
 }
 
 async function getRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
-    let { busRoute, walkingRoute } = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
-
+    const busWalkingRoute = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
+    let { busRoute } = busWalkingRoute;
+    const { walkingRoute } = busWalkingRoute;
+    
     // if there are no bus routes, we should just return walking instead of crashing
     if (!busRoute && walkingRoute) {
         return [walkingRoute];
@@ -101,7 +103,9 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
 }
 
 async function getDetailedRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
-    let { busRoute, walkingRoute } = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
+    const busWalkingRoute = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
+    let { busRoute } = busWalkingRoute;
+    const { walkingRoute } = busWalkingRoute;
     
     // if there are no bus routes, we should just return walking instead of crashing
     if (!busRoute && walkingRoute) {
