@@ -12,7 +12,6 @@ module.exports = env => ({
         path: path.resolve(__dirname, 'build'),
         filename: 'bundle.js',
     },
-    devtool: 'source-map',
     module: {
         rules: [
             {
@@ -21,13 +20,6 @@ module.exports = env => ({
                 use: ['babel-loader', 'eslint-loader'],
             },
         ],
-    },
-    devServer: {
-        contentBase: './build', // serve your static files from here
-        publicPath: './src',
-        watchContentBase: true, // initiate a page refresh if static content changes
-        hot: true,
-        open: true,
     },
     stats: 'minimal',
     plugins: [

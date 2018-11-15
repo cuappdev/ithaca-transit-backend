@@ -1,5 +1,5 @@
 // @flow
-import alarm from 'alarm';
+import interval from 'interval-promise';
 import xml2js from 'xml2js';
 import JsonFind from 'json-find';
 import jsonQuery from 'json-query';
@@ -90,7 +90,7 @@ import TokenUtils from './TokenUtils';
  * in order to get delay and tracking info.
  */
 
-let realtimeFeed = RequestUtils.fetchRetry(fetchRealtimeFeed);
+let realtimeFeed = fetchRealtimeFeed();
 
 function xmlToJSON(xml: String) {
     const normalize = name => name.toLowerCase();
@@ -394,14 +394,12 @@ async function fetchRealtimeFeed() {
  * Update realtime data every few seconds
  */
 function start() {
-    alarm.recurring(3000, async () => {
+    interval(async () => {
         // fetch and set realtime feed
         await realtimeFeed; // if initializing, don't try again
-        realtimeFeed = (await RequestUtils.fetchRetry(fetchRealtimeFeed));
-    });
+        realtimeFeed = await fetchRealtimeFeed();
+    }, 3000, { stopOnError: false });
 }
-
-// call realtimeFeedAlarm() to cancel recurring call
 
 export default {
     start,

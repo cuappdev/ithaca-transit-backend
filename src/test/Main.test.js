@@ -1,4 +1,6 @@
 // must use require with supertest...
+import TestUtils from './TestUtils';
+
 const request = require('supertest');
 const http = require('http');
 const morganBody = require('morgan-body');
@@ -15,7 +17,6 @@ const {
     route,
     routeTests,
 } = require('./TestGlobals').default;
-const LogUtils = require('../utils/LogUtils').default;
 // eslint-disable-next-line no-unused-vars
 const {
     expectTests,
@@ -194,11 +195,12 @@ async function testRoute(res, routeParams, busInfo: Set) {
     }
 
     // write res to file for visual check
+    // also check difference to release
     if (!routeParams.warning) {
         routeDataCounts.warning += 1;
-        console.warn(`Warning ${routeDataCounts.warning}: Logging ${routeParams.name} to file`);
-        // printReleaseDiff(res.body, `${route}${routeParams.query}`);
-        LogUtils.logToFile('out/routes.test.warning.output.json',
+        console.warn(`Warning ${routeDataCounts.warning}: Logging ${routeParams.name} to file and printing release diff [release => local]`);
+        printReleaseDiff(res.body, `${route}${routeParams.query}`);
+        TestUtils.logToFile('out/routes.test.warning.output.json',
             ((res && res.status < 300 && res.text) ? JSON.parse(res.text) : res));
     }
 

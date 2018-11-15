@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-import ParseRouteUtils from '../utils/ParseRouteUtils';
-
+const ChronicleSession = require('../appdev/ChronicleSession').default;
+const ParseRouteUtils = require('../utils/ParseRouteUtils').default;
 // eslint-disable-next-line no-unused-vars
 const TestUtils = require('./TestUtils');
 const {
@@ -202,6 +202,16 @@ describe('Route unit tests', () => {
                     }
                 });
             });
+        });
+    });
+});
+
+describe('Appdev dependencies tests', () => {
+
+    describe('ChronicleSession', () => {
+        let chronicle;
+        test('new ChronicleSession', () => {
+            chronicle = new ChronicleSession();
         });
     });
 });

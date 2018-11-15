@@ -1,7 +1,8 @@
 // @flow
 import LRU from 'lru-cache';
-import AppDevRouter from '../appdev/AppDevRouter';
+import ApplicationRouter from '../appdev/ApplicationRouter';
 import RequestUtils from '../utils/RequestUtils';
+import LogUtils from '../utils/LogUtils';
 
 const cacheOptions = {
     max: 10000,
@@ -9,7 +10,7 @@ const cacheOptions = {
 };
 const cache = LRU(cacheOptions);
 
-class PlacesAutocompleteRouter extends AppDevRouter<string> {
+class PlacesAutocompleteRouter extends ApplicationRouter<string> {
     constructor() {
         super('POST');
     }
@@ -27,8 +28,11 @@ class PlacesAutocompleteRouter extends AppDevRouter<string> {
         const cachedValue = cache.get(query);
 
         if (cachedValue !== undefined) {
+            LogUtils.logToChronicle('places', LogUtils.cacheSchema, { time: Date.now(), hit: true });
             return cachedValue;
         }
+
+        LogUtils.logToChronicle('places', LogUtils.cacheSchema, { time: Date.now(), hit: false });
 
         // not in cache
         const options = {

@@ -1,15 +1,15 @@
 // @flow
 import type Request from 'express';
-import AppDevRouter from '../appdev/AppDevRouter';
+import ApplicationRouter from '../appdev/ApplicationRouter';
 import ErrorUtils from '../utils/LogUtils';
 import RouteUtils from '../utils/RouteUtils';
 
 /**
  * Router object that returns an array of the best available route for each
  * destination, specified from a single start destination.
- * @extends AppDevRouter
+ * @extends ApplicationRouter
  */
-class MultiRouteRouter extends AppDevRouter<Array<Object>> {
+class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
         super('GET');
     }
@@ -27,7 +27,7 @@ class MultiRouteRouter extends AppDevRouter<Array<Object>> {
             start,
             time: departureTimeQuery,
         } = req.query;
-        
+
         // only one destination given
         if (typeof destinationName === 'string') {
             return RouteUtils.getRoute(destinationName, end, start, departureTimeQuery, false);
@@ -38,7 +38,7 @@ class MultiRouteRouter extends AppDevRouter<Array<Object>> {
         for (let i = 0; i < destinationName.length; i++) {
             routes.push(RouteUtils.getRoute(destinationName[i], end[i], start, departureTimeQuery, false));
         }
-        
+
         return Promise.all(routes).then(val => val).catch((err) => {
             throw ErrorUtils.logErr(err, routes, 'Could not get all specified routes');
         });

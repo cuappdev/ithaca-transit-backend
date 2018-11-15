@@ -5,8 +5,7 @@
     "flow"
   ],
   "plugins": [
-    "transform-object-rest-spread",
-    "babel-plugin-syntax-dynamic-import"
+    "transform-object-rest-spread"
   ],
   "sourceMap": "inline"
 }

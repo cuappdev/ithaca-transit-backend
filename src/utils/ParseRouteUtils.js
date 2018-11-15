@@ -3,7 +3,7 @@
 import createGpx from 'gps-to-gpx';
 import ErrorUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
-import TCATUtils from './TCATUtils';
+import TCATUtils from './GTFSUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import AllStopUtils from './AllStopUtils';
 

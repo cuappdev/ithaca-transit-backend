@@ -1,11 +1,11 @@
 // @flow
-import alarm from 'alarm';
+import interval from 'interval-promise';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './LogUtils';
 
 let alerts = RequestUtils.fetchRetry(fetchAlerts);
-const THREE_MINUTES_IN_MS = 1000 * 60 * 3;
+const ONE_MINUTE_MS = 1000 * 60;
 
 async function fetchAlerts() {
     try {
@@ -78,9 +78,11 @@ function getWeekdayString(daysOfWeek) {
 }
 
 function start() {
-    alarm.recurring(THREE_MINUTES_IN_MS, async () => {
+    interval(async () => {
+        // fetch and set alerts
+        await alerts; // if initializing, don't try again
         alerts = await RequestUtils.fetchRetry(fetchAlerts);
-    });
+    }, ONE_MINUTE_MS, { stopOnError: false });
 }
 
 export default {

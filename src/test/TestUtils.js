@@ -2,13 +2,18 @@
 const moment = require('moment');
 const util = require('util');
 const jsondiffpatch = require('jsondiffpatch');
+const fs = require('fs');
 const RequestUtils = require('../utils/RequestUtils.js').default;
+
+const LOG_PATH = 'logs'; // path to log files
 
 // jsondiffpatch config
 const JsonDiff = jsondiffpatch.create({
-    objectHash(obj, index) {
-        // try to find an id property, otherwise just use the index in the array
-        return obj.name || obj;
+    arrays: {
+        // default true, detect items moved inside the array (otherwise they will be registered as remove+add)
+        detectMove: true,
+        // default false, the value of items moved is not included in deltas
+        includeValueOnMove: true,
     },
 });
 
@@ -20,17 +25,6 @@ function s(v) {
     if (typeof v === 'undefined') return 'undefined';
     if (Number.isNaN(v)) return 'NaN';
     return `${typeof v}`;
-}
-
-function printDeep(obj) {
-    console.log(util.inspect(obj, {
-        showHidden: false,
-        depth: null,
-        colors: true,
-        maxArrayLength: 10,
-        breakLength: Infinity,
-        compact: false,
-    }));
 }
 
 function isNum(num) {
@@ -116,23 +110,41 @@ async function printReleaseDiff(res, query) {
             url: `${process.env.RELEASE_URL}${query}`,
             qsStringifyOptions: { arrayFormat: 'repeat' },
         };
-        const rel = await RequestUtils.createRequest(options);
-        if (JSON.stringify(res) !== rel) {
-            let relJSON;
+        const releaseStr = await RequestUtils.createRequest(options);
+        const responseStr = JSON.stringify(res);
+        if (responseStr !== releaseStr) {
+            let releaseJSON;
             try {
-                relJSON = JSON.parse(rel);
-                const resCpy = JSON.parse(JSON.stringify(res.data[0] || res));
-                removeKeys(relJSON, ['path', 'stops']);
-                removeKeys(resCpy, ['path', 'stops']);
-                const delta = JsonDiff.diff(relJSON.data[0] || relJSON, resCpy);
+                releaseJSON = JSON.parse(releaseStr);
+                const responseJSONCopy = JSON.parse(responseStr);
+                const delta = JsonDiff.diff(releaseJSON, responseJSONCopy);
                 jsondiffpatch.console.log(delta);
             } catch (e) {
-                console.log(`WARNING: Current release: ${rel}\nLocal: ${JSON.stringify(res)}`);
+                console.log(`WARNING: Current release: ${releaseStr}\nLocal: ${JSON.stringify(res)}`);
             }
         }
     } catch (e) {
         console.error(e);
     }
+}
+
+async function logToFile(fileName: string, data: ?Object) {
+    try {
+        await fs.writeFile(
+            `${LOG_PATH}/${fileName}`,
+            (typeof data === 'string') ? data : JSON.stringify((await data), null, '\t'),
+            (err) => {
+                if (err) {
+                    // eslint-disable-next-line no-console
+                    return console.error(err);
+                }
+                return true;
+            },
+        );
+    } catch (e) {
+        console.error(e, data, `Could not log to file ${fileName}`);
+    }
+    return false;
 }
 
 const expectTests = {
@@ -386,7 +398,8 @@ expect.extend(expectTests);
 
 export default {
     expectTests,
-    printDeep,
     getReleaseRes,
     printReleaseDiff,
+    logToFile,
+    removeKeys,
 };

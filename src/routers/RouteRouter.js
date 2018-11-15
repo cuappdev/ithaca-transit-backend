@@ -1,9 +1,9 @@
 // @flow
 import type Request from 'express';
-import AppDevRouter from '../appdev/AppDevRouter';
+import ApplicationRouter from '../appdev/ApplicationRouter';
 import RouteUtils from '../utils/RouteUtils';
 
-class RouteRouter extends AppDevRouter<Array<Object>> {
+class RouteRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
         super('GET');
     }

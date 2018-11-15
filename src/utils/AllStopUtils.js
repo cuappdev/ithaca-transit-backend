@@ -1,5 +1,5 @@
 // @flow
-import alarm from 'alarm';
+import interval from 'interval-promise';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './LogUtils';
@@ -151,10 +151,13 @@ function isStop(point: Object) {
 }
 
 function start() {
-    alarm.recurring(HOUR_IN_MS, async () => {
+    interval(async () => {
+        // fetch and set allStops and allStopsCompareMaps
+        await allStops; // if initializing, don't try again
+        await allStopsCompareMaps; // if initializing, don't try again
         allStops = await RequestUtils.fetchRetry(fetchAllStops);
         allStopsCompareMaps = await RequestUtils.fetchRetry(fetchPrecisionMaps);
-    });
+    }, HOUR_IN_MS, { stopOnError: false });
 }
 
 export default {
