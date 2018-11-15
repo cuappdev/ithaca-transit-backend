@@ -1,6 +1,7 @@
 // @flow
 
 import createGpx from 'gps-to-gpx';
+import geolib from 'geolib';
 import ErrorUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 import TCATUtils from './GTFSUtils';
@@ -8,6 +9,7 @@ import RealtimeFeedUtils from './RealtimeFeedUtils';
 import AllStopUtils from './AllStopUtils';
 
 const ONE_HOUR_MS = 3600000;
+const METERS_TO_MILES = 0.00062137119;
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
@@ -532,8 +534,137 @@ function parseRoute(resp: Object, destinationName: string) {
     }));
 }
 
+/**
+ * Return a more detailed route information returned from parseRoute function,
+ * including travelDistance, totalDuration, and routeSummary.
+ *
+ * Example return object:
+ [
+ {  departureTime: '2018-10-22T03:44:19Z',
+    arrivalTime: '2018-10-22T04:01:46Z',
+    directions: [ [Object], [Object], [Object], [Object] ],
+    startCoords: { lat: 42.441603931224435, long: -76.48638788207742 },
+    endCoords: { lat: 42.45662677611252, long: -76.47693624444763 },
+    startName: 'Risley Hall - Shelter',
+    endName: 'Ithaca Commons - Seneca St',
+    boundingBox:
+     { minLat: 42.441596,
+       minLong: -76.490387,
+       maxLat: 42.456818,
+       maxLong: -76.471642 },
+    travalDistance: 1231,
+    totalDuration: 12,
+    numberOfTransfers: 1,
+    routeSummary: [...],
+  },
+ ...
+  ]
+ * @param resp
+ * @param destinationName
+ * @returns {Promise<Array>}
+ */
+async function parseDetailedRoute(resp: Object, destinationName: string) {
+    const routeInfo = await parseRoute(resp, destinationName);
+
+    const {
+        departureTime,
+        arrivalTime,
+        directions,
+        startCoords,
+        endCoords,
+        boundingBox,
+        numberOfTransfers,
+    } = routeInfo;
+
+    let travelDistance = geolib.getDistance(
+        { latitude: startCoords.lat, longitude: startCoords.long },
+        { latitude: endCoords.lat, longitude: endCoords.long }
+    );
+
+    travelDistance *= METERS_TO_MILES;
+    routeInfo.travelDistance = travelDistance;
+
+    let totalDuration = new Date(arrivalTime) - new Date(departureTime);
+    totalDuration /= 1000;
+    totalDuration /= 60;
+    routeInfo.totalDuration = Math.round(totalDuration);
+
+    routeInfo.startName = routeInfo.directions[0].name;
+    routeInfo.endName = destinationName;
+
+    // routeSummary
+
+    /* routeSummaryElement {
+        stopName: String,
+        direction: RouteSummaryDirection?,
+        shouldStayOnBus: Bool,
+    }
+    */
+
+    /* routeSummaryDirection {
+        type: null || 'walk' || 'bus',
+        routeNumber: null || Int,
+    }
+    */
+
+    let routeSummary = [];
+
+    let walkOnlyRoute = true;
+    for (let i = 0; i < directions.length; i++) {
+        walkOnlyRoute = walkOnlyRoute && (directions[i].type === 'walk');
+    }
+
+    // if walk only route, the first element of routeSummary will be 'walk'
+    if (walkOnlyRoute) {
+        routeSummary.push({
+            stopName: directions[0].name,
+            direction: { type: 'walk', routeNumber: null },
+            shouldStayOnBus: false,
+        });
+        routeSummary.push({
+            stopName: directions[directions.length - 1].name,
+            direction: { type: null, routeNumber: null },
+            shouldStayOnBus: false,
+        });
+    } else {
+        let indexOfFirstBus = -1;
+        for (let i = 0; i < directions.length; i++) {
+            if (directions[i].type === 'depart') {
+                indexOfFirstBus = i;
+                break;
+            }
+        }
+
+        for (let i = indexOfFirstBus; i < directions.length; i++) {
+            let newRouteSummary = { stopName: directions[i].name, shouldStayOnBus: false };
+            switch (directions[i].type) {
+                case 'depart':
+                    newRouteSummary.direction = { type: 'bus', routeNumber: directions[i].routeNumber };
+                    break;
+                case 'walk':
+                    newRouteSummary.direction = { type: 'walk', routeNumber: null };
+                    break;
+                default:
+                    break;
+            }
+            routeSummary.push(newRouteSummary);
+        }
+
+        routeSummary.push({
+            stopName: directions[directions.length - 1].name,
+            direction: { type: null, routeNumber: null },
+            shouldStayOnBus: false,
+        });
+    }
+
+    routeInfo.routeSummary = routeSummary;
+
+    return routeInfo;
+}
+
 export default {
     parseWalkingRoute,
     parseRoute,
+    parseDetailedRoute,
     condenseRoute,
 };
