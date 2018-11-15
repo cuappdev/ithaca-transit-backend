@@ -564,102 +564,104 @@ function parseRoute(resp: Object, destinationName: string) {
  * @returns {Promise<Array>}
  */
 async function parseDetailedRoute(resp: Object, destinationName: string) {
-    const routeInfo = await parseRoute(resp, destinationName);
+    const paths = await parseRoute(resp, destinationName);
+    
+    return paths.map((currPath) => {
+        const {
+            departureTime,
+            arrivalTime,
+            directions,
+            startCoords,
+            endCoords,
+            boundingBox,
+            numberOfTransfers,
+        } = currPath;
 
-    const {
-        departureTime,
-        arrivalTime,
-        directions,
-        startCoords,
-        endCoords,
-        boundingBox,
-        numberOfTransfers,
-    } = routeInfo;
+        let travelDistance = geolib.getDistance(
+            { latitude: startCoords.lat, longitude: startCoords.long },
+            { latitude: endCoords.lat, longitude: endCoords.long }
+        );
 
-    let travelDistance = geolib.getDistance(
-        { latitude: startCoords.lat, longitude: startCoords.long },
-        { latitude: endCoords.lat, longitude: endCoords.long }
-    );
+        travelDistance *= METERS_TO_MILES;
+        currPath.travelDistance = travelDistance;
 
-    travelDistance *= METERS_TO_MILES;
-    routeInfo.travelDistance = travelDistance;
+        let totalDuration = new Date(arrivalTime) - new Date(departureTime);
+        totalDuration /= 1000;
+        totalDuration /= 60;
+        currPath.totalDuration = Math.round(totalDuration);
 
-    let totalDuration = new Date(arrivalTime) - new Date(departureTime);
-    totalDuration /= 1000;
-    totalDuration /= 60;
-    routeInfo.totalDuration = Math.round(totalDuration);
+        currPath.startName = currPath.directions[0].name;
+        currPath.endName = destinationName;
 
-    routeInfo.startName = routeInfo.directions[0].name;
-    routeInfo.endName = destinationName;
+        // routeSummary
 
-    // routeSummary
+        /* routeSummaryElement {
+            stopName: String,
+            direction: RouteSummaryDirection?,
+            shouldStayOnBus: Bool,
+        }
+        */
 
-    /* routeSummaryElement {
-        stopName: String,
-        direction: RouteSummaryDirection?,
-        shouldStayOnBus: Bool,
-    }
-    */
+        /* routeSummaryDirection {
+            type: null || 'walk' || 'bus',
+            routeNumber: null || Int,
+        }
+        */
 
-    /* routeSummaryDirection {
-        type: null || 'walk' || 'bus',
-        routeNumber: null || Int,
-    }
-    */
+        let routeSummary = [];
 
-    let routeSummary = [];
-
-    let walkOnlyRoute = true;
-    for (let i = 0; i < directions.length; i++) {
-        walkOnlyRoute = walkOnlyRoute && (directions[i].type === 'walk');
-    }
-
-    // if walk only route, the first element of routeSummary will be 'walk'
-    if (walkOnlyRoute) {
-        routeSummary.push({
-            stopName: directions[0].name,
-            direction: { type: 'walk', routeNumber: null },
-            shouldStayOnBus: false,
-        });
-        routeSummary.push({
-            stopName: directions[directions.length - 1].name,
-            direction: { type: null, routeNumber: null },
-            shouldStayOnBus: false,
-        });
-    } else {
-        let indexOfFirstBus = -1;
+        let walkOnlyRoute = true;
         for (let i = 0; i < directions.length; i++) {
-            if (directions[i].type === 'depart') {
-                indexOfFirstBus = i;
-                break;
-            }
+            walkOnlyRoute = walkOnlyRoute && (directions[i].type === 'walk');
         }
 
-        for (let i = indexOfFirstBus; i < directions.length; i++) {
-            let newRouteSummary = { stopName: directions[i].name, shouldStayOnBus: false };
-            switch (directions[i].type) {
-                case 'depart':
-                    newRouteSummary.direction = { type: 'bus', routeNumber: directions[i].routeNumber };
+        // if walk only route, the first element of routeSummary will be 'walk'
+        if (walkOnlyRoute) {
+            routeSummary.push({
+                stopName: directions[0].name,
+                direction: { type: 'walk', routeNumber: null },
+                shouldStayOnBus: false,
+            });
+            routeSummary.push({
+                stopName: directions[directions.length - 1].name,
+                direction: { type: null, routeNumber: null },
+                shouldStayOnBus: false,
+            });
+        } else {
+            let indexOfFirstBus = -1;
+            for (let i = 0; i < directions.length; i++) {
+                if (directions[i].type === 'depart') {
+                    indexOfFirstBus = i;
                     break;
-                case 'walk':
-                    newRouteSummary.direction = { type: 'walk', routeNumber: null };
-                    break;
-                default:
-                    break;
+                }
             }
-            routeSummary.push(newRouteSummary);
+
+            for (let i = indexOfFirstBus; i < directions.length; i++) {
+                let newRouteSummary = { stopName: directions[i].name, shouldStayOnBus: false };
+                switch (directions[i].type) {
+                    case 'depart':
+                        newRouteSummary.direction = { type: 'bus', routeNumber: directions[i].routeNumber };
+                        break;
+                    case 'walk':
+                        newRouteSummary.direction = { type: 'walk', routeNumber: null };
+                        break;
+                    default:
+                        break;
+                }
+                routeSummary.push(newRouteSummary);
+            }
+
+            routeSummary.push({
+                stopName: directions[directions.length - 1].name,
+                direction: { type: null, routeNumber: null },
+                shouldStayOnBus: false,
+            });
         }
 
-        routeSummary.push({
-            stopName: directions[directions.length - 1].name,
-            direction: { type: null, routeNumber: null },
-            shouldStayOnBus: false,
-        });
-    }
+        currPath.routeSummary = routeSummary;
 
-    routeInfo.routeSummary = routeSummary;
-
-    return routeInfo;
+        return currPath;
+    });
 }
 
 export default {
