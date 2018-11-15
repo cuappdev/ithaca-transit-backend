@@ -54,7 +54,7 @@ async function createFinalRoute(routeBus, routeWalking, start, end, departureTim
     return finalRoutes;
 }
 
-async function getRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
+async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
     // eslint-disable-next-line no-param-reassign
     arriveBy = (arriveBy === '1' || arriveBy === 'true' || arriveBy === true);
 
@@ -69,6 +69,15 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
         GhopperUtils.getDepartureTime(departureTimeQuery, arriveBy),
         destinationName,
     );
+
+    return {
+        busRoute,
+        walkingRoute,
+    };
+}
+
+async function getRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
+    let { busRoute, walkingRoute } = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
 
     // if there are no bus routes, we should just return walking instead of crashing
     if (!busRoute && walkingRoute) {
@@ -91,57 +100,19 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
     return busRoute;
 }
 
-/*
-    { elevation: false,
-      point: [ '42.456688,-76.477035', '42.430142,-76.508216' ],
-      points_encoded: false,
-      vehicle: 'pt',
-      'ch.disable': true,
-      weighting: 'short_fastest',
-      'pt.arrive_by': false,
-      'pt.walk_speed': 3,
-      'pt.earliest_departure_time': '2018-11-14T04:04:38.000Z',
-      'pt.profile': true,
-      'pt.max_walk_distance_per_leg': 2000 }
- */
-
 async function getDetailedRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
-    // eslint-disable-next-line no-param-reassign
-    arriveBy = (arriveBy === '1' || arriveBy === 'true' || arriveBy === true);
-
-    const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, arriveBy);
-
-    if (!routeResponses) throw ErrorUtils.logErr('Graphhopper route error', routeResponses, 'Could not fetch routes');
-
-    let { busRoute, walkingRoute } = routeResponses;
-    // parse the graphhopper walking route=
-    walkingRoute = ParseRouteUtils.parseWalkingRoute(
-        walkingRoute,
-        GhopperUtils.getDepartureTime(departureTimeQuery, arriveBy),
-        destinationName,
-    );
-
+    let { busRoute, walkingRoute } = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
+    
     // if there are no bus routes, we should just return walking instead of crashing
     if (!busRoute && walkingRoute) {
         return [walkingRoute];
     }
 
     // parse the graphhopper bus route
-    busRoute = await ParseRouteUtils.parseRoute(busRoute, destinationName);
+    busRoute = await ParseRouteUtils.parseDetailedRoute(busRoute, destinationName);
 
     // combine and filter to create the final route
     busRoute = await createFinalRoute(
-        departureTime: Date,
-        arrivalTime: Date,
-        startCoords: Coordinates, // see below
-        endCoords: Coordinates, // see below
-        travelDistance: Double, // distance between start and end coords in miles
-        startName: String,
-        endName: String,
-        boundingBox: Bounds, // see below
-        totalDuration: Int, // minutes between departureTime and arrivalTime
-        routeSummary: [RouteSummaryElement], // see @myo3's comment below
-        detailDirections: [Direction], // see comment below
         busRoute,
         walkingRoute,
         start,
