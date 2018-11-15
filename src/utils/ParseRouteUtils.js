@@ -573,8 +573,6 @@ async function parseDetailedRoute(resp: Object, destinationName: string) {
             directions,
             startCoords,
             endCoords,
-            boundingBox,
-            numberOfTransfers,
         } = currPath;
 
         let travelDistance = geolib.getDistance(
@@ -608,7 +606,7 @@ async function parseDetailedRoute(resp: Object, destinationName: string) {
         }
         */
 
-        let routeSummary = [];
+        const routeSummary = [];
 
         let walkOnlyRoute = true;
         for (let i = 0; i < directions.length; i++) {
@@ -637,7 +635,7 @@ async function parseDetailedRoute(resp: Object, destinationName: string) {
             }
 
             for (let i = indexOfFirstBus; i < directions.length; i++) {
-                let newRouteSummary = { stopName: directions[i].name, shouldStayOnBus: false };
+                const newRouteSummary = { stopName: directions[i].name, shouldStayOnBus: false };
                 switch (directions[i].type) {
                     case 'depart':
                         newRouteSummary.direction = { type: 'bus', routeNumber: directions[i].routeNumber };
