@@ -13,7 +13,7 @@ const waitOptions = {
         ghopperMapMatchingAddr,
     ],
     // timeout: 60000, // timeout in ms, default Infinity
-    log: false, // output progress to stdout
+    log: true, // output progress to stdout
 };
 
 /**
