@@ -129,7 +129,7 @@ async function getDetailedRoute(destinationName, end, start, departureTimeQuery,
 }
 
 export default {
-    getRoute,
-    getDetailedRoute,
     createFinalRoute,
+    getDetailedRoute,
+    getRoute,
 };

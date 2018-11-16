@@ -15,11 +15,11 @@ class RouteRouterV2 extends AppDevRouter<Array<Object>> {
     // eslint-disable-next-line require-await
     async content(req: Request): Promise<Array<Object>> {
         const {
+            arriveBy,
             destinationName,
             end,
             start,
             time: departureTimeQuery,
-            arriveBy,
         } = req.query;
         return RouteUtils.getDetailedRoute(destinationName, end, start, departureTimeQuery, arriveBy);
     }

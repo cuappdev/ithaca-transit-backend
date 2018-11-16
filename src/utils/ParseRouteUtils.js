@@ -8,8 +8,9 @@ import TCATUtils from './TCATUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import AllStopUtils from './AllStopUtils';
 
-const ONE_HOUR_MS = 3600000;
 const METERS_TO_MILES = 0.00062137119;
+const ONE_HOUR_IN_MILLISECONDS = 3600000;
+const ONE_MINUTE_IN_MILLISECONDS = 60000;
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
@@ -150,7 +151,7 @@ async function condenseRoute(
             /*
              * Discard routes with directions that take over 2 hours time
              */
-            if (startTime + (ONE_HOUR_MS * 2) <= endTime) {
+            if (startTime + (ONE_HOUR_IN_MILLISECONDS * 2) <= endTime) {
                 return null;
             }
 
@@ -194,7 +195,7 @@ async function condenseRoute(
                  */
                 if (previousDirection) {
                     const prevEndTime = Date.parse(previousDirection.endTime);
-                    if (prevEndTime + ONE_HOUR_MS < startTime) {
+                    if (prevEndTime + ONE_HOUR_IN_MILLISECONDS < startTime) {
                         return null;
                     }
                 }
@@ -568,11 +569,11 @@ async function parseDetailedRoute(resp: Object, destinationName: string) {
     
     return paths.map((currPath) => {
         const {
-            departureTime,
             arrivalTime,
+            departureTime,
             directions,
-            startCoords,
             endCoords,
+            startCoords,
         } = currPath;
 
         let travelDistance = geolib.getDistance(
@@ -584,8 +585,7 @@ async function parseDetailedRoute(resp: Object, destinationName: string) {
         currPath.travelDistance = travelDistance;
 
         let totalDuration = new Date(arrivalTime) - new Date(departureTime);
-        totalDuration /= 1000;
-        totalDuration /= 60;
+        totalDuration /= ONE_MINUTE_IN_MILLISECONDS;
         currPath.totalDuration = Math.round(totalDuration);
 
         currPath.startName = currPath.directions[0].name;
@@ -657,14 +657,13 @@ async function parseDetailedRoute(resp: Object, destinationName: string) {
         }
 
         currPath.routeSummary = routeSummary;
-
         return currPath;
     });
 }
 
 export default {
-    parseWalkingRoute,
-    parseRoute,
-    parseDetailedRoute,
     condenseRoute,
+    parseDetailedRoute,
+    parseRoute,
+    parseWalkingRoute,
 };

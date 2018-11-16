@@ -18,9 +18,7 @@ class APIv2 extends AppDevAPI {
     }
 
     middleware(): Array<any> {
-        return [
-            bodyParser.json(),
-        ];
+        return [bodyParser.json()];
     }
 
     routers(): Array<Router> {
