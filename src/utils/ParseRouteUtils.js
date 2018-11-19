@@ -1,7 +1,6 @@
 // @flow
 
 import createGpx from 'gps-to-gpx';
-import geolib from 'geolib';
 import ErrorUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 import TCATUtils from './GTFSUtils';
@@ -536,7 +535,7 @@ function parseRoute(resp: Object, destinationName: string) {
 }
 
 /**
- * Return a more detailed route information returned from parseRoute function,
+ * Return a route information for V2 returned from parseRoute function,
  * including travelDistance, totalDuration, and routeSummary.
  *
  * Example return object:
@@ -564,7 +563,7 @@ function parseRoute(resp: Object, destinationName: string) {
  * @param destinationName
  * @returns {Promise<Array>}
  */
-async function parseDetailedRoute(resp: Object, destinationName: string) {
+async function parseRouteV2(resp: Object, destinationName: string) {
     const paths = await parseRoute(resp, destinationName);
     
     return paths.map((currPath) => {
@@ -572,14 +571,12 @@ async function parseDetailedRoute(resp: Object, destinationName: string) {
             arrivalTime,
             departureTime,
             directions,
-            endCoords,
-            startCoords,
         } = currPath;
 
-        let travelDistance = geolib.getDistance(
-            { latitude: startCoords.lat, longitude: startCoords.long },
-            { latitude: endCoords.lat, longitude: endCoords.long }
-        );
+        let travelDistance = 0;
+        directions.forEach((direction) => {
+            travelDistance += direction.travalDistance;
+        });
 
         travelDistance *= METERS_TO_MILES;
         currPath.travelDistance = travelDistance;
@@ -608,10 +605,7 @@ async function parseDetailedRoute(resp: Object, destinationName: string) {
 
         const routeSummary = [];
 
-        let walkOnlyRoute = true;
-        for (let i = 0; i < directions.length; i++) {
-            walkOnlyRoute = walkOnlyRoute && (directions[i].type === 'walk');
-        }
+        const walkOnlyRoute = directions.length === 0 || !directions[0].routeNumber;
 
         // if walk only route, the first element of routeSummary will be 'walk'
         if (walkOnlyRoute) {
@@ -663,7 +657,7 @@ async function parseDetailedRoute(resp: Object, destinationName: string) {
 
 export default {
     condenseRoute,
-    parseDetailedRoute,
     parseRoute,
+    parseRouteV2,
     parseWalkingRoute,
 };

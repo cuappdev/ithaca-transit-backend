@@ -62,7 +62,8 @@ async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQu
 
     if (!routeResponses) throw ErrorUtils.logErr('Graphhopper route error', routeResponses, 'Could not fetch routes');
 
-    let { busRoute, walkingRoute } = routeResponses;
+    const { busRoute } = routeResponses;
+    let { walkingRoute } = routeResponses;
     // parse the graphhopper walking route=
     walkingRoute = ParseRouteUtils.parseWalkingRoute(
         walkingRoute,
@@ -90,7 +91,7 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
     busRoute = await ParseRouteUtils.parseRoute(busRoute, destinationName);
 
     // combine and filter to create the final route
-    busRoute = await createFinalRoute(
+    return createFinalRoute(
         busRoute,
         walkingRoute,
         start,
@@ -98,11 +99,9 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
         departureTimeQuery,
         arriveBy,
     );
-
-    return busRoute;
 }
 
-async function getDetailedRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
+async function getRouteV2(destinationName, end, start, departureTimeQuery, arriveBy) {
     const busWalkingRoute = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
     let { busRoute } = busWalkingRoute;
     const { walkingRoute } = busWalkingRoute;
@@ -113,10 +112,10 @@ async function getDetailedRoute(destinationName, end, start, departureTimeQuery,
     }
 
     // parse the graphhopper bus route
-    busRoute = await ParseRouteUtils.parseDetailedRoute(busRoute, destinationName);
+    busRoute = await ParseRouteUtils.parseRouteV2(busRoute, destinationName);
 
     // combine and filter to create the final route
-    busRoute = await createFinalRoute(
+    return createFinalRoute(
         busRoute,
         walkingRoute,
         start,
@@ -124,12 +123,10 @@ async function getDetailedRoute(destinationName, end, start, departureTimeQuery,
         departureTimeQuery,
         arriveBy,
     );
-
-    return busRoute;
 }
 
 export default {
     createFinalRoute,
-    getDetailedRoute,
     getRoute,
+    getRouteV2,
 };

@@ -21,7 +21,7 @@ class RouteRouterV2 extends AppDevRouter<Array<Object>> {
             start,
             time: departureTimeQuery,
         } = req.query;
-        return RouteUtils.getDetailedRoute(destinationName, end, start, departureTimeQuery, arriveBy);
+        return RouteUtils.getRouteV2(destinationName, end, start, departureTimeQuery, arriveBy);
     }
 }
 
