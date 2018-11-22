@@ -1,6 +1,5 @@
 // @flow
 import bodyParser from 'body-parser';
-import { Router } from 'express';
 
 import ApplicationAPI from './appdev/ApplicationAPI';
 import AlertsRouter from './routers/AlertsRouter';
@@ -11,6 +10,7 @@ import PlacesAutocompleteRouter from './routers/PlacesAutocompleteRouter';
 import RouteRouter from './routers/RouteRouter';
 import RouteRouterV2 from './routers/RouteRouterV2';
 import MultiRouteRouter from './routers/MultiRouteRouter';
+import MultiRouteRouterV2 from './routers/MultiRouteRouterV2';
 import TrackingRouter from './routers/TrackingRouter';
 
 class API extends ApplicationAPI {
@@ -41,7 +41,7 @@ class API extends ApplicationAPI {
                 AllStopsRouter,
                 DelayRouter,
                 HelloWorldRouter,
-                MultiRouteRouter,
+                MultiRouteRouterV2,
                 PlacesAutocompleteRouter,
                 RouteRouterV2,
                 TrackingRouter,

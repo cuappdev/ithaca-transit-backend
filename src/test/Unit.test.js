@@ -7,6 +7,7 @@ const {
     routeTests,
 } = require('./TestGlobals').default;
 const RouteUtils = require('../utils/RouteUtils.js').default;
+const RouteUtilsV2 = require('../utils/RouteUtilsV2.js').default;
 const GhopperUtils = require('../utils/GraphhopperUtils.js').default;
 
 describe('Route unit tests', () => {
@@ -202,12 +203,20 @@ describe('Route unit tests', () => {
                     }
                 });
             });
+
+            describe('RouteUtilsV2', () => {
+                test('RouteUtilsV2.getRoute', async () => {
+                    const o = await RouteUtilsV2.getRoute(destinationName, end, start, time, arriveBy);
+                    console.log('Here is the V2 output');
+                    console.log(o);
+                    expect(1).toBe(1);
+                });
+            });
         });
     });
 });
 
 describe('Appdev dependencies tests', () => {
-
     describe('ChronicleSession', () => {
         let chronicle;
         test('new ChronicleSession', () => {

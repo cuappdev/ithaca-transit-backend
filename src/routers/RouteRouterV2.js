@@ -1,9 +1,9 @@
 // @flow
 import type Request from 'express';
-import AppDevRouter from '../appdev/AppDevRouter';
-import RouteUtils from '../utils/RouteUtils';
+import ApplicationRouter from '../appdev/ApplicationRouter';
+import RouteUtilsV2 from '../utils/RouteUtilsV2';
 
-class RouteRouterV2 extends AppDevRouter<Array<Object>> {
+class RouteRouterV2 extends ApplicationRouter<Array<Object>> {
     constructor() {
         super('GET');
     }
@@ -21,7 +21,7 @@ class RouteRouterV2 extends AppDevRouter<Array<Object>> {
             start,
             time: departureTimeQuery,
         } = req.query;
-        return RouteUtils.getRouteV2(destinationName, end, start, departureTimeQuery, arriveBy);
+        return RouteUtilsV2.getRoute(destinationName, end, start, departureTimeQuery, arriveBy);
     }
 }
 

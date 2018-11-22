@@ -2,7 +2,7 @@
 import moment from 'moment';
 import GhopperUtils from './GraphhopperUtils';
 import ErrorUtils from './LogUtils';
-import ParseRouteUtils from './ParseRouteUtils';
+import ParseRouteUtilsV2 from './ParseRouteUtilsV2';
 
 /**
  * Filter and validate the array of parsed routes to send to the client.
@@ -27,11 +27,11 @@ async function createFinalRoute(routeBus, routeWalking, start, end, departureTim
     const endPoints = end.split(',');
 
     const finalRoutes = (await Promise.all(
-        routeBus.map(currPath => ParseRouteUtils.condenseRoute(
+        routeBus.map(currPath => ParseRouteUtilsV2.condenseRoute(
             currPath,
             { lat: startPoints[0], long: startPoints[1] },
             { lat: endPoints[0], long: endPoints[1] },
-            routeWalking.directions[0].distance,
+            routeWalking.detailDirections[0].travelDistance,
             departureDelayBuffer,
             departureTimeNowMs,
         )),
@@ -65,7 +65,7 @@ async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQu
     const { busRoute } = routeResponses;
     let { walkingRoute } = routeResponses;
     // parse the graphhopper walking route=
-    walkingRoute = ParseRouteUtils.parseWalkingRoute(
+    walkingRoute = ParseRouteUtilsV2.parseWalkingRoute(
         walkingRoute,
         GhopperUtils.getDepartureTime(departureTimeQuery, arriveBy),
         destinationName,
@@ -88,7 +88,7 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
     }
 
     // parse the graphhopper bus route
-    busRoute = await ParseRouteUtils.parseRoute(busRoute, destinationName);
+    busRoute = await ParseRouteUtilsV2.parseRoute(busRoute, destinationName);
 
     // combine and filter to create the final route
     return createFinalRoute(
