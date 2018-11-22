@@ -23,13 +23,13 @@ function durationBetweenTimesMinutes(arrivalTime: string, departureTime: string)
  * using the Haversine formula
  */
 function distanceBetweenPointsMiles(point1: Object, point2: Object): number {
-    const radlat1 = Math.PI * point1.lat / 180;
-    const radlat2 = Math.PI * point2.lat / 180;
+    const radlat1 = (Math.PI * point1.lat) / 180;
+    const radlat2 = (Math.PI * point2.lat) / 180;
     const theta = point1.long - point2.long;
-    const radtheta = Math.PI * theta / 180;
+    const radtheta = (Math.PI * theta) / 180;
     let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
     dist = Math.acos(dist);
-    dist = dist * 180 / Math.PI;
+    dist = (dist * 180) / Math.PI;
     dist = dist * 60 * 1.1515;
     return dist;
 }

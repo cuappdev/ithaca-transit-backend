@@ -7,7 +7,6 @@ const {
     routeTests,
 } = require('./TestGlobals').default;
 const RouteUtils = require('../utils/RouteUtils.js').default;
-const RouteUtilsV2 = require('../utils/RouteUtilsV2.js').default;
 const GhopperUtils = require('../utils/GraphhopperUtils.js').default;
 
 describe('Route unit tests', () => {
