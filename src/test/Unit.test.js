@@ -203,15 +203,6 @@ describe('Route unit tests', () => {
                     }
                 });
             });
-
-            describe('RouteUtilsV2', () => {
-                test('RouteUtilsV2.getRoute', async () => {
-                    const o = await RouteUtilsV2.getRoute(destinationName, end, start, time, arriveBy);
-                    console.log('Here is the V2 output');
-                    console.log(o);
-                    expect(1).toBe(1);
-                });
-            });
         });
     });
 });
