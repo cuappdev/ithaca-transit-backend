@@ -1,9 +1,8 @@
 // @flow
 import { config, S3 } from 'aws-sdk';
-import { ParquetSchema, ParquetWriter } from 'parquetjs';
-import { createReadStream } from 'fs';
+import { ParquetSchema, ParquetTransformer } from 'parquetjs';
+import stream from 'stream';
 
-const PATH = '/tmp';
 const BUCKET = 'appdev-register';
 
 class ChronicleSession {
@@ -36,41 +35,61 @@ class ChronicleSession {
         this.s3 = new S3();
     }
 
-    async writeLogs(eventName: string, eventType: ParquetSchema) {
-        const filename = `${Date.now()}.parquet`;
-        const schema = new ParquetSchema(eventType);
-        const writer = await ParquetWriter.openFile(schema, `${PATH}/${filename}`);
-
-        let logs = this.logMap.get(eventName);
-        if (logs === undefined) { // sanity check
-            logs = [];
-        }
-
-        logs.forEach(log => writer.appendRow(log));
-        writer.close();
-        this.logMap.delete(eventName);
-
-        const params = {
-            Bucket: BUCKET,
-            Body: createReadStream(`${PATH}/${filename}`),
-            Key: `${this.app}/${eventName}/${filename}`,
+    readableStreamFromArray(array) {
+        const readable = new stream.Readable({ objectMode: true });
+        let index = 0;
+        // eslint-disable-next-line no-underscore-dangle
+        readable._read = () => {
+            if (array && index < array.length) {
+                readable.push(array[index]);
+                index += 1;
+            } else {
+                readable.push(null);
+            }
         };
-        await this.s3.upload(params)
-            .promise();
+        return readable;
     }
 
-    async log(eventName: string, eventType: ParquetSchema, event: Object) {
-        let logs = this.logMap.get(eventName);
-        if (logs === undefined) {
-            this.logMap.set(eventName, [event]);
-            logs = [];
+    async writeLogsRemote(eventName: string, parquetSchema: ParquetSchema) {
+        let logsData = this.logMap.get(eventName);
+
+        if (logsData === undefined) { // sanity check
+            logsData = [];
         }
 
-        logs.push(event);
-        this.logMap.set(eventName, logs);
-        if (logs.length >= this.cacheSize) {
-            await this.writeLogs(eventName, eventType);
+        const rs = this.readableStreamFromArray(logsData);
+
+        // create new transform
+        const parquetTransformStream = new ParquetTransformer(parquetSchema, { compression: 'BROTLI' });
+        this.logMap.delete(eventName);
+
+        const filename = `${Date.now()}.parquet`;
+        const params = {
+            Bucket: BUCKET,
+            Body: rs.pipe(parquetTransformStream),
+            Key: `${this.app}/${eventName}/${filename}`,
+        };
+
+        await this.s3.upload(params)
+            .promise();
+
+        console.log('....DONE LOGGING');
+    }
+
+    async log(eventName: string, parquetSchema: ParquetSchema, event: Object, disableCache: ?boolean = false) {
+        let logs = this.logMap.get(eventName);
+        if (logs === undefined) {
+            logs = [event];
+        } else {
+            logs.push(event);
         }
+        this.logMap.set(eventName, logs);
+
+        if (disableCache || logs.length >= this.cacheSize) {
+            console.log('awaiting writelogs');
+            await this.writeLogsRemote(eventName, parquetSchema);
+        }
+        return true;
     }
 }
 

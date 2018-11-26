@@ -4,6 +4,7 @@ import express, {
     Application, NextFunction, Request, Response, Router,
 } from 'express';
 import AppDevUtilities from './ApplicationUtils';
+import LogUtils from '../utils/LogUtils';
 
 /**
  * ExpressHandlerFunction - the function signature of callbacks for Express
@@ -76,7 +77,7 @@ class ApplicationAPI {
         const server: http.Server = http.createServer(this.express);
         const onError = (err: Error): void => {
             // eslint-disable-next-line no-console
-            console.error(err);
+            LogUtils.logErr(err, 'server', 'Application error');
         };
 
         const onListening = (): void => {

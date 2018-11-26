@@ -18,8 +18,8 @@
     "serve": "node --require dotenv/config build/bundle.js",
     "start-dev": "sh ./scripts/run.sh --development",
     "start-prod": "npm run init && npm run serve",
-    "test-dev": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --runInBand --detectOpenHandles test ; npm run flow ; echo 'Exiting.'",
-    "test": "npm run init && node ./node_modules/.bin/jest --forceExit --detectOpenHandles test ; echo 'Exiting.'",
+    "test-dev": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --runInBand --detectOpenHandles test ; echo 'Exiting test.'",
+    "test": "npm run init && node ./node_modules/.bin/jest --forceExit --detectOpenHandles test ; echo 'Exiting test.'",
     "flow": "echo 'Flow:' ; node_modules/.bin/flow ; echo 'Flow checking complete.'",
     "flow-stop": "node_modules/.bin/flow stop"
   },

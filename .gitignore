@@ -9,8 +9,6 @@ osrm/
 *.zip
 npm-debug.log
 osrm-backend/*
-*graphhopper/*
-*graphhopper.*
 *tcat-ny-us.zip*
 *.idea*
 *graph-cache*
@@ -20,4 +18,4 @@ config.json
 *map-matching*
 *.output.json*
 *.last-release.log*
-*.log
+*.log*

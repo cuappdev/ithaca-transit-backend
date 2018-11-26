@@ -11,6 +11,7 @@ import PlacesAutocompleteRouter from './routers/PlacesAutocompleteRouter';
 import RouteRouter from './routers/RouteRouter';
 import MultiRouteRouter from './routers/MultiRouteRouter';
 import TrackingRouter from './routers/TrackingRouter';
+import RouteSelectedRouter from './routers/RouteSelectedRouter';
 
 class API extends ApplicationAPI {
     getPath(): string {
@@ -32,6 +33,7 @@ class API extends ApplicationAPI {
             MultiRouteRouter,
             PlacesAutocompleteRouter,
             RouteRouter,
+            RouteSelectedRouter,
             TrackingRouter,
         ];
     }

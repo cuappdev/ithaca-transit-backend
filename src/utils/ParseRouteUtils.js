@@ -25,6 +25,11 @@ function distanceBetweenPointsMiles(point1: Object, point2: Object): number {
     return dist;
 }
 
+function latLongFromStr(pointStr: string): Object {
+    const point = pointStr.split(',');
+    return { lat: point[0], long: point[1] };
+}
+
 function createGpxJson(stops: Array<Object>, startTime: String): Object {
     const waypoints = stops.map(stop => ({
         latitude: stop.lat,
@@ -536,4 +541,5 @@ export default {
     parseWalkingRoute,
     parseRoute,
     condenseRoute,
+    latLongFromStr,
 };
