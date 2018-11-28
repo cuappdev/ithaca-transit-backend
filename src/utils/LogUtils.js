@@ -59,6 +59,22 @@ const direction: ParquetSchema = {
     delay: { optional: true, type: 'INT32' },
 };
 
+const directionV2: ParquetSchema = {
+    dirType: string,
+    name: string,
+    startTime: time,
+    endTime: time,
+    startLocation: pointObj,
+    endLocation: pointObj,
+    path,
+    travelDistance: float,
+    routeNumber: { optional: true, type: 'INT32' },
+    stops: { repeated: true, fields: stop },
+    stayOnBusForTransfer: boolean,
+    tripIdentifiers: { optional: true, repeated: true, fields: string },
+    delay: { optional: true, type: 'INT32' },
+};
+
 // route request schema
 const routeRequestSchema: ParquetSchema = {
     uid,
@@ -79,6 +95,29 @@ const routeResultSchema: ParquetSchema = {
     endCoords: pointObj,
     boundingBox,
     numberOfTransfers: int,
+};
+
+const routeSummaryElement: ParquetSchema = {
+    stopName: string,
+    directionType: { optional: true, type: string },
+    routeNumber: { optional: true, type: 'INT32' },
+    shouldStayOnBus: boolean,
+};
+
+const routeResultSchemaV2: ParquetSchema = {
+    uid,
+    departureTime: time,
+    arrivalTime: time,
+    detailDirections: { repeated: true, fields: directionV2 },
+    startCoords: pointObj,
+    endCoords: pointObj,
+    startName: string,
+    endName: string,
+    travelDistance: float,
+    totalDuration: int,
+    boundingBox,
+    numberOfTransfers: int,
+    routeSummary: { repeated: true, fields: routeSummaryElement },
 };
 
 // user selection table
@@ -193,6 +232,7 @@ export default {
     logToChronicle,
     routeRequestSchema,
     routeResultSchema,
+    routeResultSchemaV2,
     userSelectionSchema,
     cacheSchema,
 };

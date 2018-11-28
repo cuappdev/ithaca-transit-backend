@@ -207,7 +207,6 @@ describe('Route unit tests', () => {
 });
 
 describe('Appdev dependencies tests', () => {
-
     describe('ChronicleSession', () => {
         let chronicle;
         test('new ChronicleSession', () => {

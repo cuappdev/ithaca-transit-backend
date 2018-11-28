@@ -37,14 +37,17 @@ class ApplicationAPI {
     init() {
         AppDevUtilities.tryCheckAppDevURL(this.getPath());
         const middleware = this.middleware();
-        const routers = this.routers();
+        const routerGroups = this.routerGroups();
         for (let i = 0; i < middleware.length; i++) {
             this.express.use(middleware[i]);
         }
 
-        for (let i = 0; i < routers.length; i++) {
-            this.express.use(this.getPath(), routers[i]);
-        }
+        Object.keys(routerGroups).forEach((version) => {
+            const routers = routerGroups[version];
+            for (let i = 0; i < routers.length; i++) {
+                this.express.use(this.getPath() + version, routers[i]);
+            }
+        });
     }
 
     /**
@@ -65,8 +68,8 @@ class ApplicationAPI {
     /**
      * Subclasses must override this to supply middleware for the API.
      */
-    routers(): Router[] {
-        return [];
+    routerGroups(): Object {
+        return {};
     }
 
     /**

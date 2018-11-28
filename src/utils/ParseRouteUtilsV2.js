@@ -9,20 +9,27 @@ import AllStopUtils from './AllStopUtils';
 
 // const METERS_TO_MILES = 0.00062137119;
 const ONE_HOUR_IN_MILLISECONDS = 3600000;
-// const ONE_MINUTE_IN_MILLISECONDS = 60000;
+const ONE_MINUTE_IN_MILLISECONDS = 60000;
+
+function durationBetweenTimesMinutes(arrivalTime: string, departureTime: string): number {
+    let totalDuration = new Date(arrivalTime) - new Date(departureTime);
+    totalDuration /= ONE_MINUTE_IN_MILLISECONDS;
+    totalDuration = Math.round(totalDuration);
+    return totalDuration;
+}
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
  * using the Haversine formula
  */
 function distanceBetweenPointsMiles(point1: Object, point2: Object): number {
-    const radlat1 = Math.PI * point1.lat / 180;
-    const radlat2 = Math.PI * point2.lat / 180;
+    const radlat1 = (Math.PI * point1.lat) / 180;
+    const radlat2 = (Math.PI * point2.lat) / 180;
     const theta = point1.long - point2.long;
-    const radtheta = Math.PI * theta / 180;
+    const radtheta = (Math.PI * theta) / 180;
     let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
     dist = Math.acos(dist);
-    dist = dist * 180 / Math.PI;
+    dist = (dist * 180) / Math.PI;
     dist = dist * 60 * 1.1515;
     return dist;
 }
@@ -57,9 +64,11 @@ function mergeDirections(first, second) {
 
         second.path.shift();
         const path = first.path.concat(second.path);
-        const distance = first.distance + second.distance;
+        const travelDistance = first.travelDistance + second.travelDistance;
+        const totalDuration = first.totalDuration + second.totalDuration;
         const stops = first.stops.concat(second.stops);
         const tripIDs = first.tripIdentifiers.concat(second.tripIdentifiers);
+        const delay = (first.delay == null && second.delay == null) ? null : (first.delay || 0) + (second.delay || 0);
         return {
             type: first.type,
             name: first.name,
@@ -68,10 +77,13 @@ function mergeDirections(first, second) {
             startLocation: first.startLocation,
             endLocation: second.endLocation,
             path,
-            distance,
+            travelDistance,
+            totalDuration,
             routeNumber: first.routeNumber,
             stops,
+            stayOnBusForTransfer: first.stayOnBusForTransfer,
             tripIdentifiers: tripIDs,
+            delay,
         };
     } catch (error) {
         throw new Error(
@@ -88,28 +100,28 @@ function mergeDirections(first, second) {
  * @returns {Promise<void>}
  */
 async function trimFirstLastDirections(route, startCoords, endCoords) {
-    const minWalkingDirDistanceMeters = 45.0;
+    const minWalkingDirDistanceMeters = 0; // 45.0;
 
     // if the direction walking distance is < minWalkingDirDistanceMeters
-    if (route.directions[0].distance < minWalkingDirDistanceMeters) {
+    if (route.detailDirections[0].travelDistance < minWalkingDirDistanceMeters) {
         const startLocIsStop = await AllStopUtils.isStopsWithinPrecision(
             startCoords,
             AllStopUtils.DEG_WALK_PRECISION,
         );
 
         if (startLocIsStop) {
-            route.directions.shift();
+            route.detailDirections.shift();
         }
     }
 
-    if (route.directions[route.directions.length - 1].distance < minWalkingDirDistanceMeters) {
+    if (route.detailDirections[route.detailDirections.length - 1].travelDistance < minWalkingDirDistanceMeters) {
         const endLocIsStop = await AllStopUtils.isStopsWithinPrecision(
             endCoords,
             AllStopUtils.DEG_WALK_PRECISION,
         );
 
         if (endLocIsStop) {
-            route.directions.pop();
+            route.detailDirections.pop();
         }
     }
 }
@@ -143,8 +155,8 @@ async function condenseRoute(
         let previousDirection = null;
         let totalDistanceWalking = 0;
 
-        for (let index = 0; index < route.directions.length; index++) {
-            const direction = route.directions[index];
+        for (let index = 0; index < route.detailDirections.length; index++) {
+            const direction = route.detailDirections[index];
             const startTime = Date.parse(direction.startTime);
             const endTime = Date.parse(direction.endTime);
             /*
@@ -185,7 +197,7 @@ async function condenseRoute(
                  * No real transfer, probably just change in trip_ids.
                  */
                 if (previousDirection.routeNumber === direction.routeNumber) {
-                    route.directions.splice(index - 1, 2, mergeDirections(previousDirection, direction));
+                    route.detailDirections.splice(index - 1, 2, mergeDirections(previousDirection, direction));
                     index -= 1; // since we removed an element from the array
                 }
 
@@ -200,7 +212,7 @@ async function condenseRoute(
                 }
             }
             if (direction.type === 'walk') {
-                totalDistanceWalking += direction.distance;
+                totalDistanceWalking += direction.travelDistance;
             }
 
             previousDirection = direction;
@@ -208,7 +220,7 @@ async function condenseRoute(
 
         // if a bus route has more walking distance than the walking route, discard route
         // or route has 0 directions
-        if (totalDistanceWalking > maxWalkingDistance || route.directions.length === 0) {
+        if (totalDistanceWalking > maxWalkingDistance || route.detailDirections.length === 0) {
             return null;
         }
     } catch (error) {
@@ -273,20 +285,41 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
             startLocation: startCoords,
             endLocation: endCoords,
             path: walkingPath,
-            distance: path.distance,
+            travelDistance: path.distance,
             routeNumber: null,
             stops: [],
             tripIdentifiers: null,
             delay: null,
+            stayOnBusForTransfer: false,
         };
+
+        const routeSummary = [
+            {
+                stopName: 'Current location',
+                directionType: 'walk',
+                routeNumber: null,
+                shouldStayOnBus: false,
+            },
+            {
+                stopName: destinationName,
+                directionType: null,
+                routeNumber: null,
+                shouldStayOnBus: false,
+            },
+        ];
 
         return {
             departureTime,
             arrivalTime,
-            directions: [direction],
+            detailDirections: [direction],
             startCoords,
             endCoords,
+            startName: 'Current location',
+            endName: destinationName,
+            travelDistance: path.distance,
+            totalDuration: durationBetweenTimesMinutes(arrivalTime, departureTime),
             boundingBox,
+            routeSummary,
             numberOfTransfers,
         };
     } catch (e) {
@@ -324,6 +357,8 @@ function parseRoute(resp: Object, destinationName: string) {
     // array of parsed routes
 
     const { paths } = resp;
+
+    let totalTravelDistance = 0;
 
     return Promise.all(paths.map(async (currPath) => {
         try {
@@ -364,23 +399,13 @@ function parseRoute(resp: Object, destinationName: string) {
                 maxLong: currPath.bbox[2],
             };
 
-            const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
+            const detailDirections = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
                 let { type } = currLeg;
                 if (type === 'pt') {
                     type = 'depart';
                 }
 
-                let name = '';
-                if (type === 'walk') {
-                    // means we are at the last direction aka a walk. name needs to equal final destination
-                    if (j === numberOfLegs - 1) {
-                        name = destinationName;
-                    } else {
-                        name = legsArray[j + 1].departureLocation;
-                    }
-                } else if (type === 'depart') {
-                    name = currLeg.departureLocation;
-                }
+                const name = currLeg.departureLocation;
 
                 const startTime = currLeg.departureTime;
                 const endTime = currLeg.arrivalTime;
@@ -400,6 +425,8 @@ function parseRoute(resp: Object, destinationName: string) {
                 let stayOnBusForTransfer = false;
 
                 const { distance } = currLeg;
+                totalTravelDistance += distance;
+
                 if (type === 'depart') {
                     if (currLeg.isInSameVehicleAsPrevious) {
                         // last depart was a transfer
@@ -508,7 +535,7 @@ function parseRoute(resp: Object, destinationName: string) {
                     startLocation,
                     endLocation,
                     path,
-                    distance,
+                    travelDistance: distance,
                     routeNumber,
                     stops,
                     tripIdentifiers: tripID,
@@ -517,14 +544,91 @@ function parseRoute(resp: Object, destinationName: string) {
                 };
             }));
 
+            // duplicate the last direction
+            if (detailDirections[detailDirections.length - 1].type === 'walk'
+            || detailDirections[detailDirections.length - 1].type === 'depart') {
+                const newLastDirection = { ...detailDirections[detailDirections.length - 1] };
+                newLastDirection.type = newLastDirection.type === 'depart' ? 'arrive' : 'walk';
+                newLastDirection.name = destinationName;
+                newLastDirection.stayOnBusForTransfer = false;
+                detailDirections.push(newLastDirection);
+            }
+
+            const routeSummary = [];
+
+            for (let index = 0; index < detailDirections.length; index++) {
+                const direction = detailDirections[index];
+
+                if (index !== 0 && direction.type === 'walk') {
+                    if (index !== detailDirections.length - 1) {
+                        direction.type = 'arrive';
+                    }
+                    routeSummary.push({
+                        stopName: direction.name,
+                        directionType: direction.name === destinationName ? null : 'walk',
+                        routeNumber: null,
+                        shouldStayOnBus: false,
+                    });
+                }
+
+                if (direction.type === 'depart') {
+                    routeSummary.push({
+                        stopName: direction.name,
+                        directionType: 'bus',
+                        routeNumber: direction.routeNumber,
+                        shouldStayOnBus: direction.stayOnBusForTransfer,
+                    });
+
+                    const beyondRange = index + 1 > detailDirections.length - 1;
+                    const isLastDepart = index === detailDirections.length - 1;
+
+                    if (direction.stayOnBusForTransfer) {
+                        direction.type = 'transfer';
+                    }
+
+                    // If this direction doesn't have a transfer afterwards, or is depart and last
+                    if ((!beyondRange && !detailDirections[index + 1].stayOnBusForTransfer) || isLastDepart) {
+                        // Create Arrival Direction
+                        const arriveDirection = {
+                            type: 'arrive',
+                            name: direction.stops[direction.stops.length - 1].name || 'Nil',
+                            startTime: direction.endTime,
+                            endTime: direction.endTime,
+                            startLocation: direction.endLocation,
+                            endLocation: direction.endLocation,
+                            path: direction.path,
+                            travelDistance: direction.travelDistance,
+                            routeNumber: direction.routeNumber,
+                            stops: [],
+                            tripIdentifiers: direction.tripIdentifiers,
+                            delay: direction.delay,
+                            stayOnBusForTransfer: direction.stayOnBusForTransfer,
+                        };
+                        detailDirections.splice(index + 1, 0, arriveDirection);
+                        index += 1;
+                    }
+
+                    // Remove inital bus stop and departure bus stop
+                    if (direction.stops.length >= 2) {
+                        direction.stops.shift();
+                        direction.stops.pop();
+                    }
+                }
+            }
+
             return {
                 departureTime,
                 arrivalTime: arriveTime,
-                directions,
+                detailDirections,
                 startCoords,
                 endCoords,
+                startName: detailDirections[0].name,
+                endName: destinationName,
+                travelDistance: totalTravelDistance,
+                totalDuration: durationBetweenTimesMinutes(arriveTime, departureTime),
                 boundingBox,
                 numberOfTransfers,
+                routeSummary,
             };
         } catch (error) {
             throw new Error(

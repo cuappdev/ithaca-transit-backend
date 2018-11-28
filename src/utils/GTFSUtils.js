@@ -21,7 +21,7 @@ const dataInfo = [ // [ (data obj name in GTFSdata), (filename of data to be par
 ];
 
 const TCATData = getTCATData();
-const GTFSData = getGTFSData(dataInfo);
+const GTFSData = getGTFSData();
 const validGTFSBufferDays = 7 * 4; // error this many days before GTFS data expires
 checkGTFSDatesValid();
 
