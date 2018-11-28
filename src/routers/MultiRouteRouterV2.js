@@ -2,7 +2,7 @@
 import type Request from 'express';
 import ApplicationRouter from '../appdev/ApplicationRouter';
 import ErrorUtils from '../utils/LogUtils';
-import RouteUtils from '../utils/RouteUtils';
+import RouteUtilsV2 from '../utils/RouteUtilsV2';
 
 /**
  * Router object that returns an array of the best available route for each
@@ -30,13 +30,13 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
 
         // only one destination given
         if (typeof destinationName === 'string') {
-            return RouteUtils.getRouteV2(destinationName, end, start, departureTimeQuery, false);
+            return RouteUtilsV2.getRoute(destinationName, end, start, departureTimeQuery, false);
         }
 
         // multiple destinations given
         const routes = [];
         for (let i = 0; i < destinationName.length; i++) {
-            routes.push(RouteUtils.getRouteV2(destinationName[i], end[i], start, departureTimeQuery, false));
+            routes.push(RouteUtilsV2.getRoute(destinationName[i], end[i], start[i], departureTimeQuery, false));
         }
 
         return Promise.all(routes).then(val => val).catch((err) => {
