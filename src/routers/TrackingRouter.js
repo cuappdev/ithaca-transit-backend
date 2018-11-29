@@ -1,8 +1,8 @@
 // @flow
-import AppDevRouter from '../appdev/AppDevRouter';
+import ApplicationRouter from '../appdev/ApplicationRouter';
 import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 
-class TrackingRouter extends AppDevRouter<Object> {
+class TrackingRouter extends ApplicationRouter<Object> {
     constructor() {
         super('POST');
     }

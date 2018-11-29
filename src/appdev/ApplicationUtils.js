@@ -17,8 +17,6 @@ const tryCheckAppDevURL = (path: string) => {
     }
 };
 
-const encodeUrlParams = (params: { [string]: any }): string => Object.keys(params).map((k: string) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`).join('&');
-
 const insertIntoMySQLStatement = (
     tableName: string,
     fields: Object,
@@ -34,11 +32,7 @@ const insertIntoMySQLStatement = (
     return `INSERT INTO ${tableName} ${columns} VALUES ${values};`;
 };
 
-const netIdFromEmail = (email: string): string => email.substring(0, email.indexOf('@'));
-
 export default {
     tryCheckAppDevURL,
-    encodeUrlParams,
     insertIntoMySQLStatement,
-    netIdFromEmail,
 };

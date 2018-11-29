@@ -1,9 +1,9 @@
 // @flow
 import type Request from 'express';
 import ApplicationRouter from '../appdev/ApplicationRouter';
-import RouteUtils from '../utils/RouteUtils';
+import RouteUtilsV2 from '../utils/RouteUtilsV2';
 
-class RouteRouter extends ApplicationRouter<Array<Object>> {
+class RouteRouterV2 extends ApplicationRouter<Array<Object>> {
     constructor() {
         super('GET');
     }
@@ -15,14 +15,14 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
     // eslint-disable-next-line require-await
     async content(req: Request): Promise<Array<Object>> {
         const {
+            arriveBy,
             destinationName,
             end,
             start,
             time: departureTimeQuery,
-            arriveBy,
         } = req.query;
-        return RouteUtils.getRoute(destinationName, end, start, departureTimeQuery, arriveBy);
+        return RouteUtilsV2.getRoute(destinationName, end, start, departureTimeQuery, arriveBy);
     }
 }
 
-export default new RouteRouter().router;
+export default new RouteRouterV2().router;

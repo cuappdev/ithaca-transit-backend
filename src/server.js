@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import AlertsUtils from './utils/AlertsUtils';
 import AllStopUtils from './utils/AllStopUtils';
-import API from './Api';
+import API from './API';
 import RealtimeFeedUtils from './utils/RealtimeFeedUtils';
 import ErrorUtils from './utils/LogUtils';
 import TokenUtils from './utils/TokenUtils';
@@ -14,9 +14,11 @@ console.log('\x1b[36m%s\x1b[0m', 'Initializing data and waiting for Graphhopper 
 
 // load environment variables
 if (!process.env.GHOPPER_BUS && !fs.existsSync('.env')) {
-    fs.copyFileSync('env.template', '.env', (err) => {
-        if (err) throw ErrorUtils.logErr(err, '.env', 'Failed to find or create .env file');
-    });
+    try {
+        fs.copyFileSync('env.template', '.env');
+    } catch (err) {
+        throw ErrorUtils.logErr(err, '.env', 'Failed to find or create .env file');
+    }
 }
 dotenv.load();
 

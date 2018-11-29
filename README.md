@@ -1,35 +1,64 @@
 # Ithaca Transit Backend
 
-## Install
-
-Please ensure `npm` ([npm](https://www.npmjs.com/get-npm)), `wget`, and `mvn` ([Maven](https://maven.apache.org/download.cgi)) are installed by checking `wget -V`, `npm -v`, and `mvn -v`. Install any missing programs or the process will be unable to run.
-
-To correctly configure your environment, clone the repository and navigate to the directory in your terminal. Run `cp env.template .env` or manually copy the `env.template` file to `.env`. (Note: The server cannot be bound to port 80 and must use port 3000 when running locally.) Then add the correct value for `TOKEN` in `.env` with `vim .env` or another text editor. The `TOKEN` value is pinned in the #transit-backend Slack channel. 
-
-Finally, run `npm run setup` and `npm i` to run the setup shell script and install all required npm packages. 
-
 ## Setup
 
-The Transit API relies on the graphhopper service for navigation directions, so the following steps must be completed each time before running:
+Please ensure `npm` ([npm](https://www.npmjs.com/get-npm)) and `docker` ([docker](https://www.docker.com/)) is installed by checking `npm -v` and `docker -v` and that Docker is running.
 
-1. Run `npm run graph` to build the graph. This starts the GraphHopper Routing server which builds the routing graph if one doesn't already exist. After the server has fully started with ...`[main] INFO  com.graphhopper.http.GHServer - Started server at HTTP :8988`, **exit the session using `Ctrl-C`**.
+Clone the repository and navigate to the directory in your terminal. Run `cp env.template .env` or manually copy the `env.template` file to `.env`. Then add the correct value for `TOKEN` and others in the `.env` file. The `TOKEN` value is pinned in the #transit-backend Slack channel.
 
-2. Run `npm run mapmatching` to build the map matching graph (snapping coordinates to the road). It starts up the GraphHopper Map Matching server, which builds the graph for map matching if a cache doesn't exist already. After the server has fully started with ...`[main] INFO  com.graphhopper.matching.http.MatchServer - Started server at HTTP :8989`, **exit the session using `Ctrl-C`**.
+Run `npm install` to install the necessary dependencies.
+ 
+## Run
+
+`package.json` contains all necessary run, build, test, and utility scripts for the project. **Type `npm run` before a script name to execute.** `npm run` by itself shows a list of available scripts.
+
+#### Development 
+`start-dev` runs the program in development mode with all necessary Graphhopper serivices at the location specified in the `.env` file. Use development mode while developing and **DO NOT USE THIS MODE IN DEPLOYMENT/PRODUCTION**.
+Features:
+* Automatic server restart and testing run on file change
+* Automatic Graphhopper initialization/start/stop
+* Source map and Node debugging features like breakpoints
+* Simulator or test client integration middleware
+* Current release response comparison
+* Faster build
+* Hot reload
+* Local verbose output/logging to file and console, not remote
+* Flow type checking
+
+#### Production
+`start-prod` runs the program in production mode. This is the mode built and started in the `Dockerfile`, hosted on the server, and by used the Transit frontend. It **does not start or check for the Graphhopper services needed by the Transit navigation program** (must be run separately) and it **logs all errors silently and remotely**.
+Features:
+* Optimized builds
+* Remote logging
+* Run independent of local Graphhopper services
+
+#### More Scripts
+| **Script Name** | Description |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| `ghopper` | runs the Graphhopper processes required for route calculation |
+| `stop-ghopper`| stops any running Graphhopper processes |
+| `kill-ghopper` | SIGKILL any running Graphhopper processes |
+| `clean-docker` | prune unused docker data on your system |
+| `reset-docker` | prune **all** docker data on your system |
+| `build` | build Transit with Webpack default settings |
+| `build-image` | build a production Transit Docker image as `transit-node` using the `Dockerfile` |
+| `build-dev` | build Transit with Webpack default settings, same as `start-dev` but without running Graphhopper services |
+| `setup` | start Graphhopper services and `init` |
+| `init` | `npm install` then `build` |
+| `serve` | run the existing build using Node |
+| `start-dev` | [Development](#development) |
+| `start-prod` | [Production](#production) |
+| `test-dev` | run tests on an existing build in order and with console output using Jest and Node in debug mode then `flow` type checking |
+| `test` | `init` for clean install and build then run tests and exit |
+| `flow` | Run Flow type checking service |
+| `flow-stop` | Stop Flow service |
 
 ### Known Errors
 
 ````
 Exception in thread "main" java.net.BindException: Address already in use
 ````
-Run `npm run cleanup` to kill any GraphHopper processes and try again. The GraphHopper services cannot be restarted if the ports (default 8989 and 8988) are already in use.
- 
-## Run
- 
-* `npm run start-dev` runs the program in development mode at `localhost:3000`. Use this while developing. Development mode will automatically build, restart the server, and run tests whenever a file is changed, so there should be no need to use Postman or other programs to test endpoints. Development mode also builds faster and outputs errors and debugging information directly to the console.
-
-* `npm start` runs cleanup, builds, and starts the program in production mode. In production mode, all errors will be logged remotely to register, build times are much longer, and tests are not automatically run, so don't use this locally.
-
-* `npm test` starts the program in test mode and runs tests once on any existing bundle in `build/`. It will not automatically start graphhopper or rebuild the bundle.
+Run `npm run stop-ghopper` to kill any GraphHopper processes and try again. The GraphHopper services cannot be restarted if the ports (default 8989 and 8988) are already in use.
 
 # Transit API v1 REST Interface
 
@@ -165,7 +194,8 @@ Time is in epoch (seconds since 1/1/1970) |
 | startCoords       | {  lat: Double,  long: Double  }                                                | Starting location of user                                                                       |
 | endCoords         | {  lat: Double,  long: Double  }                                                | Ending location of user                                                                         |
 | boundingBox       | {  maxLat: Double,  maxLong: Double,  minLat: Double,  minLong: Double  } | The most extreme points of the route. Used to center the map on client-side (with some padding) |
-| numberOfTransfers | Int                                                                               | Number of transfers in route. Default 0.                                                        |
+| numberOfTransfers | Int                                                                               | Number of transfers in route. Default 0.                                                        |        
+
 
 
 *class* **Direction**
@@ -185,6 +215,65 @@ Time is in epoch (seconds since 1/1/1970) |
 | stayOnBusForTransfer | Bool                                  | Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective **routeNumber** in the next .depart Direction.                        |
 | tripIdentifiers      | [String]?                             | The unique identifier(s) for the specific bus related to the direction. Only exists when **type** is .depart.                                                                                             |
 | delay                | Int?                                  | The bus delay for **stops**[0]. If delay is nil, means we don’t have delay information yet                                                                                                                |
+
+
+
+----------
+# **/multiroute** • GET
+
+**Description**: Returns the best available route for each destination specified from a single start location
+
+## Parameters
+
+*required* **start** : String - “< latitude Double >,< longitude Double >”
+
+| **description** | The starting point of the journey.                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **default**     | current location (set by client)                                                                                             |
+| **notes**       | This can be a bus stop, a location found in Google Places (see Place ID docs), or coordinates (e.g. user’s current location) |
+
+*required* **time** : Int
+
+| **description** | The relevant time in the request.                                                                                                                                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **default**     | now (set by client)                                                                                                                                                                                                                      |
+| **notes**       | If **arriveBy** is false, departBy functionality is used. The time is when the journey should at earliest begin by.
+Otherwise, the time is when the route should arrive to the destination by
+
+Time is in epoch (seconds since 1/1/1970) |
+
+*required* **end** : [{Double, Double}] - “[{< latitude1 Double >,< longitude1 Double >}]”
+
+| **description** | An array of latitude-longitude pair objects to specify ending points. Must contain at least one ending point. |
+| --------------- | -------------------------------- |
+| **default**     | n/a                              |
+| **notes**       | See Start notes                  |
+
+*required* **destinationNames** : [String] - “[< destinationName1 >]”
+
+| **description** | The names of the destinations. Must contain at least one.                                                                    |
+| --------------- | --------------------------------------------------------------------------------------------------------- |
+| **default**     | n/a                                                                                                       |
+| **notes**       | Each destination is used to change the final direction to the destination, as well as check if the destination is a bus stop. |
+
+*optional*
+**Add more destinations as needed, each must be in order and have an end location and name**
+
+## Returns: [Route]
+
+Returns an array of Routes, one for each destination.
+
+*class* **Route**
+
+| **Name**          | **Type**                                                                          | **Description**                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| departureTime     | String                                                                            | The time a user begins their journey (e.g. when to start walking)                               |
+| arrivalTime       | String                                                                            | The time a user arrives at their destination.                                                   |
+| directions        | [Direction]                                                                       | A list of Direction objects (used for the Route Detail page). See Direction object              |
+| startCoords       | {  lat: Double,  long: Double  }                                                | Starting location of user                                                                       |
+| endCoords         | {  lat: Double,  long: Double  }                                                | Ending location of user                                                                         |
+| boundingBox       | {  maxLat: Double,  maxLong: Double,  minLat: Double,  minLong: Double  } | The most extreme points of the route. Used to center the map on client-side (with some padding) |
+| numberOfTransfers | Int                                                                               | Number of transfers in route. Default 0.    
 
 
 
