@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import AlertsUtils from './utils/AlertsUtils';
 import AllStopUtils from './utils/AllStopUtils';
-import API from './API';
+import API from './Api';
 import RealtimeFeedUtils from './utils/RealtimeFeedUtils';
 import ErrorUtils from './utils/LogUtils';
 import TokenUtils from './utils/TokenUtils';
