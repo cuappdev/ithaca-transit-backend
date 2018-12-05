@@ -1,4 +1,4 @@
-package transit;
+package transit.http;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.graphhopper.http.GraphHopperServerConfiguration;

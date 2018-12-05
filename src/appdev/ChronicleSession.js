@@ -3,14 +3,14 @@ import { config, S3 } from 'aws-sdk';
 import { ParquetSchema, ParquetTransformer } from 'parquetjs';
 import stream from 'stream';
 
-const BUCKET = 'appdev-register';
+const BUCKET_NAME = 'appdev-register';
 
 class ChronicleSession {
-    app: string;
+    appName: string;
 
-    cacheSize: number;
+    uploadQueueMaxSize: number;
 
-    logMap: Map<string, Object[]>;
+    logQueuesMap: Map<string, Object[]>;
 
     s3: S3;
 
@@ -20,9 +20,9 @@ class ChronicleSession {
         app: string,
         cacheSize: number = 10,
     ) {
-        this.app = app;
-        this.logMap = new Map();
-        this.cacheSize = cacheSize;
+        this.appName = app;
+        this.logQueuesMap = new Map();
+        this.uploadQueueMaxSize = cacheSize;
 
         if (!accessKey || !secretKey) {
             throw new Error(`Undefined Chronicle key(s)! accessKey: ${accessKey} secretKey: ${secretKey}`);
@@ -51,7 +51,7 @@ class ChronicleSession {
     }
 
     async writeLogsRemote(eventName: string, parquetSchema: ParquetSchema) {
-        let logsData = this.logMap.get(eventName);
+        let logsData = this.logQueuesMap.get(eventName);
 
         if (logsData === undefined) { // sanity check
             logsData = [];
@@ -61,13 +61,13 @@ class ChronicleSession {
 
         // create new transform
         const parquetTransformStream = new ParquetTransformer(parquetSchema, { compression: 'BROTLI' });
-        this.logMap.delete(eventName);
+        this.logQueuesMap.delete(eventName);
 
         const filename = `${Date.now()}.parquet`;
         const params = {
-            Bucket: BUCKET,
+            Bucket: BUCKET_NAME,
             Body: rs.pipe(parquetTransformStream),
-            Key: `${this.app}/${eventName}/${filename}`,
+            Key: `${this.appName}/${eventName}/${filename}`,
         };
 
         await this.s3.upload(params)
@@ -76,16 +76,16 @@ class ChronicleSession {
         console.log('....DONE LOGGING');
     }
 
-    async log(eventName: string, parquetSchema: ParquetSchema, event: Object, disableCache: ?boolean = false) {
-        let logs = this.logMap.get(eventName);
+    async log(eventName: string, parquetSchema: ParquetSchema, event: Object, disableQueue: ?boolean = false) {
+        let logs = this.logQueuesMap.get(eventName);
         if (logs === undefined) {
             logs = [event];
         } else {
             logs.push(event);
         }
-        this.logMap.set(eventName, logs);
+        this.logQueuesMap.set(eventName, logs);
 
-        if (disableCache || logs.length >= this.cacheSize) {
+        if (disableQueue || logs.length >= this.uploadQueueMaxSize) {
             console.log('awaiting writelogs');
             await this.writeLogsRemote(eventName, parquetSchema);
         }

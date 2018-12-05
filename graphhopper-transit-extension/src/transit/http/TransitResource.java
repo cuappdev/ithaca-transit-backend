@@ -1,4 +1,4 @@
-package transit;
+package transit.http;
 
 import com.graphhopper.GraphHopper;
 import com.graphhopper.json.geo.JsonFeatureCollection;
