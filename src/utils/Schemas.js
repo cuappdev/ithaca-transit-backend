@@ -61,6 +61,46 @@ const directionsArr = {
         },
     },
 };
+const directionsV2Arr = {
+    repeated: true,
+    fields: {
+        dirType: stringObj,
+        name: stringObj,
+        startTime: timeObj,
+        endTime: timeObj,
+        startLocation: pointObj,
+        endLocation: pointObj,
+        path: pathArr,
+        travelDistance: floatObj,
+        routeNumber: {
+            optional: true,
+            type: 'INT32',
+        },
+        stops: stopsArr,
+        stayOnBusForTransfer: booleanObj,
+        tripIdentifiers: tripIdArr,
+        delay: {
+            optional: true,
+            type: 'INT32',
+        },
+    },
+};
+
+const routeSummaryElementArr = {
+    repeated: true,
+    fields: {
+        stopName: stringObj,
+        directionType: {
+            optional: true,
+            type: 'UTF8',
+        },
+        routeNumber: {
+            optional: true,
+            type: 'UTF8',
+        },
+        shouldStayOnBus: booleanObj,
+    },
+};
 
 // parquet schema objects for remote logging
 // define common parquet types
@@ -107,10 +147,29 @@ const routeResultSchemaV1: ParquetSchema = new ParquetSchema({
     numberOfTransfers: intObj,
 });
 
+const routeResultSchemaV2: ParquetSchema = new ParquetSchema({
+    uid: uidObj,
+    routeId: uidObj,
+    departureTime: timeObj,
+    arrivalTime: timeObj,
+    directions: directionsArr,
+    startCoords: pointObj,
+    endCoords: pointObj,
+    boundingBox: boundingBoxObj,
+    numberOfTransfers: intObj,
+    detailDirections: directionsV2Arr,
+    startName: stringObj,
+    endName: stringObj,
+    travelDistance: floatObj,
+    totalDuration: intObj,
+    routeSummary: routeSummaryElementArr,
+});
+
 export default {
     errorSchema,
     routeRequestSchema,
     routeResultSchemaV1,
+    routeResultSchemaV2,
     cacheSchema,
     time,
     string,

@@ -18,16 +18,15 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
     // eslint-disable-next-line require-await
     async content(req: Request): Promise<Array<Object>> {
         const {
+            arriveBy,
             destinationName,
             end,
             start,
             time: departureTimeQuery,
-            arriveBy,
         } = req.query;
 
         const routeRes = await RouteUtils.getRoute(destinationName, end, start, departureTimeQuery, arriveBy);
 
-        console.log(req.query);
         const request = {
             destinationName,
             start: routeRes[0].startCoords,
@@ -36,12 +35,9 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
             arriveBy,
             routeId: routeRes[0].routeId,
         };
-        LogUtils.logToChronicle('routeRequestV1', Schemas.routeRequestSchema, request, true)
-            .then((res) => {
-                console.log('LOGGED ROUTEREQ', res);
-            });
+        LogUtils.logToChronicle('routeRequestV1', Schemas.routeRequestSchema, request, true);
 
-        AnalyticsUtils.assignRouteIdsAndCache(routeRes);
+        AnalyticsUtils.assignRouteIdsAndCache(routeRes, Schemas.routeResultSchemaV1);
 
         return routeRes;
     }

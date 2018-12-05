@@ -7,7 +7,7 @@ import TCATUtils from './GTFSUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import AllStopUtils from './AllStopUtils';
 
-const ONE_HOUR_MS = 3600000;
+const ONE_HOUR_IN_MILLISECONDS = 3600000;
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
@@ -153,7 +153,7 @@ async function condenseRoute(
             /*
              * Discard routes with directions that take over 2 hours time
              */
-            if (startTime + (ONE_HOUR_MS * 2) <= endTime) {
+            if (startTime + (ONE_HOUR_IN_MILLISECONDS * 2) <= endTime) {
                 return null;
             }
 
@@ -197,7 +197,7 @@ async function condenseRoute(
                  */
                 if (previousDirection) {
                     const prevEndTime = Date.parse(previousDirection.endTime);
-                    if (prevEndTime + ONE_HOUR_MS < startTime) {
+                    if (prevEndTime + ONE_HOUR_IN_MILLISECONDS < startTime) {
                         return null;
                     }
                 }

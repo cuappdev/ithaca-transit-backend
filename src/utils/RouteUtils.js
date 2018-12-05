@@ -54,7 +54,7 @@ async function createFinalRoute(routeBus, routeWalking, start, end, departureTim
     return finalRoutes;
 }
 
-async function getRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
+async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
     // eslint-disable-next-line no-param-reassign
     arriveBy = (arriveBy === '1' || arriveBy === 'true' || arriveBy === true);
 
@@ -62,7 +62,8 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
 
     if (!routeResponses) throw ErrorUtils.logErr('Graphhopper route error', routeResponses, 'Could not fetch routes');
 
-    let { busRoute, walkingRoute } = routeResponses;
+    const { busRoute } = routeResponses;
+    let { walkingRoute } = routeResponses;
     // parse the graphhopper walking route=
     walkingRoute = ParseRouteUtils.parseWalkingRoute(
         walkingRoute,
@@ -70,6 +71,17 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
         destinationName,
     );
 
+    return {
+        busRoute,
+        walkingRoute,
+    };
+}
+
+async function getRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
+    const busWalkingRoute = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
+    let { busRoute } = busWalkingRoute;
+    const { walkingRoute } = busWalkingRoute;
+    
     // if there are no bus routes, we should just return walking instead of crashing
     if (!busRoute && walkingRoute) {
         return [walkingRoute];
@@ -79,7 +91,7 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
     busRoute = await ParseRouteUtils.parseRoute(busRoute, destinationName);
 
     // combine and filter to create the final route
-    busRoute = await createFinalRoute(
+    return createFinalRoute(
         busRoute,
         walkingRoute,
         start,
@@ -87,11 +99,9 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
         departureTimeQuery,
         arriveBy,
     );
-
-    return busRoute;
 }
 
 export default {
-    getRoute,
     createFinalRoute,
+    getRoute,
 };

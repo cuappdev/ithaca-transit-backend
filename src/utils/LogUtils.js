@@ -10,10 +10,10 @@ dotenv.load();
 const CHRONICLE_PROD_ENV = 'production';
 const CHRONICLE_DEV_ENV = 'development';
 const CHRONICLE_APP_NAME = 'IthacaTransit';
-const LOG_REMOTE_ONLY = process.env.NODE_ENV && process.env.NODE_ENV === CHRONICLE_PROD_ENV;
-const CHRONICLE_ENV = LOG_REMOTE_ONLY ? CHRONICLE_PROD_ENV : CHRONICLE_DEV_ENV;
+const IS_PROD_ENV = process.env.NODE_ENV && process.env.NODE_ENV === CHRONICLE_PROD_ENV;
+const CHRONICLE_ENV = IS_PROD_ENV ? CHRONICLE_PROD_ENV : CHRONICLE_DEV_ENV;
 const LOG_PATH = 'logs'; // path to local log files
-const CHRONICLE_CACHE_SIZE = 15;
+const CHRONICLE_CACHE_SIZE = IS_PROD_ENV ? 25 : 0;
 
 const chronicleTransit = new ChronicleSession(
     process.env.CHRONICLE_ACCESS_KEY,
@@ -92,7 +92,7 @@ function logErr(
             note,
         };
 
-        if (LOG_REMOTE_ONLY) {
+        if (IS_PROD_ENV) {
             logToChronicle('error', Schemas.errorSchema, error, true);
         } else {
             if (!disableConsoleOut) {

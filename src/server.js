@@ -14,9 +14,11 @@ console.log('\x1b[36m%s\x1b[0m', 'Initializing data and waiting for Graphhopper 
 
 // load environment variables
 if (!process.env.GHOPPER_BUS && !fs.existsSync('.env')) {
-    fs.copyFileSync('env.template', '.env', (err) => {
-        if (err) throw ErrorUtils.logErr(err, '.env', 'Failed to find or create .env file');
-    });
+    try {
+        fs.copyFileSync('env.template', '.env');
+    } catch (err) {
+        throw ErrorUtils.logErr(err, '.env', 'Failed to find or create .env file');
+    }
 }
 dotenv.load();
 
