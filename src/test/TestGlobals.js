@@ -10,6 +10,7 @@ const delay = `${root}/delay`;
 const places = `${root}/places`;
 const tracking = `${root}/tracking`;
 const route = `${root}/route`;
+const routeSelected = `${root}/routeSelected`;
 
 const now = moment().unix();
 const afternoonYesterday = moment().endOf('day').subtract(36, 'hours').unix();
@@ -135,6 +136,7 @@ export default {
     places,
     tracking,
     route,
+    routeSelected,
     now,
     afternoonYesterday,
     morningToday,

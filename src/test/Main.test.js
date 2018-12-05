@@ -16,6 +16,7 @@ const {
     tracking,
     route,
     routeTests,
+    routeSelected,
 } = require('./TestGlobals').default;
 // eslint-disable-next-line no-unused-vars
 const {
@@ -54,6 +55,7 @@ const endpointValidityTestMap = {
     [places](res) { return expectTests.placesToBeValid(res); },
     [tracking](res) { return expectTests.toBeValid(res); },
     [route](res) { return expectTests.routeToBeValid(res); },
+    [routeSelected](res) { return expectTests.dataToBeValid(res); },
 };
 
 const seenReq = new Set(); // only print results of new queries
@@ -183,7 +185,9 @@ async function testTracking(routeResponseBusDataArr) {
 }
 
 /* eslint-disable no-param-reassign */
-async function testRoute(res, routeParams, busInfo: Set) {
+async function testRoute(res, routeParams) {
+    const busInfo = new Set();
+
     routeDataCounts.total += 1;
     if (!res) {
         res = await request(server).get(route + routeParams.query);
@@ -198,7 +202,7 @@ async function testRoute(res, routeParams, busInfo: Set) {
     // also check difference to release
     if (!routeParams.warning) {
         routeDataCounts.warning += 1;
-        console.warn(`Warning ${routeDataCounts.warning}: Logging ${routeParams.name} to file and printing release diff [release => local]`);
+        // console.warn(`Warning ${routeDataCounts.warning}: Logging ${routeParams.name} to file and printing release diff [release => local]`);
         printReleaseDiff(res.body, `${route}${routeParams.query}`);
         TestUtils.logToFile('out/routes.test.warning.output.json',
             ((res && res.status < 300 && res.text) ? JSON.parse(res.text) : res));
@@ -207,22 +211,33 @@ async function testRoute(res, routeParams, busInfo: Set) {
     return busInfo;
 }
 
-describe('route, delay, & tracking endpoints', () => {
+describe('route, delay, tracking, & selected endpoints', () => {
     routeTests.forEach((routeParams) => {
         describe(routeParams.name, () => {
             let res = null;
-            const busInfo = new Set();
+            let busInfo = new Promise((resolve, reject) => {
+                setTimeout(reject, 5000);
+            });
             beforeAll(async () => {
                 res = await request(server).get(route + routeParams.query);
             });
             test('route endpoint', async () => {
-                await testRoute(res, routeParams, busInfo);
+                busInfo = await testRoute((await res), routeParams, busInfo);
             });
             test('delay endpoint', async () => {
-                await testDelayArr(busInfo);
+                await testDelayArr((await busInfo));
             });
             test('tracking endpoint', async () => {
-                await testTracking(busInfo);
+                await testTracking((await busInfo));
+            });
+            test('routeSelected endpoint', async () => {
+                const msg = (await request(server)
+                    .post(routeSelected)
+                    .send({
+                        uid: '1el', routeId: res.body.data[0].routeId,
+                    })
+                    .set('Content-Type', 'application/json')).body.data;
+                expect(msg).toBeTruthy();
             });
         });
     });

@@ -260,6 +260,9 @@ const expectTests = {
             if (!route) {
                 return fm(`Route body has empty routes: ${s(route.body)}`);
             }
+            if (!route.routeId) {
+                return fm(`Route body has no routeId: ${s(route.body)}`);
+            }
             if (!(route.departureTime && route.arrivalTime)) {
                 return fm(`Route departureTime or arrivalTime empty: ${route.body}`);
             }

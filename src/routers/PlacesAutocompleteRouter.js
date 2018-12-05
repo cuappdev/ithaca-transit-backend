@@ -3,6 +3,7 @@ import LRU from 'lru-cache';
 import ApplicationRouter from '../appdev/ApplicationRouter';
 import RequestUtils from '../utils/RequestUtils';
 import LogUtils from '../utils/LogUtils';
+import Schemas from '../utils/Schemas';
 
 const cacheOptions = {
     max: 10000,
@@ -28,11 +29,11 @@ class PlacesAutocompleteRouter extends ApplicationRouter<string> {
         const cachedValue = cache.get(query);
 
         if (cachedValue !== undefined) {
-            LogUtils.logToChronicle('places', LogUtils.cacheSchema, { time: Date.now(), hit: true });
+            LogUtils.logToChronicle('places', Schemas.cacheSchema, { time: Date.now(), hit: true });
             return cachedValue;
         }
 
-        LogUtils.logToChronicle('places', LogUtils.cacheSchema, { time: Date.now(), hit: false });
+        LogUtils.logToChronicle('places', Schemas.cacheSchema, { time: Date.now(), hit: false });
 
         // not in cache
         const options = {

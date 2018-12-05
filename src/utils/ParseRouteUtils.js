@@ -7,9 +7,7 @@ import TCATUtils from './GTFSUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import AllStopUtils from './AllStopUtils';
 
-// const METERS_TO_MILES = 0.00062137119;
 const ONE_HOUR_IN_MILLISECONDS = 3600000;
-// const ONE_MINUTE_IN_MILLISECONDS = 60000;
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
@@ -25,6 +23,11 @@ function distanceBetweenPointsMiles(point1: Object, point2: Object): number {
     dist = dist * 180 / Math.PI;
     dist = dist * 60 * 1.1515;
     return dist;
+}
+
+function latLongFromStr(pointStr: string): Object {
+    const point = pointStr.split(',');
+    return { lat: point[0], long: point[1] };
 }
 
 function createGpxJson(stops: Array<Object>, startTime: String): Object {
@@ -535,7 +538,8 @@ function parseRoute(resp: Object, destinationName: string) {
 }
 
 export default {
-    condenseRoute,
-    parseRoute,
     parseWalkingRoute,
+    parseRoute,
+    condenseRoute,
+    latLongFromStr,
 };

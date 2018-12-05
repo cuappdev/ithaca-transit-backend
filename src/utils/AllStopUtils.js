@@ -1,10 +1,11 @@
 // @flow
-import interval from 'interval-promise';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './LogUtils';
 
-const HOUR_IN_MS = 1000 * 60 * 60;
+const SEC_IN_MS = 1000;
+const MIN_IN_MS = SEC_IN_MS * 60;
+const HOUR_IN_MS = MIN_IN_MS * 60;
 const DEG_EXACT_PRECISION = 6; // 6 degrees of precision is about a 111 mm, is exact point
 const DEG_EQ_PRECISION = 5; // 5 degrees of precision is about a 1.1 meters, is a stop
 const DEG_NEARBY_PRECISION = 4; // 4 degrees of precision is about 11 meters, stop nearby
@@ -52,6 +53,19 @@ let allStops = RequestUtils.fetchRetry(fetchAllStops);
  *
  */
 let allStopsCompareMaps = RequestUtils.fetchRetry(fetchPrecisionMaps);
+
+const updateFunc = async () => {
+    allStops = await RequestUtils.fetchRetry(fetchAllStops);
+    allStopsCompareMaps = await RequestUtils.fetchRetry(fetchPrecisionMaps);
+    return false;
+};
+
+RequestUtils.startRequestIntervals(
+    updateFunc,
+    HOUR_IN_MS,
+    MIN_IN_MS,
+    null,
+);
 
 async function fetchAllStops() {
     try {
@@ -150,18 +164,7 @@ function isStop(point: Object) {
     return isStopsWithinPrecision(point, DEG_EQ_PRECISION);
 }
 
-function start() {
-    interval(async () => {
-        // fetch and set allStops and allStopsCompareMaps
-        await allStops; // if initializing, don't try again
-        await allStopsCompareMaps; // if initializing, don't try again
-        allStops = await RequestUtils.fetchRetry(fetchAllStops);
-        allStopsCompareMaps = await RequestUtils.fetchRetry(fetchPrecisionMaps);
-    }, HOUR_IN_MS, { stopOnError: false });
-}
-
 export default {
-    start,
     isStop,
     isStopsWithinPrecision,
     allStops,
