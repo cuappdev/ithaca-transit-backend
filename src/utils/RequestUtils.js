@@ -1,7 +1,8 @@
 // @flow
-import request from 'request';
 import interval from 'interval-promise';
+import request from 'request';
 import util from 'util';
+
 import LogUtils from './LogUtils';
 
 function createRequest(
@@ -29,7 +30,7 @@ function createRequest(
     });
 }
 
-async function fetchRetry(fn: () => void, n: number = 5) {
+async function fetchRetry(fn: () => void, n: number = 5): any {
     let error;
     for (let i = 0; i < n; i++) {
         try {
@@ -45,7 +46,7 @@ async function fetchRetry(fn: () => void, n: number = 5) {
 /**
  * Calls fn every refreshInterval ms with timeout
  */
-function startRequestIntervals(fn, refreshInterval, timeout, setObj) {
+function startRequestIntervals(fn: () => void, refreshInterval: number, timeout: number, setObj: Object): void {
     interval(async (iteration, stop) => {
         try {
             const update = await Promise.race([
