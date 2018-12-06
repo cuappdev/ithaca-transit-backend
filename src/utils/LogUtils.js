@@ -38,7 +38,6 @@ async function writeToFile(fileName: string, data: ?Object) {
         ((typeof data === 'string') ? data : JSON.stringify((await data), null, '\t')),
         (err) => {
             if (err) {
-                // eslint-disable-next-line no-console
                 return logErr(err, data, `Could not log to file ${fileName}`);
             }
             return true;
