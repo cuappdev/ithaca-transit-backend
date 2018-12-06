@@ -16,7 +16,6 @@ function createRequest(
         request(options, (error, response, body) => {
             if (error) reject(error);
             if (verbose) {
-                // eslint-disable-next-line no-console
                 console.log(`Elapsed request time ${response.elapsedTime}`);
             }
             if (returnRes) {
