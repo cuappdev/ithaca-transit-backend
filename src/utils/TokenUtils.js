@@ -1,19 +1,21 @@
 // @flow
+import dotenv from 'dotenv';
 import fs from 'fs';
 import request from 'request';
-import dotenv from 'dotenv';
+
+import { TOKEN } from './EnvUtils';
 import ErrorUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 
 dotenv.load();
 
-let credentials = { basic_token: process.env.TOKEN || null, access_token: null, expiry_date: null };
+let credentials = { basic_token: TOKEN || null, access_token: null, expiry_date: null };
 
 const configFile = 'config.json';
 
 function checkCredentials() {
     if (!credentials.basic_token || credentials.basic_token === 'token') {
-        credentials.basic_token = process.env.TOKEN || null;
+        credentials.basic_token = TOKEN || null;
 
         throw new Error(
             ErrorUtils.logErr(

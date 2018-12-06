@@ -1,10 +1,17 @@
 import waitOn from 'wait-on';
+
+import {
+    GHOPPER_BUS,
+    GHOPPER_WALKING,
+    MAP_MATCHING,
+    NODE_ENV,
+} from './EnvUtils';
 import ErrorUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 
-const ghopperMapMatchingAddr = `http://${process.env.MAP_MATCHING || 'ERROR'}:8989/`;
-const ghopperWalkingAddr = `http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/`;
-const ghopperBusAddr = `http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/`;
+const ghopperMapMatchingAddr = `http://${MAP_MATCHING || 'ERROR'}:8989/`;
+const ghopperWalkingAddr = `http://${GHOPPER_WALKING || 'ERROR'}:8987/`;
+const ghopperBusAddr = `http://${GHOPPER_BUS || 'ERROR'}:8988/`;
 
 const waitOptions = {
     resources: [
@@ -19,7 +26,7 @@ const waitOptions = {
 /**
  * True if ready, awaits graphhopper services in non-production environments
  */
-const ghopperReady = (process.env.NODE_ENV === 'production')
+const ghopperReady = (NODE_ENV === 'production')
     || (waitOn(waitOptions).then(() => true).catch((err) => {
         if (err) {
             throw ErrorUtils.logErr(err, waitOptions, 'Failed to connect to graphhopper services');
@@ -139,13 +146,13 @@ async function fetchRoutes(end, start, departureTimeDateNow, arriveBy) {
 
     const options = {
         method: 'GET',
-        url: `http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/route`,
+        url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
         qs: getGraphhopperBusParams(end, start, departureTimeDateNow, arriveBy),
         qsStringifyOptions: { arrayFormat: 'repeat' },
     };
     const walkingOptions = {
         method: 'GET',
-        url: `http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/route`,
+        url: `http://${GHOPPER_WALKING || 'ERROR'}:8987/route`,
         qs: getGraphhopperWalkingParams(end, start),
         qsStringifyOptions: { arrayFormat: 'repeat' },
     };
@@ -155,13 +162,13 @@ async function fetchRoutes(end, start, departureTimeDateNow, arriveBy) {
     await Promise.all([
         RequestUtils.createRequest(
             options,
-            `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+            `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
             false,
             true,
         ),
         RequestUtils.createRequest(
             walkingOptions,
-            `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+            `Walking failed: ${GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
             false,
             true,
         ),
@@ -176,7 +183,7 @@ async function fetchRoutes(end, start, departureTimeDateNow, arriveBy) {
         throw ErrorUtils.logErr(
             busRouteRequest && busRouteRequest.body,
             getGraphhopperBusParams(end, start, departureTimeDateNow, arriveBy),
-            `Routing failed: ${process.env.GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+            `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
         );
     }
 
@@ -186,7 +193,7 @@ async function fetchRoutes(end, start, departureTimeDateNow, arriveBy) {
         throw ErrorUtils.logErr(
             walkingRouteRequest && walkingRouteRequest.body,
             getGraphhopperWalkingParams(end, start),
-            `Walking failed: ${process.env.GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+            `Walking failed: ${GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
         );
     }
 
