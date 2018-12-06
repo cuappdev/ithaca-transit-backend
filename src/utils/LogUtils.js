@@ -1,12 +1,10 @@
-/* eslint-disable no-console */
-import dotenv from 'dotenv';
+// @flow
 import fs from 'fs';
 import util from 'util';
 import { ParquetSchema } from 'parquetjs';
 import ChronicleSession from '../appdev/ChronicleSession';
 import Schemas from './Schemas';
 
-dotenv.load();
 const CHRONICLE_PROD_ENV = 'production';
 const CHRONICLE_DEV_ENV = 'development';
 const CHRONICLE_APP_NAME = 'IthacaTransit';

@@ -1,11 +1,8 @@
 // @flow
 import fs from 'fs';
 import request from 'request';
-import dotenv from 'dotenv';
 import ErrorUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
-
-dotenv.load();
 
 let credentials = { basic_token: process.env.TOKEN || null, access_token: null, expiry_date: null };
 

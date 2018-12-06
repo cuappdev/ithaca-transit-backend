@@ -1,14 +1,10 @@
-/* eslint-disable no-console */
 // @flow
 import csv from 'csvtojson';
-import dotenv from 'dotenv';
 import request from 'request';
 import fs from 'fs';
 import DecompressZip from 'decompress-zip';
 import moment from 'moment';
 import ErrorUtils from './LogUtils';
-
-dotenv.config();
 
 const root = '.';
 const zipFile = 'tcat-ny-us.zip';

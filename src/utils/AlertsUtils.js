@@ -1,10 +1,9 @@
 // @flow
-import interval from 'interval-promise';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './LogUtils';
 
-let alerts = RequestUtils.fetchRetry(fetchAlerts);
+const alerts = RequestUtils.fetchRetry(fetchAlerts);
 const ONE_SEC_MS = 1000;
 const ONE_MINUTE_MS = ONE_SEC_MS * 60;
 
