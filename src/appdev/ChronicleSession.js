@@ -1,17 +1,16 @@
 // @flow
 import { config, S3 } from 'aws-sdk';
-import { ParquetSchema, ParquetWriter } from 'parquetjs';
-import { createReadStream } from 'fs';
+import { ParquetSchema, ParquetTransformer } from 'parquetjs';
+import stream from 'stream';
 
-const PATH = '/tmp';
-const BUCKET = 'appdev-register';
+const BUCKET_NAME = 'appdev-register';
 
 class ChronicleSession {
-    app: string;
+    appName: string;
 
-    cacheSize: number;
+    uploadQueueMaxSize: number;
 
-    logMap: Map<string, Object[]>;
+    logQueuesMap: Map<string, Object[]>;
 
     s3: S3;
 
@@ -21,9 +20,9 @@ class ChronicleSession {
         app: string,
         cacheSize: number = 10,
     ) {
-        this.app = app;
-        this.logMap = new Map();
-        this.cacheSize = cacheSize;
+        this.appName = app;
+        this.logQueuesMap = new Map();
+        this.uploadQueueMaxSize = cacheSize;
 
         if (!accessKey || !secretKey) {
             throw new Error(`Undefined Chronicle key(s)! accessKey: ${accessKey} secretKey: ${secretKey}`);
@@ -36,41 +35,61 @@ class ChronicleSession {
         this.s3 = new S3();
     }
 
-    async writeLogs(eventName: string, eventType: ParquetSchema) {
-        const filename = `${Date.now()}.parquet`;
-        const schema = new ParquetSchema(eventType);
-        const writer = await ParquetWriter.openFile(schema, `${PATH}/${filename}`);
-
-        let logs = this.logMap.get(eventName);
-        if (logs === undefined) { // sanity check
-            logs = [];
-        }
-
-        logs.forEach(log => writer.appendRow(log));
-        writer.close();
-        this.logMap.delete(eventName);
-
-        const params = {
-            Bucket: BUCKET,
-            Body: createReadStream(`${PATH}/${filename}`),
-            Key: `${this.app}/${eventName}/${filename}`,
+    readableStreamFromArray(array) {
+        const readable = new stream.Readable({ objectMode: true });
+        let index = 0;
+        // eslint-disable-next-line no-underscore-dangle
+        readable._read = () => {
+            if (array && index < array.length) {
+                readable.push(array[index]);
+                index += 1;
+            } else {
+                readable.push(null);
+            }
         };
-        await this.s3.upload(params)
-            .promise();
+        return readable;
     }
 
-    async log(eventName: string, eventType: ParquetSchema, event: Object) {
-        let logs = this.logMap.get(eventName);
-        if (logs === undefined) {
-            this.logMap.set(eventName, [event]);
-            logs = [];
+    async writeLogsRemote(eventName: string, parquetSchema: ParquetSchema) {
+        let logsData = this.logQueuesMap.get(eventName);
+
+        if (logsData === undefined) { // sanity check
+            logsData = [];
         }
 
-        logs.push(event);
-        this.logMap.set(eventName, logs);
-        if (logs.length >= this.cacheSize) {
-            await this.writeLogs(eventName, eventType);
+        const rs = this.readableStreamFromArray(logsData);
+
+        // create new transform
+        const parquetTransformStream = new ParquetTransformer(parquetSchema, { compression: 'BROTLI' });
+        this.logQueuesMap.delete(eventName);
+
+        const filename = `${Date.now()}.parquet`;
+        const params = {
+            Bucket: BUCKET_NAME,
+            Body: rs.pipe(parquetTransformStream),
+            Key: `${this.appName}/${eventName}/${filename}`,
+        };
+
+        await this.s3.upload(params)
+            .promise();
+
+        console.log('....DONE LOGGING');
+    }
+
+    async log(eventName: string, parquetSchema: ParquetSchema, event: Object, disableQueue: ?boolean = false) {
+        let logs = this.logQueuesMap.get(eventName);
+        if (logs === undefined) {
+            logs = [event];
+        } else {
+            logs.push(event);
         }
+        this.logQueuesMap.set(eventName, logs);
+
+        if (disableQueue || logs.length >= this.uploadQueueMaxSize) {
+            console.log('awaiting writelogs');
+            await this.writeLogsRemote(eventName, parquetSchema);
+        }
+        return true;
     }
 }
 

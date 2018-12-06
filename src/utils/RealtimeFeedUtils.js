@@ -1,5 +1,4 @@
 // @flow
-import interval from 'interval-promise';
 import xml2js from 'xml2js';
 import JsonFind from 'json-find';
 import jsonQuery from 'json-query';
@@ -90,9 +89,24 @@ import TokenUtils from './TokenUtils';
  * in order to get delay and tracking info.
  */
 
+const ONE_SEC_MS = 1000;
+const realtimeFeedRefreshInterval = ONE_SEC_MS;
+const realtimeFeedTimeout = realtimeFeedRefreshInterval * 5;
+
+// eslint-disable-next-line prefer-const
 let realtimeFeed = fetchRealtimeFeed();
 
-function xmlToJSON(xml: String) {
+/**
+ * Update realtime data every few seconds
+ */
+RequestUtils.startRequestIntervals(
+    fetchRealtimeFeed,
+    realtimeFeedRefreshInterval,
+    realtimeFeedTimeout,
+    realtimeFeed,
+);
+
+function feedXMLToJSON(xml: String) {
     const normalize = name => name.toLowerCase();
     return new Promise((resolve, reject) => {
         xml2js.parseString(xml,
@@ -304,6 +318,8 @@ async function getTrackingResponse(trackingRequests: Object) {
                 };
             })(busFound);
 
+            console.log(trackingData);
+
             // we have tracking data for the bus
             if (trackingData) {
                 trackingInformation.push(trackingData);
@@ -372,7 +388,7 @@ async function fetchRealtimeFeed() {
     };
     const xml = await RequestUtils.createRequest(options, 'Trip realtime request failed');
     if (xml) {
-        const obj = await xmlToJSON(xml);
+        const obj = await feedXMLToJSON(xml);
 
         if (obj === null || !obj) {
             // no current delay/tracking data
@@ -380,7 +396,7 @@ async function fetchRealtimeFeed() {
                 const xmlPlaceholder = fs.readFileSync('src/test/test_data/GTFS-Realtime-test.xml');
                 // eslint-disable-next-line no-console
                 console.warn('WARNING: USING TEST REALTIME DATA, NO RESPONSE DATA RECIEVED');
-                return xmlToJSON(xmlPlaceholder);
+                return feedXMLToJSON(xmlPlaceholder);
             }
             return {};
         }
@@ -390,19 +406,7 @@ async function fetchRealtimeFeed() {
     return null;
 }
 
-/**
- * Update realtime data every few seconds
- */
-function start() {
-    interval(async () => {
-        // fetch and set realtime feed
-        await realtimeFeed; // if initializing, don't try again
-        realtimeFeed = await fetchRealtimeFeed();
-    }, 3000, { stopOnError: false });
-}
-
 export default {
-    start,
     getTrackingInformation,
     realtimeFeed,
     getTrackingResponse,

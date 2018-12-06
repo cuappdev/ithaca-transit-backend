@@ -3,13 +3,16 @@ const NodemonPlugin = require('nodemon-webpack-plugin');
 const path = require('path');
 const ExtraWatchWebpackPlugin = require('extra-watch-webpack-plugin');
 
+console.log(path.resolve(''));
+const baseDir = path.resolve('');
+
 module.exports = env => ({
     target: 'node',
-    context: __dirname,
+    context: baseDir,
     externals: [nodeExternals()],
     entry: ['babel-polyfill', './src/server.js'],
     output: {
-        path: path.resolve(__dirname, 'build'),
+        path: `${baseDir}/build`,
         filename: 'bundle.js',
     },
     module: {

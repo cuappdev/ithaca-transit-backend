@@ -3,6 +3,7 @@ import {
     NextFunction, Request, Response, Router,
 } from 'express';
 import AppDevUtilities from './ApplicationUtils';
+import LogUtils from '../utils/LogUtils';
 
 /**
  * RequestType - the HTTP methods supported by AppDevRouter
@@ -104,6 +105,7 @@ class ApplicationRouter<T> {
                 if (e.message === 1) {
                     throw new Error('You must implement content()!');
                 } else {
+                    LogUtils.logErr(e, { request: req, response: res }, 'Error in Router.response(...)');
                     res.json(new AppDevResponse(false, { errors: [e.message] }));
                 }
             }

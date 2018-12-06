@@ -1,6 +1,8 @@
 // @flow
 import request from 'request';
-import ErrorUtils from './LogUtils';
+import interval from 'interval-promise';
+import util from 'util';
+import LogUtils from './LogUtils';
 
 function createRequest(options: any, errorMessage: ?string = 'Request failed', verbose: ?boolean = false, returnRes: ?boolean = false) {
     options.time = true;
@@ -17,7 +19,7 @@ function createRequest(options: any, errorMessage: ?string = 'Request failed', v
             resolve(body);
         });
     }).then(value => value).catch((error) => {
-        ErrorUtils.logErr(error, options, errorMessage);
+        LogUtils.logErr(error, options, errorMessage);
         return null;
     });
 }
@@ -35,7 +37,30 @@ async function fetchRetry(fn, n = 5) {
     throw error;
 }
 
+/**
+ * Calls fn every refreshInterval ms with timeout
+ */
+function startRequestIntervals(fn, refreshInterval, timeout, setObj) {
+    interval(async (iteration, stop) => {
+        try {
+            const update = await Promise.race([
+                fn(),
+                (util.promisify(setTimeout))(timeout)
+                    .then(() => false),
+            ]);
+
+            if (update) {
+                // eslint-disable-next-line no-param-reassign
+                setObj = update;
+            }
+        } catch (error) {
+            LogUtils.logErr(error, setObj, 'Error occurred while in repeated interval');
+        }
+    }, refreshInterval, { stopOnError: false });
+}
+
 export default {
     createRequest,
     fetchRetry,
+    startRequestIntervals,
 };

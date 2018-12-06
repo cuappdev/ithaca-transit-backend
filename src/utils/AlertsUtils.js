@@ -5,7 +5,20 @@ import TokenUtils from './TokenUtils';
 import ErrorUtils from './LogUtils';
 
 let alerts = RequestUtils.fetchRetry(fetchAlerts);
-const ONE_MINUTE_MS = 1000 * 60;
+const ONE_SEC_MS = 1000;
+const ONE_MINUTE_MS = ONE_SEC_MS * 60;
+
+const updateFunc = async () => {
+    await RequestUtils.fetchRetry(fetchAlerts);
+    return true;
+};
+
+RequestUtils.startRequestIntervals(
+    updateFunc,
+    ONE_MINUTE_MS,
+    ONE_MINUTE_MS,
+    alerts,
+);
 
 async function fetchAlerts() {
     try {

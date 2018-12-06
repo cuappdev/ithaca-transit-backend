@@ -23,14 +23,14 @@ async function createFinalRoute(routeBus, routeWalking, start, end, departureTim
         departureDelayBuffer = true;
     }
 
-    const startPoints = start.split(',');
-    const endPoints = end.split(',');
+    const startPoint = ParseRouteUtils.latLongFromStr(start);
+    const endPoint = ParseRouteUtils.latLongFromStr(end);
 
     const finalRoutes = (await Promise.all(
         routeBus.map(currPath => ParseRouteUtils.condenseRoute(
             currPath,
-            { lat: startPoints[0], long: startPoints[1] },
-            { lat: endPoints[0], long: endPoints[1] },
+            startPoint,
+            endPoint,
             routeWalking.directions[0].distance,
             departureDelayBuffer,
             departureTimeNowMs,

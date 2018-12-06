@@ -35,10 +35,6 @@ const { express } = app;
 const init = new Promise((resolve, reject) => {
     // start endpoints that rely on external data starting with authentication token
     authToken.then(() => {
-        RealtimeFeedUtils.start();
-        AllStopUtils.start();
-        AlertsUtils.start();
-
         // await data
         const dataInit = Promise.all([
             RealtimeFeedUtils.realtimeFeed,
