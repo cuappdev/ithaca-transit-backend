@@ -32,9 +32,6 @@ module.exports = env => ({
 
             // Detailed log.
             verbose: false,
-
-            // run tests after dev build complete
-            exec: 'npm run test-dev',
         }),
         new ExtraWatchWebpackPlugin({
             dirs: ['./'],
