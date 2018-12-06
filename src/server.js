@@ -48,7 +48,7 @@ const init = new Promise((resolve, reject) => {
         // await full initialization then listen on the port
         Promise.all([
             dataInit,
-            GhopperUtils.ghopperReady,
+            GhopperUtils.isGraphhopperReady,
         ]).then(() => {
             server.listen(port, address, () => {
                 console.log('\x1b[36m%s\x1b[0m',

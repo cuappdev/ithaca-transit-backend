@@ -12,7 +12,7 @@ const LogUtils = require('../utils/LogUtils.js').default;
 
 describe('Route unit tests', () => {
     beforeAll(async () => {
-        await GhopperUtils.ghopperReady;
+        await GhopperUtils.isGraphhopperReady;
     }, 1200000);
 
     routeTests.forEach((routeParams) => {
