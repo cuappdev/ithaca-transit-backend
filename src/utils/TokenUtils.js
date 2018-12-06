@@ -1,13 +1,10 @@
 // @flow
-import dotenv from 'dotenv';
 import fs from 'fs';
 import request from 'request';
 
 import { TOKEN } from './EnvUtils';
 import ErrorUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
-
-dotenv.load();
 
 let credentials = { basic_token: TOKEN || null, access_token: null, expiry_date: null };
 
