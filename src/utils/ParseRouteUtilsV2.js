@@ -1,11 +1,12 @@
 // @flow
-
 import createGpx from 'gps-to-gpx';
-import ErrorUtils from './LogUtils';
-import RequestUtils from './RequestUtils';
-import TCATUtils from './GTFSUtils';
-import RealtimeFeedUtils from './RealtimeFeedUtils';
+
 import AllStopUtils from './AllStopUtils';
+import { MAP_MATCHING } from './EnvUtils';
+import TCATUtils from './GTFSUtils';
+import ErrorUtils from './LogUtils';
+import RealtimeFeedUtils from './RealtimeFeedUtils';
+import RequestUtils from './RequestUtils';
 
 // const METERS_TO_MILES = 0.00062137119;
 const ONE_HOUR_IN_MILLISECONDS = 3600000;
@@ -468,7 +469,7 @@ function parseRoute(resp: Object, destinationName: string) {
 
                             const options = {
                                 method: 'POST',
-                                url: `http://${process.env.MAP_MATCHING || 'ERROR'}:8989/match`,
+                                url: `http://${MAP_MATCHING || 'ERROR'}:8989/match`,
                                 body: gpx,
                                 headers: {
                                     'Content-Type': 'application/xml',
@@ -500,7 +501,7 @@ function parseRoute(resp: Object, destinationName: string) {
                             ErrorUtils.logErr(
                                 error,
                                 destinationName,
-                                `Snap response failed: ${process.env.MAP_MATCHING || undefinedGraphHopperMessage}`,
+                                `Snap response failed: ${MAP_MATCHING || undefinedGraphHopperMessage}`,
                             );
                         }
 

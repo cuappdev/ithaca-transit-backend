@@ -1,21 +1,27 @@
 // @flow
 import fs from 'fs';
-import util from 'util';
 import { ParquetSchema } from 'parquetjs';
+import util from 'util';
+
+import {
+    CHRONICLE_ACCESS_KEY,
+    CHRONICLE_SECRET_KEY,
+    NODE_ENV,
+} from './EnvUtils';
 import ChronicleSession from '../appdev/ChronicleSession';
 import Schemas from './Schemas';
 
 const CHRONICLE_PROD_ENV = 'production';
 const CHRONICLE_DEV_ENV = 'development';
 const CHRONICLE_APP_NAME = 'IthacaTransit';
-const IS_PROD_ENV = process.env.NODE_ENV && process.env.NODE_ENV === CHRONICLE_PROD_ENV;
+const IS_PROD_ENV = NODE_ENV && NODE_ENV === CHRONICLE_PROD_ENV;
 const CHRONICLE_ENV = IS_PROD_ENV ? CHRONICLE_PROD_ENV : CHRONICLE_DEV_ENV;
 const LOG_PATH = 'logs'; // path to local log files
 const CHRONICLE_CACHE_SIZE = IS_PROD_ENV ? 25 : 0;
 
 const chronicleTransit = new ChronicleSession(
-    process.env.CHRONICLE_ACCESS_KEY,
-    process.env.CHRONICLE_SECRET_KEY,
+    CHRONICLE_ACCESS_KEY,
+    CHRONICLE_SECRET_KEY,
     CHRONICLE_APP_NAME,
     CHRONICLE_CACHE_SIZE,
 );
