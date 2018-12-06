@@ -55,8 +55,7 @@ function startRequestIntervals(fn: () => void, refreshInterval: number, timeout:
                     .then(() => false),
             ]);
 
-            if (update) {
-                // eslint-disable-next-line no-param-reassign
+            if (update) { // eslint-disable-next-line no-param-reassign
                 setObj = update;
             }
         } catch (error) {
