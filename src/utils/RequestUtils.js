@@ -4,7 +4,12 @@ import interval from 'interval-promise';
 import util from 'util';
 import LogUtils from './LogUtils';
 
-function createRequest(options: any, errorMessage: ?string = 'Request failed', verbose: ?boolean = false, returnRes: ?boolean = false) {
+function createRequest(
+    options: any,
+    errorMessage: ?string = 'Request failed',
+    verbose: ?boolean = false,
+    returnRes: ?boolean = false,
+) {
     options.time = true;
     return new Promise((resolve, reject) => {
         request(options, (error, response, body) => {
@@ -24,7 +29,7 @@ function createRequest(options: any, errorMessage: ?string = 'Request failed', v
     });
 }
 
-async function fetchRetry(fn, n = 5) {
+async function fetchRetry(fn: () => void, n: number = 5) {
     let error;
     for (let i = 0; i < n; i++) {
         try {
