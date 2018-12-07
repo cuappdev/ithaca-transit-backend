@@ -88,7 +88,7 @@ async function fetchAuthHeader() {
     checkCredentials();
 
     if (isAccessTokenExpired()) { // else get from API
-        await RequestUtils.fetchRetry(fetchAccessToken);
+        await RequestUtils.fetchWithRetry(fetchAccessToken);
     }
 
     if (credentials.access_token) {

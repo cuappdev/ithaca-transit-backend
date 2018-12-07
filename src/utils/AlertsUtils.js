@@ -3,16 +3,16 @@ import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './LogUtils';
 
-const alerts = RequestUtils.fetchRetry(fetchAlerts);
+const alerts = RequestUtils.fetchWithRetry(fetchAlerts);
 const ONE_SEC_MS = 1000;
 const ONE_MINUTE_MS = ONE_SEC_MS * 60;
 
 const updateAlertsFunction = async () => {
-    await RequestUtils.fetchRetry(fetchAlerts);
+    await RequestUtils.fetchWithRetry(fetchAlerts);
     return true;
 };
 
-RequestUtils.startRequestIntervals(
+RequestUtils.updateObjectOnInterval(
     updateAlertsFunction,
     ONE_MINUTE_MS,
     ONE_MINUTE_MS,

@@ -6,7 +6,7 @@ import util from 'util';
 import LogUtils from './LogUtils';
 
 function createRequest(
-    options: any,
+    options: Object,
     errorMessage: ?string = 'Request failed',
     verbose: ?boolean = false,
     returnRes: ?boolean = false,
@@ -29,9 +29,17 @@ function createRequest(
     });
 }
 
-async function fetchRetry(fn: () => void, n: number = 5): any {
+/**
+ * Attempts to call [fn] [retryCount] times. Only if an exception occurs [retryCount] times, throw the exception.
+ * Else returns the result of [fn].
+ *
+ * @param {() => any} fn
+ * @param {number} retryCount
+ * @returns {any} The result of [fn]
+ */
+async function fetchWithRetry(fn: () => any, retryCount: number = 5): any {
     let error;
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < retryCount; i++) {
         try {
             // eslint-disable-next-line no-await-in-loop
             return (await fn());
@@ -43,28 +51,39 @@ async function fetchRetry(fn: () => void, n: number = 5): any {
 }
 
 /**
- * Calls fn every refreshInterval ms with timeout
+ * Calls [fn] every [refreshInterval], where [fn] must complete before [timeout].
+ * If [fn] completes successfully, [objectToUpdate] is set to the value of [fn()].
+ *
+ * @param {() => Object} fn
+ * @param {number} refreshInterval Ms to wait before refresh
+ * @param {number} timeout Ms to wait before request times out
+ * @param {Object} objectToUpdate
  */
-function startRequestIntervals(fn: () => void, refreshInterval: number, timeout: number, setObj: Object): void {
+function updateObjectOnInterval(
+    fn: () => Object,
+    refreshInterval: number,
+    timeout: number,
+    objectToUpdate: Object,
+): void {
     interval(async (iteration, stop) => {
         try {
-            const update = await Promise.race([
+            const optionalUpdatedObject: ?Object = await Promise.race([
                 fn(),
                 (util.promisify(setTimeout))(timeout)
-                    .then(() => false),
+                    .then(() => null),
             ]);
 
-            if (update) { // eslint-disable-next-line no-param-reassign
-                setObj = update;
+            if (optionalUpdatedObject != null) { // eslint-disable-next-line no-param-reassign
+                objectToUpdate = optionalUpdatedObject;
             }
         } catch (error) {
-            LogUtils.logErr(error, setObj, 'Error occurred while in repeated interval');
+            LogUtils.logErr(error, objectToUpdate, 'Error occurred while in repeated interval');
         }
     }, refreshInterval, { stopOnError: false });
 }
 
 export default {
     createRequest,
-    fetchRetry,
-    startRequestIntervals,
+    fetchWithRetry,
+    updateObjectOnInterval,
 };

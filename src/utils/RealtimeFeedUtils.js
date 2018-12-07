@@ -98,10 +98,8 @@ const realtimeFeedTimeout = realtimeFeedRefreshInterval * 5;
 // eslint-disable-next-line prefer-const
 let realtimeFeed = fetchRealtimeFeed();
 
-/**
- * Update realtime data every few seconds
- */
-RequestUtils.startRequestIntervals(
+// update [realtimeFeed] every [realtimeFeedRefreshInterval]
+RequestUtils.updateObjectOnInterval(
     fetchRealtimeFeed,
     realtimeFeedRefreshInterval,
     realtimeFeedTimeout,
