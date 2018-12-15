@@ -13,7 +13,7 @@ Run `npm install` to install the necessary dependencies.
 `package.json` contains all necessary run, build, test, and utility scripts for the project. **Type `npm run` before a script name to execute.** `npm run` by itself shows a list of available scripts.
 
 #### Development 
-`start-dev` runs the program in development mode with all necessary Graphhopper serivices at the location specified in the `.env` file. Use development mode while developing and **DO NOT USE THIS MODE IN DEPLOYMENT/PRODUCTION**.
+`start:dev` runs the program in development mode with all necessary Graphhopper serivices at the location specified in the `.env` file. Use development mode while developing and **DO NOT USE THIS MODE IN DEPLOYMENT/PRODUCTION**.
 Features:
 * Automatic server restart and testing run on file change
 * Automatic Graphhopper initialization/start/stop
@@ -26,7 +26,7 @@ Features:
 * Flow type checking
 
 #### Production
-`start-prod` runs the program in production mode. This is the mode built and started in the `Dockerfile`, hosted on the server, and by used the Transit frontend. It **does not start or check for the Graphhopper services needed by the Transit navigation program** (must be run separately) and it **logs all errors silently and remotely**.
+`start:prod` runs the program in production mode. This is the mode built and started in the `Dockerfile`, hosted on the server, and by used the Transit frontend. It **does not start or check for the Graphhopper services needed by the Transit navigation program** (must be run separately) and it **logs all errors silently and remotely**.
 Features:
 * Optimized builds
 * Remote logging
@@ -35,30 +35,30 @@ Features:
 #### More Scripts
 | **Script Name** | Description |
 | --------------------- | -------------------------------------------------------------------------------------- |
-| `ghopper` | runs the Graphhopper processes required for route calculation |
-| `stop-ghopper`| stops any running Graphhopper processes |
-| `kill-ghopper` | SIGKILL any running Graphhopper processes |
-| `clean-docker` | prune unused docker data on your system |
-| `reset-docker` | prune **all** docker data on your system |
 | `build` | build Transit with Webpack default settings |
-| `build-image` | build a production Transit Docker image as `transit-node` using the `Dockerfile` |
-| `build-dev` | build Transit with Webpack default settings, same as `start-dev` but without running Graphhopper services |
-| `setup` | start Graphhopper services and `init` |
+| `build:dev` | build Transit with Webpack default settings, same as `start:dev` but without running Graphhopper services |
+| `build:image` | build a production Transit Docker image as `transit-node` using the `Dockerfile` |
+| `docker:clean` | prune unused docker data on your system |
+| `docker:reset` | prune **all** docker data on your system |
+| `flow` | Run Flow type checking service |
+| `flow:stop` | Stop Flow service |
+| `ghopper` | runs the Graphhopper processes required for route calculation |
+| `ghopper:kill` | SIGKILL any running Graphhopper processes |
+| `ghopper:stop`| stops any running Graphhopper processes |
 | `init` | `npm install` then `build` |
 | `serve` | run the existing build using Node |
-| `start-dev` | [Development](#development) |
-| `start-prod` | [Production](#production) |
-| `test-dev` | run tests on an existing build in order and with console output using Jest and Node in debug mode then `flow` type checking |
+| `setup` | start Graphhopper services and `init` |
+| `start:dev` | [Development](#development) |
+| `start:prod` | [Production](#production) |
 | `test` | `init` for clean install and build then run tests and exit |
-| `flow` | Run Flow type checking service |
-| `flow-stop` | Stop Flow service |
+| `test:dev` | run tests on an existing build in order and with console output using Jest and Node in debug mode then `flow` type checking |
 
 ### Known Errors
 
 ````
 Exception in thread "main" java.net.BindException: Address already in use
 ````
-Run `npm run stop-ghopper` to kill any GraphHopper processes and try again. The GraphHopper services cannot be restarted if the ports (default 8989 and 8988) are already in use.
+Run `npm run ghopper:stop` to kill any GraphHopper processes and try again. The GraphHopper services cannot be restarted if the ports (default 8989 and 8988) are already in use.
 
 # Transit API v1 REST Interface
 

@@ -34,7 +34,7 @@ usage()
     [-d | --development]
         Run all Graphhopper services and Transit in development mode.
         DO NOT USE DEVELOPMENT MODE IN DEPLOYMENT/PRODUCTION!!!
-        To run without Graphhopper: npm run build-dev
+        To run without Graphhopper: npm run build:dev
         Features:
             - automatic server restart and testing run on file change
             - automatic Graphhopper initialization/start/stop
@@ -48,7 +48,7 @@ usage()
 
     [-t | --test]
         Run Transit production mode.
-        Alias (same as npm command in CLI): npm run test-dev
+        Alias (same as npm command in CLI): npm run test:dev
         Features:
             - production mode testing
 
@@ -104,13 +104,13 @@ docker ps
 if ${RUN_TRANSIT} ; then
     if ${PROD}; then
         echo "${OUT_COLOR}Starting Transit in production mode...${NC}"
-        npm run start-prod
+        npm run start:prod
     elif ${DEV}; then
         echo "${OUT_COLOR}Starting Transit in development mode...${NC}"
-        npm run build-dev
+        npm run build:dev
     elif ${TEST}; then
         echo "${OUT_COLOR}Starting Transit in test mode...${NC}"
-        npm run test-dev
+        npm run test:dev
     else
         npm run init
     fi
