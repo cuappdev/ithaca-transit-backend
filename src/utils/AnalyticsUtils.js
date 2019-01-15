@@ -1,7 +1,6 @@
 // @flow
 import crypto from 'crypto';
 import LRU from 'lru-cache';
-import { ParquetSchema } from 'parquetjs';
 import LogUtils from './LogUtils';
 
 const routesCalculationsCache = LRU({
@@ -13,10 +12,10 @@ function getUniqueId(numBytes: ?number = 10) {
     return crypto.randomBytes(numBytes).toString('hex');
 }
 
-function assignRouteIdsAndCache(routeRes: Object[], schema: ParquetSchema) {
+function assignRouteIdsAndCache(routeRes: Object[]) {
     routeRes.forEach((route) => {
         route.routeId = getUniqueId();
-        routesCalculationsCache.set(route.routeId, { route, schema });
+        routesCalculationsCache.set(route.routeId, { route });
     });
 }
 
@@ -27,11 +26,7 @@ function selectRoute(routeId: string, uid: ?string) {
             routeSchema.route.uid = uid;
         }
 
-        return LogUtils.logToChronicle(
-            'routeSelected',
-            routeSchema.schema,
-            routeSchema.route,
-        );
+        return LogUtils.log({ category: 'routeSelected', route: routeSchema.route });
     }
     return false;
 }
