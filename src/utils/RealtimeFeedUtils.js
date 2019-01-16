@@ -1,10 +1,12 @@
 // @flow
-import xml2js from 'xml2js';
+import fs from 'fs';
 import JsonFind from 'json-find';
 import jsonQuery from 'json-query';
-import fs from 'fs';
-import RequestUtils from './RequestUtils';
+import xml2js from 'xml2js';
+
+import { NODE_ENV } from './EnvUtils';
 import ErrorUtils from './LogUtils';
+import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 
 /**
@@ -96,10 +98,8 @@ const realtimeFeedTimeout = realtimeFeedRefreshInterval * 5;
 // eslint-disable-next-line prefer-const
 let realtimeFeed = fetchRealtimeFeed();
 
-/**
- * Update realtime data every few seconds
- */
-RequestUtils.startRequestIntervals(
+// update [realtimeFeed] every [realtimeFeedRefreshInterval]
+RequestUtils.updateObjectOnInterval(
     fetchRealtimeFeed,
     realtimeFeedRefreshInterval,
     realtimeFeedTimeout,
@@ -380,30 +380,23 @@ function getTrackingInformation(stopID: String, tripID: String, rtf: Object) {
 async function fetchRealtimeFeed() {
     const options = {
         method: 'GET',
+        headers: { 'Cache-Control': 'no-cache' },
         url: 'https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=TripUpdate&debug=true',
-        headers:
-            {
-                'Cache-Control': 'no-cache',
-            },
     };
+
     const xml = await RequestUtils.createRequest(options, 'Trip realtime request failed');
-    if (xml) {
-        const obj = await feedXMLToJSON(xml);
+    if (!xml) return null;
 
-        if (obj === null || !obj) {
-            // no current delay/tracking data
-            if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
-                const xmlPlaceholder = fs.readFileSync('src/test/test_data/GTFS-Realtime-test.xml');
-                // eslint-disable-next-line no-console
-                console.warn('WARNING: USING TEST REALTIME DATA, NO RESPONSE DATA RECIEVED');
-                return feedXMLToJSON(xmlPlaceholder);
-            }
-            return {};
-        }
-        return obj;
+    const obj = await feedXMLToJSON(xml);
+    if (obj === null || !obj) { // no current delay/tracking data
+        if (NODE_ENV === 'production') return {};
+
+        // NODE_ENV is one of development or test
+        const xmlPlaceholder = fs.readFileSync('src/test/test_data/GTFS-Realtime-test.xml');
+        console.warn('WARNING: USING TEST REALTIME DATA, NO RESPONSE DATA RECIEVED');
+        return feedXMLToJSON(xmlPlaceholder);
     }
-
-    return null;
+    return obj;
 }
 
 export default {

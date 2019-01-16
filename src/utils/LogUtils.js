@@ -1,46 +1,5 @@
-/* eslint-disable no-console */
-import dotenv from 'dotenv';
-import fs from 'fs';
+// @flow
 import util from 'util';
-import { ParquetSchema } from 'parquetjs';
-import ChronicleSession from '../appdev/ChronicleSession';
-import Schemas from './Schemas';
-
-dotenv.load();
-const CHRONICLE_PROD_ENV = 'production';
-const CHRONICLE_DEV_ENV = 'development';
-const CHRONICLE_APP_NAME = 'IthacaTransit';
-const IS_PROD_ENV = process.env.NODE_ENV && process.env.NODE_ENV === CHRONICLE_PROD_ENV;
-const CHRONICLE_ENV = IS_PROD_ENV ? CHRONICLE_PROD_ENV : CHRONICLE_DEV_ENV;
-const LOG_PATH = 'logs'; // path to local log files
-const CHRONICLE_CACHE_SIZE = IS_PROD_ENV ? 25 : 0;
-
-const chronicleTransit = new ChronicleSession(
-    process.env.CHRONICLE_ACCESS_KEY,
-    process.env.CHRONICLE_SECRET_KEY,
-    CHRONICLE_APP_NAME,
-    CHRONICLE_CACHE_SIZE,
-);
-
-/**
- * Log to file at the given location. No need to stringify.
- * Any existing file at location will be overwritten
- * @param fileName
- * @param data
- */
-async function writeToFile(fileName: string, data: ?Object) {
-    return fs.writeFile(
-        `${LOG_PATH}/${fileName}`,
-        ((typeof data === 'string') ? data : JSON.stringify((await data), null, '\t')),
-        (err) => {
-            if (err) {
-                // eslint-disable-next-line no-console
-                return logErr(err, data, `Could not log to file ${fileName}`);
-            }
-            return true;
-        },
-    );
-}
 
 /**
  * Write object to console
@@ -76,7 +35,7 @@ function log(obj: Object, error: ?boolean = false) {
  */
 function logErr(
     error: Object,
-    data: ?Object = '',
+    data: ?Object = {},
     note: ?string = '', //
     disableConsoleOut: ?boolean = false,
 ) {
@@ -92,37 +51,14 @@ function logErr(
             note,
         };
 
-        if (IS_PROD_ENV) {
-            logToChronicle('error', Schemas.errorSchema, error, true);
-        } else {
-            if (!disableConsoleOut) {
-                log(responseJSON, true);
-            }
-            logToChronicle('error', Schemas.errorSchema, error, true);
-        }
-
+        log(responseJSON, true);
         return responseJSON;
     } catch (e) {
         return error;
     }
 }
 
-function logToChronicle(
-    eventName: string,
-    parquetSchema: ParquetSchema,
-    event: Object,
-    disableCache: ?boolean = false,
-) {
-    return chronicleTransit
-        .log(`${CHRONICLE_ENV}/${eventName}`, parquetSchema, event, disableCache)
-        .catch((err) => {
-            logErr(err, event, `Failed to log to Chronicle ${eventName}`);
-        });
-}
-
 export default {
     log,
     logErr,
-    writeToFile,
-    logToChronicle,
 };

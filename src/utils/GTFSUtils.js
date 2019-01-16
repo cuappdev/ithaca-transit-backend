@@ -1,14 +1,10 @@
-/* eslint-disable no-console */
 // @flow
 import csv from 'csvtojson';
-import dotenv from 'dotenv';
 import request from 'request';
 import fs from 'fs';
 import DecompressZip from 'decompress-zip';
 import moment from 'moment';
 import ErrorUtils from './LogUtils';
-
-dotenv.config();
 
 const root = '.';
 const zipFile = 'tcat-ny-us.zip';
@@ -126,14 +122,29 @@ async function checkGTFSDatesValid(useCache: boolean = true) {
         const warningDate = endDate.subtract(validGTFSBufferDays, 'days');
 
         if (now.isBefore(startDate)) {
-            throw ErrorUtils.logErr('FATAL ERROR: GTFS DATA IS INVALID, NOW IS BEFORE THE START DATE', endDate, 'ARCHIVE AND REFRESH GTFS DATA IMMEDIATELY', false);
+            throw ErrorUtils.logErr(
+                'FATAL ERROR: GTFS DATA IS INVALID, NOW IS BEFORE THE START DATE',
+                endDate,
+                'ARCHIVE AND REFRESH GTFS DATA IMMEDIATELY',
+                false,
+            );
         }
         if (now.isAfter(endDate)) {
-            throw ErrorUtils.logErr('FATAL ERROR: GTFS DATA IS EXPIRED', endDate, 'ARCHIVE AND REFRESH GTFS DATA IMMEDIATELY', false);
+            throw ErrorUtils.logErr(
+                'FATAL ERROR: GTFS DATA IS EXPIRED',
+                endDate,
+                'ARCHIVE AND REFRESH GTFS DATA IMMEDIATELY',
+                false,
+            );
         }
         if (now.isAfter(warningDate)) {
             const remaining = endDate.subtract(now);
-            ErrorUtils.logErr(`WARNING: GTFS DATA WILL EXPIRE IN ${remaining} DAYS`, endDate, 'ARCHIVE AND REFRESH GTFS DATA SOON', false);
+            ErrorUtils.logErr(
+                `WARNING: GTFS DATA WILL EXPIRE IN ${remaining} DAYS`,
+                endDate,
+                'ARCHIVE AND REFRESH GTFS DATA SOON',
+                false,
+            );
         }
         return true;
     }

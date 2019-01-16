@@ -5,23 +5,23 @@
   "main": "",
   "private": true,
   "scripts": {
-    "ghopper": "sh ./scripts/run_ghopper.sh",
-    "stop-ghopper": "docker-compose -f docker-compose/docker-compose.yml stop ; printf ''",
-    "kill-ghopper": "docker-compose -f docker-compose/docker-compose.yml kill ; printf ''",
-    "clean-docker": "npm run stop-ghopper && docker system prune",
-    "reset-docker": "npm run stop-ghopper && docker system prune --all",
     "build": "./node_modules/.bin/webpack --env.NODE_ENV=production --mode=production -p",
-    "build-image": "docker build -t transit-node .",
-    "build-dev": "./node_modules/.bin/webpack --watch --env.NODE_ENV=development --progress --colors --mode=development --debug --devtool cheap-eval-source-map --output-pathinfo",
-    "setup": "sh ./scripts/run.sh --setup",
+    "build:dev": "./node_modules/.bin/webpack --watch --env.NODE_ENV=development --progress --colors --mode=development --debug --devtool cheap-eval-source-map --output-pathinfo",
+    "build:image": "docker build -t transit-node .",
+    "docker:clean": "npm run ghopper:stop && docker system prune",
+    "docker:reset": "npm run ghopper:stop && docker system prune --all",
+    "flow": "echo 'Flow:' ; node_modules/.bin/flow ; echo 'Flow checking complete.'",
+    "flow:stop": "node_modules/.bin/flow stop",
+    "ghopper": "sh ./scripts/run_ghopper.sh",
+    "ghopper:kill": "docker-compose -f docker-compose/docker-compose.yml kill ; printf ''",
+    "ghopper:stop": "docker-compose -f docker-compose/docker-compose.yml stop ; printf ''",
     "init": "npm install && npm run build",
     "serve": "node --require dotenv/config build/bundle.js",
-    "start-dev": "sh ./scripts/run.sh --development",
-    "start-prod": "npm run init && npm run serve",
-    "test-dev": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --verbose --runInBand --detectOpenHandles test ; echo 'Exiting test.'",
+    "setup": "sh ./scripts/run.sh --setup",
+    "start:dev": "sh ./scripts/run.sh --development",
+    "start:prod": "npm run init && npm run serve",
     "test": "npm run init && node ./node_modules/.bin/jest --verbose --forceExit --detectOpenHandles test ; echo 'Exiting test.'",
-    "flow": "echo 'Flow:' ; node_modules/.bin/flow ; echo 'Flow checking complete.'",
-    "flow-stop": "node_modules/.bin/flow stop"
+    "test:dev": "node $NODE_DEBUG_OPTION ./node_modules/.bin/jest --verbose --runInBand --detectOpenHandles test ; echo 'Exiting test.'"
   },
   "repository": {
     "type": "git",
@@ -88,7 +88,7 @@
     "supertest": "^3.3.0",
     "webpack": "^4.24.0",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10",
+    "webpack-dev-server": "^3.1.14",
     "webpack-node-externals": "^1.7.2"
   }
 }

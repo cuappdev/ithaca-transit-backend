@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-const ChronicleSession = require('../appdev/ChronicleSession').default;
 const ParseRouteUtils = require('../utils/ParseRouteUtils').default;
 // eslint-disable-next-line no-unused-vars
 const TestUtils = require('./TestUtils');
@@ -12,7 +11,7 @@ const LogUtils = require('../utils/LogUtils.js').default;
 
 describe('Route unit tests', () => {
     beforeAll(async () => {
-        await GhopperUtils.ghopperReady;
+        await GhopperUtils.isGraphhopperReady;
     }, 1200000);
 
     routeTests.forEach((routeParams) => {
@@ -206,31 +205,3 @@ describe('Route unit tests', () => {
         });
     });
 });
-
-describe('Appdev dependencies tests', () => {
-    describe('Chronicle remote logging', () => {
-        beforeEach(() => {
-            jest.setTimeout(15000); // longer timeout for logging and analytics
-        });
-
-        // eslint-disable-next-line no-unused-vars
-        let chronicle;
-        test('new ChronicleSession', () => {
-            chronicle = new ChronicleSession();
-        });
-        test('LogUtils.logErr', async () => {
-            expect(await LogUtils.logErr(
-                (new Error('test')),
-                { test: 'test', '>?TEST': 'test>?' },
-                'this is just a test, delete',
-                true,
-            )).toBeTruthy();
-        });
-        test('LogUtils.logToChronicle', () => {
-            LogUtils.logToChronicle();
-        });
-        test('chronicle.log Error', () => {
-            chronicle.log();
-        });
-    });
-}); // longer timeout for logging and analytics

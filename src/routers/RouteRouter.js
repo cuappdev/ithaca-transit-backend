@@ -3,7 +3,6 @@ import type Request from 'express';
 import ApplicationRouter from '../appdev/ApplicationRouter';
 import RouteUtils from '../utils/RouteUtils';
 import LogUtils from '../utils/LogUtils';
-import Schemas from '../utils/Schemas';
 import AnalyticsUtils from '../utils/AnalyticsUtils';
 
 class RouteRouter extends ApplicationRouter<Array<Object>> {
@@ -35,9 +34,8 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
             arriveBy,
             routeId: routeRes[0].routeId,
         };
-        LogUtils.logToChronicle('routeRequestV1', Schemas.routeRequestSchema, request, true);
-
-        AnalyticsUtils.assignRouteIdsAndCache(routeRes, Schemas.routeResultSchemaV1);
+        LogUtils.log({ category: 'routeRequestV1', request });
+        AnalyticsUtils.assignRouteIdsAndCache(routeRes);
 
         return routeRes;
     }

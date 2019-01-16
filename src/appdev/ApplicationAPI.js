@@ -79,13 +79,11 @@ class ApplicationAPI {
     getServer(verbose: ?boolean = true): http.Server {
         const server: http.Server = http.createServer(this.express);
         const onError = (err: Error): void => {
-            // eslint-disable-next-line no-console
             LogUtils.logErr(err, 'server', 'Application error');
         };
 
         const onListening = (): void => {
             if (verbose) {
-                // eslint-disable-next-line no-console
                 console.log(`Listening on ${server.address().address}:${server.address().port}`);
             }
         };

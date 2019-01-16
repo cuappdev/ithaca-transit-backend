@@ -1,11 +1,12 @@
 // @flow
-
 import createGpx from 'gps-to-gpx';
-import ErrorUtils from './LogUtils';
-import RequestUtils from './RequestUtils';
-import TCATUtils from './GTFSUtils';
-import RealtimeFeedUtils from './RealtimeFeedUtils';
+
 import AllStopUtils from './AllStopUtils';
+import { MAP_MATCHING } from './EnvUtils';
+import TCATUtils from './GTFSUtils';
+import ErrorUtils from './LogUtils';
+import RealtimeFeedUtils from './RealtimeFeedUtils';
+import RequestUtils from './RequestUtils';
 
 // const METERS_TO_MILES = 0.00062137119;
 const ONE_HOUR_IN_MILLISECONDS = 3600000;
@@ -182,7 +183,7 @@ async function condenseRoute(
                 && previousDirection.type === 'depart'
                 && direction.type === 'depart') {
                 /*
-                 * Discard route if a depart direction's last stopID is not the same as the next direction's first stopID,
+                 * Discard route if a depart direction's last stopID is not equal to the next direction's first stopID,
                  * Fixes bug where graphhopper directions are to get off at a stop and get on another stop
                  * far away with no walking direction in between, EG: 1. get off at Statler 2. board at RPCC
                  */
@@ -379,8 +380,9 @@ function parseRoute(resp: Object, destinationName: string) {
             const startingLocationLong = startingLocationGeometry.coordinates[0][0];
             const startingLocationLat = startingLocationGeometry.coordinates[0][1];
 
-            const endingLocationLong = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][0];
-            const endingLocationLat = endingLocationGeometry.coordinates[endingLocationGeometry.coordinates.length - 1][1];
+            const endingLocationCoordsLength = endingLocationGeometry.coordinates.length;
+            const endingLocationLong = endingLocationGeometry.coordinates[endingLocationCoordsLength - 1][0];
+            const endingLocationLat = endingLocationGeometry.coordinates[endingLocationCoordsLength - 1][1];
 
             const startCoords = {
                 lat: startingLocationLat,
@@ -436,7 +438,9 @@ function parseRoute(resp: Object, destinationName: string) {
                     tripID = [currLeg.trip_id];
 
                     const routeJson = await TCATUtils.routesJson;
-                    const route = routeJson.filter(routeObj => routeObj.route_id.toString() === currLeg.route_id.toString());
+                    const route = routeJson.filter(
+                        routeObj => routeObj.route_id.toString() === currLeg.route_id.toString(),
+                    );
 
                     path = currLeg.stops.map(stop => ({
                         lat: stop.geometry.coordinates[1],
@@ -465,7 +469,7 @@ function parseRoute(resp: Object, destinationName: string) {
 
                             const options = {
                                 method: 'POST',
-                                url: `http://${process.env.MAP_MATCHING || 'ERROR'}:8989/match`,
+                                url: `http://${MAP_MATCHING || 'ERROR'}:8989/match`,
                                 body: gpx,
                                 headers: {
                                     'Content-Type': 'application/xml',
@@ -493,14 +497,17 @@ function parseRoute(resp: Object, destinationName: string) {
                                 }));
                             }
                         } catch (error) {
-                            // log error
-                            ErrorUtils.logErr(error, destinationName, `Snap response failed: ${process.env.MAP_MATCHING || 'undefined graphhopper mapmatching env'}`);
+                            const undefinedGraphHopperMessage = 'undefined graphhopper mapmatching env';
+                            ErrorUtils.logErr(
+                                error,
+                                destinationName,
+                                `Snap response failed: ${MAP_MATCHING || undefinedGraphHopperMessage}`,
+                            );
                         }
 
                         // Trim Coordinates so they start/end at bus stops
-                        const startDistanceArray = path.map(point2 => distanceBetweenPointsMiles(firstStopCoords, point2));
-
-                        const endDistanceArray = path.map(point2 => distanceBetweenPointsMiles(lastStopCoords, point2));
+                        const startDistanceArray = path.map(p2 => distanceBetweenPointsMiles(firstStopCoords, p2));
+                        const endDistanceArray = path.map(p2 => distanceBetweenPointsMiles(lastStopCoords, p2));
 
                         const startIndex = startDistanceArray.indexOf(Math.min(...startDistanceArray));
                         const endIndex = endDistanceArray.indexOf(Math.min(...endDistanceArray));

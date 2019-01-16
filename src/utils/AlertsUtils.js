@@ -1,20 +1,19 @@
 // @flow
-import interval from 'interval-promise';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 import ErrorUtils from './LogUtils';
 
-let alerts = RequestUtils.fetchRetry(fetchAlerts);
+const alerts = RequestUtils.fetchWithRetry(fetchAlerts);
 const ONE_SEC_MS = 1000;
 const ONE_MINUTE_MS = ONE_SEC_MS * 60;
 
-const updateFunc = async () => {
-    await RequestUtils.fetchRetry(fetchAlerts);
+const updateAlertsFunction = async () => {
+    await RequestUtils.fetchWithRetry(fetchAlerts);
     return true;
 };
 
-RequestUtils.startRequestIntervals(
-    updateFunc,
+RequestUtils.updateObjectOnInterval(
+    updateAlertsFunction,
     ONE_MINUTE_MS,
     ONE_MINUTE_MS,
     alerts,
@@ -40,12 +39,12 @@ async function fetchAlerts() {
             return JSON.parse(alertsRequest).map(alert => ({
                 id: alert.MessageId,
                 message: alert.Message,
-                fromDate: parseMicrosoftFormatJSONDate(alert.FromDate),
-                toDate: parseMicrosoftFormatJSONDate(alert.ToDate),
-                fromTime: parseMicrosoftFormatJSONDate(alert.FromTime),
-                toTime: parseMicrosoftFormatJSONDate(alert.ToTime),
+                fromDate: convertUnixDateStrToJSDate(alert.FromDate),
+                toDate: convertUnixDateStrToJSDate(alert.ToDate),
+                fromTime: convertUnixDateStrToJSDate(alert.FromTime),
+                toTime: convertUnixDateStrToJSDate(alert.ToTime),
                 priority: alert.Priority,
-                daysOfWeek: getWeekdayString(alert.DaysOfWeek),
+                daysOfWeek: convertTCATNumToStr(alert.DaysOfWeek),
                 routes: alert.Routes,
                 signs: alert.Signs,
                 channelMessages: alert.ChannelMessages,
@@ -59,12 +58,12 @@ async function fetchAlerts() {
     return null;
 }
 
-function parseMicrosoftFormatJSONDate(dateStr) {
+function convertUnixDateStrToJSDate(dateStr: string): Date {
     return new Date(parseInt(dateStr.substr(6)));
 }
 
-function getWeekdayString(daysOfWeek) {
-    switch (daysOfWeek) {
+function convertTCATNumToStr(TCATNum: number) {
+    switch (TCATNum) {
         case 127:
             return 'Every day';
         case 65:
@@ -90,15 +89,6 @@ function getWeekdayString(daysOfWeek) {
     }
 }
 
-function start() {
-    interval(async () => {
-        // fetch and set alerts
-        await alerts; // if initializing, don't try again
-        alerts = await RequestUtils.fetchRetry(fetchAlerts);
-    }, ONE_MINUTE_MS, { stopOnError: false });
-}
-
 export default {
-    start,
     alerts,
 };

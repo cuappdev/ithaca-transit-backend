@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+// @flow
 const moment = require('moment');
 const util = require('util');
 const jsondiffpatch = require('jsondiffpatch');
@@ -97,8 +97,8 @@ function removeKeys(obj, keys) {
 async function getReleaseRes(query) {
     const options = {
         method: 'GET',
-        url: `${process.env.RELEASE_URL}${query}`,
         qsStringifyOptions: { arrayFormat: 'repeat' },
+        url: `${process.env.RELEASE_URL}${query}`,
     };
     return JSON.parse(await RequestUtils.createRequest(options));
 }
@@ -107,8 +107,8 @@ async function printReleaseDiff(res, query) {
     try {
         const options = {
             method: 'GET',
-            url: `${process.env.RELEASE_URL}${query}`,
             qsStringifyOptions: { arrayFormat: 'repeat' },
+            url: `${process.env.RELEASE_URL}${query}`,
         };
         const releaseStr = await RequestUtils.createRequest(options);
         const responseStr = JSON.stringify(res);
@@ -128,14 +128,13 @@ async function printReleaseDiff(res, query) {
     }
 }
 
-async function logToFile(fileName: string, data: ?Object) {
+async function logToFile(fileName: string, data: ?Object): boolean {
     try {
         await fs.writeFile(
             `${LOG_PATH}/${fileName}`,
             (typeof data === 'string') ? data : JSON.stringify((await data), null, '\t'),
             (err) => {
                 if (err) {
-                    // eslint-disable-next-line no-console
                     return console.error(err);
                 }
                 return true;

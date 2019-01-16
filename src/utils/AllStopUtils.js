@@ -16,7 +16,7 @@ const DEG_KM_PRECISION = 2; // 3 degrees of precision is about 1 km, stop barely
  * Array of all stops
  * @type {Promise<*>}
  */
-let allStops = RequestUtils.fetchRetry(fetchAllStops);
+let allStops = RequestUtils.fetchWithRetry(fetchAllStops);
 
 /**
  * Used for finding stops at or nearby a point
@@ -52,15 +52,15 @@ let allStops = RequestUtils.fetchRetry(fetchAllStops);
  }
  *
  */
-let allStopsCompareMaps = RequestUtils.fetchRetry(fetchPrecisionMaps);
+let allStopsCompareMaps = RequestUtils.fetchWithRetry(fetchPrecisionMaps);
 
 const updateFunc = async () => {
-    allStops = await RequestUtils.fetchRetry(fetchAllStops);
-    allStopsCompareMaps = await RequestUtils.fetchRetry(fetchPrecisionMaps);
+    allStops = await RequestUtils.fetchWithRetry(fetchAllStops);
+    allStopsCompareMaps = await RequestUtils.fetchWithRetry(fetchPrecisionMaps);
     return false;
 };
 
-RequestUtils.startRequestIntervals(
+RequestUtils.updateObjectOnInterval(
     updateFunc,
     HOUR_IN_MS,
     MIN_IN_MS,

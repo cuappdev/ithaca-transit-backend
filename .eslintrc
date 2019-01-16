@@ -34,11 +34,14 @@
         // allow unused parameters
         "no-unused-vars": ["error", { "args": "none" }],
 
+        // allows underscore dangle for this methods
+        "no-underscore-dangle": ["error", { "allowAfterThis": true }],
+
         // no radix required in parseInt
         "radix": ["error", "as-needed"],
 
         // allow long lines
-        "max-len": ["error", { "code": 200 }],
+        "max-len": ["error", { "code": 120 }],
 
         // allow unary operator
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
@@ -67,6 +70,9 @@
 
         "function-paren-newline": ["error", "consistent"],
 
-        "require-await": "error"
+        "require-await": "error",
+
+        // allow console statements
+        "no-console": 0
     }
 }
