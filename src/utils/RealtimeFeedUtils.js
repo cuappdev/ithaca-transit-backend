@@ -5,7 +5,7 @@ import jsonQuery from 'json-query';
 import xml2js from 'xml2js';
 
 import { NODE_ENV } from './EnvUtils';
-import ErrorUtils from './LogUtils';
+import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 
@@ -116,7 +116,7 @@ function feedXMLToJSON(xml: String) {
                 trim: true,
             }, (err, result) => {
                 if (err) {
-                    throw ErrorUtils.logErr(err, null, 'Parse XML string error');
+                    throw LogUtils.logErr(err, null, 'Parse XML string error');
                 }
 
                 if (!result
@@ -124,7 +124,7 @@ function feedXMLToJSON(xml: String) {
                     || !result.feedmessage.entities
                     || !result.feedmessage.entities.length > 0
                     || !result.feedmessage.entities[0].feedentity) {
-                    // ErrorUtils.logErr('null or undefined feed result', result, 'Feed result invalid');
+                    // LogUtils.logErr('null or undefined feed result', result, 'Feed result invalid');
                     resolve(null);
                     return null;
                 }
@@ -229,7 +229,7 @@ function feedXMLToJSON(xml: String) {
                 return realtimeNew;
             });
     }).catch((err) => {
-        throw ErrorUtils.logErr(err, xml, 'Could not parse trip feed JSON');
+        throw LogUtils.logErr(err, xml, 'Could not parse trip feed JSON');
     });
 }
 
@@ -318,7 +318,7 @@ async function getTrackingResponse(trackingRequests: Object) {
                 };
             })(busFound);
 
-            console.log(trackingData);
+            LogUtils.log(trackingData);
 
             // we have tracking data for the bus
             if (trackingData) {
@@ -332,7 +332,7 @@ async function getTrackingResponse(trackingRequests: Object) {
 
         return false;
     })).catch((err) => {
-        ErrorUtils.logErr(err, trackingRequests, 'Tracking error');
+        LogUtils.logErr(err, trackingRequests, 'Tracking error');
         throw err;
     });
 
