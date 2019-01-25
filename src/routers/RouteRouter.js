@@ -20,19 +20,23 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
             arriveBy,
             destinationName,
             end,
+            originName,
             start,
             time: departureTimeQuery,
+            uid,
         } = req.query;
 
         const routeRes = await RouteUtils.getRoute(destinationName, end, start, departureTimeQuery, arriveBy);
 
         const request = {
-            destinationName,
-            start: routeRes[0].startCoords,
-            end: routeRes[0].endCoords,
-            time: departureTimeQuery,
             arriveBy,
+            destinationName,
+            end: routeRes[0].endCoords,
+            originName,
             routeId: routeRes[0].routeId,
+            start: routeRes[0].startCoords,
+            time: departureTimeQuery,
+            uid,
         };
         LogUtils.log({ category: 'routeRequestV1', request });
         AnalyticsUtils.assignRouteIdsAndCache(routeRes);

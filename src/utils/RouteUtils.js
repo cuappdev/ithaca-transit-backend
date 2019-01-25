@@ -16,7 +16,7 @@ import ParseRouteUtils from './ParseRouteUtils';
  * @returns {*}
  */
 /* eslint-disable no-param-reassign */
-async function createFinalRoute(routeBus, routeWalking, start, end, departureTimeQuery, arriveBy) {
+async function createFinalRoute(routeBus, routeWalking, start, end, departureTimeQuery, arriveBy: boolean) {
     const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
     let departureDelayBuffer: boolean = false;
     if (!arriveBy) { // 'leave at' query
@@ -60,7 +60,9 @@ async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQu
 
     const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, arriveBy);
 
-    if (!routeResponses) throw LogUtils.logErr('Graphhopper route error', routeResponses, 'Could not fetch routes');
+    if (!routeResponses) {
+        throw LogUtils.logErr({ message: 'RouteUtils.js: Graphhopper route error : could not fetch routes' });
+    }
 
     const { busRoute } = routeResponses;
     let { walkingRoute } = routeResponses;
@@ -77,10 +79,15 @@ async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQu
     };
 }
 
-async function getRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
+async function getRoute(
+    destinationName: string,
+    end: string, start: string,
+    departureTimeQuery: number,
+    arriveBy: boolean,
+) : Promise<Array<Object>> {
     const busWalkingRoute = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
-    let { busRoute } = busWalkingRoute;
-    const { walkingRoute } = busWalkingRoute;
+
+    const { busRoute, walkingRoute } = busWalkingRoute;
     
     // if there are no bus routes, we should just return walking instead of crashing
     if (!busRoute && walkingRoute) {
@@ -88,11 +95,11 @@ async function getRoute(destinationName, end, start, departureTimeQuery, arriveB
     }
 
     // parse the graphhopper bus route
-    busRoute = await ParseRouteUtils.parseRoute(busRoute, destinationName);
+    const parsedBusRoute = await ParseRouteUtils.parseRoute(busRoute, destinationName);
 
     // combine and filter to create the final route
     return createFinalRoute(
-        busRoute,
+        parsedBusRoute,
         walkingRoute,
         start,
         end,
