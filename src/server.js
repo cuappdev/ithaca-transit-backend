@@ -6,7 +6,6 @@ import AlertsUtils from './utils/AlertsUtils';
 import AllStopUtils from './utils/AllStopUtils';
 import GhopperUtils from './utils/GraphhopperUtils';
 import ErrorUtils from './utils/LogUtils';
-import RealtimeFeedUtils from './utils/RealtimeFeedUtils';
 import TokenUtils from './utils/TokenUtils';
 
 dotenv.config(); // dotenv needs to be configured before token fetch
@@ -27,12 +26,11 @@ const init = new Promise((resolve, reject) => {
     authToken.then(() => {
         // await data
         const dataInit = Promise.all([
-            RealtimeFeedUtils.realtimeFeed,
             AllStopUtils.allStops,
             AlertsUtils.alerts,
             TokenUtils.fetchAuthHeader(),
         ]).then(() => {
-            console.log('Initialized data successfully: authHeader, realtimeFeed, allStops, alerts');
+            console.log('Initialized data successfully: authHeader, allStops, alerts');
         });
 
         // await full initialization then listen on the port
