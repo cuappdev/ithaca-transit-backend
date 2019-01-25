@@ -92,7 +92,7 @@ import TokenUtils from './TokenUtils';
  */
 
 const ONE_SEC_MS = 1000;
-const realtimeFeedRefreshInterval = ONE_SEC_MS;
+const realtimeFeedRefreshInterval = ONE_SEC_MS * 15;
 const realtimeFeedTimeout = realtimeFeedRefreshInterval * 5;
 
 // eslint-disable-next-line prefer-const
