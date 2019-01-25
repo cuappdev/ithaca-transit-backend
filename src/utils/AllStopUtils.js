@@ -1,7 +1,7 @@
 // @flow
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
-import ErrorUtils from './LogUtils';
+import LogUtils from './LogUtils';
 
 const SEC_IN_MS = 1000;
 const MIN_IN_MS = SEC_IN_MS * 60;
@@ -91,7 +91,7 @@ async function fetchAllStops() {
             }));
         }
     } catch (err) {
-        ErrorUtils.logErr(err, null, 'allStops error');
+        LogUtils.logErr(err, null, 'allStops error');
         throw err;
     }
 

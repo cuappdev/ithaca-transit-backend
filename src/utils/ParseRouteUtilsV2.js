@@ -4,7 +4,7 @@ import createGpx from 'gps-to-gpx';
 import AllStopUtils from './AllStopUtils';
 import { MAP_MATCHING } from './EnvUtils';
 import TCATUtils from './GTFSUtils';
-import ErrorUtils from './LogUtils';
+import LogUtils from './LogUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import RequestUtils from './RequestUtils';
 
@@ -88,7 +88,7 @@ function mergeDirections(first, second) {
         };
     } catch (error) {
         throw new Error(
-            ErrorUtils.logErr(error, { first, second }, 'mergeDirections failed'),
+            LogUtils.logErr(error, { first, second }, 'mergeDirections failed'),
         );
     }
 }
@@ -226,7 +226,7 @@ async function condenseRoute(
         }
     } catch (error) {
         throw new Error(
-            ErrorUtils.logErr(error, route, 'Condense final route failed'),
+            LogUtils.logErr(error, route, 'Condense final route failed'),
         );
     }
 
@@ -325,7 +325,7 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
         };
     } catch (e) {
         throw new Error(
-            ErrorUtils.logErr(e, { data, startDateMs, destinationName }, 'Parse walking route failed'),
+            LogUtils.logErr(e, { data, startDateMs, destinationName }, 'Parse walking route failed'),
         );
     }
 }
@@ -498,7 +498,7 @@ function parseRoute(resp: Object, destinationName: string) {
                             }
                         } catch (error) {
                             const undefinedGraphHopperMessage = 'undefined graphhopper mapmatching env';
-                            ErrorUtils.logErr(
+                            LogUtils.logErr(
                                 error,
                                 destinationName,
                                 `Snap response failed: ${MAP_MATCHING || undefinedGraphHopperMessage}`,
@@ -639,7 +639,7 @@ function parseRoute(resp: Object, destinationName: string) {
             };
         } catch (error) {
             throw new Error(
-                ErrorUtils.logErr(error, paths.length, 'Parse final route failed'),
+                LogUtils.logErr(error, paths.length, 'Parse final route failed'),
             );
         }
     }));

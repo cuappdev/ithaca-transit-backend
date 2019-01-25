@@ -1,7 +1,7 @@
 // @flow
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
-import ErrorUtils from './LogUtils';
+import LogUtils from './LogUtils';
 
 const alerts = RequestUtils.fetchWithRetry(fetchAlerts);
 const ONE_SEC_MS = 1000;
@@ -51,7 +51,7 @@ async function fetchAlerts() {
             }));
         }
     } catch (err) {
-        ErrorUtils.logErr(err, null, 'fetchAlerts error');
+        LogUtils.logErr(err, null, 'fetchAlerts error');
         throw err;
     }
 
