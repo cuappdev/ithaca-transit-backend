@@ -8,9 +8,7 @@ import DelayRouter from './routers/DelayRouter';
 import HelloWorldRouter from './routers/HelloWorldRouter';
 import PlacesAutocompleteRouter from './routers/PlacesAutocompleteRouter';
 import RouteRouter from './routers/RouteRouter';
-import RouteRouterV2 from './routers/RouteRouterV2';
 import MultiRouteRouter from './routers/MultiRouteRouter';
-import MultiRouteRouterV2 from './routers/MultiRouteRouterV2';
 import TrackingRouter from './routers/TrackingRouter';
 import RouteSelectedRouter from './routers/RouteSelectedRouter';
 
@@ -43,9 +41,9 @@ class API extends ApplicationAPI {
                 AllStopsRouter,
                 DelayRouter,
                 HelloWorldRouter,
-                MultiRouteRouterV2,
+                MultiRouteRouter,
                 PlacesAutocompleteRouter,
-                RouteRouterV2,
+                RouteRouter,
                 RouteSelectedRouter,
                 TrackingRouter,
             ],
