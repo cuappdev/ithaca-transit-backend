@@ -2,6 +2,7 @@
 import fs from 'fs';
 import JsonFind from 'json-find';
 import jsonQuery from 'json-query';
+import util from 'util';
 import xml2js from 'xml2js';
 
 import { NODE_ENV } from './EnvUtils';
@@ -91,20 +92,33 @@ import TokenUtils from './TokenUtils';
  * in order to get delay and tracking info.
  */
 
-const ONE_SEC_MS = 1000;
-const realtimeFeedRefreshInterval = ONE_SEC_MS;
-const realtimeFeedTimeout = realtimeFeedRefreshInterval * 5;
+const ONE_SEC_IN_MS = 1000;
+const realtimeFeedRefreshInterval = ONE_SEC_IN_MS * 2;
+const realtimeFeedTimeout = ONE_SEC_IN_MS * 5;
 
 // eslint-disable-next-line prefer-const
 let realtimeFeed = fetchRealtimeFeed();
+init();
 
-// update [realtimeFeed] every [realtimeFeedRefreshInterval]
-RequestUtils.updateObjectOnInterval(
-    fetchRealtimeFeed,
-    realtimeFeedRefreshInterval,
-    realtimeFeedTimeout,
-    realtimeFeed,
-);
+function init() {
+    setInterval(async () => {
+        try {
+            const optionalUpdatedObject: ?Object = await Promise.race([
+                fetchRealtimeFeed(),
+                (util.promisify(setTimeout))(realtimeFeedTimeout)
+                    .then(() => null),
+            ]);
+
+            if (optionalUpdatedObject != null) { // eslint-disable-next-line no-param-reassign
+                realtimeFeed = optionalUpdatedObject;
+            } else {
+                LogUtils.log({ message: 'RealtimeFeedUtils: NULL' });
+            }
+        } catch (error) {
+            LogUtils.logErr(error, realtimeFeed, 'Error occurred while in repeated interval');
+        }
+    }, realtimeFeedRefreshInterval);
+}
 
 function feedXMLToJSON(xml: String) {
     const normalize = name => name.toLowerCase();
@@ -124,7 +138,7 @@ function feedXMLToJSON(xml: String) {
                     || !result.feedmessage.entities
                     || !result.feedmessage.entities.length > 0
                     || !result.feedmessage.entities[0].feedentity) {
-                    // LogUtils.logErr('null or undefined feed result', result, 'Feed result invalid');
+                    LogUtils.log({ message: 'feedXMLToJSON NULL', xml, result });
                     resolve(null);
                     return null;
                 }
@@ -246,37 +260,37 @@ function feedXMLToJSON(xml: String) {
  …
  ]
  */
-async function getTrackingResponse(trackingRequests: Object) {
+async function getTrackingResponse(trackingRequests: Object) : Object {
+    LogUtils.log({ message: 'getTrackingResponse: entering function' });
+
     const trackingInformation = [];
     let noData = false;
-    const rtf = (await realtimeFeed); // ensures the realtimeFeed doesn't update in the middle of execution
+    const rtf = await realtimeFeed; // ensures the realtimeFeed doesn't update in the middle of execution
+
+    LogUtils.log({ message: 'getTrackingResponse: await realtimeFeed' });
+    LogUtils.log({ category: 'getTrackingResponse', rtf, trackingRequests });
 
     // for each input
-    await Promise.all(trackingRequests.map(async (data): Promise<number> => {
+    await Promise.all(trackingRequests.map(async (data): Promise<boolean> => {
         const { stopID, routeID, tripIdentifiers } = data;
-
         const realtimeDelayData = getTrackingInformation(stopID, tripIdentifiers[0], rtf);
 
         if (realtimeDelayData) {
-            const authHeader = await TokenUtils.fetchAuthHeader();
+            LogUtils.log({ category: 'getTrackingResponse', realtimeDelayData });
 
+            const authHeader = await TokenUtils.fetchAuthHeader();
             const options = {
                 method: 'GET',
                 url: 'https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Vehicles/GetAllVehiclesForRoute',
-                headers:
-                    {
-                        'Postman-Token': 'b688b636-87ea-4e04-9f3e-ba34e811e639',
-                        'Cache-Control': 'no-cache',
-                        Authorization: authHeader,
-                    },
-                qs:
-                    {
-                        routeID,
-                    },
+                headers: {
+                    Authorization: authHeader,
+                    'Cache-Control': 'no-cache',
+                    'Postman-Token': 'b688b636-87ea-4e04-9f3e-ba34e811e639',
+                },
+                qs: { routeID },
             };
 
             const trackingRequest = await RequestUtils.createRequest(options, 'Tracking request failed');
-
             if (!trackingRequest) return false;
 
             /**
@@ -318,7 +332,7 @@ async function getTrackingResponse(trackingRequests: Object) {
                 };
             })(busFound);
 
-            LogUtils.log(trackingData);
+            LogUtils.log({ message: 'getTrackingResponse: validData', trackingData });
 
             // we have tracking data for the bus
             if (trackingData) {
@@ -329,7 +343,6 @@ async function getTrackingResponse(trackingRequests: Object) {
             }
             return true;
         }
-
         return false;
     })).catch((err) => {
         LogUtils.logErr(err, trackingRequests, 'Tracking error');
@@ -338,14 +351,12 @@ async function getTrackingResponse(trackingRequests: Object) {
 
     if (await trackingInformation && trackingInformation.length > 0) {
         return trackingInformation;
-    } if (noData) {
-        return {
-            case: 'noData',
-        };
     }
-    return {
-        case: 'invalidData',
-    };
+
+    if (noData) return { case: 'noData' };
+
+    LogUtils.log({ message: 'getTrackingResponse: invalid data', trackingInformation });
+    return { case: 'invalidData' };
 }
 
 /**
@@ -353,16 +364,21 @@ async function getTrackingResponse(trackingRequests: Object) {
  * @param stopID
  * @param tripID
  * @param rtf
- * @returns {Promise<*>}
+ * @returns Object
  */
-function getTrackingInformation(stopID: String, tripID: String, rtf: Object) {
+function getTrackingInformation(stopID: String, tripID: String, rtf: Object) : ?Object {
     // rtf param ensures the realtimeFeed doesn't update in the middle of execution
-
     // if invalid params or the trip is inactive
     if (!stopID
         || !tripID
         || !(rtf)
         || !(rtf[tripID])) {
+        LogUtils.log({
+            category: 'getTrackingInformation NULL',
+            rtf,
+            stopID,
+            tripID,
+        });
         return null;
     }
 
@@ -372,8 +388,8 @@ function getTrackingInformation(stopID: String, tripID: String, rtf: Object) {
     if (Number.isNaN(delay)) delay = parseInt(info.delayAll);
 
     return {
-        vehicleId: parseInt(info.vehicleId),
         delay,
+        vehicleId: parseInt(info.vehicleId),
     };
 }
 
@@ -389,7 +405,7 @@ async function fetchRealtimeFeed() {
     const xml = await RequestUtils.createRequest(options, 'Trip realtime request failed');
     LogUtils.log({ message: 'fetchRealtimeFeed: response received' });
     if (!xml) return {};
-    LogUtils.log({ message: `fetchRealtimeFeed: XML SUBSTR ${String(xml).substring(0, 15)}` });
+    LogUtils.log({ message: `fetchRealtimeFeed: XML SUBSTR ${String(xml).substring(0, 1000)}` });
 
     const obj = await feedXMLToJSON(xml);
     if (obj === null || !obj) { // no current delay/tracking data
@@ -402,7 +418,6 @@ async function fetchRealtimeFeed() {
         return feedXMLToJSON(xmlPlaceholder);
     }
 
-    LogUtils.log({ message: `fetchRealtimeFeed: OBJ SUBSTR ${String(obj).substring(0, 15)}` });
     return obj;
 }
 

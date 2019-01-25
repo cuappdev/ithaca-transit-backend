@@ -27,6 +27,8 @@ class PlacesAutocompleteRouter extends ApplicationRouter<string> {
         const query = req.body.query.toLowerCase();
         const cachedValue = cache.get(query);
 
+        LogUtils.log({ category: 'PlacesAutocompleteRouter', query });
+
         if (cachedValue !== undefined) {
             LogUtils.log({ catgory: 'places', time: Date.now(), hit: true });
             return cachedValue;
