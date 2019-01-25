@@ -378,17 +378,22 @@ function getTrackingInformation(stopID: String, tripID: String, rtf: Object) {
 }
 
 async function fetchRealtimeFeed() {
+    LogUtils.log({ message: 'fetchRealtimeFeed: entering function' });
     const options = {
         method: 'GET',
         headers: { 'Cache-Control': 'no-cache' },
         url: 'https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=TripUpdate&debug=true',
     };
 
+    LogUtils.log({ message: 'fetchRealtimeFeed: about to create request' });
     const xml = await RequestUtils.createRequest(options, 'Trip realtime request failed');
-    if (!xml) return null;
+    LogUtils.log({ message: 'fetchRealtimeFeed: response received' });
+    if (!xml) return {};
+    LogUtils.log({ message: `fetchRealtimeFeed: XML SUBSTR ${String(xml).substring(0, 15)}` });
 
     const obj = await feedXMLToJSON(xml);
     if (obj === null || !obj) { // no current delay/tracking data
+        LogUtils.log({ message: 'fetchRealtimeFeed: null object' });
         if (NODE_ENV === 'production') return {};
 
         // NODE_ENV is one of development or test
@@ -396,6 +401,8 @@ async function fetchRealtimeFeed() {
         console.warn('WARNING: USING TEST REALTIME DATA, NO RESPONSE DATA RECIEVED');
         return feedXMLToJSON(xmlPlaceholder);
     }
+
+    LogUtils.log({ message: `fetchRealtimeFeed: OBJ SUBSTR ${String(obj).substring(0, 15)}` });
     return obj;
 }
 
