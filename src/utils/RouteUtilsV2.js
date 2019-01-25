@@ -1,7 +1,7 @@
 // @flow
 import moment from 'moment';
 import GhopperUtils from './GraphhopperUtils';
-import ErrorUtils from './LogUtils';
+import LogUtils from './LogUtils';
 import ParseRouteUtilsV2 from './ParseRouteUtilsV2';
 
 /**
@@ -60,7 +60,7 @@ async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQu
 
     const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, arriveBy);
 
-    if (!routeResponses) throw ErrorUtils.logErr('Graphhopper route error', routeResponses, 'Could not fetch routes');
+    if (!routeResponses) throw LogUtils.logErr('Graphhopper route error', routeResponses, 'Could not fetch routes');
 
     const { busRoute } = routeResponses;
     let { walkingRoute } = routeResponses;

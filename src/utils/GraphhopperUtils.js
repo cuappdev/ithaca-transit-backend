@@ -6,7 +6,7 @@ import {
     MAP_MATCHING,
     NODE_ENV,
 } from './EnvUtils';
-import ErrorUtils from './LogUtils';
+import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 
 /**
@@ -27,7 +27,7 @@ function isGraphhopperReady(): boolean {
     };
 
     const isReady = (NODE_ENV === 'production') || (waitOn(waitOptions).then(() => true).catch((err) => {
-        if (err) throw ErrorUtils.logErr(err, waitOptions, 'Failed to connect to graphhopper services');
+        if (err) throw LogUtils.logErr(err, waitOptions, 'Failed to connect to graphhopper services');
         return false;
     }));
 
@@ -180,7 +180,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     if (busRouteRequest && busRouteRequest.statusCode < 300) {
         busRoute = JSON.parse(busRouteRequest.body);
     } else {
-        throw ErrorUtils.logErr(
+        throw LogUtils.logErr(
             busRouteRequest && busRouteRequest.body,
             getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
             `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
@@ -190,7 +190,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     if (walkingRouteRequest && walkingRouteRequest.statusCode < 300) {
         walkingRoute = JSON.parse(walkingRouteRequest.body);
     } else {
-        throw ErrorUtils.logErr(
+        throw LogUtils.logErr(
             walkingRouteRequest && walkingRouteRequest.body,
             getGraphhopperWalkingParams(end, start),
             `Walking failed: ${GHOPPER_WALKING || 'undefined graphhopper walking env'}`,

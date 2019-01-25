@@ -1,7 +1,7 @@
 // @flow
 import type Request from 'express';
 import ApplicationRouter from '../appdev/ApplicationRouter';
-import ErrorUtils from '../utils/LogUtils';
+import LogUtils from '../utils/LogUtils';
 import RouteUtilsV2 from '../utils/RouteUtilsV2';
 
 /**
@@ -40,7 +40,7 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
         }
 
         return Promise.all(routes).then(val => val).catch((err) => {
-            throw ErrorUtils.logErr(err, routes, 'Could not get all specified routes');
+            throw LogUtils.logErr(err, routes, 'Could not get all specified routes');
         });
     }
 }

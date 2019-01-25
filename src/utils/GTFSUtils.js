@@ -4,7 +4,7 @@ import request from 'request';
 import fs from 'fs';
 import DecompressZip from 'decompress-zip';
 import moment from 'moment';
-import ErrorUtils from './LogUtils';
+import LogUtils from './LogUtils';
 
 const root = '.';
 const zipFile = 'tcat-ny-us.zip';
@@ -61,7 +61,7 @@ function getTCATData(useCache: boolean = true) {
                 });
         }
     }).then(value => value).catch((error) => {
-        ErrorUtils.logErr(error, zipFile, `Could not get ${root}/${zipFile} from ${zipUrl}`);
+        LogUtils.logErr(error, zipFile, `Could not get ${root}/${zipFile} from ${zipUrl}`);
         return [];
     });
 }
@@ -86,11 +86,11 @@ async function getGTFSJson(dataName, fileName, useCache: boolean = true) {
                 resolve(jsonObj);
                 return jsonObj;
             }).catch((error) => {
-                ErrorUtils.logErr(error, `${path}/${fileName}`, `Could not get json from csv ${path}/${fileName}`);
+                LogUtils.logErr(error, `${path}/${fileName}`, `Could not get json from csv ${path}/${fileName}`);
             });
         });
     }).then(value => value).catch((error) => {
-        ErrorUtils.logErr(error, fileName, `Could not get json from ${path}/${fileName}`);
+        LogUtils.logErr(error, fileName, `Could not get json from ${path}/${fileName}`);
         return [];
     });
 }
@@ -122,7 +122,7 @@ async function checkGTFSDatesValid(useCache: boolean = true) {
         const warningDate = endDate.subtract(validGTFSBufferDays, 'days');
 
         if (now.isBefore(startDate)) {
-            throw ErrorUtils.logErr(
+            throw LogUtils.logErr(
                 'FATAL ERROR: GTFS DATA IS INVALID, NOW IS BEFORE THE START DATE',
                 endDate,
                 'ARCHIVE AND REFRESH GTFS DATA IMMEDIATELY',
@@ -130,7 +130,7 @@ async function checkGTFSDatesValid(useCache: boolean = true) {
             );
         }
         if (now.isAfter(endDate)) {
-            throw ErrorUtils.logErr(
+            throw LogUtils.logErr(
                 'FATAL ERROR: GTFS DATA IS EXPIRED',
                 endDate,
                 'ARCHIVE AND REFRESH GTFS DATA IMMEDIATELY',
@@ -139,7 +139,7 @@ async function checkGTFSDatesValid(useCache: boolean = true) {
         }
         if (now.isAfter(warningDate)) {
             const remaining = endDate.subtract(now);
-            ErrorUtils.logErr(
+            LogUtils.logErr(
                 `WARNING: GTFS DATA WILL EXPIRE IN ${remaining} DAYS`,
                 endDate,
                 'ARCHIVE AND REFRESH GTFS DATA SOON',
@@ -149,7 +149,7 @@ async function checkGTFSDatesValid(useCache: boolean = true) {
         return true;
     }
 
-    throw ErrorUtils.logErr('Could not get and validate GTFS calendar data', cal || null, 'checkGTFSDatesValid failed');
+    throw LogUtils.logErr('Could not get and validate GTFS calendar data', cal || null, 'checkGTFSDatesValid failed');
 }
 
 export default {

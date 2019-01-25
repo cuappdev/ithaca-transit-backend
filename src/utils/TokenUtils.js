@@ -3,7 +3,7 @@ import fs from 'fs';
 import request from 'request';
 
 import { TOKEN } from './EnvUtils';
-import ErrorUtils from './LogUtils';
+import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 
 let credentials = { basic_token: TOKEN || null, access_token: null, expiry_date: null };
@@ -15,7 +15,7 @@ function checkCredentials() {
         credentials.basic_token = TOKEN || null;
 
         throw new Error(
-            ErrorUtils.logErr(
+            LogUtils.logErr(
                 'Invalid or missing TOKEN in .env',
                 credentials,
                 'getCredentials failed. Missing basic_token',
@@ -73,13 +73,13 @@ function fetchAccessToken() {
         if (newCredentials && newCredentials.basic_token) {
             credentials = newCredentials;
             fs.writeFile(configFile, JSON.stringify(newCredentials), 'utf8', (err) => {
-                if (err) ErrorUtils.logErr(err, null, 'Could not write access token');
+                if (err) LogUtils.logErr(err, null, 'Could not write access token');
             });
         }
 
         return newCredentials.access_token;
     }).catch((error) => {
-        ErrorUtils.logErr(error, credentials, 'Token request failed');
+        LogUtils.logErr(error, credentials, 'Token request failed');
         return null;
     });
 }
