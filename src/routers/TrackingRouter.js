@@ -1,5 +1,6 @@
 // @flow
 import ApplicationRouter from '../appdev/ApplicationRouter';
+import LogUtils from '../utils/LogUtils';
 import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 
 class TrackingRouter extends ApplicationRouter<Object> {
@@ -18,7 +19,10 @@ class TrackingRouter extends ApplicationRouter<Object> {
                 case: 'invalidRequest',
             };
         }
-        return RealtimeFeedUtils.getTrackingResponse(req.body.data);
+
+        const { data } = req.body;
+        LogUtils.log({ category: 'trackingRouter', data });
+        return RealtimeFeedUtils.getTrackingResponse(data);
     }
 }
 

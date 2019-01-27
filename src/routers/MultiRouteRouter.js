@@ -28,6 +28,8 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
             time: departureTimeQuery,
         } = req.query;
 
+        LogUtils.log({ category: 'MultiRouteRouter' });
+
         // only one destination given
         if (typeof destinationName === 'string') {
             return RouteUtils.getRoute(destinationName, end, start, departureTimeQuery, false);
