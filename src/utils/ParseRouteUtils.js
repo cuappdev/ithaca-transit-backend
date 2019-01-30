@@ -501,10 +501,11 @@ function parseRoute(resp: Object, destinationName: string) {
                         stopID: stop.stop_id,
                     }));
 
+                    const rtf = await RealtimeFeedUtils.fetchRTF();
                     const realtimeData = RealtimeFeedUtils.getTrackingInformation(
                         stops[0].stopID,
                         tripID[0],
-                        (await RealtimeFeedUtils.realtimeFeed),
+                        rtf,
                     );
 
                     delay = (realtimeData && realtimeData.delay);
