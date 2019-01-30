@@ -1,13 +1,11 @@
 // @flow
 import dotenv from 'dotenv';
-import util from 'util';
 
 import API from './Api';
 import AlertsUtils from './utils/AlertsUtils';
 import AllStopUtils from './utils/AllStopUtils';
 import GhopperUtils from './utils/GraphhopperUtils';
 import LogUtils from './utils/LogUtils';
-import RealtimeFeedUtils from './utils/RealtimeFeedUtils';
 import TokenUtils from './utils/TokenUtils';
 
 dotenv.config(); // dotenv needs to be configured before token fetch
@@ -26,17 +24,19 @@ const { express } = app;
 /* eslint-disable no-console */
 const init = new Promise((resolve, reject) => {
     // start endpoints that rely on external data starting with authentication token
+    const timeoutPromise = new Promise((res, rej) => {
+        setTimeout(res, TWENTY_SECONDS_IN_MS);
+    }).then(value => LogUtils.log({ message: 'server.js: Timeout reached' }));
+
     authToken.then(() => {
         // await data
         const dataInit = Promise.race([
             Promise.all([
-                RealtimeFeedUtils.realtimeFeed,
                 AllStopUtils.allStops,
                 AlertsUtils.alerts,
                 TokenUtils.fetchAuthHeader(),
             ]),
-            (util.promisify(setTimeout))(TWENTY_SECONDS_IN_MS)
-                .then(() => LogUtils.log({ message: 'server.js: Timeout reached' })),
+            timeoutPromise,
         ]).then(() => {
             LogUtils.log({ message: 'server.js: Initialized data successfully' });
         });
