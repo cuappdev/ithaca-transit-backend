@@ -371,8 +371,9 @@ function getTrackingInformation(stopID: String, tripID: String, rtf: Object) : ?
     // if invalid params or the trip is inactive
     if (!stopID
         || !tripID
-        || !(rtf)
-        || !(rtf[tripID])) {
+        || !rtf
+        || rtf === {}
+        || !rtf[tripID]) {
         LogUtils.log({
             category: 'getTrackingInformation NULL',
             rtf,
