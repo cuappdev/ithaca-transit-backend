@@ -58,12 +58,13 @@ function createGpxJson(stops: Array<Object>, startTime: String): Object {
 function mergeDirections(first, second) {
     try {
         second.stops.shift();
-
         second.path.shift();
+
         const path = first.path.concat(second.path);
         const distance = first.distance + second.distance;
         const stops = first.stops.concat(second.stops);
         const tripIDs = first.tripIdentifiers.concat(second.tripIdentifiers);
+
         return {
             type: first.type,
             name: first.name,
@@ -502,40 +503,35 @@ function parseRoute(resp: Object, destinationName: string) {
                     }));
 
                     const rtf = await RealtimeFeedUtils.fetchRTF();
-                    const realtimeData = RealtimeFeedUtils.getTrackingInformation(
-                        stops[0].stopID,
-                        tripID[0],
-                        rtf,
-                    );
-
-                    delay = (realtimeData && realtimeData.delay);
+                    const realtimeData = RealtimeFeedUtils.getDelayInformation(stops[0].stopID, tripID[0], rtf);
+                    delay = realtimeData && realtimeData.delay;
                 }
 
                 return {
-                    type,
-                    name,
-                    startTime,
-                    endTime,
-                    startLocation,
-                    endLocation,
-                    path,
+                    delay,
                     distance,
+                    endLocation,
+                    endTime,
+                    name,
+                    path,
                     routeNumber,
+                    startLocation,
+                    startTime,
+                    stayOnBusForTransfer,
                     stops,
                     tripIdentifiers: tripID,
-                    delay,
-                    stayOnBusForTransfer,
+                    type,
                 };
             }));
 
             return {
-                departureTime,
                 arrivalTime: arriveTime,
-                directions,
-                startCoords,
-                endCoords,
                 boundingBox,
+                departureTime,
+                directions,
+                endCoords,
                 numberOfTransfers,
+                startCoords,
             };
         } catch (error) {
             throw new Error(
@@ -546,8 +542,8 @@ function parseRoute(resp: Object, destinationName: string) {
 }
 
 export default {
-    parseWalkingRoute,
-    parseRoute,
     condenseRoute,
     latLongFromStr,
+    parseRoute,
+    parseWalkingRoute,
 };

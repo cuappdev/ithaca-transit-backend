@@ -19,7 +19,8 @@ class DelayRouter extends ApplicationRouter<Object> {
             stopID,
             tripID,
         });
-        const res = await RealtimeFeedUtils.getDelayInformation(stopID, tripID);
+        const rtf = await RealtimeFeedUtils.fetchRTF();
+        const res = await RealtimeFeedUtils.getDelayInformation(stopID, tripID, rtf);
         return res.delay;
     }
 }

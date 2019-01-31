@@ -27,23 +27,15 @@ async function fetchRTF() : Object {
  ]
  */
 async function getTrackingResponse(trackingRequests: Object) : Object {
-    LogUtils.log({ message: 'getTrackingResponse: entering function' });
-
     const trackingInformation = [];
-    let noData = false;
     const rtf = await fetchRTF(); // ensures the realtimeFeed doesn't update in the middle of execution
-
-    LogUtils.log({ message: 'getTrackingResponse: await realtimeFeed' });
-    LogUtils.log({ category: 'getTrackingResponse', rtf, trackingRequests });
 
     // for each input
     await Promise.all(trackingRequests.map(async (data): Promise<boolean> => {
         const { stopID, routeID, tripIdentifiers } = data;
-        const realtimeDelayData = getTrackingInformation(stopID, tripIdentifiers[0], rtf);
+        const realtimeDelayData = getDelayInformation(stopID, tripIdentifiers[0], rtf);
 
         if (realtimeDelayData) {
-            LogUtils.log({ category: 'getTrackingResponse', realtimeDelayData });
-
             const authHeader = await TokenUtils.fetchAuthHeader();
             const options = {
                 method: 'GET',
@@ -103,11 +95,9 @@ async function getTrackingResponse(trackingRequests: Object) : Object {
             // we have tracking data for the bus
             if (trackingData) {
                 trackingInformation.push(trackingData);
-            } else {
-                noData = true;
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
         return false;
     })).catch((err) => {
@@ -119,10 +109,8 @@ async function getTrackingResponse(trackingRequests: Object) : Object {
         return trackingInformation;
     }
 
-    if (noData) return { case: 'noData' };
-
-    LogUtils.log({ message: 'getTrackingResponse: invalid data', trackingInformation });
-    return { case: 'invalidData' };
+    LogUtils.log({ message: 'getTrackingResponse: no data', trackingInformation });
+    return { case: 'noData' };
 }
 
 /**
@@ -132,7 +120,7 @@ async function getTrackingResponse(trackingRequests: Object) : Object {
  * @param rtf
  * @returns Object
  */
-function getTrackingInformation(stopID: String, tripID: String, rtf: Object) : ?Object {
+function getDelayInformation(stopID: String, tripID: String, rtf: Object) : ?Object {
     // rtf param ensures the realtimeFeed doesn't update in the middle of execution
     // if invalid params or the trip is inactive
     if (!stopID
@@ -141,7 +129,7 @@ function getTrackingInformation(stopID: String, tripID: String, rtf: Object) : ?
         || rtf === {}
         || !rtf[tripID]) {
         LogUtils.log({
-            category: 'getTrackingInformation NULL',
+            category: 'getDelayInformation NULL',
             rtf,
             stopID,
             tripID,
@@ -160,15 +148,8 @@ function getTrackingInformation(stopID: String, tripID: String, rtf: Object) : ?
     };
 }
 
-// Wrapper over getTrackingInformation, will deprecate in the future
-async function getDelayInformation(stopID: String, tripID: String) : ?Object {
-    const rtf = await fetchRTF();
-    return getTrackingInformation(stopID, tripID, rtf);
-}
-
 export default {
     fetchRTF,
     getDelayInformation,
-    getTrackingInformation,
     getTrackingResponse,
 };
