@@ -1,7 +1,6 @@
 // @flow
 import ApplicationRouter from '../appdev/ApplicationRouter';
 import AlertsUtils from '../utils/AlertsUtils';
-import LogUtils from '../utils/LogUtils';
 
 class AlertsRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
@@ -14,7 +13,6 @@ class AlertsRouter extends ApplicationRouter<Array<Object>> {
 
     // eslint-disable-next-line require-await
     async content(req): Promise<any> {
-        LogUtils.log({ category: 'AlertsRouter' });
         return AlertsUtils.alerts;
     }
 }

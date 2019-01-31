@@ -2,7 +2,6 @@
 import type Request from 'express';
 import ApplicationRouter from '../appdev/ApplicationRouter';
 import AnalyticsUtils from '../utils/AnalyticsUtils';
-import LogUtils from '../utils/LogUtils';
 
 class RouteSelectedRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
@@ -15,8 +14,6 @@ class RouteSelectedRouter extends ApplicationRouter<Array<Object>> {
 
     // eslint-disable-next-line require-await
     async content(req: Request): Promise<any> {
-        LogUtils.log({ category: 'RouteSelectedRouter' });
-
         if (req.body.routeId) {
             return AnalyticsUtils.selectRoute(req.body.routeId, req.body.uid);
         }
