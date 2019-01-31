@@ -54,11 +54,15 @@ async function createFinalRoute(routeBus, routeWalking, start, end, departureTim
     return finalRoutes;
 }
 
-async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy) {
-    // eslint-disable-next-line no-param-reassign
-    arriveBy = (arriveBy === '1' || arriveBy === 'true' || arriveBy === true);
+async function getRoutes(
+    destinationName: string,
+    end: string, start: string,
+    departureTimeQuery: number,
+    arriveBy: string,
+) : Promise<Array<Object>> {
+    const arriveByBool = (arriveBy === '1' || arriveBy === 'true' || arriveBy === true);
 
-    const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, arriveBy);
+    const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, arriveByBool);
 
     if (!routeResponses) {
         throw LogUtils.logErr({ message: 'RouteUtils.js: Graphhopper route error : could not fetch routes' });
@@ -69,26 +73,10 @@ async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQu
     // parse the graphhopper walking route=
     walkingRoute = ParseRouteUtils.parseWalkingRoute(
         walkingRoute,
-        GhopperUtils.getDepartureTime(departureTimeQuery, arriveBy),
+        GhopperUtils.getDepartureTime(departureTimeQuery, arriveByBool),
         destinationName,
     );
 
-    return {
-        busRoute,
-        walkingRoute,
-    };
-}
-
-async function getRoutes(
-    destinationName: string,
-    end: string, start: string,
-    departureTimeQuery: number,
-    arriveBy: boolean,
-) : Promise<Array<Object>> {
-    const busWalkingRoute = await fetchBusWalkingRoute(destinationName, end, start, departureTimeQuery, arriveBy);
-
-    const { busRoute, walkingRoute } = busWalkingRoute;
-    
     // if there are no bus routes, we should just return walking instead of crashing
     if (!busRoute && walkingRoute) {
         return [walkingRoute];
@@ -104,7 +92,7 @@ async function getRoutes(
         start,
         end,
         departureTimeQuery,
-        arriveBy,
+        arriveByBool,
     );
 }
 
