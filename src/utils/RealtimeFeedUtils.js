@@ -26,14 +26,14 @@ async function fetchRTF() : Object {
  …
  ]
  */
-async function getTrackingResponse(trackingRequests: Object) : Object {
+async function getTrackingResponse(requestData: Object) : Object {
     LogUtils.log({ message: 'getTrackingResponse: entering function' });
 
     const trackingInformation = [];
     const rtf = await fetchRTF(); // ensures the realtimeFeed doesn't update in the middle of execution
 
     // for each input
-    await Promise.all(trackingRequests.map(async (data): Promise<boolean> => {
+    await Promise.all(requestData.map(async (data): Promise<boolean> => {
         const { stopID, routeID, tripIdentifiers } = data;
         const realtimeDelayData = getDelayInformation(stopID, tripIdentifiers[0], rtf);
 
@@ -104,7 +104,7 @@ async function getTrackingResponse(trackingRequests: Object) : Object {
         }
         return false;
     })).catch((err) => {
-        LogUtils.logErr(err, trackingRequests, 'Tracking error');
+        LogUtils.logErr(err, requestData, 'Tracking error');
         throw err;
     });
 
@@ -113,7 +113,29 @@ async function getTrackingResponse(trackingRequests: Object) : Object {
     }
 
     LogUtils.log({ message: 'getTrackingResponse: noData', trackingInformation });
-    return { case: 'noData' };
+    // TODO: change this to non-dummy data once client fix is out
+    return [{
+        case: 'noData',
+        commStatus: '',
+        delay: 0,
+        destination: '',
+        deviation: 0,
+        direction: '',
+        displayStatus: '',
+        gpsStatus: 0,
+        heading: 0,
+        lastStop: '',
+        lastUpdated: 0,
+        latitude: 0,
+        longitude: 0,
+        name: '',
+        opStatus: '',
+        routeID: parseInt(requestData[0].routeID),
+        runID: 0,
+        speed: 0,
+        tripID: 0,
+        vehicleID: 0,
+    }];
 }
 
 /**
