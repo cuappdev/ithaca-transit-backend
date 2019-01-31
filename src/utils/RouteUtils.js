@@ -79,7 +79,7 @@ async function fetchBusWalkingRoute(destinationName, end, start, departureTimeQu
     };
 }
 
-async function getRoute(
+async function getRoutes(
     destinationName: string,
     end: string, start: string,
     departureTimeQuery: number,
@@ -110,5 +110,5 @@ async function getRoute(
 
 export default {
     createFinalRoute,
-    getRoute,
+    getRoutes,
 };
