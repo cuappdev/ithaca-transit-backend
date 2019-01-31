@@ -1,5 +1,4 @@
 // @flow
-import moment from 'moment';
 import GhopperUtils from './GraphhopperUtils';
 import LogUtils from './LogUtils';
 import ParseRouteUtils from './ParseRouteUtils';
@@ -15,8 +14,14 @@ import ParseRouteUtils from './ParseRouteUtils';
  * @param arriveBy
  * @returns {*}
  */
-/* eslint-disable no-param-reassign */
-async function createFinalRoute(routeBus, routeWalking, start, end, departureTimeQuery, arriveBy: boolean) {
+async function createFinalRoute(
+    busRoutes: Array<Object>,
+    walkingRoute: Object,
+    start: string,
+    end: string,
+    departureTimeQuery: number,
+    arriveBy: boolean,
+) {
     const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
     let departureDelayBuffer: boolean = false;
     if (!arriveBy) { // 'leave at' query
@@ -27,41 +32,30 @@ async function createFinalRoute(routeBus, routeWalking, start, end, departureTim
     const endPoint = ParseRouteUtils.latLongFromStr(end);
 
     const finalRoutes = (await Promise.all(
-        routeBus.map(currPath => ParseRouteUtils.condenseRoute(
+        busRoutes.map(currPath => ParseRouteUtils.condenseRoute(
             currPath,
             startPoint,
             endPoint,
-            routeWalking.directions[0].distance,
+            walkingRoute.directions[0].distance,
             departureDelayBuffer,
             departureTimeNowMs,
         )),
     )).filter((route => route !== null));
 
-    // return just walking if no bus routes after filtering
-    if (finalRoutes.length === 0 && routeWalking) {
-        return routeWalking ? [routeWalking] : [];
+    if (walkingRoute) { // if a walkingRoute exists append it
+        finalRoutes.push(walkingRoute);
     }
-
-    // if walking is > 5 mins faster than the bus, append the walking route
-    const busRouteArr = moment(finalRoutes[0].arrivalTime);
-    // console.log(busRouteArr.diff(routeWalking.arrivalTime, 'minutes'));
-    // if (best bus arrival time) - (walk arrive time) > 5 minutes
-    // EX: 6:48am - 6:25am = 23 minutes > 5 minutes
-    if (busRouteArr.diff(routeWalking.arrivalTime, 'minutes') > 5) {
-        finalRoutes.push(routeWalking);
-    }
-
     return finalRoutes;
 }
 
 async function getRoutes(
     destinationName: string,
-    end: string, start: string,
+    end: string,
+    start: string,
     departureTimeQuery: number,
     arriveBy: string,
 ) : Promise<Array<Object>> {
     const arriveByBool = (arriveBy === '1' || arriveBy === 'true' || arriveBy === true);
-
     const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, arriveByBool);
 
     if (!routeResponses) {
@@ -73,7 +67,7 @@ async function getRoutes(
     // parse the graphhopper walking route=
     walkingRoute = ParseRouteUtils.parseWalkingRoute(
         walkingRoute,
-        GhopperUtils.getDepartureTime(departureTimeQuery, arriveByBool),
+        GhopperUtils.getDepartureTime(departureTimeQuery, arriveByBool, 0),
         destinationName,
     );
 
@@ -83,11 +77,11 @@ async function getRoutes(
     }
 
     // parse the graphhopper bus route
-    const parsedBusRoute = await ParseRouteUtils.parseRoute(busRoute, destinationName);
+    const parsedBusRoutes = await ParseRouteUtils.parseRoute(busRoute, destinationName);
 
     // combine and filter to create the final route
     return createFinalRoute(
-        parsedBusRoute,
+        parsedBusRoutes,
         walkingRoute,
         start,
         end,
