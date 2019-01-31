@@ -13,7 +13,7 @@ LogUtils.log({ message: 'server.js: Initializing data and waiting for Graphhoppe
 
 const PORT: number = parseInt(process.env.PORT) || 80;
 const SERVER_ADDRESS: string = '0.0.0.0';
-const TWENTY_SECONDS_IN_MS: number = 20000;
+const FIVE_SECONDS_IN_MS: number = 5000;
 
 const authToken = TokenUtils.fetchAuthHeader();
 
@@ -25,7 +25,7 @@ const { express } = app;
 const init = new Promise((resolve, reject) => {
     // start endpoints that rely on external data starting with authentication token
     const timeoutPromise = new Promise((res, rej) => {
-        setTimeout(res, TWENTY_SECONDS_IN_MS);
+        setTimeout(res, FIVE_SECONDS_IN_MS);
     }).then(value => LogUtils.log({ message: 'server.js: Timeout reached' }));
     authToken.then(() => {
         // await data
