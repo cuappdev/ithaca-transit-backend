@@ -1,4 +1,5 @@
 // @flow
+import { LIVE_TRACKING } from './EnvUtils';
 import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
@@ -6,7 +7,7 @@ import TokenUtils from './TokenUtils';
 async function fetchRTF() : Object {
     const options = {
         method: 'GET',
-        url: 'http://live-tracking:5000',
+        url: `http://${LIVE_TRACKING || 'localhost'}:5000`,
         headers: { 'Cache-Control': 'no-cache' },
     };
     const data = await RequestUtils.createRequest(options, 'Tracking request failed');
@@ -108,7 +109,7 @@ async function getTrackingResponse(requestData: Object) : Object {
         throw err;
     });
 
-    if (await trackingInformation && trackingInformation.length > 0) {
+    if (trackingInformation.length > 0) {
         return trackingInformation;
     }
 
@@ -155,7 +156,6 @@ function getDelayInformation(stopID: String, tripID: String, rtf: Object) : ?Obj
         || !rtf[tripID]) {
         LogUtils.log({
             category: 'getDelayInformation NULL',
-            rtf,
             stopID,
             tripID,
         });

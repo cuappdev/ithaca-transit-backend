@@ -25,10 +25,8 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
             time: departureTimeQuery,
             uid,
         } = req.query;
-        LogUtils.log({ category: 'routeRequestV1: request received' });
 
         const routeRes = await RouteUtils.getRoute(destinationName, end, start, departureTimeQuery, arriveBy);
-
         const request = {
             arriveBy,
             destinationName,
@@ -39,7 +37,7 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
             time: departureTimeQuery,
             uid,
         };
-        LogUtils.log({ category: 'routeRequestV1', request });
+        LogUtils.log({ category: 'routeRequest', request });
         AnalyticsUtils.assignRouteIdsAndCache(routeRes);
 
         return routeRes;

@@ -2,7 +2,6 @@
 import LRU from 'lru-cache';
 import ApplicationRouter from '../appdev/ApplicationRouter';
 import RequestUtils from '../utils/RequestUtils';
-import LogUtils from '../utils/LogUtils';
 
 const cacheOptions = {
     max: 10000,
@@ -27,14 +26,9 @@ class PlacesAutocompleteRouter extends ApplicationRouter<string> {
         const query = req.body.query.toLowerCase();
         const cachedValue = cache.get(query);
 
-        LogUtils.log({ category: 'PlacesAutocompleteRouter', query });
-
         if (cachedValue !== undefined) {
-            LogUtils.log({ catgory: 'places', time: Date.now(), hit: true });
             return cachedValue;
         }
-
-        LogUtils.log({ category: 'places', time: Date.now(), hit: false });
 
         // not in cache
         const options = {
