@@ -312,7 +312,7 @@ Returns an array of Routes, one for each destination.
 | --------------- | ----------------------------------------------------------------------- |
 | **notes**       | Can be 1 or more Strings, depending on if the route loops and restarts. |
 
-## Returns: BusLocation
+## Returns: [BusLocation]
 
 *class* **BusLocation**
 
@@ -339,8 +339,9 @@ Returns an array of Routes, one for each destination.
 | tripID        | Int      | Four-figit identification number relating directly to trip.  Example: 1818, 1838                                                                                                                                            |
 | vehicleID     | Int      | Four-figit identification number relating directly to bus.  Example: 1105, 1603                                                                                                                                             |
 
+# Examples Responses
 
-**Example Response**
+## /route
 *Truncated for clarity.*
 
 
