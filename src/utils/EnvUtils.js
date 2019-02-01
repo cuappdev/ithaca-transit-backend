@@ -4,7 +4,7 @@ const {
     GHOPPER_WALKING,
     MAP_MATCHING,
     NODE_ENV,
-    TCAT_SERVICE,
+    PYTHON_APP,
     TOKEN,
 } = process.env;
 
@@ -13,6 +13,6 @@ export {
     GHOPPER_WALKING,
     MAP_MATCHING,
     NODE_ENV,
-    TCAT_SERVICE,
+    PYTHON_APP,
     TOKEN,
 };

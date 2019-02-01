@@ -1,5 +1,5 @@
 // @flow
-import { TCAT_SERVICE } from './EnvUtils';
+import { PYTHON_APP } from './EnvUtils';
 import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
@@ -7,7 +7,7 @@ import TokenUtils from './TokenUtils';
 async function fetchRTF(): Object {
     const options = {
         method: 'GET',
-        url: `http://${TCAT_SERVICE || 'localhost'}:5000/rtf`,
+        url: `http://${PYTHON_APP || 'localhost'}:5000/rtf`,
         headers: { 'Cache-Control': 'no-cache' },
     };
     const data = await RequestUtils.createRequest(options, 'Tracking request failed');
