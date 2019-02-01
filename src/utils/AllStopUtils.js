@@ -1,5 +1,5 @@
 // @flow
-import { ALL_STOPS } from './EnvUtils';
+import { TCAT_SERVICE } from './EnvUtils';
 import RequestUtils from './RequestUtils';
 
 const SEC_IN_MS = 1000;
@@ -62,7 +62,7 @@ RequestUtils.updateObjectOnInterval(
 async function fetchAllStops() {
     const options = {
         method: 'GET',
-        url: `http://${ALL_STOPS || 'localhost'}:5000/stops`,
+        url: `http://${TCAT_SERVICE || 'localhost'}:5000/stops`,
         headers: { 'Cache-Control': 'no-cache' },
     };
     const data = await RequestUtils.createRequest(options, 'AllStops request failed');
