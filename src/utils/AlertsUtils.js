@@ -12,11 +12,6 @@ async function fetchAlerts(): Object {
     return JSON.parse(data);
 }
 
-async function getAlerts(): Object {
-    const alerts = await fetchAlerts();
-    return alerts;
-}
-
 export default {
-    getAlerts,
+    fetchAlerts,
 };

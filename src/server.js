@@ -2,7 +2,6 @@
 import dotenv from 'dotenv';
 
 import API from './Api';
-import AllStopUtils from './utils/AllStopUtils';
 import GhopperUtils from './utils/GraphhopperUtils';
 import LogUtils from './utils/LogUtils';
 import TokenUtils from './utils/TokenUtils';
@@ -29,9 +28,7 @@ const init = new Promise((resolve, reject) => {
     authToken.then(() => {
         // await data
         const dataInit = Promise.race([
-            Promise.all([
-                TokenUtils.fetchAuthHeader(),
-            ]),
+            TokenUtils.fetchAuthHeader(),
             timeoutPromise,
         ]).then(() => {
             LogUtils.log({ message: 'server.js: Initialized data successfully' });

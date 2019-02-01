@@ -13,7 +13,7 @@ class AllStopsRouter extends ApplicationRouter<Array<Object>> {
 
     // eslint-disable-next-line require-await
     async content(req): Promise<any> {
-        return AllStopUtils.getAllStops();
+        return AllStopUtils.fetchAllStops();
     }
 }
 

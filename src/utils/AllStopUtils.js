@@ -69,11 +69,6 @@ async function fetchAllStops() {
     return JSON.parse(data);
 }
 
-async function getAllStops() {
-    const allStops = await fetchAllStops();
-    return allStops;
-}
-
 function fetchPrecisionMaps() {
     const maps = {};
     maps[DEG_EQ_PRECISION] = getPrecisionMap(DEG_EQ_PRECISION);
@@ -90,7 +85,7 @@ async function getPrecisionMap(degreesPrecision: ?number = DEG_EQ_PRECISION) {
     if (degreesPrecision < 1 || degreesPrecision > 6) {
         return null;
     }
-    const stops = await allStops;
+    const stops = await fetchAllStops();
     if (allStopsCompareMaps && allStopsCompareMaps[degreesPrecision]) {
         return allStopsCompareMaps[degreesPrecision];
     }
@@ -146,7 +141,7 @@ export default {
     DEG_KM_PRECISION,
     DEG_NEARBY_PRECISION,
     DEG_WALK_PRECISION,
-    getAllStops,
+    fetchAllStops,
     isStop,
     isStopsWithinPrecision,
 };
