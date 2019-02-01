@@ -1,5 +1,7 @@
 // @flow
 const {
+    ALERTS,
+    ALL_STOPS,
     GHOPPER_BUS,
     GHOPPER_WALKING,
     LIVE_TRACKING,
@@ -9,6 +11,8 @@ const {
 } = process.env;
 
 export {
+    ALERTS,
+    ALL_STOPS,
     GHOPPER_BUS,
     GHOPPER_WALKING,
     LIVE_TRACKING,
