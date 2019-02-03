@@ -1,7 +1,6 @@
 // @flow
+import { PYTHON_APP } from './EnvUtils';
 import RequestUtils from './RequestUtils';
-import TokenUtils from './TokenUtils';
-import LogUtils from './LogUtils';
 
 const SEC_IN_MS = 1000;
 const MIN_IN_MS = SEC_IN_MS * 60;
@@ -11,12 +10,6 @@ const DEG_EQ_PRECISION = 5; // 5 degrees of precision is about a 1.1 meters, is 
 const DEG_NEARBY_PRECISION = 4; // 4 degrees of precision is about 11 meters, stop nearby
 const DEG_WALK_PRECISION = 3; // 3 degrees of precision is about 111 meters, stop walkable
 const DEG_KM_PRECISION = 2; // 3 degrees of precision is about 1 km, stop barely walkable
-
-/**
- * Array of all stops
- * @type {Promise<*>}
- */
-let allStops = RequestUtils.fetchWithRetry(fetchAllStops);
 
 /**
  * Used for finding stops at or nearby a point
@@ -55,7 +48,6 @@ let allStops = RequestUtils.fetchWithRetry(fetchAllStops);
 let allStopsCompareMaps = RequestUtils.fetchWithRetry(fetchPrecisionMaps);
 
 const updateFunc = async () => {
-    allStops = await RequestUtils.fetchWithRetry(fetchAllStops);
     allStopsCompareMaps = await RequestUtils.fetchWithRetry(fetchPrecisionMaps);
     return false;
 };
@@ -68,34 +60,13 @@ RequestUtils.updateObjectOnInterval(
 );
 
 async function fetchAllStops() {
-    try {
-        const authHeader = await TokenUtils.fetchAuthHeader();
-
-        const options = {
-            method: 'GET',
-            url: 'https://gateway.api.cloud.wso2.com:443/t/mystop/tcat/v1/rest/Stops/GetAllStops',
-            headers:
-                {
-                    'Postman-Token': 'b688b636-87ea-4e04-9f3e-ba34e811e639',
-                    'Cache-Control': 'no-cache',
-                    Authorization: authHeader,
-                },
-        };
-
-        const stopsRequest = await RequestUtils.createRequest(options, 'allStops request failed');
-        if (stopsRequest) {
-            return JSON.parse(stopsRequest).map(stop => ({
-                name: stop.Name,
-                lat: stop.Latitude,
-                long: stop.Longitude,
-            }));
-        }
-    } catch (err) {
-        LogUtils.logErr(err, null, 'allStops error');
-        throw err;
-    }
-
-    return null;
+    const options = {
+        method: 'GET',
+        url: `http://${PYTHON_APP || 'localhost'}:5000/stops`,
+        headers: { 'Cache-Control': 'no-cache' },
+    };
+    const data = await RequestUtils.createRequest(options, 'AllStops request failed');
+    return JSON.parse(data);
 }
 
 function fetchPrecisionMaps() {
@@ -114,7 +85,7 @@ async function getPrecisionMap(degreesPrecision: ?number = DEG_EQ_PRECISION) {
     if (degreesPrecision < 1 || degreesPrecision > 6) {
         return null;
     }
-    const stops = await allStops;
+    const stops = await fetchAllStops();
     if (allStopsCompareMaps && allStopsCompareMaps[degreesPrecision]) {
         return allStopsCompareMaps[degreesPrecision];
     }
@@ -165,12 +136,12 @@ function isStop(point: Object) {
 }
 
 export default {
-    isStop,
-    isStopsWithinPrecision,
-    allStops,
-    DEG_EXACT_PRECISION,
     DEG_EQ_PRECISION,
+    DEG_EXACT_PRECISION,
+    DEG_KM_PRECISION,
     DEG_NEARBY_PRECISION,
     DEG_WALK_PRECISION,
-    DEG_KM_PRECISION,
+    fetchAllStops,
+    isStop,
+    isStopsWithinPrecision,
 };

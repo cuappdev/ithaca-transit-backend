@@ -2,8 +2,6 @@
 import dotenv from 'dotenv';
 
 import API from './Api';
-import AlertsUtils from './utils/AlertsUtils';
-import AllStopUtils from './utils/AllStopUtils';
 import GhopperUtils from './utils/GraphhopperUtils';
 import LogUtils from './utils/LogUtils';
 import TokenUtils from './utils/TokenUtils';
@@ -30,11 +28,7 @@ const init = new Promise((resolve, reject) => {
     authToken.then(() => {
         // await data
         const dataInit = Promise.race([
-            Promise.all([
-                AllStopUtils.allStops,
-                AlertsUtils.alerts,
-                TokenUtils.fetchAuthHeader(),
-            ]),
+            TokenUtils.fetchAuthHeader(),
             timeoutPromise,
         ]).then(() => {
             LogUtils.log({ message: 'server.js: Initialized data successfully' });
@@ -48,7 +42,7 @@ const init = new Promise((resolve, reject) => {
             server.listen(PORT, SERVER_ADDRESS, () => {
                 LogUtils.log({
                     message: 'server.js: Initialized Graphhopper and all data successfully!\n'
-                    + `Transit Backend listening on ${SERVER_ADDRESS}:${PORT}`,
+                        + `Transit Backend listening on ${SERVER_ADDRESS}:${PORT}`,
                 });
                 resolve(PORT);
             });

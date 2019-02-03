@@ -13,7 +13,7 @@ class AlertsRouter extends ApplicationRouter<Array<Object>> {
 
     // eslint-disable-next-line require-await
     async content(req): Promise<any> {
-        return AlertsUtils.alerts;
+        return AlertsUtils.fetchAlerts();
     }
 }
 

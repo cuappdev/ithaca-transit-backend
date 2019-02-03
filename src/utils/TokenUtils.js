@@ -49,11 +49,11 @@ function fetchAccessToken() {
         url: 'https://gateway.api.cloud.wso2.com:443/token',
         qs: { grant_type: 'client_credentials' },
         headers:
-                {
-                    'Postman-Token': '42201611-965d-4832-a4c5-060ad3ff3b83',
-                    'Cache-Control': 'no-cache',
-                    Authorization: basicAuthHeader,
-                },
+        {
+            'Postman-Token': '42201611-965d-4832-a4c5-060ad3ff3b83',
+            'Cache-Control': 'no-cache',
+            Authorization: basicAuthHeader,
+        },
     };
 
     return new Promise((resolve, reject) => {
