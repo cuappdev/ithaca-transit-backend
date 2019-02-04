@@ -22,21 +22,21 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
     // eslint-disable-next-line require-await
     async content(req: Request): Promise<Array<Object>> {
         const {
-            destinationName,
+            destinationNames,
             end,
             start,
             time: departureTimeQuery,
         } = req.query;
 
-        // only one destination given
-        if (typeof destinationName === 'string') {
-            return RouteUtils.getRoutes(destinationName, end, start, departureTimeQuery, false);
+        // each destinationName should correspond to one end point
+        if (destinationNames.length !== end.length) {
+            return [];
         }
 
         // multiple destinations given
         const routes = [];
-        for (let i = 0; i < destinationName.length; i++) {
-            routes.push(RouteUtils.getRoutes(destinationName[i], end[i], start[i], departureTimeQuery, false));
+        for (let i = 0; i < destinationNames.length; i++) {
+            routes.push(RouteUtils.getRoutes(destinationNames[i], end[i], start, departureTimeQuery, false));
         }
 
         return Promise.all(routes).then(val => val).catch((err) => {

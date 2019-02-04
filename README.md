@@ -242,9 +242,8 @@ Otherwise, the time is when the route should arrive to the destination by
 
 Time is in epoch (seconds since 1/1/1970) |
 
-*required* **end** : [{Double, Double}] - “[{< latitude1 Double >,< longitude1 Double >}]”
-
-| **description** | An array of latitude-longitude pair objects to specify ending points. Must contain at least one ending point. |
+*required* **end** : [String] - “[“< latitude Double >,< longitude Double >”]”
+| **description** | An array of latitude-longitude strings to specify ending points. Must contain at least one ending point. Should be the same length as **destinationNames**. |
 | --------------- | -------------------------------- |
 | **default**     | n/a                              |
 | **notes**       | See Start notes                  |
