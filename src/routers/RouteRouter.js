@@ -7,7 +7,7 @@ import RouteUtils from '../utils/RouteUtils';
 
 class RouteRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
-        super(['GET']);
+        super(['GET', 'POST']);
     }
 
     getPath(): string {
@@ -16,6 +16,7 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
 
     // eslint-disable-next-line require-await
     async content(req: Request): Promise<Array<Object>> {
+        const params = req.method === 'GET' ? req.query : req.body;
         const {
             arriveBy,
             destinationName,
@@ -24,7 +25,7 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
             start,
             time: departureTimeQuery,
             uid,
-        } = req.query;
+        } = params;
 
         const arriveByBool = arriveBy === '1';
         const routes = await RouteUtils.getRoutes(destinationName, end, start, departureTimeQuery, arriveByBool);
