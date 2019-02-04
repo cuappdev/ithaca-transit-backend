@@ -34,10 +34,13 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
         }
 
         // multiple destinations given
-        const routes = [];
-        for (let i = 0; i < destinationNames.length; i++) {
-            routes.push(RouteUtils.getRoutes(destinationNames[i], end[i], start, departureTimeQuery, false));
-        }
+        const routes = destinationNames.map((destinationName, index) => RouteUtils.getRoutes(
+            destinationName,
+            end[index],
+            start,
+            departureTimeQuery,
+            false,
+        ));
 
         return Promise.all(routes).then(val => val).catch((err) => {
             throw LogUtils.logErr(err, routes, 'Could not get all specified routes');
