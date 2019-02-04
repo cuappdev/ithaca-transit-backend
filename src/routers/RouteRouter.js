@@ -7,7 +7,7 @@ import RouteUtils from '../utils/RouteUtils';
 
 class RouteRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
-        super('GET');
+        super(['GET']);
     }
 
     getPath(): string {

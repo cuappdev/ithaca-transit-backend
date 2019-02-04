@@ -36,14 +36,14 @@ class AppDevResponse<T> {
 class ApplicationRouter<T> {
     router: Router;
 
-    requestType: RequestType;
+    requestTypes: Array<RequestType>;
 
     /**
      * Subclasses must call this constructor and pass in the HTTP method
      */
-    constructor(type: RequestType) {
+    constructor(types: Array<RequestType>) {
         this.router = new Router();
-        this.requestType = type;
+        this.requestTypes = types;
 
         // Initialize this router
         this.init();
@@ -60,19 +60,21 @@ class ApplicationRouter<T> {
         AppDevUtilities.tryCheckAppDevURL(path);
 
         // Attach content to router
-        switch (this.requestType) {
-            case 'GET':
-                this.router.get(path, this.response());
-                break;
-            case 'POST':
-                this.router.post(path, this.response());
-                break;
-            case 'DELETE':
-                this.router.delete(path, this.response());
-                break;
-            default:
-                throw new Error('HTTP method not specified!');
-        }
+        this.requestTypes.forEach((reqType) => {
+            switch (reqType) {
+                case 'GET':
+                    this.router.get(path, this.response());
+                    break;
+                case 'POST':
+                    this.router.post(path, this.response());
+                    break;
+                case 'DELETE':
+                    this.router.delete(path, this.response());
+                    break;
+                default:
+                    throw new Error('HTTP method not specified!');
+            }
+        });
     }
 
     /**

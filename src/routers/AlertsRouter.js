@@ -4,7 +4,7 @@ import AlertsUtils from '../utils/AlertsUtils';
 
 class AlertsRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
-        super('GET');
+        super(['GET']);
     }
 
     getPath(): string {

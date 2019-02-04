@@ -5,7 +5,7 @@ import AnalyticsUtils from '../utils/AnalyticsUtils';
 
 class RouteSelectedRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
-        super('POST');
+        super(['POST']);
     }
 
     getPath(): string {

@@ -4,7 +4,7 @@ import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 
 class DelayRouter extends ApplicationRouter<Object> {
     constructor() {
-        super('GET');
+        super(['GET']);
     }
 
     getPath(): string {

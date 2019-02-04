@@ -11,7 +11,7 @@ import RouteUtils from '../utils/RouteUtils';
  */
 class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
-        super('GET');
+        super(['GET', 'POST']);
     }
 
     getPath(): string {
@@ -21,12 +21,13 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
     // Request does not require an arriveBy query param, unlike in RouteRouter
     // eslint-disable-next-line require-await
     async content(req: Request): Promise<Array<Object>> {
+        const params = req.method === 'GET' ? req.query : req.body;
         const {
             destinationNames,
             end,
             start,
             time: departureTimeQuery,
-        } = req.query;
+        } = params;
 
         // each destinationName should correspond to one end point
         if (destinationNames.length !== end.length) {

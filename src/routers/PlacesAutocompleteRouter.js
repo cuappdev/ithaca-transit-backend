@@ -11,7 +11,7 @@ const cache = LRU(cacheOptions);
 
 class PlacesAutocompleteRouter extends ApplicationRouter<string> {
     constructor() {
-        super('POST');
+        super(['POST']);
     }
 
     getPath(): string {
