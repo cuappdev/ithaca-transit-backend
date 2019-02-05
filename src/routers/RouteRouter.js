@@ -27,8 +27,8 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
             uid,
         } = params;
 
-        const arriveByBool = (arriveBy === '1' || arriveBy === true);
-        const routes = await RouteUtils.getRoutes(destinationName, end, start, departureTimeQuery, arriveByBool);
+        const isArriveBy = (arriveBy === '1' || arriveBy === true);
+        const routes = await RouteUtils.getRoutes(destinationName, end, start, departureTimeQuery, isArriveBy);
         const request = {
             arriveBy,
             destinationName,

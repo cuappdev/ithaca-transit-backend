@@ -72,7 +72,7 @@ class ApplicationRouter<T> {
                     this.router.delete(path, this.response());
                     break;
                 default:
-                    throw new Error('HTTP method not specified!');
+                    throw new Error('HTTP method not supported!');
             }
         });
     }
