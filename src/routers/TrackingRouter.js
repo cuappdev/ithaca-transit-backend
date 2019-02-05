@@ -4,7 +4,7 @@ import RealtimeFeedUtils from '../utils/RealtimeFeedUtils';
 
 class TrackingRouter extends ApplicationRouter<Object> {
     constructor() {
-        super('POST');
+        super(['POST']);
     }
 
     getPath(): string {

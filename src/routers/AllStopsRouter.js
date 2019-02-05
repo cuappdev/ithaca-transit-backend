@@ -4,7 +4,7 @@ import AllStopUtils from '../utils/AllStopUtils';
 
 class AllStopsRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
-        super('GET');
+        super(['GET']);
     }
 
     getPath(): string {

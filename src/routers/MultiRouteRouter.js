@@ -11,7 +11,7 @@ import RouteUtils from '../utils/RouteUtils';
  */
 class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
-        super('GET');
+        super(['GET', 'POST']);
     }
 
     getPath(): string {
@@ -21,23 +21,27 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
     // Request does not require an arriveBy query param, unlike in RouteRouter
     // eslint-disable-next-line require-await
     async content(req: Request): Promise<Array<Object>> {
+        const params = req.method === 'GET' ? req.query : req.body;
         const {
-            destinationName,
+            destinationNames,
             end,
             start,
             time: departureTimeQuery,
-        } = req.query;
+        } = params;
 
-        // only one destination given
-        if (typeof destinationName === 'string') {
-            return RouteUtils.getRoutes(destinationName, end, start, departureTimeQuery, false);
+        // each destinationName should correspond to one end point
+        if (destinationNames.length !== end.length) {
+            return [];
         }
 
         // multiple destinations given
-        const routes = [];
-        for (let i = 0; i < destinationName.length; i++) {
-            routes.push(RouteUtils.getRoutes(destinationName[i], end[i], start[i], departureTimeQuery, false));
-        }
+        const routes = destinationNames.map((destinationName, index) => RouteUtils.getRoutes(
+            destinationName,
+            end[index],
+            start,
+            departureTimeQuery,
+            false,
+        ));
 
         return Promise.all(routes).then(val => val).catch((err) => {
             throw LogUtils.logErr(err, routes, 'Could not get all specified routes');

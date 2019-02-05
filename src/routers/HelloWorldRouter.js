@@ -5,7 +5,7 @@ import { init } from '../server';
 
 class HelloWorldRouter extends ApplicationRouter<string> {
     constructor() {
-        super('GET');
+        super(['GET']);
     }
 
     getPath(): string {
@@ -16,10 +16,10 @@ class HelloWorldRouter extends ApplicationRouter<string> {
         const checkInit = (req.query.awaitInit !== undefined && `${await init}.`) || process.env.PORT;
 
         return (`Hello World! Environment: ${process.env.NODE_ENV || 'unknown'} | `
-         + `Bus Navigation: http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/ | `
-         + `Walking Navigation: http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/ | `
-         + `Map-matching: http://${process.env.MAP_MATCHING || 'ERROR'}:8989/ | `
-         + `Initialized on port: ${checkInit}`);
+            + `Bus Navigation: http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/ | `
+            + `Walking Navigation: http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/ | `
+            + `Map-matching: http://${process.env.MAP_MATCHING || 'ERROR'}:8989/ | `
+            + `Initialized on port: ${checkInit}`);
     }
 }
 

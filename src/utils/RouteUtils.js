@@ -20,11 +20,11 @@ async function createFinalRoute(
     start: string,
     end: string,
     departureTimeQuery: number,
-    arriveBy: boolean,
+    isArriveBy: boolean,
 ) {
     const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
     let departureDelayBuffer: boolean = false;
-    if (!arriveBy) { // 'leave at' query
+    if (!isArriveBy) { // 'leave at' query
         departureDelayBuffer = true;
     }
 
@@ -53,10 +53,9 @@ async function getRoutes(
     end: string,
     start: string,
     departureTimeQuery: number,
-    arriveBy: string,
-) : Promise<Array<Object>> {
-    const arriveByBool = (arriveBy === '1' || arriveBy === 'true' || arriveBy === true);
-    const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, arriveByBool);
+    isArriveBy: boolean,
+): Promise<Array<Object>> {
+    const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, isArriveBy);
 
     if (!routeResponses) {
         throw LogUtils.logErr({ message: 'RouteUtils.js: Graphhopper route error : could not fetch routes' });
@@ -67,7 +66,7 @@ async function getRoutes(
     // parse the graphhopper walking route=
     walkingRoute = ParseRouteUtils.parseWalkingRoute(
         walkingRoute,
-        GhopperUtils.getDepartureTime(departureTimeQuery, arriveByBool, 0),
+        GhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0),
         destinationName,
     );
 
@@ -86,7 +85,7 @@ async function getRoutes(
         start,
         end,
         departureTimeQuery,
-        arriveByBool,
+        isArriveBy,
     );
 }
 
