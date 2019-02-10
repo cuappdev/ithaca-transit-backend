@@ -70,6 +70,9 @@ async function getRoutes(
         destinationName,
     );
 
+    // Ensure that arrivalTime and departureTime have at least one minute difference
+    ParseRouteUtils.adjustRouteTimesIfNeeded(walkingRoute);
+
     // if there are no bus routes, we should just return walking instead of crashing
     if (!busRoute && walkingRoute) {
         return [walkingRoute];
