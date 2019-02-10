@@ -9,25 +9,25 @@ import { NODE_ENV } from './EnvUtils';
  * @param error
  */
 function log(obj: Object, error: ?boolean = false) {
-    const options = {
-        showHidden: false,
-        depth: Infinity,
-        colors: true,
-        maxArrayLength: 10,
-        breakLength: Infinity,
-        compact: false,
-    };
+  const options = {
+    showHidden: false,
+    depth: Infinity,
+    colors: true,
+    maxArrayLength: 10,
+    breakLength: Infinity,
+    compact: false,
+  };
 
-    if (NODE_ENV === 'production') {
-        options.compact = true;
-        options.colors = false;
-    }
+  if (NODE_ENV === 'production') {
+    options.compact = true;
+    options.colors = false;
+  }
 
-    if (error) {
-        console.error(util.inspect(obj, options));
-    } else {
-        console.log(util.inspect(obj, options));
-    }
+  if (error) {
+    console.error(util.inspect(obj, options));
+  } else {
+    console.log(util.inspect(obj, options));
+  }
 }
 
 /**
@@ -40,31 +40,31 @@ function log(obj: Object, error: ?boolean = false) {
  * @returns {*}
  */
 function logErr(
-    error: Object,
-    data: ?Object = {},
-    note: ?string = '', //
-    disableConsoleOut: ?boolean = false,
+  error: Object,
+  data: ?Object = {},
+  note: ?string = '', //
+  disableConsoleOut: ?boolean = false,
 ) {
-    try { // try block because if the error logging has an error... ?
-        if (!error) {
-            return null;
-        }
-
-        const responseJSON = {
-            time: Date.now(),
-            error,
-            data,
-            note,
-        };
-
-        log(responseJSON, true);
-        return responseJSON;
-    } catch (e) {
-        return error;
+  try { // try block because if the error logging has an error... ?
+    if (!error) {
+      return null;
     }
+
+    const responseJSON = {
+      time: Date.now(),
+      error,
+      data,
+      note,
+    };
+
+    log(responseJSON, true);
+    return responseJSON;
+  } catch (e) {
+    return error;
+  }
 }
 
 export default {
-    log,
-    logErr,
+  log,
+  logErr,
 };

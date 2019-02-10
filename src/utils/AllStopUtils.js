@@ -48,31 +48,31 @@ const DEG_KM_PRECISION = 2; // 3 degrees of precision is about 1 km, stop barely
 let allStopsCompareMaps = RequestUtils.fetchWithRetry(fetchPrecisionMaps);
 
 const updateFunc = async () => {
-    allStopsCompareMaps = await RequestUtils.fetchWithRetry(fetchPrecisionMaps);
-    return false;
+  allStopsCompareMaps = await RequestUtils.fetchWithRetry(fetchPrecisionMaps);
+  return false;
 };
 
 RequestUtils.updateObjectOnInterval(
-    updateFunc,
-    HOUR_IN_MS,
-    MIN_IN_MS,
-    null,
+  updateFunc,
+  HOUR_IN_MS,
+  MIN_IN_MS,
+  null,
 );
 
 async function fetchAllStops() {
-    const options = {
-        method: 'GET',
-        url: `http://${PYTHON_APP || 'localhost'}:5000/stops`,
-        headers: { 'Cache-Control': 'no-cache' },
-    };
-    const data = await RequestUtils.createRequest(options, 'AllStops request failed');
-    return JSON.parse(data);
+  const options = {
+    method: 'GET',
+    url: `http://${PYTHON_APP || 'localhost'}:5000/stops`,
+    headers: { 'Cache-Control': 'no-cache' },
+  };
+  const data = await RequestUtils.createRequest(options, 'AllStops request failed');
+  return JSON.parse(data);
 }
 
 function fetchPrecisionMaps() {
-    const maps = {};
-    maps[DEG_EQ_PRECISION] = getPrecisionMap(DEG_EQ_PRECISION);
-    return maps;
+  const maps = {};
+  maps[DEG_EQ_PRECISION] = getPrecisionMap(DEG_EQ_PRECISION);
+  return maps;
 }
 
 /**
@@ -82,24 +82,24 @@ function fetchPrecisionMaps() {
  * @returns {Promise<void>}
  */
 async function getPrecisionMap(degreesPrecision: ?number = DEG_EQ_PRECISION) {
-    if (degreesPrecision < 1 || degreesPrecision > 6) {
-        return null;
+  if (degreesPrecision < 1 || degreesPrecision > 6) {
+    return null;
+  }
+  const stops = await fetchAllStops();
+  if (allStopsCompareMaps && allStopsCompareMaps[degreesPrecision]) {
+    return allStopsCompareMaps[degreesPrecision];
+  }
+  const stopMap = {};
+  stops.forEach((stop) => {
+    const lat = parseFloat(stop.lat).toFixed(degreesPrecision);
+    if (stopMap[lat]) {
+      stopMap[lat].push(stop);
+    } else {
+      stopMap[lat] = [stop];
     }
-    const stops = await fetchAllStops();
-    if (allStopsCompareMaps && allStopsCompareMaps[degreesPrecision]) {
-        return allStopsCompareMaps[degreesPrecision];
-    }
-    const stopMap = {};
-    stops.forEach((stop) => {
-        const lat = parseFloat(stop.lat).toFixed(degreesPrecision);
-        if (stopMap[lat]) {
-            stopMap[lat].push(stop);
-        } else {
-            stopMap[lat] = [stop];
-        }
-    });
-    allStopsCompareMaps[degreesPrecision] = stopMap;
-    return stopMap;
+  });
+  allStopsCompareMaps[degreesPrecision] = stopMap;
+  return stopMap;
 }
 
 /**
@@ -109,21 +109,21 @@ async function getPrecisionMap(degreesPrecision: ?number = DEG_EQ_PRECISION) {
  * @returns {Promise<boolean>}
  */
 async function isStopsWithinPrecision(point: Object, degreesPrecision: ?number = DEG_EQ_PRECISION) {
-    const stops = await getPrecisionMap(degreesPrecision);
-    const lat = parseFloat(point.lat).toFixed(degreesPrecision);
-    let found = stops[lat]; // found stop(s) at lat
-    if (found) {
-        const long = parseFloat(point.long).toFixed(degreesPrecision);
-        // stops[lat] is an array, iterate through possible matches
-        found = found.filter((stop) => {
-            const longCmpare = parseFloat(stop.long).toFixed(degreesPrecision);
-            return long === longCmpare;
-        });
-        if (found.length > 0) {
-            return found;
-        }
+  const stops = await getPrecisionMap(degreesPrecision);
+  const lat = parseFloat(point.lat).toFixed(degreesPrecision);
+  let found = stops[lat]; // found stop(s) at lat
+  if (found) {
+    const long = parseFloat(point.long).toFixed(degreesPrecision);
+    // stops[lat] is an array, iterate through possible matches
+    found = found.filter((stop) => {
+      const longCmpare = parseFloat(stop.long).toFixed(degreesPrecision);
+      return long === longCmpare;
+    });
+    if (found.length > 0) {
+      return found;
     }
-    return false;
+  }
+  return false;
 }
 
 /**
@@ -132,16 +132,16 @@ async function isStopsWithinPrecision(point: Object, degreesPrecision: ?number =
  * @returns {Promise<boolean>}
  */
 function isStop(point: Object) {
-    return isStopsWithinPrecision(point, DEG_EQ_PRECISION);
+  return isStopsWithinPrecision(point, DEG_EQ_PRECISION);
 }
 
 export default {
-    DEG_EQ_PRECISION,
-    DEG_EXACT_PRECISION,
-    DEG_KM_PRECISION,
-    DEG_NEARBY_PRECISION,
-    DEG_WALK_PRECISION,
-    fetchAllStops,
-    isStop,
-    isStopsWithinPrecision,
+  DEG_EQ_PRECISION,
+  DEG_EXACT_PRECISION,
+  DEG_KM_PRECISION,
+  DEG_NEARBY_PRECISION,
+  DEG_WALK_PRECISION,
+  fetchAllStops,
+  isStop,
+  isStopsWithinPrecision,
 };
