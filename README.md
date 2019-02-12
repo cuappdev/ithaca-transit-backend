@@ -4,61 +4,35 @@
 
 Please ensure `npm` ([npm](https://www.npmjs.com/get-npm)) and `docker` ([docker](https://www.docker.com/)) is installed by checking `npm -v` and `docker -v` and that Docker is running.
 
-Clone the repository and navigate to the directory in your terminal. Run `cp env.template .env` or manually copy the `env.template` file to `.env`. Then add the correct value for `TOKEN` and others in the `.env` file. The `TOKEN` value is pinned in the #transit-backend Slack channel.
 
-Run `npm install` to install the necessary dependencies.
+Run the following:
+
+```
+cp env.template .env
+cp python.env.template python.env
+```
+
+Environment variable values can be found by asking a member of Cornell AppDev.
  
 ## Run
 
 `package.json` contains all necessary run, build, test, and utility scripts for the project. **Type `npm run` before a script name to execute.** `npm run` by itself shows a list of available scripts.
 
 #### Development 
-`start:dev` runs the program in development mode with all necessary Graphhopper serivices at the location specified in the `.env` file. Use development mode while developing and **DO NOT USE THIS MODE IN DEPLOYMENT/PRODUCTION**.
-Features:
-* Automatic server restart and testing run on file change
-* Automatic Graphhopper initialization/start/stop
-* Source map and Node debugging features like breakpoints
-* Simulator or test client integration middleware
-* Current release response comparison
-* Faster build
-* Hot reload
-* Local verbose output/logging to file and console, not remote
-* Flow type checking
 
-#### Production
-`start:prod` runs the program in production mode. This is the mode built and started in the `Dockerfile`, hosted on the server, and by used the Transit frontend. It **does not start or check for the Graphhopper services needed by the Transit navigation program** (must be run separately) and it **logs all errors silently and remotely**.
-Features:
-* Optimized builds
-* Remote logging
-* Run independent of local Graphhopper services
+Run the following:
 
-#### More Scripts
-| **Script Name** | Description |
-| --------------------- | -------------------------------------------------------------------------------------- |
-| `build` | build Transit with Webpack default settings |
-| `build:dev` | build Transit with Webpack default settings, same as `start:dev` but without running Graphhopper services |
-| `build:image` | build a production Transit Docker image as `transit-node` using the `Dockerfile` |
-| `docker:clean` | prune unused docker data on your system |
-| `docker:reset` | prune **all** docker data on your system |
-| `flow` | Run Flow type checking service |
-| `flow:stop` | Stop Flow service |
-| `ghopper` | runs the Graphhopper processes required for route calculation |
-| `ghopper:kill` | SIGKILL any running Graphhopper processes |
-| `ghopper:stop`| stops any running Graphhopper processes |
-| `init` | `npm install` then `build` |
-| `serve` | run the existing build using Node |
-| `setup` | start Graphhopper services and `init` |
-| `start:dev` | [Development](#development) |
-| `start:prod` | [Production](#production) |
-| `test` | `init` for clean install and build then run tests and exit |
-| `test:dev` | run tests on an existing build in order and with console output using Jest and Node in debug mode then `flow` type checking |
+```
+npm run build:dev
+npm run start:microservices
+npm run start:node
+```
 
-### Known Errors
+To stop running the microservices:
 
-````
-Exception in thread "main" java.net.BindException: Address already in use
-````
-Run `npm run ghopper:stop` to kill any GraphHopper processes and try again. The GraphHopper services cannot be restarted if the ports (default 8989 and 8988) are already in use.
+```
+docker-compose down
+```
 
 # Transit API v1 REST Interface
 
