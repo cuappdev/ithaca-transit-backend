@@ -249,7 +249,41 @@ Returns an array of Routes, one for each destination.
 | boundingBox       | {  maxLat: Double,  maxLong: Double,  minLat: Double,  minLong: Double  } | The most extreme points of the route. Used to center the map on client-side (with some padding) |
 | numberOfTransfers | Int                                                                               | Number of transfers in route. Default 0.    
 
+----------
+# **/search** • POST
 
+**Description**: Returns a list of bus stops and google autocomplete search results given a query string.
+
+## Parameters
+
+*required* **query** : String
+
+| **description** | The user's search query for a bus stop or place.                                                                                  |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **notes**       | This can be any string the user types in. |
+
+## Returns: [JSON]
+
+Returns an array of places, which can identify as either "busStop" or "googlePlace".
+
+**busStop**
+
+| **Name** | **Type** | **Description**                           |
+| -------- | -------- | ----------------------------------------- |
+| type     | "busStop" | The type of search suggestion. |
+| name     | String   | The name of the bus stop.                 |
+| lat      | Double   | The latitude coordinate of the bus stop.  |
+| long     | Double   | The longitude coordinate of the bus stop. |
+
+
+**googlePlace**
+
+| **Name** | **Type** | **Description**                           |
+| -------- | -------- | ----------------------------------------- |
+| type     | "googlePlace" | The type of search suggestion. |
+| detail     | String   | The address of the place.                |
+| name      | Double   | The name of the place.  |
+| placeID    | Double   | The Google place ID. |
 
 ----------
 # **/tracking** • POST
