@@ -1,38 +1,9 @@
-import waitOn from 'wait-on';
-
 import {
     GHOPPER_BUS,
     GHOPPER_WALKING,
-    MAP_MATCHING,
-    NODE_ENV,
 } from './EnvUtils';
 import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
-
-/**
- * True if ready, awaits graphhopper services in non-production environments
- */
-function isGraphhopperReady(): boolean {
-    const GRAPHHOPPER_MAP_MATCHING_URL = `http://${MAP_MATCHING || 'ERROR'}:8989/`;
-    const GRAPHHOPPER_WALKING_URL = `http://${GHOPPER_WALKING || 'ERROR'}:8987/`;
-    const GRAPHHOPPER_BUS_URL = `http://${GHOPPER_BUS || 'ERROR'}:8988/`;
-
-    const waitOptions = {
-        log: true, // output progress to stdout
-        resources: [
-            GRAPHHOPPER_BUS_URL,
-            GRAPHHOPPER_WALKING_URL,
-            GRAPHHOPPER_MAP_MATCHING_URL,
-        ],
-    };
-
-    const isReady = (NODE_ENV === 'production') || (waitOn(waitOptions).then(() => true).catch((err) => {
-        if (err) throw LogUtils.logErr(err, waitOptions, 'Failed to connect to graphhopper services');
-        return false;
-    }));
-
-    return isReady;
-}
 
 /**
  * https://graphhopper.com/api/1/docs/routing/#output
@@ -138,9 +109,7 @@ function getDepartureTimeDateNow(departureTimeQuery: string, isArriveByQuery: bo
  * @param isArriveByQuery
  * @returns {Promise<{busRoute: any, walkingRoute: any}>}
  */
-async function fetchRoutes(end: string, start: string, departureTimeDateNow: string, isArriveByQuery: boolean) {
-    const isReady = await isGraphhopperReady();
-    if (!isReady) return null;
+async function fetchRoutes(end: string, start: string, departureTimeDateNow: string, isArriveByQuery: boolean): Object {
     let busRoute;
     let walkingRoute;
 
@@ -206,5 +175,4 @@ export default {
     getDepartureTimeDateNow,
     getGraphhopperBusParams,
     getGraphhopperWalkingParams,
-    isGraphhopperReady,
 };

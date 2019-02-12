@@ -2,7 +2,6 @@
 import dotenv from 'dotenv';
 
 import API from './Api';
-import GhopperUtils from './utils/GraphhopperUtils';
 import LogUtils from './utils/LogUtils';
 import TokenUtils from './utils/TokenUtils';
 
@@ -25,20 +24,14 @@ const init = new Promise((resolve, reject) => {
     const timeoutPromise = new Promise((res, rej) => {
         setTimeout(res, FIVE_SECONDS_IN_MS);
     }).then(value => LogUtils.log({ message: 'server.js: Timeout reached' }));
+
     authToken.then(() => {
         // await data
-        const dataInit = Promise.race([
+        Promise.race([
             TokenUtils.fetchAuthHeader(),
             timeoutPromise,
         ]).then(() => {
             LogUtils.log({ message: 'server.js: Initialized data successfully' });
-        });
-
-        // await full initialization then listen on the port
-        Promise.all([
-            dataInit,
-            GhopperUtils.isGraphhopperReady,
-        ]).then(() => {
             server.listen(PORT, SERVER_ADDRESS, () => {
                 LogUtils.log({
                     message: 'server.js: Initialized Graphhopper and all data successfully!\n'
