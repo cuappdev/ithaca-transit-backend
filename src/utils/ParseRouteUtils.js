@@ -9,6 +9,7 @@ import RealtimeFeedUtils from './RealtimeFeedUtils';
 import RequestUtils from './RequestUtils';
 
 const ONE_HOUR_IN_MILLISECONDS = 3600000;
+const ONE_MIN_IN_MILLISECONDS = 60000;
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
@@ -180,7 +181,7 @@ async function condenseRoute(
                  * far away with no walking direction in between, EG: 1. get off at Statler 2. board at RPCC
                  */
                 if (previousDirection.stops[previousDirection.stops.length - 1].stopID
-                !== direction.stops[0].stopID) {
+                    !== direction.stops[0].stopID) {
                     return null;
                 }
 
@@ -222,7 +223,36 @@ async function condenseRoute(
         );
     }
 
+    // Ensure that arrivalTime and departureTime have at least one minute difference
+    adjustRouteTimesIfNeeded(route);
     return route;
+}
+
+/**
+ * If the route arrivalTime and departureTime are within the same minute, increase the
+ * arrivalTime by one minute
+ * @param route
+ */
+function adjustRouteTimesIfNeeded(route: Object) {
+    const departureDate = new Date(route.departureTime);
+    const arrivalDate = new Date(route.arrivalTime);
+    if (areDatesTheSameMinute(departureDate, arrivalDate)) {
+        route.arrivalTime = `${new Date(
+            arrivalDate.getTime() + ONE_MIN_IN_MILLISECONDS,
+        ).toISOString().split('.')[0]}Z`;
+    }
+}
+
+/**
+ * Returns whether departureDate and arrivalDate are within the same minute
+ * @param departureDate
+ * @param arrivalDate
+ * @returns boolean
+ */
+function areDatesTheSameMinute(departureDate: Date, arrivalDate: Date): boolean {
+    const isWithinMinute = departureDate.getTime() + ONE_MIN_IN_MILLISECONDS > arrivalDate.getTime();
+    const isSameMinute = departureDate.getMinutes() === arrivalDate.getMinutes();
+    return isWithinMinute && isSameMinute;
 }
 
 function parseWalkingRoute(data: any, startDateMs: number, destinationName: string) {
@@ -543,6 +573,7 @@ function parseRoute(resp: Object, destinationName: string) {
 }
 
 export default {
+    adjustRouteTimesIfNeeded,
     condenseRoute,
     latLongFromStr,
     parseRoute,
