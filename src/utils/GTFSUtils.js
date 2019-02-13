@@ -8,7 +8,7 @@ async function fetchRoutes(): Object {
         url: `http://${PYTHON_APP || 'localhost'}:5000/gtfs`,
         headers: { 'Cache-Control': 'no-cache' },
     };
-    const data = await RequestUtils.createRequest(options, 'Alerts request failed');
+    const data = await RequestUtils.createRequest(options, 'Fetch routes request failed');
     return JSON.parse(data);
 }
 
