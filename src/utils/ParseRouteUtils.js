@@ -3,7 +3,7 @@ import createGpx from 'gps-to-gpx';
 
 import AllStopUtils from './AllStopUtils';
 import { MAP_MATCHING } from './EnvUtils';
-import TCATUtils from './GTFSUtils';
+import GTFSUtils from './GTFSUtils';
 import LogUtils from './LogUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import RequestUtils from './RequestUtils';
@@ -444,7 +444,7 @@ function parseRoute(resp: Object, destinationName: string) {
 
                     tripID = [currLeg.trip_id];
 
-                    const routeJson = await TCATUtils.routesJson;
+                    const routeJson = await GTFSUtils.fetchRoutes();
                     const route = routeJson.filter(
                         routeObj => routeObj.route_id.toString() === currLeg.route_id.toString(),
                     );
