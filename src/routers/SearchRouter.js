@@ -1,18 +1,20 @@
 // @flow
 import LRU from 'lru-cache';
+import type Request from 'express';
 import AllStopUtils from '../utils/AllStopUtils';
 import ApplicationRouter from '../appdev/ApplicationRouter';
 import RequestUtils from '../utils/RequestUtils';
 
 const BUS_STOP = 'busStop';
 const cacheOptions = {
-    max: 10000,
-    maxAge: 1000 * 60 * 60 * 24 * 5,
+    max: 10000, // Maximum size of cache
+    maxAge: 1000 * 60 * 60 * 24 * 5, // Maximum age in milliseconds
 };
 const cache = LRU(cacheOptions);
 const GOOGLE_PLACE = 'googlePlace';
+const GOOGLE_PLACE_LOCATION = '42.4440,-76.5019';
 
-class SearchRouter extends ApplicationRouter<string> {
+class SearchRouter extends ApplicationRouter<Array<Object>> {
     constructor() {
         super(['POST']);
     }
@@ -21,9 +23,9 @@ class SearchRouter extends ApplicationRouter<string> {
         return '/search/';
     }
 
-    async content(req): Promise<any> {
+    async content(req: Request): Promise<Array<Object>> {
         if (!req.body || !req.body.query || typeof req.body.query !== 'string') {
-            return null;
+            return [];
         }
 
         const query = req.body.query.toLowerCase();
@@ -38,8 +40,8 @@ class SearchRouter extends ApplicationRouter<string> {
         }));
 
         if (cachedValue !== undefined) {
-            const places = cachedValue.concat(formattedStops);
-            return places;
+            // Return the list of googlePlaces and busStops
+            return cachedValue.concat(formattedStops);
         }
 
         // not in cache
@@ -49,7 +51,7 @@ class SearchRouter extends ApplicationRouter<string> {
             qs: {
                 input: query,
                 key: process.env.PLACES_KEY,
-                location: '42.4440,-76.5019',
+                location: GOOGLE_PLACE_LOCATION,
                 radius: 24140,
                 strictbounds: '',
             },
@@ -69,10 +71,10 @@ class SearchRouter extends ApplicationRouter<string> {
             }));
             cache.set(query, googlePredictions);
 
-            const places = formattedStops.concat(googlePredictions);
-            return places;
+            // Return the list of googlePlaces and busStops
+            return formattedStops.concat(googlePredictions);
         }
-        return null;
+        return [];
     }
 }
 
