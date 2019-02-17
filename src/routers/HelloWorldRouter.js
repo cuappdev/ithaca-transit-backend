@@ -4,23 +4,23 @@ import ApplicationRouter from '../appdev/ApplicationRouter';
 import { init } from '../server';
 
 class HelloWorldRouter extends ApplicationRouter<string> {
-    constructor() {
-        super(['GET']);
-    }
+  constructor() {
+    super(['GET']);
+  }
 
-    getPath(): string {
-        return '/';
-    }
+  getPath(): string {
+    return '/';
+  }
 
-    async content(req: Request): Promise<string> {
-        const checkInit = (req.query.awaitInit !== undefined && `${await init}.`) || process.env.PORT;
+  async content(req: Request): Promise<string> {
+    const checkInit = (req.query.awaitInit !== undefined && `${await init}.`) || process.env.PORT;
 
-        return (`Hello World! Environment: ${process.env.NODE_ENV || 'unknown'} | `
-            + `Bus Navigation: http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/ | `
-            + `Walking Navigation: http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/ | `
-            + `Map-matching: http://${process.env.MAP_MATCHING || 'ERROR'}:8989/ | `
-            + `Initialized on port: ${checkInit}`);
-    }
+    return (`Hello World! Environment: ${process.env.NODE_ENV || 'unknown'} | `
+      + `Bus Navigation: http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/ | `
+      + `Walking Navigation: http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/ | `
+      + `Map-matching: http://${process.env.MAP_MATCHING || 'ERROR'}:8989/ | `
+      + `Initialized on port: ${checkInit}`);
+  }
 }
 
 export default new HelloWorldRouter().router;

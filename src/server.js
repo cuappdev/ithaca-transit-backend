@@ -20,30 +20,30 @@ const { express } = app;
 
 /* eslint-disable no-console */
 const init = new Promise((resolve, reject) => {
-    // start endpoints that rely on external data starting with authentication token
-    const timeoutPromise = new Promise((res, rej) => {
-        setTimeout(res, FIVE_SECONDS_IN_MS);
-    }).then(value => LogUtils.log({ message: 'server.js: Timeout reached' }));
+  // start endpoints that rely on external data starting with authentication token
+  const timeoutPromise = new Promise((res, rej) => {
+    setTimeout(res, FIVE_SECONDS_IN_MS);
+  }).then(value => LogUtils.log({ message: 'server.js: Timeout reached' }));
 
-    authToken.then(() => {
-        // await data
-        Promise.race([
-            TokenUtils.fetchAuthHeader(),
-            timeoutPromise,
-        ]).then(() => {
-            LogUtils.log({ message: 'server.js: Initialized data successfully' });
-            server.listen(PORT, SERVER_ADDRESS, () => {
-                LogUtils.log({
-                    message: 'server.js: Initialized Graphhopper and all data successfully!\n'
-                        + `Transit Backend listening on ${SERVER_ADDRESS}:${PORT}`,
-                });
-                resolve(PORT);
-            });
+  authToken.then(() => {
+    // await data
+    Promise.race([
+      TokenUtils.fetchAuthHeader(),
+      timeoutPromise,
+    ]).then(() => {
+      LogUtils.log({ message: 'server.js: Initialized data successfully' });
+      server.listen(PORT, SERVER_ADDRESS, () => {
+        LogUtils.log({
+          message: 'server.js: Initialized Graphhopper and all data successfully!\n'
+            + `Transit Backend listening on ${SERVER_ADDRESS}:${PORT}`,
         });
+        resolve(PORT);
+      });
     });
+  });
 }).then(value => value).catch((error) => {
-    LogUtils.logErr(error, null, 'Transit init failed');
-    return null;
+  LogUtils.logErr(error, null, 'Transit init failed');
+  return null;
 });
 
 export { server, init, express };
