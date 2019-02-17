@@ -73,6 +73,9 @@
         "require-await": "error",
 
         // allow console statements
-        "no-console": 0
+        "no-console": 0,
+
+        // allow mixed operators
+        "no-mixed-operators": "off"
     }
 }
