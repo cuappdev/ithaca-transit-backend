@@ -6,27 +6,27 @@ import util from 'util';
 import LogUtils from './LogUtils';
 
 function createRequest(
-    options: Object,
-    errorMessage: ?string = 'Request failed',
-    verbose: ?boolean = false,
-    returnRes: ?boolean = false,
+  options: Object,
+  errorMessage: ?string = 'Request failed',
+  verbose: ?boolean = false,
+  returnRes: ?boolean = false,
 ) {
-    options.time = true;
-    return new Promise((resolve, reject) => {
-        request(options, (error, response, body) => {
-            if (error) reject(error);
-            if (verbose) {
-                console.log(`Elapsed request time ${response.elapsedTime}`);
-            }
-            if (returnRes) {
-                resolve(response);
-            }
-            resolve(body);
-        });
-    }).then(value => value).catch((error) => {
-        LogUtils.logErr(error, options, errorMessage);
-        return null;
+  options.time = true;
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      if (error) reject(error);
+      if (verbose) {
+        console.log(`Elapsed request time ${response.elapsedTime}`);
+      }
+      if (returnRes) {
+        resolve(response);
+      }
+      resolve(body);
     });
+  }).then(value => value).catch((error) => {
+    LogUtils.logErr(error, options, errorMessage);
+    return null;
+  });
 }
 
 /**
@@ -38,16 +38,16 @@ function createRequest(
  * @returns {any} The result of [fn]
  */
 async function fetchWithRetry(fn: () => any, retryCount: number = 5): any {
-    let error;
-    for (let i = 0; i < retryCount; i++) {
-        try {
-            // eslint-disable-next-line no-await-in-loop
-            return (await fn());
-        } catch (err) {
-            error = err;
-        }
+  let error;
+  for (let i = 0; i < retryCount; i++) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      return (await fn());
+    } catch (err) {
+      error = err;
     }
-    throw error;
+  }
+  throw error;
 }
 
 /**
@@ -60,30 +60,30 @@ async function fetchWithRetry(fn: () => any, retryCount: number = 5): any {
  * @param {Object} objectToUpdate
  */
 function updateObjectOnInterval(
-    fn: () => Object,
-    refreshInterval: number,
-    timeout: number,
-    objectToUpdate: Object,
+  fn: () => Object,
+  refreshInterval: number,
+  timeout: number,
+  objectToUpdate: Object,
 ): void {
-    interval(async (iteration, stop) => {
-        try {
-            const optionalUpdatedObject: ?Object = await Promise.race([
-                fn(),
-                (util.promisify(setTimeout))(timeout)
-                    .then(() => null),
-            ]);
+  interval(async (iteration, stop) => {
+    try {
+      const optionalUpdatedObject: ?Object = await Promise.race([
+        fn(),
+        (util.promisify(setTimeout))(timeout)
+          .then(() => null),
+      ]);
 
-            if (optionalUpdatedObject != null) { // eslint-disable-next-line no-param-reassign
-                objectToUpdate = optionalUpdatedObject;
-            }
-        } catch (error) {
-            LogUtils.logErr(error, objectToUpdate, 'Error occurred while in repeated interval');
-        }
-    }, refreshInterval, { stopOnError: false });
+      if (optionalUpdatedObject != null) { // eslint-disable-next-line no-param-reassign
+        objectToUpdate = optionalUpdatedObject;
+      }
+    } catch (error) {
+      LogUtils.logErr(error, objectToUpdate, 'Error occurred while in repeated interval');
+    }
+  }, refreshInterval, { stopOnError: false });
 }
 
 export default {
-    createRequest,
-    fetchWithRetry,
-    updateObjectOnInterval,
+  createRequest,
+  fetchWithRetry,
+  updateObjectOnInterval,
 };

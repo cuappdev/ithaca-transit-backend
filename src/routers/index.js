@@ -10,14 +10,14 @@ import SearchRouter from './SearchRouter';
 import TrackingRouter from './TrackingRouter';
 
 export default {
-    AlertsRouter,
-    AllStopsRouter,
-    DelayRouter,
-    HelloWorldRouter,
-    MultiRouteRouter,
-    PlacesAutocompleteRouter,
-    RouteRouter,
-    RouteSelectedRouter,
-    SearchRouter,
-    TrackingRouter,
+  AlertsRouter,
+  AllStopsRouter,
+  DelayRouter,
+  HelloWorldRouter,
+  MultiRouteRouter,
+  PlacesAutocompleteRouter,
+  RouteRouter,
+  RouteSelectedRouter,
+  SearchRouter,
+  TrackingRouter,
 };
