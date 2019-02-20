@@ -35,9 +35,13 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
 
     const allStops = await AllStopUtils.fetchAllStops();
     const filteredStops = allStops.filter(s => (
-      fuzz.partial_ratio(s.name.toLowerCase(), query.toLowerCase()) >= MIN_FUZZ_RATIO
+      fuzz.partial_ratio(s.name.toLowerCase(), query) >= MIN_FUZZ_RATIO
     ));
-    filteredStops.sort((a, b) => fuzz.partial_ratio(query.toLowerCase(), b.name.toLowerCase()) - fuzz.partial_ratio(query.toLowerCase(), a.name.toLowerCase()));
+    filteredStops.sort((a, b) => {
+      const aPartialRatio = fuzz.partial_ratio(query, a.name.toLowerCase());
+      const bPartialRatio = fuzz.partial_ratio(query, b.name.toLowerCase());
+      return bPartialRatio - aPartialRatio;
+    });
     const formattedStops = filteredStops.map(s => ({
       type: BUS_STOP,
       lat: s.lat,
@@ -75,7 +79,7 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
         name: p.structured_formatting.main_text,
         placeID: p.place_id,
       }));
-      const filteredPredictions = googlePredictions.filter(p => formattedStops.find(s => p.name.includes(s.name)) === undefined);
+      const filteredPredictions = getFilteredPredictions(googlePredictions, formattedStops);
       cache.set(query, filteredPredictions);
 
       // Return the list of googlePlaces and busStops
@@ -83,6 +87,19 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
     }
     return [];
   }
+}
+
+/**
+ * Returns an array of googlePredictions that are not bus stops.
+ * @param googlePredictions
+ * @param busStops
+ * @returns {Array<Object>}
+ */
+function getFilteredPredictions(
+  googlePredictions: Array<Object>,
+  busStops: Array<Object>,
+): Array<Object> {
+  return googlePredictions.filter(p => busStops.find(s => p.name.includes(s.name)) === undefined);
 }
 
 export default new SearchRouter().router;
