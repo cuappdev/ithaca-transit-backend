@@ -2,7 +2,6 @@
 build/
 logs/
 node_modules/
-tcat-ny-us/
 
 # Specific Files
 config.json
