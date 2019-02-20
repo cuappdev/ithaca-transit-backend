@@ -99,7 +99,10 @@ function getFilteredPredictions(
   googlePredictions: Array<Object>,
   busStops: Array<Object>,
 ): Array<Object> {
-  return googlePredictions.filter(p => busStops.find(s => p.name.includes(s.name)) === undefined);
+  return googlePredictions.filter((p) => {
+    const stopsThatArePlaces = busStops.find(s => p.name.includes(s.name));
+    return stopsThatArePlaces === undefined;
+  });
 }
 
 export default new SearchRouter().router;
