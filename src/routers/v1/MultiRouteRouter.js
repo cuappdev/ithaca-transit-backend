@@ -46,7 +46,7 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
 
     // return the best route for each destination
     return Promise.all(multiRoutes).then((val) => {
-      const bestRoutes = val.map(routes => ((routes.length > 0) ? routes[0] : null));
+      const bestRoutes = val.map(routes => (routes.length > 0 ? routes[0] : null));
       AnalyticsUtils.assignRouteIdsAndCache(bestRoutes.filter(Boolean));
       return bestRoutes;
     }).catch((err) => {

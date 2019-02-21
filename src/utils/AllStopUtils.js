@@ -1,9 +1,9 @@
 // @flow
+import Constants from './Constants';
 import { PYTHON_APP } from './EnvUtils';
 import RequestUtils from './RequestUtils';
 
 const SEC_IN_MS = 1000;
-const THREE_SEC_IN_MS = 3000;
 const MIN_IN_MS = SEC_IN_MS * 60;
 const HOUR_IN_MS = MIN_IN_MS * 60;
 const DEG_EXACT_PRECISION = 6; // 6 degrees of precision is about a 111 mm, is exact point
@@ -62,10 +62,8 @@ RequestUtils.updateObjectOnInterval(
 
 async function fetchAllStops() {
   const options = {
-    method: 'GET',
+    ...Constants.GET_OPTIONS,
     url: `http://${PYTHON_APP || 'localhost'}:5000/stops`,
-    headers: { 'Cache-Control': 'no-cache' },
-    timeout: THREE_SEC_IN_MS,
   };
   const data = await RequestUtils.createRequest(options, 'AllStops request failed');
   return JSON.parse(data);
