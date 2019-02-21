@@ -9,10 +9,8 @@ class API extends ApplicationAPI {
     return '/api/';
   }
 
-  middleware(): Array<any> {
-    return [
-      bodyParser.json(),
-    ];
+  middleware(): Array<Object> {
+    return [bodyParser.json()];
   }
 
   routerGroups(): Object {
@@ -27,17 +25,6 @@ class API extends ApplicationAPI {
         Routers.RouteRouter,
         Routers.RouteSelectedRouter,
         Routers.SearchRouter,
-        Routers.TrackingRouter,
-      ],
-      v2: [
-        Routers.AlertsRouter,
-        Routers.AllStopsRouter,
-        Routers.DelayRouter,
-        Routers.HelloWorldRouter,
-        Routers.MultiRouteRouter,
-        Routers.PlacesAutocompleteRouter,
-        Routers.RouteRouter,
-        Routers.RouteSelectedRouter,
         Routers.TrackingRouter,
       ],
     };

@@ -56,34 +56,28 @@ function createGpxJson(stops: Array<Object>, startTime: String): Object {
  * path: T[] | string | *, distance: *,
  * routeNumber: (null|*), stops: T[], tripIdentifiers: T[] | string | *}}
  */
-function mergeDirections(first, second) {
-  try {
-    second.stops.shift();
-    second.path.shift();
+function mergeDirections(first, second): Object {
+  second.stops.shift();
+  second.path.shift();
 
-    const path = first.path.concat(second.path);
-    const distance = first.distance + second.distance;
-    const stops = first.stops.concat(second.stops);
-    const tripIDs = first.tripIdentifiers.concat(second.tripIdentifiers);
+  const path = first.path.concat(second.path);
+  const distance = first.distance + second.distance;
+  const stops = first.stops.concat(second.stops);
+  const tripIDs = first.tripIdentifiers.concat(second.tripIdentifiers);
 
-    return {
-      type: first.type,
-      name: first.name,
-      startTime: first.startTime,
-      endTime: second.endTime,
-      startLocation: first.startLocation,
-      endLocation: second.endLocation,
-      path,
-      distance,
-      routeNumber: first.routeNumber,
-      stops,
-      tripIdentifiers: tripIDs,
-    };
-  } catch (error) {
-    throw new Error(
-      LogUtils.logErr(error, { first, second }, 'mergeDirections failed'),
-    );
-  }
+  return {
+    distance,
+    endLocation: second.endLocation,
+    endTime: second.endTime,
+    name: first.name,
+    path,
+    routeNumber: first.routeNumber,
+    startLocation: first.startLocation,
+    startTime: first.startTime,
+    stops,
+    tripIdentifiers: tripIDs,
+    type: first.type,
+  };
 }
 
 /**
@@ -142,85 +136,72 @@ async function condenseRoute(
   departureDelayBuffer: ?boolean = false,
   departureTimeNowMs: number,
 ) {
-  try {
-    // trim unnecessary walking directions
-    await trimFirstLastDirections(route, startCoords, endCoords);
+  await trimFirstLastDirections(route, startCoords, endCoords);
 
-    let previousDirection = null;
-    let totalDistanceWalking = 0;
+  let previousDirection = null;
+  let totalDistanceWalking = 0;
 
-    for (let index = 0; index < route.directions.length; index++) {
-      const direction = route.directions[index];
-      const startTime = Date.parse(direction.startTime);
-      const endTime = Date.parse(direction.endTime);
+  for (let index = 0; index < route.directions.length; index++) {
+    const direction = route.directions[index];
+    const startTime = Date.parse(direction.startTime);
+    const endTime = Date.parse(direction.endTime);
+    // Discard routes with directions that take over 2 hours time
+    if (startTime + (ONE_HOUR_IN_MILLISECONDS * 2) <= endTime) {
+      return null;
+    }
+
+    // Discard routes where not possible to walk to bus given departure buffer
+    if (departureDelayBuffer) {
+      if (direction.type === 'depart') {
+        const busActualDepartTime = startTime + (direction.delay != null ? direction.delay * 1000 : 0);
+        if (busActualDepartTime < departureTimeNowMs) {
+          return null;
+        }
+      }
+    }
+
+    if (previousDirection
+      && previousDirection.type === 'depart'
+      && direction.type === 'depart') {
       /*
-       * Discard routes with directions that take over 2 hours time
+       * Discard route if a depart direction's last stopID is not equal to the next direction's first stopID,
+       * Fixes bug where graphhopper directions are to get off at a stop and get on another stop
+       * far away with no walking direction in between, EG: 1. get off at Statler 2. board at RPCC
        */
-      if (startTime + (ONE_HOUR_IN_MILLISECONDS * 2) <= endTime) {
+      if (previousDirection.stops[previousDirection.stops.length - 1].stopID
+        !== direction.stops[0].stopID) {
         return null;
       }
 
       /*
-       * Discard routes where not possible to walk to bus given departure buffer
+       * If consecutive bus directions have the same routeNumber,
+       * then replace the last direction with merged directions and remove the current direction.
+       * No real transfer, probably just change in trip_ids.
        */
-      if (departureDelayBuffer) {
-        if (direction.type === 'depart') {
-          const busActualDepartTime = startTime + (direction.delay != null ? direction.delay * 1000 : 0);
-          if (busActualDepartTime < departureTimeNowMs) {
-            return null;
-          }
-        }
+      if (previousDirection.routeNumber === direction.routeNumber) {
+        route.directions.splice(index - 1, 2, mergeDirections(previousDirection, direction));
+        index -= 1; // since we removed an element from the array
       }
 
-      if (previousDirection
-        && previousDirection.type === 'depart'
-        && direction.type === 'depart') {
-        /*
-         * Discard route if a depart direction's last stopID is not equal to the next direction's first stopID,
-         * Fixes bug where graphhopper directions are to get off at a stop and get on another stop
-         * far away with no walking direction in between, EG: 1. get off at Statler 2. board at RPCC
-         */
-        if (previousDirection.stops[previousDirection.stops.length - 1].stopID
-          !== direction.stops[0].stopID) {
+      // Discard routes with over 1 hours time waiting between each direction
+      if (previousDirection) {
+        const prevEndTime = Date.parse(previousDirection.endTime);
+        if (prevEndTime + ONE_HOUR_IN_MILLISECONDS < startTime) {
           return null;
         }
-
-        /*
-         * If consecutive bus directions have the same routeNumber,
-         * then replace the last direction with merged directions and remove the current direction.
-         * No real transfer, probably just change in trip_ids.
-         */
-        if (previousDirection.routeNumber === direction.routeNumber) {
-          route.directions.splice(index - 1, 2, mergeDirections(previousDirection, direction));
-          index -= 1; // since we removed an element from the array
-        }
-
-        /*
-         * Discard routes with over 1 hours time waiting between each direction
-         */
-        if (previousDirection) {
-          const prevEndTime = Date.parse(previousDirection.endTime);
-          if (prevEndTime + ONE_HOUR_IN_MILLISECONDS < startTime) {
-            return null;
-          }
-        }
       }
-      if (direction.type === 'walk') {
-        totalDistanceWalking += direction.distance;
-      }
-
-      previousDirection = direction;
+    }
+    if (direction.type === 'walk') {
+      totalDistanceWalking += direction.distance;
     }
 
-    // if a bus route has more walking distance than the walking route, discard route
-    // or route has 0 directions
-    if (totalDistanceWalking > maxWalkingDistance || route.directions.length === 0) {
-      return null;
-    }
-  } catch (error) {
-    throw new Error(
-      LogUtils.logErr(error, route, 'Condense final route failed'),
-    );
+    previousDirection = direction;
+  }
+
+  // if a bus route has more walking distance than the walking route, discard route
+  // or route has 0 directions
+  if (totalDistanceWalking > maxWalkingDistance || route.directions.length === 0) {
+    return null;
   }
 
   // Ensure that arrivalTime and departureTime have at least one minute difference

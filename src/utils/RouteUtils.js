@@ -40,7 +40,7 @@ async function createFinalRoute(
       departureDelayBuffer,
       departureTimeNowMs,
     )),
-  )).filter((route => route !== null));
+  )).filter(route => route !== null);
 
   if (walkingRoute) { // if a walkingRoute exists append it
     finalRoutes.push(walkingRoute);
