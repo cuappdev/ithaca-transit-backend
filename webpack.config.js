@@ -7,14 +7,9 @@ console.log(path.resolve(''));
 const baseDir = path.resolve('');
 
 module.exports = env => ({
-  target: 'node',
   context: baseDir,
-  externals: [nodeExternals()],
   entry: ['babel-polyfill', './src/server.js'],
-  output: {
-    path: `${baseDir}/build`,
-    filename: 'bundle.js',
-  },
+  externals: [nodeExternals()],
   module: {
     rules: [
       {
@@ -24,7 +19,6 @@ module.exports = env => ({
       },
     ],
   },
-  stats: 'minimal',
   plugins: [
     new NodemonPlugin({
       watch: ['./build', './src/test', './src/server.js'],
@@ -34,4 +28,10 @@ module.exports = env => ({
       dirs: ['./'],
     }),
   ],
+  stats: 'minimal',
+  target: 'node',
+  output: {
+    path: `${baseDir}/build`,
+    filename: 'bundle.js',
+  },
 });

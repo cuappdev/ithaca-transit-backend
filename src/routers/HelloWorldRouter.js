@@ -12,7 +12,7 @@ class HelloWorldRouter extends ApplicationRouter<string> {
   }
 
   // eslint-disable-next-line require-await
-  async content(req: Request) {
+  async content(req: Request): Promise<any> {
     return `Hello World! Environment: ${process.env.NODE_ENV || 'unknown'} | `
       + `Bus Navigation: http://${process.env.GHOPPER_BUS || 'ERROR'}:8988/ | `
       + `Walking Navigation: http://${process.env.GHOPPER_WALKING || 'ERROR'}:8987/ | `

@@ -10,7 +10,7 @@ function createRequest(
   errorMessage: ?string = 'Request failed',
   verbose: ?boolean = false,
   returnRes: ?boolean = false,
-) {
+): Object {
   options.time = true;
   return new Promise((resolve, reject) => {
     request(options, (error, response, body) => {

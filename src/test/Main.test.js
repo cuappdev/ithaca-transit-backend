@@ -174,7 +174,10 @@ function testDelayArr(routeResponseBusDataSet) {
 
 async function testTracking(routeResponseBusDataArr) {
   trackingDataCounts.total += 1;
-  const res = await request(server).post(tracking).send({ data: routeResponseBusDataArr }).set('Content-Type', 'application/json');
+  const res = await request(server)
+    .post(tracking)
+    .send({ data: routeResponseBusDataArr })
+    .set('Content-Type', 'application/json');
   expect(res).toBeValid();
   for (let i = 0; i < res.body.data.length; i++) {
     const status = res.body.data[i].case;
@@ -202,7 +205,6 @@ async function testRoute(res, routeParams) {
   // also check difference to release
   if (!routeParams.warning) {
     routeDataCounts.warning += 1;
-    // console.warn(`Warning ${routeDataCounts.warning}: Logging ${routeParams.name} to file and printing release diff [release => local]`);
     printReleaseDiff(res.body, `${route}${routeParams.query}`);
     TestUtils.logToFile('out/routes.test.warning.output.json',
       ((res && res.status < 300 && res.text) ? JSON.parse(res.text) : res));
@@ -258,21 +260,6 @@ describe('places endpoint', () => {
   test(`${places} no result for empty request body`, async () => {
     expect((await getPlace('')).body.data).toBeNull();
   });
-
-  // test('cayu?g?a?', async () => {
-  //     expect(await getPlace('cayu')).toBeValid();
-  //     expect(await getPlace('cay')).toBeValid();
-  //     expect(await getPlace('cayug')).toBeValid();
-  //     expect(await getPlace(' cayuga ?&* ')).dataToBeValid();
-  // });
-  //
-  // test('cornell', async () => {
-  //     expect(await getPlace('cornell')).toBeValid();
-  // });
-  //
-  // test('chipotle', async () => {
-  //     expect(await getPlace('chipotle')).toBeValid();
-  // });
 });
 
 describe('allStops endpoint', () => {
