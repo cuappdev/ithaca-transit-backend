@@ -10,10 +10,6 @@ const GhopperUtils = require('../utils/GraphhopperUtils.js').default;
 const LogUtils = require('../utils/LogUtils.js').default;
 
 describe('Route unit tests', () => {
-    beforeAll(async () => {
-        await GhopperUtils.isGraphhopperReady;
-    }, 1200000);
-
     routeTests.forEach((routeParams) => {
         describe(routeParams.name, () => {
             const { arriveBy, destinationName } = routeParams.params;

@@ -1,20 +1,11 @@
-*build*
-*.DS_Store*
-*.env*
-*node_modules*
-*secret*
-*.osrm*
-osrm/
-.elasticbeanstalk/
-*.zip
-npm-debug.log
-osrm-backend/*
-*tcat-ny-us.zip*
-*.idea*
-*graph-cache*
+# Folders
+build/
+logs/
+node_modules/
+
+# Specific Files
 config.json
-*tcat-ny-us*
-*.vscode*
-*.output.json*
-*.last-release.log*
-*.log*
+
+# File Types
+*.env
+*.zip

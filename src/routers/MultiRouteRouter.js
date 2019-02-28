@@ -1,7 +1,7 @@
 // @flow
 import type Request from 'express';
 import ApplicationRouter from '../appdev/ApplicationRouter';
-import ErrorUtils from '../utils/LogUtils';
+import LogUtils from '../utils/LogUtils';
 import RouteUtils from '../utils/RouteUtils';
 
 /**
@@ -10,39 +10,43 @@ import RouteUtils from '../utils/RouteUtils';
  * @extends ApplicationRouter
  */
 class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
-    constructor() {
-        super('GET');
+  constructor() {
+    super(['GET', 'POST']);
+  }
+
+  getPath(): string {
+    return '/multiroute/';
+  }
+
+  // Request does not require an arriveBy query param, unlike in RouteRouter
+  // eslint-disable-next-line require-await
+  async content(req: Request): Promise<Array<Object>> {
+    const params = req.method === 'GET' ? req.query : req.body;
+    const {
+      destinationNames,
+      end,
+      start,
+      time: departureTimeQuery,
+    } = params;
+
+    // each destinationName should correspond to one end point
+    if (destinationNames.length !== end.length) {
+      return [];
     }
 
-    getPath(): string {
-        return '/multiroute/';
-    }
+    // multiple destinations given
+    const routes = destinationNames.map((destinationName, index) => RouteUtils.getRoutes(
+      destinationName,
+      end[index],
+      start,
+      departureTimeQuery,
+      false,
+    ));
 
-    // Request does not require an arriveBy query param, unlike in RouteRouter
-    // eslint-disable-next-line require-await
-    async content(req: Request): Promise<Array<Object>> {
-        const {
-            destinationName,
-            end,
-            start,
-            time: departureTimeQuery,
-        } = req.query;
-
-        // only one destination given
-        if (typeof destinationName === 'string') {
-            return RouteUtils.getRoute(destinationName, end, start, departureTimeQuery, false);
-        }
-
-        // multiple destinations given
-        const routes = [];
-        for (let i = 0; i < destinationName.length; i++) {
-            routes.push(RouteUtils.getRoute(destinationName[i], end[i], start[i], departureTimeQuery, false));
-        }
-
-        return Promise.all(routes).then(val => val).catch((err) => {
-            throw ErrorUtils.logErr(err, routes, 'Could not get all specified routes');
-        });
-    }
+    return Promise.all(routes).then(val => val).catch((err) => {
+      throw LogUtils.logErr(err, routes, 'Could not get all specified routes');
+    });
+  }
 }
 
 export default new MultiRouteRouter().router;

@@ -4,61 +4,35 @@
 
 Please ensure `npm` ([npm](https://www.npmjs.com/get-npm)) and `docker` ([docker](https://www.docker.com/)) is installed by checking `npm -v` and `docker -v` and that Docker is running.
 
-Clone the repository and navigate to the directory in your terminal. Run `cp env.template .env` or manually copy the `env.template` file to `.env`. Then add the correct value for `TOKEN` and others in the `.env` file. The `TOKEN` value is pinned in the #transit-backend Slack channel.
 
-Run `npm install` to install the necessary dependencies.
+Run the following:
+
+```
+cp env.template .env
+cp python.env.template python.env
+```
+
+Environment variable values can be found by asking a member of Cornell AppDev.
  
 ## Run
 
 `package.json` contains all necessary run, build, test, and utility scripts for the project. **Type `npm run` before a script name to execute.** `npm run` by itself shows a list of available scripts.
 
 #### Development 
-`start:dev` runs the program in development mode with all necessary Graphhopper serivices at the location specified in the `.env` file. Use development mode while developing and **DO NOT USE THIS MODE IN DEPLOYMENT/PRODUCTION**.
-Features:
-* Automatic server restart and testing run on file change
-* Automatic Graphhopper initialization/start/stop
-* Source map and Node debugging features like breakpoints
-* Simulator or test client integration middleware
-* Current release response comparison
-* Faster build
-* Hot reload
-* Local verbose output/logging to file and console, not remote
-* Flow type checking
 
-#### Production
-`start:prod` runs the program in production mode. This is the mode built and started in the `Dockerfile`, hosted on the server, and by used the Transit frontend. It **does not start or check for the Graphhopper services needed by the Transit navigation program** (must be run separately) and it **logs all errors silently and remotely**.
-Features:
-* Optimized builds
-* Remote logging
-* Run independent of local Graphhopper services
+Run the following:
 
-#### More Scripts
-| **Script Name** | Description |
-| --------------------- | -------------------------------------------------------------------------------------- |
-| `build` | build Transit with Webpack default settings |
-| `build:dev` | build Transit with Webpack default settings, same as `start:dev` but without running Graphhopper services |
-| `build:image` | build a production Transit Docker image as `transit-node` using the `Dockerfile` |
-| `docker:clean` | prune unused docker data on your system |
-| `docker:reset` | prune **all** docker data on your system |
-| `flow` | Run Flow type checking service |
-| `flow:stop` | Stop Flow service |
-| `ghopper` | runs the Graphhopper processes required for route calculation |
-| `ghopper:kill` | SIGKILL any running Graphhopper processes |
-| `ghopper:stop`| stops any running Graphhopper processes |
-| `init` | `npm install` then `build` |
-| `serve` | run the existing build using Node |
-| `setup` | start Graphhopper services and `init` |
-| `start:dev` | [Development](#development) |
-| `start:prod` | [Production](#production) |
-| `test` | `init` for clean install and build then run tests and exit |
-| `test:dev` | run tests on an existing build in order and with console output using Jest and Node in debug mode then `flow` type checking |
+```
+npm run build:dev
+npm run start:microservices
+npm run start:node
+```
 
-### Known Errors
+To stop running the microservices:
 
-````
-Exception in thread "main" java.net.BindException: Address already in use
-````
-Run `npm run ghopper:stop` to kill any GraphHopper processes and try again. The GraphHopper services cannot be restarted if the ports (default 8989 and 8988) are already in use.
+```
+docker-compose down
+```
 
 # Transit API v1 REST Interface
 
@@ -242,9 +216,9 @@ Otherwise, the time is when the route should arrive to the destination by
 
 Time is in epoch (seconds since 1/1/1970) |
 
-*required* **end** : [{Double, Double}] - “[{< latitude1 Double >,< longitude1 Double >}]”
+*required* **end** : [String] - “[“< latitude Double >,< longitude Double >”]”
 
-| **description** | An array of latitude-longitude pair objects to specify ending points. Must contain at least one ending point. |
+| **description** | An array of latitude-longitude strings to specify ending points. Must contain at least one ending point. Should be the same length as **destinationNames**. |
 | --------------- | -------------------------------- |
 | **default**     | n/a                              |
 | **notes**       | See Start notes                  |
@@ -275,7 +249,41 @@ Returns an array of Routes, one for each destination.
 | boundingBox       | {  maxLat: Double,  maxLong: Double,  minLat: Double,  minLong: Double  } | The most extreme points of the route. Used to center the map on client-side (with some padding) |
 | numberOfTransfers | Int                                                                               | Number of transfers in route. Default 0.    
 
+----------
+# **/search** • POST
 
+**Description**: Returns a list of bus stops and google autocomplete search results given a query string.
+
+## Parameters
+
+*required* **query** : String
+
+| **description** | The user's search query for a bus stop or place.                                                                                  |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **notes**       | This can be any string the user types in. |
+
+## Returns: [JSON]
+
+Returns an array of places, which can identify as either "busStop" or "googlePlace".
+
+**busStop**
+
+| **Name** | **Type** | **Description**                           |
+| -------- | -------- | ----------------------------------------- |
+| type     | "busStop" | The type of search suggestion. |
+| name     | String   | The name of the bus stop.                 |
+| lat      | Double   | The latitude coordinate of the bus stop.  |
+| long     | Double   | The longitude coordinate of the bus stop. |
+
+
+**googlePlace**
+
+| **Name** | **Type** | **Description**                           |
+| -------- | -------- | ----------------------------------------- |
+| type     | "googlePlace" | The type of search suggestion. |
+| detail     | String   | The address of the place.                |
+| name      | Double   | The name of the place.  |
+| placeID    | Double   | The Google place ID. |
 
 ----------
 # **/tracking** • POST
@@ -312,7 +320,7 @@ Returns an array of Routes, one for each destination.
 | --------------- | ----------------------------------------------------------------------- |
 | **notes**       | Can be 1 or more Strings, depending on if the route loops and restarts. |
 
-## Returns: BusLocation
+## Returns: [BusLocation]
 
 *class* **BusLocation**
 
@@ -339,8 +347,9 @@ Returns an array of Routes, one for each destination.
 | tripID        | Int      | Four-figit identification number relating directly to trip.  Example: 1818, 1838                                                                                                                                            |
 | vehicleID     | Int      | Four-figit identification number relating directly to bus.  Example: 1105, 1603                                                                                                                                             |
 
+# Examples Responses
 
-**Example Response**
+## /route
 *Truncated for clarity.*
 
 
