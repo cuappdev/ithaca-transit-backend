@@ -1,7 +1,7 @@
 // @flow
 import type Request from 'express';
-import ApplicationRouter from '../appdev/ApplicationRouter';
 import AnalyticsUtils from '../utils/AnalyticsUtils';
+import ApplicationRouter from '../appdev/ApplicationRouter';
 import LogUtils from '../utils/LogUtils';
 import RouteUtils from '../utils/RouteUtils';
 
