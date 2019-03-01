@@ -27,6 +27,18 @@ class API extends ApplicationAPI {
         Routers.SearchRouter,
         Routers.TrackingRouter,
       ],
+      v2: [
+        Routers.AlertsRouter,
+        Routers.AllStopsRouter,
+        Routers.DelayRouter,
+        Routers.HelloWorldRouter,
+        Routers.MultiRouteRouter,
+        Routers.PlacesAutocompleteRouter,
+        Routers.RouteSelectedRouter,
+        Routers.SearchRouter,
+        Routers.SectionRouteRouter,
+        Routers.TrackingRouter,
+      ],
     };
   }
 }

@@ -7,6 +7,7 @@ import PlacesAutocompleteRouter from './PlacesAutocompleteRouter';
 import RouteRouter from './RouteRouter';
 import RouteSelectedRouter from './RouteSelectedRouter';
 import SearchRouter from './SearchRouter';
+import SectionRouteRouter from './SectionRouteRouter';
 import TrackingRouter from './TrackingRouter';
 
 export default {
@@ -19,5 +20,6 @@ export default {
   RouteRouter,
   RouteSelectedRouter,
   SearchRouter,
+  SectionRouteRouter,
   TrackingRouter,
 };
