@@ -73,6 +73,8 @@ The date, time, and daysOfWeek fields can specify an alert that takes place for 
 
 **Description:** Return a list of TCAT bus stops to show as a possible start / end location. A list should be included in the app, and periodically updated every so often.
 
+**Note:** The type field refers to the type of place. We currently have two different possible types, `busStop` and `googlePlace`. Look at `/search` for further details.
+
 ## Returns: [BusStop]
 
 *class* **BusStop**
@@ -82,6 +84,7 @@ The date, time, and daysOfWeek fields can specify an alert that takes place for 
 | name     | String   | The name of the bus stop.                 |
 | lat      | Double   | The latitude coordinate of the bus stop.  |
 | long     | Double   | The longitude coordinate of the bus stop. |
+| type     | String   | This is just the string "busStop".        |
 
 
 
