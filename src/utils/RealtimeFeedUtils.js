@@ -4,11 +4,14 @@ import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 
+const THREE_SEC_IN_MS = 3000;
+
 async function fetchRTF(): Object {
   const options = {
     method: 'GET',
     url: `http://${PYTHON_APP || 'localhost'}:5000/rtf`,
     headers: { 'Cache-Control': 'no-cache' },
+    timeout: THREE_SEC_IN_MS,
   };
   const data = await RequestUtils.createRequest(options, 'Tracking request failed');
   return JSON.parse(data);
