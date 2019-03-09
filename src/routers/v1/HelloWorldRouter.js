@@ -1,6 +1,6 @@
 // @flow
 import type Request from 'express';
-import ApplicationRouter from '../appdev/ApplicationRouter';
+import ApplicationRouter from '../../appdev/ApplicationRouter';
 
 class HelloWorldRouter extends ApplicationRouter<string> {
   constructor() {

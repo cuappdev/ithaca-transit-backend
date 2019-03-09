@@ -1,7 +1,7 @@
 // @flow
 import type Request from 'express';
-import ApplicationRouter from '../appdev/ApplicationRouter';
-import AnalyticsUtils from '../utils/AnalyticsUtils';
+import AnalyticsUtils from '../../utils/AnalyticsUtils';
+import ApplicationRouter from '../../appdev/ApplicationRouter';
 
 class RouteSelectedRouter extends ApplicationRouter<Array<Object>> {
   constructor() {

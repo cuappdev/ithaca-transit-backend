@@ -14,18 +14,25 @@ class API extends ApplicationAPI {
   }
 
   routerGroups(): Object {
+    const sharedRouters = [
+      Routers.AlertsRouter,
+      Routers.AllStopsRouter,
+      Routers.DelayRouter,
+      Routers.HelloWorldRouter,
+      Routers.MultiRouteRouter,
+      Routers.PlacesAutocompleteRouter,
+      Routers.RouteSelectedRouter,
+      Routers.SearchRouter,
+      Routers.TrackingRouter,
+    ];
     return {
       v1: [
-        Routers.AlertsRouter,
-        Routers.AllStopsRouter,
-        Routers.DelayRouter,
-        Routers.HelloWorldRouter,
-        Routers.MultiRouteRouter,
-        Routers.PlacesAutocompleteRouter,
+        ...sharedRouters,
         Routers.RouteRouter,
-        Routers.RouteSelectedRouter,
-        Routers.SearchRouter,
-        Routers.TrackingRouter,
+      ],
+      v2: [
+        ...sharedRouters,
+        Routers.RouteV2Router,
       ],
     };
   }
