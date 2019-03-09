@@ -46,10 +46,7 @@ async function createSectionedRoutes(
   originBusStopName: ?string,
 ): Promise<Object> {
   const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
-  let departureDelayBuffer: boolean = false;
-  if (!isArriveBy) { // 'leave at' query
-    departureDelayBuffer = true;
-  }
+  const departureDelayBuffer: boolean = !isArriveBy;
 
   const startPoint = ParseRouteUtils.latLongFromStr(start);
   const endPoint = ParseRouteUtils.latLongFromStr(end);
@@ -118,8 +115,7 @@ async function getSectionedRoutes(
     throw LogUtils.logErr({ message: 'RouteUtils.js: Graphhopper route error : could not fetch routes' });
   }
 
-  const { busRoute } = routeResponses;
-  const { walkingRoute } = routeResponses;
+  const { busRoute, walkingRoute } = routeResponses;
   // parse the graphhopper walking route
   const parsedWalkingRoute = ParseRouteUtils.parseWalkingRoute(
     walkingRoute,

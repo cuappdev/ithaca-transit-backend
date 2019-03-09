@@ -200,14 +200,14 @@ Time is in epoch (seconds since 1/1/1970) |
 
 ## Parameters
 
-*required* **start** : String - “<latitude : Double>,<(longitude : Double>”
+*required* **start** : String - “<latitude : Double>,<longitude : Double>”
 
 | **description** | The starting point of the journey.                                                                                           |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | **default**     | current location (set by client)                                                                                             |
 | **notes**       | This can be a bus stop, a location found in Google Places (see Place ID docs), or coordinates (e.g. user’s current location) |
 
-*required* **end** : String - “<latitude : Double>,<(longitude : Double>”
+*required* **end** : String - “<latitude : Double>,<longitude : Double>”
 
 | **description** | The ending point of the journey. |
 | --------------- | -------------------------------- |

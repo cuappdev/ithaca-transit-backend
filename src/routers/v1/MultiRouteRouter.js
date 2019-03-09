@@ -1,9 +1,9 @@
 // @flow
 import type Request from 'express';
-import AnalyticsUtils from '../utils/AnalyticsUtils';
-import ApplicationRouter from '../appdev/ApplicationRouter';
-import LogUtils from '../utils/LogUtils';
-import RouteUtils from '../utils/RouteUtils';
+import AnalyticsUtils from '../../utils/AnalyticsUtils';
+import ApplicationRouter from '../../appdev/ApplicationRouter';
+import LogUtils from '../../utils/LogUtils';
+import RouteUtils from '../../utils/RouteUtils';
 
 /**
  * Router object that returns an array of the best available route for each

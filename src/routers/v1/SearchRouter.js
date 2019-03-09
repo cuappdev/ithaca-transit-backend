@@ -2,9 +2,9 @@
 import fuzz from 'fuzzball';
 import LRU from 'lru-cache';
 import type Request from 'express';
-import AllStopUtils from '../utils/AllStopUtils';
-import ApplicationRouter from '../appdev/ApplicationRouter';
-import RequestUtils from '../utils/RequestUtils';
+import AllStopUtils from '../../utils/AllStopUtils';
+import ApplicationRouter from '../../appdev/ApplicationRouter';
+import RequestUtils from '../../utils/RequestUtils';
 
 const BUS_STOP = 'busStop';
 const cacheOptions = {

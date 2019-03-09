@@ -1,6 +1,6 @@
 // @flow
-import ApplicationRouter from '../appdev/ApplicationRouter';
-import AlertsUtils from '../utils/AlertsUtils';
+import AlertsUtils from '../../utils/AlertsUtils';
+import ApplicationRouter from '../../appdev/ApplicationRouter';
 
 class AlertsRouter extends ApplicationRouter<Array<Object>> {
   constructor() {

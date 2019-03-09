@@ -1,14 +1,14 @@
-import AlertsRouter from './AlertsRouter';
-import AllStopsRouter from './AllStopsRouter';
-import DelayRouter from './DelayRouter';
-import HelloWorldRouter from './HelloWorldRouter';
-import MultiRouteRouter from './MultiRouteRouter';
-import PlacesAutocompleteRouter from './PlacesAutocompleteRouter';
-import RouteRouter from './RouteRouter';
-import RouteSelectedRouter from './RouteSelectedRouter';
-import SearchRouter from './SearchRouter';
-import SectionRouteRouter from './SectionRouteRouter';
-import TrackingRouter from './TrackingRouter';
+import AlertsRouter from './v1/AlertsRouter';
+import AllStopsRouter from './v1/AllStopsRouter';
+import DelayRouter from './v1/DelayRouter';
+import HelloWorldRouter from './v1/HelloWorldRouter';
+import MultiRouteRouter from './v1/MultiRouteRouter';
+import PlacesAutocompleteRouter from './v1/PlacesAutocompleteRouter';
+import RouteRouter from './v1/RouteRouter';
+import RouteSelectedRouter from './v1/RouteSelectedRouter';
+import RouteV2Router from './v2/RouteRouter';
+import SearchRouter from './v1/SearchRouter';
+import TrackingRouter from './v1/TrackingRouter';
 
 export default {
   AlertsRouter,
@@ -19,7 +19,7 @@ export default {
   PlacesAutocompleteRouter,
   RouteRouter,
   RouteSelectedRouter,
+  RouteV2Router,
   SearchRouter,
-  SectionRouteRouter,
   TrackingRouter,
 };
