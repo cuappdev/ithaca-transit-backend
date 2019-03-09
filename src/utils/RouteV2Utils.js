@@ -110,21 +110,25 @@ async function getSectionedRoutes(
   originBusStopName: ?string,
 ): Promise<Object> {
   const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, isArriveBy);
+  const { busRoute, walkingRoute } = routeResponses;
 
-  if (!routeResponses) {
-    throw LogUtils.logErr({ message: 'RouteUtils.js: Graphhopper route error : could not fetch routes' });
+  if (!busRoute && !walkingRoute) {
+    LogUtils.log({ message: 'RouteUtils.js: Graphhopper route error : could not fetch routes' });
+    return [];
   }
 
-  const { busRoute, walkingRoute } = routeResponses;
-  // parse the graphhopper walking route
-  const parsedWalkingRoute = ParseRouteUtils.parseWalkingRoute(
-    walkingRoute,
-    GhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0),
-    destinationName,
-  );
+  let parsedWalkingRoute;
+  if (walkingRoute) {
+    // parse the graphhopper walking route
+    parsedWalkingRoute = ParseRouteUtils.parseWalkingRoute(
+      walkingRoute,
+      GhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0),
+      destinationName,
+    );
 
-  // Ensure that arrivalTime and departureTime have at least one minute difference
-  ParseRouteUtils.adjustRouteTimesIfNeeded(walkingRoute);
+    // Ensure that arrivalTime and departureTime have at least one minute difference
+    ParseRouteUtils.adjustRouteTimesIfNeeded(walkingRoute);
+  }
 
   // if there are no bus routes, we should just return walking instead of crashing
   if (!busRoute && parsedWalkingRoute) {

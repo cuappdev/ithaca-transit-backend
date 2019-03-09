@@ -56,26 +56,29 @@ async function getRoutes(
   isArriveBy: boolean,
 ): Promise<Array<Object>> {
   const routeResponses = await GhopperUtils.fetchRoutes(end, start, departureTimeQuery, isArriveBy);
+  const { busRoute, walkingRoute } = routeResponses;
 
-  if (!routeResponses) {
-    throw LogUtils.logErr({ message: 'RouteUtils.js: Graphhopper route error : could not fetch routes' });
+  if (!busRoute && !walkingRoute) {
+    LogUtils.log({ message: 'RouteUtils.js: Graphhopper route error : could not fetch routes' });
+    return [];
   }
 
-  const { busRoute } = routeResponses;
-  let { walkingRoute } = routeResponses;
-  // parse the graphhopper walking route=
-  walkingRoute = ParseRouteUtils.parseWalkingRoute(
-    walkingRoute,
-    GhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0),
-    destinationName,
-  );
+  let parsedWalkingRoute;
+  if (walkingRoute) {
+    // parse the graphhopper walking route
+    parsedWalkingRoute = ParseRouteUtils.parseWalkingRoute(
+      walkingRoute,
+      GhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0),
+      destinationName,
+    );
 
-  // Ensure that arrivalTime and departureTime have at least one minute difference
-  ParseRouteUtils.adjustRouteTimesIfNeeded(walkingRoute);
+    // Ensure that arrivalTime and departureTime have at least one minute difference
+    ParseRouteUtils.adjustRouteTimesIfNeeded(parsedWalkingRoute);
+  }
 
   // if there are no bus routes, we should just return walking instead of crashing
-  if (!busRoute && walkingRoute) {
-    return [walkingRoute];
+  if (!busRoute && parsedWalkingRoute) {
+    return [parsedWalkingRoute];
   }
 
   // parse the graphhopper bus route
@@ -84,7 +87,7 @@ async function getRoutes(
   // combine and filter to create the final route
   return createFinalRoute(
     parsedBusRoutes,
-    walkingRoute,
+    parsedWalkingRoute,
     start,
     end,
     departureTimeQuery,
