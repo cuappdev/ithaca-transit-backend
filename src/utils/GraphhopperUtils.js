@@ -149,7 +149,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
   if (busRouteRequest && busRouteRequest.statusCode < 300) {
     busRoute = JSON.parse(busRouteRequest.body);
   } else {
-    throw LogUtils.logErr(
+    LogUtils.log(
       busRouteRequest && busRouteRequest.body,
       getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
@@ -159,7 +159,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
   if (walkingRouteRequest && walkingRouteRequest.statusCode < 300) {
     walkingRoute = JSON.parse(walkingRouteRequest.body);
   } else {
-    throw LogUtils.logErr(
+    LogUtils.log(
       walkingRouteRequest && walkingRouteRequest.body,
       getGraphhopperWalkingParams(end, start),
       `Walking failed: ${GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
