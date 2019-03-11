@@ -145,6 +145,7 @@ async function condenseRoute(
     const direction = route.directions[index];
     const startTime = Date.parse(direction.startTime);
     const endTime = Date.parse(direction.endTime);
+
     // Discard routes with directions that take over 2 hours time
     if (startTime + (ONE_HOUR_IN_MILLISECONDS * 2) <= endTime) {
       return null;
@@ -186,10 +187,10 @@ async function condenseRoute(
         }
       }
     }
+
     if (direction.type === 'walk') {
       totalDistanceWalking += direction.distance;
     }
-
     previousDirection = direction;
   }
 
@@ -200,7 +201,7 @@ async function condenseRoute(
   }
 
   // Ensure that arrivalTime and departureTime have at least one minute difference
-  adjustRouteTimesIfNeeded(route);
+  adjustRouteTimesIfNecessary(route);
   return route;
 }
 
@@ -209,7 +210,7 @@ async function condenseRoute(
  * arrivalTime by one minute
  * @param route
  */
-function adjustRouteTimesIfNeeded(route: Object) {
+function adjustRouteTimesIfNecessary(route: Object) {
   const departureDate = new Date(route.departureTime);
   const arrivalDate = new Date(route.arrivalTime);
   if (areDatesTheSameMinute(departureDate, arrivalDate)) {
@@ -231,16 +232,14 @@ function areDatesTheSameMinute(departureDate: Date, arrivalDate: Date): boolean 
   return isWithinMinute && isSameMinute;
 }
 
-function parseWalkingRoute(data: any, startDateMs: number, destinationName: string) {
+function parseWalkingRoute(data: any, startDateMs: number, destinationName: string): Object {
   try {
     const path = data.paths[0];
     const endDateMs = startDateMs + path.time;
 
-    const departureTime = `${new Date(startDateMs).toISOString()
-      .split('.')[0]}Z`;
-    const arrivalTime = `${new Date(endDateMs).toISOString()
-      .split('.')[0]}Z`;
-
+    const departureTime = `${new Date(startDateMs).toISOString().split('.')[0]}Z`;
+    const arrivalTime = `${new Date(endDateMs).toISOString().split('.')[0]}Z`;
+      
     const startCoords = {
       lat: path.points.coordinates[0][1],
       long: path.points.coordinates[0][0],
@@ -277,29 +276,31 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
     }));
 
     const direction = {
-      type: 'walk',
-      name: destinationName,
-      startTime: departureTime,
-      endTime: arrivalTime,
-      startLocation: startCoords,
-      endLocation: endCoords,
-      path: walkingPath,
+      delay: null,
       distance: path.distance,
+      endLocation: endCoords,
+      endTime: arrivalTime,
+      name: destinationName,
+      path: walkingPath,
       routeNumber: null,
+      startLocation: startCoords,
+      startTime: departureTime,
       stops: [],
       tripIdentifiers: null,
-      delay: null,
+      type: 'walk',
     };
 
-    return {
-      departureTime,
+    const route = {
       arrivalTime,
-      directions: [direction],
-      startCoords,
-      endCoords,
       boundingBox,
+      departureTime,
+      directions: [direction],
+      endCoords,
       numberOfTransfers,
+      startCoords,
     };
+    adjustRouteTimesIfNecessary(route);
+    return route;
   } catch (e) {
     throw new Error(
       LogUtils.logErr(e, { data, startDateMs, destinationName }, 'Parse walking route failed'),
@@ -331,7 +332,7 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
  * @param destinationName
  * @returns {Promise<Array>}
  */
-function parseBusRoutes(resp: Object, destinationName: string) {
+function parseBusRoutes(resp: Object, destinationName: string): Promise<Array<Object>> {
   const { paths } = resp; // array of parsed routes
 
   return Promise.all(paths.map(async (currPath) => {
@@ -477,11 +478,11 @@ function parseBusRoutes(resp: Object, destinationName: string) {
               }
             } catch (error) {
               const undefinedGraphHopperMessage = 'undefined graphhopper mapmatching env';
-              LogUtils.logErr(
-                error,
+              LogUtils.log({
                 destinationName,
-                `Snap response failed: ${MAP_MATCHING || undefinedGraphHopperMessage}`,
-              );
+                error,
+                message: `Snap response failed: ${MAP_MATCHING || undefinedGraphHopperMessage}`,
+              });
             }
 
             // Trim Coordinates so they start/end at bus stops
@@ -498,9 +499,9 @@ function parseBusRoutes(resp: Object, destinationName: string) {
 
           // create all stops array
           stops = currLeg.stops.map(stop => ({
-            name: stop.stop_name,
             lat: stop.geometry.coordinates[1],
             long: stop.geometry.coordinates[0],
+            name: stop.stop_name,
             stopID: stop.stop_id,
           }));
 
@@ -545,7 +546,6 @@ function parseBusRoutes(resp: Object, destinationName: string) {
 }
 
 export default {
-  adjustRouteTimesIfNeeded,
   condenseRoute,
   latLongFromStr,
   parseBusRoutes,

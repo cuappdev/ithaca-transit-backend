@@ -102,7 +102,7 @@ class ApplicationRouter<T> {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const content = await this.content(req);
-        LogUtils.log({ path: this.getPath(), query: req.query, response: content });
+        LogUtils.log({ path: this.getPath(), query: req.query });
         res.json(new AppDevResponse(true, content));
       } catch (e) {
         if (e.message === 1) {
