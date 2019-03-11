@@ -15,7 +15,7 @@ import RequestUtils from './RequestUtils';
 const getGraphhopperBusParams = (end: string, start: string, departureTimeQuery: string, arriveBy: boolean) => ({
   'ch.disable': true,
   'pt.arrive_by': arriveBy,
-  'pt.earliest_departure_time': getDepartureTimeDateNow(departureTimeQuery, arriveBy),
+  'pt.earliest_departure_time': getDepartureTimeDateNow(departureTimeQuery, arriveBy, 20),
   'pt.max_walk_distance_per_leg': 2000,
   'pt.profile': true,
   'pt.walk_speed': 3.0, // > 3.0 suggests getting off bus earlier and walk half a mile instead of waiting longer
@@ -38,16 +38,21 @@ const getGraphhopperWalkingParams = (end, start) => ({
   vehicle: 'foot',
 });
 
-function getDepartureTime(departureTimeQuery: string, isArriveByQuery: boolean, delayBuffer: number = 5) {
+/*
+ * Return departure time in millseconds
+ *
+ * @param departureTimeQuery
+ */
+function getDepartureTime(departureTimeQuery: string, isArriveByQuery: boolean, delayBufferMinutes: number) {
   let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
   if (!isArriveByQuery) { // 'leave at' query
-    departureTimeNowMs -= delayBuffer * 60 * 1000; // so we can potentially display delayed routes
+    departureTimeNowMs -= delayBufferMinutes * 60 * 1000; // so we can potentially display delayed routes
   }
   return departureTimeNowMs;
 }
 
-function getDepartureTimeDateNow(departureTimeQuery: string, isArriveByQuery: boolean, delayBuffer: number = 5) {
-  const departureTimeNowMs = getDepartureTime(departureTimeQuery, isArriveByQuery, delayBuffer);
+function getDepartureTimeDateNow(departureTimeQuery: string, isArriveByQuery: boolean, delayBufferMinutes) {
+  const departureTimeNowMs = getDepartureTime(departureTimeQuery, isArriveByQuery, delayBufferMinutes);
   return new Date(departureTimeNowMs).toISOString();
 }
 
@@ -110,27 +115,26 @@ function getDepartureTimeDateNow(departureTimeQuery: string, isArriveByQuery: bo
  * @returns {Promise<{busRoute: any, walkingRoute: any}>}
  */
 async function fetchRoutes(end: string, start: string, departureTimeDateNow: string, isArriveByQuery: boolean): Object {
-  let busRoute;
+  let busRoutes;
   let walkingRoute;
 
-  const options = {
-    method: 'GET',
-    url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
+  const sharedOptions = { method: 'GET', qsStringifyOptions: { arrayFormat: 'repeat' } };
+  const busOptions = {
     qs: getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
-    qsStringifyOptions: { arrayFormat: 'repeat' },
+    url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
+    ...sharedOptions,
   };
   const walkingOptions = {
-    method: 'GET',
-    url: `http://${GHOPPER_WALKING || 'ERROR'}:8987/route`,
     qs: getGraphhopperWalkingParams(end, start),
-    qsStringifyOptions: { arrayFormat: 'repeat' },
+    url: `http://${GHOPPER_WALKING || 'ERROR'}:8987/route`,
+    ...sharedOptions,
   };
 
   let busRouteRequest;
   let walkingRouteRequest;
   await Promise.all([
     RequestUtils.createRequest(
-      options,
+      busOptions,
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
       false,
       true,
@@ -147,7 +151,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
   });
 
   if (busRouteRequest && busRouteRequest.statusCode < 300) {
-    busRoute = JSON.parse(busRouteRequest.body);
+    busRoutes = JSON.parse(busRouteRequest.body);
   } else {
     LogUtils.log(
       busRouteRequest && busRouteRequest.body,
@@ -166,7 +170,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     );
   }
 
-  return { busRoute, walkingRoute };
+  return { busRoutes, walkingRoute };
 }
 
 export default {

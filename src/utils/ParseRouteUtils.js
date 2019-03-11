@@ -151,13 +151,8 @@ async function condenseRoute(
     }
 
     // Discard routes where not possible to walk to bus given departure buffer
-    if (departureDelayBuffer) {
-      if (direction.type === 'depart') {
-        const busActualDepartTime = startTime + (direction.delay != null ? direction.delay * 1000 : 0);
-        if (busActualDepartTime < departureTimeNowMs) {
-          return null;
-        }
-      }
+    if (departureDelayBuffer && direction.type === 'depart' && startTime < departureTimeNowMs) {
+      return null;
     }
 
     if (previousDirection
@@ -336,10 +331,8 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
  * @param destinationName
  * @returns {Promise<Array>}
  */
-function parseRoute(resp: Object, destinationName: string) {
-  // array of parsed routes
-
-  const { paths } = resp;
+function parseBusRoutes(resp: Object, destinationName: string) {
+  const { paths } = resp; // array of parsed routes
 
   return Promise.all(paths.map(async (currPath) => {
     try {
@@ -383,6 +376,9 @@ function parseRoute(resp: Object, destinationName: string) {
 
       const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
         let { type } = currLeg;
+        const startTime = currLeg.departureTime;
+        const endTime = currLeg.arrivalTime;
+
         if (type === 'pt') {
           type = 'depart';
         }
@@ -398,9 +394,6 @@ function parseRoute(resp: Object, destinationName: string) {
         } else if (type === 'depart') {
           name = currLeg.departureLocation;
         }
-
-        const startTime = currLeg.departureTime;
-        const endTime = currLeg.arrivalTime;
 
         const currCoordinates = currLeg.geometry.coordinates;
         let path = currCoordinates.map(point => ({
@@ -418,8 +411,7 @@ function parseRoute(resp: Object, destinationName: string) {
 
         const { distance } = currLeg;
         if (type === 'depart') {
-          if (currLeg.isInSameVehicleAsPrevious) {
-            // last depart was a transfer
+          if (currLeg.isInSameVehicleAsPrevious) { // last depart was a transfer
             stayOnBusForTransfer = true;
           }
 
@@ -437,8 +429,7 @@ function parseRoute(resp: Object, destinationName: string) {
 
           if (route.length === 1) {
             // this gets the correct route number for the gtfs data
-            routeNumber = route[0].route_short_name.match(/\d+/g)
-              .map(Number)[0];
+            routeNumber = route[0].route_short_name.match(/\d+/g).map(Number)[0];
           }
 
           if (path.length >= 2) {
@@ -557,6 +548,6 @@ export default {
   adjustRouteTimesIfNeeded,
   condenseRoute,
   latLongFromStr,
-  parseRoute,
+  parseBusRoutes,
   parseWalkingRoute,
 };

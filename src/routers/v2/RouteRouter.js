@@ -3,9 +3,9 @@ import type Request from 'express';
 import AnalyticsUtils from '../../utils/AnalyticsUtils';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import LogUtils from '../../utils/LogUtils';
-import RouteV2Utils from '../../utils/RouteV2Utils';
+import RouteUtils from '../../utils/RouteUtils';
 
-class RouteRouter extends ApplicationRouter<Array<Object>> {
+class RouteRouter extends ApplicationRouter<Object> {
   constructor() {
     super(['POST']);
   }
@@ -25,9 +25,9 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
       uid,
     } = req.body;
 
-    const isOriginBusStop = await RouteV2Utils.isBusStop(originName);
+    const isOriginBusStop = await RouteUtils.isBusStop(originName);
     const originBusStopName = isOriginBusStop ? originName : null;
-    const sectionedRoutes = await RouteV2Utils.getSectionedRoutes(
+    const sectionedRoutes = await RouteUtils.getSectionedRoutes(
       destinationName,
       end,
       start,
@@ -35,7 +35,7 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
       isArriveBy,
       originBusStopName,
     );
-    const routes = RouteV2Utils.flatten(Object.values(sectionedRoutes));
+    const routes = RouteUtils.flatten(Object.values(sectionedRoutes));
     if (routes.length > 0) {
       const request = {
         isArriveBy,
