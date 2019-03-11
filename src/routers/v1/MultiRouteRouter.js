@@ -1,8 +1,9 @@
 // @flow
 import type Request from 'express';
-import ApplicationRouter from '../appdev/ApplicationRouter';
-import LogUtils from '../utils/LogUtils';
-import RouteUtils from '../utils/RouteUtils';
+import AnalyticsUtils from '../../utils/AnalyticsUtils';
+import ApplicationRouter from '../../appdev/ApplicationRouter';
+import LogUtils from '../../utils/LogUtils';
+import RouteUtils from '../../utils/RouteUtils';
 
 /**
  * Router object that returns an array of the best available route for each
@@ -34,8 +35,8 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
       return [];
     }
 
-    // multiple destinations given
-    const routes = destinationNames.map((destinationName, index) => RouteUtils.getRoutes(
+    // get array of routes for each destination
+    const multiRoutes = destinationNames.map((destinationName, index) => RouteUtils.getRoutes(
       destinationName,
       end[index],
       start,
@@ -43,8 +44,13 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
       false,
     ));
 
-    return Promise.all(routes).then(val => val).catch((err) => {
-      throw LogUtils.logErr(err, routes, 'Could not get all specified routes');
+    // return the best route for each destination
+    return Promise.all(multiRoutes).then((val) => {
+      const bestRoutes = val.map(routes => ((routes.length > 0) ? routes[0] : null));
+      AnalyticsUtils.assignRouteIdsAndCache(bestRoutes.filter(Boolean));
+      return bestRoutes;
+    }).catch((err) => {
+      throw LogUtils.logErr(err, multiRoutes, 'Could not get all specified routes');
     });
   }
 }

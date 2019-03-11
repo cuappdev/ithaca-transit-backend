@@ -73,6 +73,8 @@ The date, time, and daysOfWeek fields can specify an alert that takes place for 
 
 **Description:** Return a list of TCAT bus stops to show as a possible start / end location. A list should be included in the app, and periodically updated every so often.
 
+**Note:** The type field refers to the type of place. We currently have two different possible types, `busStop` and `googlePlace`. Look at `/search` for further details.
+
 ## Returns: [BusStop]
 
 *class* **BusStop**
@@ -82,6 +84,7 @@ The date, time, and daysOfWeek fields can specify an alert that takes place for 
 | name     | String   | The name of the bus stop.                 |
 | lat      | Double   | The latitude coordinate of the bus stop.  |
 | long     | Double   | The longitude coordinate of the bus stop. |
+| type     | String   | This is just the string "busStop".        |
 
 
 
@@ -190,7 +193,62 @@ Time is in epoch (seconds since 1/1/1970) |
 | tripIdentifiers      | [String]?                             | The unique identifier(s) for the specific bus related to the direction. Only exists when **type** is .depart.                                                                                             |
 | delay                | Int?                                  | The bus delay for **stops**[0]. If delay is nil, means we don’t have delay information yet                                                                                                                |
 
+----------
+# **/v2/route** • POST 
 
+**Description**: Return routes based on the passed in parameters. Routes are categorized as being **fromStop**, **boardingSoon**, or **walking**.
+
+## Parameters
+
+*required* **start** : String - “<latitude : Double>,<longitude : Double>”
+
+| **description** | The starting point of the journey.                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **default**     | current location (set by client)                                                                                             |
+| **notes**       | This can be a bus stop, a location found in Google Places (see Place ID docs), or coordinates (e.g. user’s current location) |
+
+*required* **end** : String - “<latitude : Double>,<longitude : Double>”
+
+| **description** | The ending point of the journey. |
+| --------------- | -------------------------------- |
+| **default**     | n/a                              |
+| **notes**       | See Start notes                  |
+
+*required* **time** : Int
+
+| **description** | The relevant time in the request.                                                                                                                                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **default**     | now (set by client)                                                                                                                                                                                                                      |
+| **notes**       | If **arriveBy** is false, departBy functionality is used. The time is when the journey should at earliest begin by.
+Otherwise, the time is when the route should arrive to the destination by
+
+Time is in epoch (seconds since 1/1/1970) |
+
+*required* **isArriveBy** : Bool
+
+| **description** | Whether the request requires the route to arrive at the destination by **time** |
+| --------------- | ------------------------------------------------------------------------------- |
+| **default**     | false (set by client)                                                           |
+| **notes**       | n/a                                                                             |
+
+*required* **destinationName** : String
+
+| **description** | The name of the destination of the trip                                                                   |
+| --------------- | --------------------------------------------------------------------------------------------------------- |
+| **default**     | n/a                                                                                                       |
+| **notes**       | Used to change the final direction to the destination, as well as check if the destination is a bus stop. |
+
+## Returns:
+
+```
+{
+    "data": {
+        "fromStop": [Route],
+        "boardingSoon": [Route],
+        "walking": [Route]
+    }
+}
+```
 
 ----------
 # **/multiroute** • GET

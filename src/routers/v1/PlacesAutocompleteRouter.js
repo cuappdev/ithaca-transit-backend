@@ -1,7 +1,7 @@
 // @flow
 import LRU from 'lru-cache';
-import ApplicationRouter from '../appdev/ApplicationRouter';
-import RequestUtils from '../utils/RequestUtils';
+import ApplicationRouter from '../../appdev/ApplicationRouter';
+import RequestUtils from '../../utils/RequestUtils';
 
 const cacheOptions = {
   max: 10000,
