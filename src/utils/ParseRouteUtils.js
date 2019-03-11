@@ -275,7 +275,7 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
 
     const departureTime = convertMillisecondsToISOString(startDateMs);
     const arrivalTime = convertMillisecondsToISOString(endDateMs);
-      
+
     const { startCoords, endCoords } = getStartEndCoords(path.points, path.points);
     const boundingBox = generateBoundingBox(path);
 
