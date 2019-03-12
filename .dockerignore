@@ -1,4 +1,5 @@
 # Folders
+.git/
 build/
 logs/
 node_modules/

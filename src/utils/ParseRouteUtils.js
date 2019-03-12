@@ -8,8 +8,8 @@ import LogUtils from './LogUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import RequestUtils from './RequestUtils';
 
-const ONE_HOUR_IN_MILLISECONDS = 3600000;
-const ONE_MIN_IN_MILLISECONDS = 60000;
+const ONE_HOUR_IN_MS = 3600000;
+const ONE_MIN_IN_MS = 60000;
 
 /**
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
@@ -147,12 +147,18 @@ async function condenseRoute(
     const endTime = Date.parse(direction.endTime);
 
     // Discard routes with directions that take over 2 hours time
-    if (startTime + (ONE_HOUR_IN_MILLISECONDS * 2) <= endTime) {
+    if (startTime + (ONE_HOUR_IN_MS * 2) <= endTime) {
       return null;
     }
 
-    // Discard routes where not possible to walk to bus given departure buffer
-    if (departureDelayBuffer && direction.type === 'depart' && startTime < departureTimeNowMs) {
+    /**
+     * Discard routes where not possible to walk to bus given departure buffer
+     * We subtract (ONE_MIN_IN_MS - 1) from departureTimeNow to avoid the
+     * case where we don't show a bus leaving at the same minute as departureTime.
+     */
+    if (departureDelayBuffer
+      && direction.type === 'depart'
+      && startTime < departureTimeNowMs - (ONE_MIN_IN_MS - 1)) {
       return null;
     }
 
@@ -182,7 +188,7 @@ async function condenseRoute(
       // Discard routes with over 1 hours time waiting between each direction
       if (previousDirection) {
         const prevEndTime = Date.parse(previousDirection.endTime);
-        if (prevEndTime + ONE_HOUR_IN_MILLISECONDS < startTime) {
+        if (prevEndTime + ONE_HOUR_IN_MS < startTime) {
           return null;
         }
       }
@@ -215,7 +221,7 @@ function adjustRouteTimesIfNecessary(route: Object) {
   const arrivalDate = new Date(route.arrivalTime);
   if (areDatesTheSameMinute(departureDate, arrivalDate)) {
     route.arrivalTime = `${new Date(
-      arrivalDate.getTime() + ONE_MIN_IN_MILLISECONDS,
+      arrivalDate.getTime() + ONE_MIN_IN_MS,
     ).toISOString().split('.')[0]}Z`;
   }
 }
@@ -227,7 +233,7 @@ function adjustRouteTimesIfNecessary(route: Object) {
  * @returns boolean
  */
 function areDatesTheSameMinute(departureDate: Date, arrivalDate: Date): boolean {
-  const isWithinMinute = departureDate.getTime() + ONE_MIN_IN_MILLISECONDS > arrivalDate.getTime();
+  const isWithinMinute = departureDate.getTime() + ONE_MIN_IN_MS > arrivalDate.getTime();
   const isSameMinute = departureDate.getMinutes() === arrivalDate.getMinutes();
   return isWithinMinute && isSameMinute;
 }
