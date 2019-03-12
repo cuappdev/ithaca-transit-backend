@@ -24,11 +24,10 @@ async function isBusStop(location: string): Promise<boolean> {
 }
 
 /**
- * Filter and validate the array of parsed routes to send to the client
- * and then return routes categorized as fromStop, boardingSoon, or walking.
+ * Filter and validate the array of bus routes to send to the client.
  *
- * @param routeBus
- * @param routeWalking
+ * @param parsedBusRoutes
+ * @param parsedWalkingRoute
  * @param start
  * @param end
  * @param departureTimeQuery
@@ -36,15 +35,15 @@ async function isBusStop(location: string): Promise<boolean> {
  * @param originBusStopName
  * @returns {Promise<Object>}
  */
-async function createSectionedRoutes(
-  busRoutes: Array<Object>,
-  walkingRoute: Object,
+async function createFinalBusRoutes(
+  parsedBusRoutes: Array<Object>,
+  parsedWalkingRoute: Object,
   start: string,
   end: string,
   departureTimeQuery: number,
   isArriveBy: boolean,
   originBusStopName: ?string,
-): Promise<Object> {
+): Promise<Array<Object>> {
   const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
   const departureDelayBuffer = !isArriveBy;
 
@@ -52,41 +51,17 @@ async function createSectionedRoutes(
   const endPoint = ParseRouteUtils.latLongFromStr(end);
 
   const finalRoutes = (await Promise.all(
-    busRoutes.map(currPath => ParseRouteUtils.condenseRoute(
+    parsedBusRoutes.map(currPath => ParseRouteUtils.condenseRoute(
       currPath,
       startPoint,
       endPoint,
-      walkingRoute.directions[0].distance,
+      parsedWalkingRoute.directions[0].distance,
       departureDelayBuffer,
       departureTimeNowMs,
     )),
   )).filter(route => route !== null);
 
-  const sectionedRoutes = {
-    boardingSoon: [],
-    fromStop: [],
-    walking: [],
-  };
-
-  if (walkingRoute) { // if a walkingRoute exists append it
-    sectionedRoutes.walking.push(walkingRoute);
-  }
-
-  finalRoutes.forEach((r) => {
-    if (originBusStopName !== null) {
-      const { directions } = r;
-      if (directions.length > 0) {
-        const { stops } = directions[0];
-        if (stops.length > 0 && stops[0].name === originBusStopName) {
-          sectionedRoutes.fromStop.push(r);
-          return;
-        }
-      }
-    }
-    sectionedRoutes.boardingSoon.push(r);
-  });
-
-  return sectionedRoutes;
+  return finalRoutes;
 }
 
 /**
@@ -145,73 +120,40 @@ async function getSectionedRoutes(
     parsedBusRoutes,
     parsedWalkingRoute,
   } = await getParsedWalkingAndBusRoutes(destinationName, end, start, departureTimeQuery, isArriveBy);
-
-  const defaultRoutes = {
+  const sectionedRoutes = {
     boardingSoon: [],
     fromStop: [],
-    walking: [],
+    walking: [parsedWalkingRoute],
   };
 
   if (!parsedBusRoutes) {
-    defaultRoutes.walking.push(parsedWalkingRoute);
     LogUtils.log({ message: 'RouteUtils.js: Graphhopper route error : could not fetch bus routes' });
-    return defaultRoutes;
+    return sectionedRoutes;
   }
 
-  return createSectionedRoutes(
+  const finalBusRoutes = await createFinalBusRoutes(
     parsedBusRoutes,
     parsedWalkingRoute,
     start,
     end,
     departureTimeQuery,
     isArriveBy,
-    originBusStopName,
   );
-}
 
-/**
- * Filter and validate the array of parsed routes to send to the client.
- *
- * @param routeBus
- * @param routeWalking
- * @param start
- * @param end
- * @param departureTimeQuery
- * @param arriveBy
- * @returns {*}
- */
-async function createFinalRoute(
-  busRoutes: Array<Object>,
-  walkingRoute: Object,
-  start: string,
-  end: string,
-  departureTimeQuery: number,
-  isArriveBy: boolean,
-) {
-  const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
-  let departureDelayBuffer: boolean = false;
-  if (!isArriveBy) { // 'leave at' query
-    departureDelayBuffer = true;
-  }
+  finalBusRoutes.forEach((route) => {
+    if (originBusStopName !== null
+      && route.directions
+      && route.directions.length > 0
+      && route.directions[0].stops.length > 0
+      && route.directions[0].stops[0].name === originBusStopName
+    ) {
+      sectionedRoutes.fromStop.push(route);
+    } else {
+      sectionedRoutes.boardingSoon.push(route);
+    }
+  });
 
-  const startPoint = ParseRouteUtils.latLongFromStr(start);
-  const endPoint = ParseRouteUtils.latLongFromStr(end);
-
-  const finalRoutes = (await Promise.all(
-    busRoutes.map(currPath => ParseRouteUtils.condenseRoute(
-      currPath,
-      startPoint,
-      endPoint,
-      walkingRoute.directions[0].distance,
-      departureDelayBuffer,
-      departureTimeNowMs,
-    )),
-  )).filter(route => route !== null);
-
-  if (walkingRoute) { // if a walkingRoute exists append it
-    finalRoutes.push(walkingRoute);
-  }
-  return finalRoutes;
+  return sectionedRoutes;
 }
 
 async function getRoutes(
@@ -232,7 +174,7 @@ async function getRoutes(
   }
 
   // combine and filter to create the final route
-  return createFinalRoute(
+  const finalRoutes = await createFinalBusRoutes(
     parsedBusRoutes,
     parsedWalkingRoute,
     start,
@@ -240,11 +182,11 @@ async function getRoutes(
     departureTimeQuery,
     isArriveBy,
   );
+  finalRoutes.push(parsedWalkingRoute);
+  return finalRoutes;
 }
 
 export default {
-  createFinalRoute,
-  createSectionedRoutes,
   flatten,
   getRoutes,
   getSectionedRoutes,

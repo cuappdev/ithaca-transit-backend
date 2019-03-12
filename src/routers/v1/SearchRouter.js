@@ -49,8 +49,7 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
       name: s.name,
     }));
 
-    if (cachedValue !== undefined) {
-      // Return the list of googlePlaces and busStops
+    if (cachedValue !== undefined) { // Return the list of googlePlaces and busStops
       return cachedValue.concat(formattedStops);
     }
 
