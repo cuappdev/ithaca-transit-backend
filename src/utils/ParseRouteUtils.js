@@ -1,8 +1,8 @@
 // @flow
 import createGpx from 'gps-to-gpx';
 
-import AllStopUtils from './AllStopUtils';
 import { MAP_MATCHING } from './EnvUtils';
+import AllStopUtils from './AllStopUtils';
 import GTFSUtils from './GTFSUtils';
 import LogUtils from './LogUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
@@ -25,11 +25,6 @@ function distanceBetweenPointsMiles(point1: Object, point2: Object): number {
   dist = dist * 180 / Math.PI;
   dist = dist * 60 * 1.1515;
   return dist;
-}
-
-function latLongFromStr(pointStr: string): Object {
-  const point = pointStr.split(',');
-  return { lat: point[0], long: point[1] };
 }
 
 function createGpxJson(stops: Array<Object>, startTime: String): Object {
@@ -132,8 +127,8 @@ async function condenseRoute(
   route: Object,
   startCoords: Object,
   endCoords: Object,
-  maxWalkingDistance: ?number = 9999,
-  departureDelayBuffer: ?boolean = false,
+  maxWalkingDistance: number,
+  departureDelayBuffer: boolean,
   departureTimeNowMs: number,
 ) {
   await trimFirstLastDirections(route, startCoords, endCoords);
@@ -206,36 +201,71 @@ async function condenseRoute(
     return null;
   }
 
-  // Ensure that arrivalTime and departureTime have at least one minute difference
-  adjustRouteTimesIfNecessary(route);
-  return route;
+  return adjustRouteTimesIfNecessary(route);
 }
 
 /**
  * If the route arrivalTime and departureTime are within the same minute, increase the
  * arrivalTime by one minute
  * @param route
+ * @returns {Object}
  */
-function adjustRouteTimesIfNecessary(route: Object) {
+function adjustRouteTimesIfNecessary(route: Object): Object {
   const departureDate = new Date(route.departureTime);
   const arrivalDate = new Date(route.arrivalTime);
-  if (areDatesTheSameMinute(departureDate, arrivalDate)) {
-    route.arrivalTime = `${new Date(
-      arrivalDate.getTime() + ONE_MIN_IN_MS,
-    ).toISOString().split('.')[0]}Z`;
+
+  const isWithinMinute = departureDate.getTime() + ONE_MIN_IN_MS > arrivalDate.getTime();
+  const isSameMinute = departureDate.getMinutes() === arrivalDate.getMinutes();
+
+  if (isWithinMinute && isSameMinute) {
+    route.arrivalTime = convertMillisecondsToISOString(arrivalDate.getTime() + ONE_MIN_IN_MS);
   }
+  return route;
 }
 
 /**
- * Returns whether departureDate and arrivalDate are within the same minute
- * @param departureDate
- * @param arrivalDate
- * @returns boolean
+ * Returns coordinate objects with lat/long after taking in Graphhopper point arrays.
+ *
+ * @param startPathPoints
+ * @param endPathPoints
+ * @returns {Object}
  */
-function areDatesTheSameMinute(departureDate: Date, arrivalDate: Date): boolean {
-  const isWithinMinute = departureDate.getTime() + ONE_MIN_IN_MS > arrivalDate.getTime();
-  const isSameMinute = departureDate.getMinutes() === arrivalDate.getMinutes();
-  return isWithinMinute && isSameMinute;
+function getStartEndCoords(startPathPoints: Object, endPathPoints: Object): { startCoords: Object, endCoords: Object } {
+  const startCoords = {
+    lat: startPathPoints.coordinates[0][1],
+    long: startPathPoints.coordinates[0][0],
+  };
+  const endCoords = {
+    lat: endPathPoints.coordinates[endPathPoints.coordinates.length - 1][1],
+    long: endPathPoints.coordinates[endPathPoints.coordinates.length - 1][0],
+  };
+  return { startCoords, endCoords };
+}
+
+/**
+ * Returns boundingBox from a Graphhopper path
+ *
+ * @param startPathPoints
+ * @param endPathPoints
+ * @returns {Object}
+ */
+function generateBoundingBox(path: Object): Object {
+  return {
+    minLat: path.bbox[1],
+    minLong: path.bbox[0],
+    maxLat: path.bbox[3],
+    maxLong: path.bbox[2],
+  };
+}
+
+/**
+ * Returns dateInMs in an ISO String
+ *
+ * @param dateInMs
+ * @returns {string}
+ */
+function convertMillisecondsToISOString(dateInMs: number): string {
+  return `${new Date(dateInMs).toISOString().split('.')[0]}Z`;
 }
 
 function parseWalkingRoute(data: any, startDateMs: number, destinationName: string): Object {
@@ -243,38 +273,11 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
     const path = data.paths[0];
     const endDateMs = startDateMs + path.time;
 
-    const departureTime = `${new Date(startDateMs).toISOString().split('.')[0]}Z`;
-    const arrivalTime = `${new Date(endDateMs).toISOString().split('.')[0]}Z`;
+    const departureTime = convertMillisecondsToISOString(startDateMs);
+    const arrivalTime = convertMillisecondsToISOString(endDateMs);
       
-    const startCoords = {
-      lat: path.points.coordinates[0][1],
-      long: path.points.coordinates[0][0],
-    };
-
-    const endCoords = {
-      lat: path.points.coordinates[path.points.coordinates.length - 1][1],
-      long: path.points.coordinates[path.points.coordinates.length - 1][0],
-    };
-
-    let boundingBox;
-    if (path.distance === 0) {
-      boundingBox = {
-        minLat: startCoords.lat,
-        minLong: startCoords.long,
-        maxLat: endCoords.lat,
-        maxLong: endCoords.long,
-      };
-      path.distance = 1;
-    } else {
-      boundingBox = {
-        minLat: path.bbox[1],
-        minLong: path.bbox[0],
-        maxLat: path.bbox[3],
-        maxLong: path.bbox[2],
-      };
-    }
-
-    const numberOfTransfers = 0;
+    const { startCoords, endCoords } = getStartEndCoords(path.points, path.points);
+    const boundingBox = generateBoundingBox(path);
 
     const walkingPath = path.points.coordinates.map(point => ({
       lat: point[1],
@@ -296,17 +299,15 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
       type: 'walk',
     };
 
-    const route = {
+    return adjustRouteTimesIfNecessary({
       arrivalTime,
       boundingBox,
       departureTime,
       directions: [direction],
       endCoords,
-      numberOfTransfers,
+      numberOfTransfers: 0,
       startCoords,
-    };
-    adjustRouteTimesIfNecessary(route);
-    return route;
+    });
   } catch (e) {
     throw new Error(
       LogUtils.logErr(e, { data, startDateMs, destinationName }, 'Parse walking route failed'),
@@ -338,14 +339,11 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
  * @param destinationName
  * @returns {Promise<Array>}
  */
-function parseBusRoutes(resp: Object, destinationName: string): Promise<Array<Object>> {
-  const { paths } = resp; // array of parsed routes
+function parseBusRoutes(busRoutes: Object, destinationName: string): Promise<Array<Object>> {
+  const { paths } = busRoutes; // array of parsed routes
 
   return Promise.all(paths.map(async (currPath) => {
     try {
-      // this won't increment if the passenger 'stays on bus'
-      const numberOfTransfers = currPath.transfers;
-
       // array containing legs of journey. e.g. walk, bus ride, walk
       const { legs } = currPath;
       const numberOfLegs = legs.length;
@@ -357,29 +355,11 @@ function parseBusRoutes(resp: Object, destinationName: string): Promise<Array<Ob
       const startingLocationGeometry = legs[0].geometry;
       const endingLocationGeometry = legs[numberOfLegs - 1].geometry;
 
-      const startingLocationLong = startingLocationGeometry.coordinates[0][0];
-      const startingLocationLat = startingLocationGeometry.coordinates[0][1];
-
-      const endingLocationCoordsLength = endingLocationGeometry.coordinates.length;
-      const endingLocationLong = endingLocationGeometry.coordinates[endingLocationCoordsLength - 1][0];
-      const endingLocationLat = endingLocationGeometry.coordinates[endingLocationCoordsLength - 1][1];
-
-      const startCoords = {
-        lat: startingLocationLat,
-        long: startingLocationLong,
-      };
-
-      const endCoords = {
-        lat: endingLocationLat,
-        long: endingLocationLong,
-      };
-
-      const boundingBox = {
-        minLat: currPath.bbox[1],
-        minLong: currPath.bbox[0],
-        maxLat: currPath.bbox[3],
-        maxLong: currPath.bbox[2],
-      };
+      const {
+        startCoords,
+        endCoords,
+      } = getStartEndCoords(startingLocationGeometry, endingLocationGeometry);
+      const boundingBox = generateBoundingBox(currPath);
 
       const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
         let { type } = currLeg;
@@ -450,25 +430,17 @@ function parseBusRoutes(resp: Object, destinationName: string): Promise<Array<Ob
             });
 
             try {
-              // TODO refactor
-              // eslint-disable-next-line no-await-in-loop
-
               const options = {
                 method: 'POST',
                 url: `http://${MAP_MATCHING || 'ERROR'}:8989/match`,
                 body: gpx,
-                headers: {
-                  'Content-Type': 'application/xml',
-                },
-                qs: {
-                  points_encoded: false,
-                  vehicle: 'car',
-                },
+                headers: { 'Content-Type': 'application/xml' },
+                qs: { points_encoded: false, vehicle: 'car' },
               };
 
-              // eslint-disable-next-line no-await-in-loop
               const snappingResponseRequest = await RequestUtils.createRequest(
-                options, 'snappingResponse request failed',
+                options,
+                'snappingResponse request failed',
               );
 
               let snappingResponse = null;
@@ -540,7 +512,7 @@ function parseBusRoutes(resp: Object, destinationName: string): Promise<Array<Ob
         departureTime,
         directions,
         endCoords,
-        numberOfTransfers,
+        numberOfTransfers: currPath.transfers,
         startCoords,
       };
     } catch (error) {
@@ -553,7 +525,6 @@ function parseBusRoutes(resp: Object, destinationName: string): Promise<Array<Ob
 
 export default {
   condenseRoute,
-  latLongFromStr,
   parseBusRoutes,
   parseWalkingRoute,
 };

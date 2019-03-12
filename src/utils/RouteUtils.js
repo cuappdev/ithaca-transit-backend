@@ -6,6 +6,7 @@ import ParseRouteUtils from './ParseRouteUtils';
 
 /**
  * Returns the flattened version of arr.
+ *
  * @param arr
  * @returns {Array<Object>}
  */
@@ -15,6 +16,7 @@ function flatten(arr: Array<Array<Object>>): Array<Object> {
 
 /**
  * Returns whether or not location is a bus stop.
+ *
  * @param location
  * @returns {Promise<boolean>}
  */
@@ -47,8 +49,11 @@ async function createFinalBusRoutes(
   const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
   const departureDelayBuffer = !isArriveBy;
 
-  const startPoint = ParseRouteUtils.latLongFromStr(start);
-  const endPoint = ParseRouteUtils.latLongFromStr(end);
+  const startPointList = start.split(',');
+  const endPointList = end.split(',');
+
+  const startPoint = { lat: startPointList[0], long: startPointList[1] };
+  const endPoint = { lat: endPointList[0], long: endPointList[1] };
 
   const finalRoutes = (await Promise.all(
     parsedBusRoutes.map(currPath => ParseRouteUtils.condenseRoute(
