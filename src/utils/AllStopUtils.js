@@ -1,4 +1,5 @@
 // @flow
+import Constants from './Constants';
 import { PYTHON_APP } from './EnvUtils';
 import RequestUtils from './RequestUtils';
 
@@ -61,9 +62,8 @@ RequestUtils.updateObjectOnInterval(
 
 async function fetchAllStops() {
   const options = {
-    method: 'GET',
+    ...Constants.GET_OPTIONS,
     url: `http://${PYTHON_APP || 'localhost'}:5000/stops`,
-    headers: { 'Cache-Control': 'no-cache' },
   };
   const data = await RequestUtils.createRequest(options, 'AllStops request failed');
   return JSON.parse(data);

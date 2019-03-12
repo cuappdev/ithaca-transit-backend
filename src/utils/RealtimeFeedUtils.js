@@ -1,14 +1,14 @@
 // @flow
 import { PYTHON_APP } from './EnvUtils';
+import Constants from './Constants';
 import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 import TokenUtils from './TokenUtils';
 
 async function fetchRTF(): Object {
   const options = {
-    method: 'GET',
+    ...Constants.GET_OPTIONS,
     url: `http://${PYTHON_APP || 'localhost'}:5000/rtf`,
-    headers: { 'Cache-Control': 'no-cache' },
   };
   const data = await RequestUtils.createRequest(options, 'Tracking request failed');
   return JSON.parse(data);
