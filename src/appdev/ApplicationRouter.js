@@ -2,7 +2,7 @@
 import {
   NextFunction, Request, Response, Router,
 } from 'express';
-import AppDevUtilities from './ApplicationUtils';
+import ApplicationUtils from './ApplicationUtils';
 import LogUtils from '../utils/LogUtils';
 
 /**
@@ -57,7 +57,7 @@ class ApplicationRouter<T> {
     const path = this.getPath();
 
     // Make sure path conforms to specification
-    AppDevUtilities.tryCheckAppDevURL(path);
+    ApplicationUtils.tryCheckAppDevURL(path);
 
     // Attach content to router
     this.requestTypes.forEach((reqType) => {
@@ -95,6 +95,13 @@ class ApplicationRouter<T> {
   }
 
   /**
+   * Gets a formatted string of the date and time right now in the EST time zone.
+   */
+  _getESTDateStringNow() {
+    return new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+  }
+
+  /**
    * Create a wrapper around the response hook to pass to the Express
    * Router.
    */
@@ -102,7 +109,12 @@ class ApplicationRouter<T> {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const content = await this.content(req);
-        LogUtils.log({ path: this.getPath(), query: req.query });
+        LogUtils.log({
+          path: this.getPath(),
+          query: req.query,
+          serverEpochTime: Date.now(),
+          serverFormattedTime: this._getESTDateStringNow(),
+        });
         res.json(new AppDevResponse(true, content));
       } catch (e) {
         if (e.message === 1) {
