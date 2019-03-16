@@ -17,22 +17,6 @@ const tryCheckAppDevURL = (path: string) => {
   }
 };
 
-const insertIntoMySQLStatement = (
-  tableName: string,
-  fields: Object,
-): string => {
-  const columns = `(${Object.keys(fields).join(', ')})`;
-  const valuesStr = Object.keys(fields).map((k) => {
-    const value = fields[k];
-    return typeof value === 'string'
-      ? `'${fields[k]}'`
-      : `${fields[k]}`;
-  }).join(', ');
-  const values = `(${valuesStr})`;
-  return `INSERT INTO ${tableName} ${columns} VALUES ${values};`;
-};
-
 export default {
   tryCheckAppDevURL,
-  insertIntoMySQLStatement,
 };
