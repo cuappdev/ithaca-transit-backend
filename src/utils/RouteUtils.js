@@ -93,6 +93,7 @@ async function getParsedWalkingAndBusRoutes(
     walkingRoute,
     GraphhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0),
     destinationName,
+    isArriveBy,
   );
 
   if (!busRoutes) return { parsedWalkingRoute, parsedBusRoutes: null };
