@@ -268,11 +268,16 @@ function convertMillisecondsToISOString(dateInMs: number): string {
   return `${new Date(dateInMs).toISOString().split('.')[0]}Z`;
 }
 
-function parseWalkingRoute(data: any, startDateMs: number, destinationName: string): Object {
+function parseWalkingRoute(data: any, dateMs: number, destinationName: string, isArriveBy: boolean): Object {
   try {
     const path = data.paths[0];
-    const endDateMs = startDateMs + path.time;
+    let startDateMs = dateMs;
+    let endDateMs = dateMs + path.time;
 
+    if (isArriveBy) {
+      startDateMs = dateMs - path.time;
+      endDateMs = dateMs;
+    }
     const departureTime = convertMillisecondsToISOString(startDateMs);
     const arrivalTime = convertMillisecondsToISOString(endDateMs);
 
@@ -310,7 +315,7 @@ function parseWalkingRoute(data: any, startDateMs: number, destinationName: stri
     });
   } catch (e) {
     throw new Error(
-      LogUtils.logErr(e, { data, startDateMs, destinationName }, 'Parse walking route failed'),
+      LogUtils.logErr(e, { data, dateMs, destinationName }, 'Parse walking route failed'),
     );
   }
 }
