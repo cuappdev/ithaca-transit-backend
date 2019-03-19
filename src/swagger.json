@@ -1,0 +1,711 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is documentation for the ithaca-transit-backend API.",
+    "version": "1.0.0",
+    "title": "ithaca-transit-backend"
+  },
+  "host": "transit-backend.cornellappdev.com",
+  "basePath": "/api/v1",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/alerts": {
+      "get": {
+        "summary": "Return a list of official TCAT alerts/messages.",
+        "description": "A list should be included in the app, and periodically updated every so often. All fields are optional. The date, time, and daysOfWeek fields can specify an alert that takes place for example from 10 pm March 4 (fromDate) to 12 pm April 10 (toDate) on Weekdays (daysOfWeek) from 1 pm (fromTime) to 11 pm (toTime).",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true, data: [Alert]}"
+          }
+        }
+      }
+    },
+    "/allstops": {
+      "get": {
+        "summary": "Return a list of TCAT bus stops to show as a possible start / end location.",
+        "description": "A list should be included in the app, and periodically updated every so often.\nNote: The type field refers to the type of place. We currently have two different possible types, busStop and googlePlace. Look at /search for further details.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true, data: [BusStop]}"
+          }
+        }
+      }
+    },
+    "/delay": {
+      "get": {
+        "summary": "Returns the bus delay for a bus at a specific stop",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "stopID",
+            "in": "query",
+            "description": "The stop you want to get the delay for",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "tripID",
+            "in": "query",
+            "description": "The tripID for the route",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true, data: {delay: int64}}"
+          }
+        }
+      }
+    },
+    "/route": {
+      "get": {
+        "summary": "Return a list of the best available routes based on the passed in parameters",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "description": "The starting point of the journey.",
+            "required": true,
+            "type": "string",
+            "format": "<latitude: Double>, <longitude: Double>"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "The ending point of the journey.",
+            "required": true,
+            "type": "string",
+            "format": "<latitude: Double>, <longitude: Double>"
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "description": "The relevant time in the request. If arriveBy is false, departBy functionality is used. The time is when the journey should at earliest begin by.",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "arriveBy",
+            "in": "query",
+            "description": "Whether the request requires the route to arrive at the destination by time.",
+            "required": true,
+            "type": "boolean"
+          },
+          {
+            "name": "destinationName",
+            "in": "query",
+            "description": "The name of the destination of the trip.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true, data: [Route]}"
+          }
+        }
+      },
+      "post": {
+        "summary": "Return a list of the best available routes based on the passed in parameters",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The user's search query for a bus stop or place.\nstart: The starting point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\nend: The ending point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\ntime: The relevant time in the request. If isArriveBy is false, departBy functionality is used. The time is when the journey should at earliest begin by.\narriveBy: Whether the request requires the route to arrive at the destination by time.\ndestinationName: The name of the destination of the trip.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "start",
+                "end",
+                "time",
+                "arriveBy",
+                "destinationName"
+              ],
+              "properties": {
+                "start": {
+                  "type": "string"
+                },
+                "end": {
+                  "type": "string"
+                },
+                "time": {
+                  "type": "integer"
+                },
+                "arriveBy": {
+                  "type": "boolean"
+                },
+                "destinationName": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true, data: [Route]}"
+          }
+        }
+      }
+    },
+    "/v2/route": {
+      "post": {
+        "summary": "Return a list of the best available routes based on the passed in parameters",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The user's search query for a bus stop or place.\nstart: The starting point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\nend: The ending point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\ntime: The relevant time in the request. If isArriveBy is false, departBy functionality is used. The time is when the journey should at earliest begin by.\nisArriveBy: Whether the request requires the route to arrive at the destination by time.\ndestinationName: The name of the destination of the trip.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "start",
+                "end",
+                "time",
+                "isArriveBy",
+                "destinationName"
+              ],
+              "properties": {
+                "start": {
+                  "type": "string"
+                },
+                "end": {
+                  "type": "string"
+                },
+                "time": {
+                  "type": "integer"
+                },
+                "isArriveBy": {
+                  "type": "boolean"
+                },
+                "destinationName": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true, data: {fromStop: [Route], boardingSoon: [Route], walking: [Route]}}"
+          }
+        }
+      }
+    },
+    "/multiroute": {
+      "get": {
+        "summary": "Returns the best available route for each destination specified from a single start location",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "description": "The starting point of the journey.",
+            "required": true,
+            "type": "string",
+            "format": "<latitude: Double>, <longitude: Double>"
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "description": "The relevant time in the request.",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "An array of latitude-longitude strings to specify ending points. Must contain at least one ending point. Should be the same length as destinationNames.",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "format": "['<latitude: Double>, <longitude: Double>']"
+          },
+          {
+            "name": "destinationNames",
+            "in": "query",
+            "description": "The names of the destinations. Must contain at least one.",
+            "required": true,
+            "format": "['<destinationName: string>']",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true, data: [Route]}"
+          }
+        }
+      }
+    },
+    "/search": {
+      "post": {
+        "summary": "Returns a list of bus stops and google autocomplete search results given a query string.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The user's search query for a bus stop or place.\nquery: The user's search query for a bus stop or place.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "query"
+              ],
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true, data: [BusStop/GooglePlace]}"
+          }
+        }
+      }
+    },
+    "/tracking": {
+      "post": {
+        "summary": "Return a list information about live bus locations.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The user's search query for a bus stop or place.\nstopID: The unique identifier for a bus stop.\nrouteID: The number of the bus route.\ntripID: The array of unique trip identifiers for the specific routeID.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "stopID",
+                "routeID",
+                "tripID"
+              ],
+              "properties": {
+                "stopID": {
+                  "type": "string"
+                },
+                "routeID": {
+                  "type": "integer"
+                },
+                "tripID": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true, data: [BusLocation]}"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Alert": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "The ID number of the alert."
+        },
+        "message": {
+          "type": "string",
+          "description": "The message of the alert."
+        },
+        "fromDate": {
+          "type": "string",
+          "description": "The first date that the alert begins taking effect. UTC-formatted date string.",
+          "example": "2018-04-10T04:00:00.000Z"
+        },
+        "toDate": {
+          "type": "string",
+          "description": "The last date that the alert begins taking effect. UTC-formatted date string.",
+          "example": "2018-04-10T04:00:00.000Z"
+        },
+        "fromTime": {
+          "type": "string",
+          "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
+          "example": "2018-04-10T04:00:00.000Z"
+        },
+        "toTime": {
+          "type": "string",
+          "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
+          "example": "2018-04-10T04:00:00.000Z"
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Priority of the alert, from 0 (highest) to 3 (lowest). Potential Return Values: [0, 1, 2, 3]"
+        },
+        "daysOfWeek": {
+          "type": "string",
+          "description": "A String enum representing a day of the week: Potential Return Values: [\"Every day”, “Weekend”, “Weekdays”, “Monday”, “Tuesday”, “Wednesday”, “Thursday”, “Friday”, “Saturday”, “Sunday”, “”]"
+        },
+        "routes": {
+          "type": "array",
+          "description": "A list of route numbers affected by alert.",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "signs": {
+          "type": "array",
+          "description": "A list of ??? affected by the alert",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "channelMessages": {
+          "type": "array",
+          "description": "A list of ChannelMessage objects.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ChannelId": {
+                "type": "integer"
+              },
+              "Message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "BusLocation": {
+      "type": "object",
+      "properties": {
+        "case": {
+          "type": "string",
+          "description": "‘noData’ - means the bus for the trip does not support live tracking. ‘validData’ - means we have all the proper tracking info. ‘invalidData’ - means the trip is too far in the future. No bus has been assigned it yet."
+        },
+        "commStatus": {
+          "type": "string",
+          "description": "Unknown, some sort of communication status.",
+          "example": "GOOD"
+        },
+        "destination": {
+          "type": "string",
+          "description": "The final destination of the bus.",
+          "example": "Cornell-Mall, Cornell-Downtown"
+        },
+        "deviation": {
+          "type": "integer",
+          "description": "Unknown.",
+          "example": "0, 1, 2"
+        }
+      }
+    },
+    "BusStop": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the bus stop."
+        },
+        "lat": {
+          "type": "number",
+          "format": "double",
+          "description": "The latitude coordinate of the bus stop."
+        },
+        "long": {
+          "type": "number",
+          "format": "double",
+          "description": "The longitude coordinate of the bus stop."
+        },
+        "type": {
+          "type": "string",
+          "description": "This is just the string 'busStop'"
+        }
+      }
+    },
+    "Direction": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "startTime": {
+          "description": "The starting time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+          "type": "string"
+        },
+        "endTime": {
+          "description": "The ending time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+          "type": "string"
+        },
+        "startLocation": {
+          "description": "The starting location associated with the direction.",
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number",
+              "format": "double"
+            },
+            "long": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        },
+        "endLocation": {
+          "description": "The ending location associated with the direction.",
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number",
+              "format": "double"
+            },
+            "long": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        },
+        "path": {
+          "description": "The corresponding path of the direction.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "format": "double"
+              },
+              "long": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          }
+        },
+        "distance": {
+          "description": "The total distance of the direction (meters).",
+          "type": "number",
+          "format": "double"
+        },
+        "routeNumber": {
+          "type": "integer",
+          "description": "depart: The number representing the bus route. other: null."
+        },
+        "stops": {
+          "type": "array",
+          "description": "depart: An array of bus stop names that are passed, including the departure and arrival stop. other: Return [ ]",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "stayOnBusForTransfer": {
+          "type": "boolean",
+          "description": "Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective routeNumber in the next .depart Direction."
+        },
+        "tripIdentifiers": {
+          "type": "array",
+          "items": {
+            "description": "The unique identifier(s) for the specific bus related to the direction. Only exists when type is .depart.",
+            "type": "string"
+          }
+        },
+        "delay": {
+          "type": "integer",
+          "description": "The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
+        }
+      }
+    },
+    "GooglePlace": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "type": "string",
+          "description": "The address of the place."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the place."
+        },
+        "placeID": {
+          "type": "number",
+          "format": "double",
+          "description": "The Google place ID."
+        }
+      }
+    },
+    "Route": {
+      "type": "object",
+      "example": "",
+      "properties": {
+        "departureTime": {
+          "type": "string",
+          "description": "The time a user begins their journey (e.g. when to start walking)."
+        },
+        "arrivalTime": {
+          "type": "string",
+          "description": "The time a user arrives at their destination."
+        },
+        "directions": {
+          "type": "array",
+          "description": "A list of Direction objects.",
+          "items": {
+            "type": "object",
+            "format": "Direction",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "startTime": {
+                "description": "The starting time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+                "type": "string"
+              },
+              "endTime": {
+                "description": "The ending time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+                "type": "string"
+              },
+              "startLocation": {
+                "description": "The starting location associated with the direction.",
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "long": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "endLocation": {
+                "description": "The ending location associated with the direction.",
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "long": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "path": {
+                "description": "The corresponding path of the direction.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "lat": {
+                      "type": "number",
+                      "format": "double"
+                    },
+                    "long": {
+                      "type": "number",
+                      "format": "double"
+                    }
+                  }
+                }
+              },
+              "distance": {
+                "description": "The total distance of the direction (meters).",
+                "type": "number",
+                "format": "double"
+              },
+              "routeNumber": {
+                "type": "integer",
+                "description": "depart: The number representing the bus route. other: null."
+              },
+              "stops": {
+                "type": "array",
+                "description": "depart: An array of bus stop names that are passed, including the departure and arrival stop. other: Return [ ]",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "stayOnBusForTransfer": {
+                "type": "boolean",
+                "description": "Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective routeNumber in the next .depart Direction."
+              },
+              "tripIdentifiers": {
+                "type": "array",
+                "items": {
+                  "description": "The unique identifier(s) for the specific bus related to the direction. Only exists when type is .depart.",
+                  "type": "string"
+                }
+              },
+              "delay": {
+                "type": "integer",
+                "description": "The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

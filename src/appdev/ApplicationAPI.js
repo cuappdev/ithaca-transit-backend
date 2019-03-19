@@ -45,9 +45,9 @@ class ApplicationAPI {
 
     Object.keys(routerGroups).forEach((version) => {
       const routers = routerGroups[version];
-      for (let i = 0; i < routers.length; i++) {
-        this.express.use(this.getPath() + version, routers[i]);
-      }
+      routers.forEach((router) => {
+        this.express.use(this.getPath() + version, router);
+      });
     });
   }
 
