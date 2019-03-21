@@ -6,6 +6,12 @@ import ApplicationUtils from './ApplicationUtils';
 import LogUtils from '../utils/LogUtils';
 
 /**
+ * ExpressHandlerFunction - the function signature of callbacks for Express
+ * Router objects
+ */
+export type ExpressCallback = (Request, Response, NextFunction) => any;
+
+/**
  * RequestType - the HTTP methods supported by AppDevRouter
  */
 export type RequestType = 'GET' | 'POST' | 'DELETE';
@@ -55,9 +61,15 @@ class ApplicationRouter<T> {
    */
   init() {
     const path = this.getPath();
+    const middleware = this.middleware();
 
     // Make sure path conforms to specification
     ApplicationUtils.tryCheckAppDevURL(path);
+
+    // Attach middleware to router
+    middleware.forEach((mw) => {
+      this.router.use(mw);
+    });
 
     // Attach content to router
     this.requestTypes.forEach((reqType) => {
@@ -83,6 +95,10 @@ class ApplicationRouter<T> {
    */
   getPath(): string {
     throw new Error('You must implement getPath() with a valid path!');
+  }
+
+  middleware(): ExpressCallback[] {
+    return [];
   }
 
   /**

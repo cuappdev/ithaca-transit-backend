@@ -26,6 +26,7 @@ class API extends ApplicationAPI {
       Routers.TrackingRouter,
     ];
     return {
+      docs: [Routers.DocsRouter],
       v1: [
         ...sharedRouters,
         Routers.RouteRouter,
