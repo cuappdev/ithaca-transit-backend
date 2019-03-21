@@ -91,7 +91,7 @@ async function getParsedWalkingAndBusRoutes(
   const { busRoutes, walkingRoute } = await GraphhopperUtils.fetchRoutes(end, start, departureTimeQuery, isArriveBy);
   const parsedWalkingRoute = ParseRouteUtils.parseWalkingRoute(
     walkingRoute,
-    GraphhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0),
+    GraphhopperUtils.getDepartureTimeWithDelayBuffer(departureTimeQuery, isArriveBy),
     destinationName,
     isArriveBy,
   );
