@@ -5,6 +5,8 @@ import {
 import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 
+const DELAY_BUFFER_IN_MINUTES = 8; // buffer for fast walking speeds
+
 /**
  * https://graphhopper.com/api/1/docs/routing/#output
  * @param end
@@ -15,7 +17,7 @@ import RequestUtils from './RequestUtils';
 const getGraphhopperBusParams = (end: string, start: string, departureTimeQuery: string, arriveBy: boolean) => ({
   'ch.disable': true,
   'pt.arrive_by': arriveBy,
-  'pt.earliest_departure_time': getDepartureTimeDateNow(departureTimeQuery, arriveBy, 20),
+  'pt.earliest_departure_time': getDepartureTimeDateNow(departureTimeQuery, arriveBy, DELAY_BUFFER_IN_MINUTES),
   'pt.max_walk_distance_per_leg': 2000,
   'pt.profile': true,
   'pt.walk_speed': 3.0, // > 3.0 suggests getting off bus earlier and walk half a mile instead of waiting longer
