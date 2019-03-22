@@ -5,7 +5,7 @@ import {
 import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 
-const DELAY_BUFFER_MINUTES = 1;
+const DELAY_BUFFER_IN_MINUTES = 8; // buffer for fast walking speeds
 
 /**
  * https://graphhopper.com/api/1/docs/routing/#output
@@ -17,7 +17,7 @@ const DELAY_BUFFER_MINUTES = 1;
 const getGraphhopperBusParams = (end: string, start: string, departureTimeQuery: string, arriveBy: boolean) => ({
   'ch.disable': true,
   'pt.arrive_by': arriveBy,
-  'pt.earliest_departure_time': getDepartureTimeDateNow(departureTimeQuery, arriveBy),
+  'pt.earliest_departure_time': getDepartureTimeDateNow(departureTimeQuery, arriveBy, DELAY_BUFFER_IN_MINUTES),
   'pt.max_walk_distance_per_leg': 2000,
   'pt.profile': true,
   'pt.walk_speed': 3.0, // > 3.0 suggests getting off bus earlier and walk half a mile instead of waiting longer
@@ -45,16 +45,16 @@ const getGraphhopperWalkingParams = (end, start) => ({
  *
  * @param departureTimeQuery
  */
-function getDepartureTimeWithDelayBuffer(departureTimeQuery: string, isArriveByQuery: boolean) {
+function getDepartureTime(departureTimeQuery: string, isArriveByQuery: boolean, delayBufferMinutes: number) {
   let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
   if (!isArriveByQuery) { // 'leave at' query
-    departureTimeNowMs -= DELAY_BUFFER_MINUTES * 60 * 1000; // so we can potentially display delayed routes
+    departureTimeNowMs -= delayBufferMinutes * 60 * 1000; // so we can potentially display delayed routes
   }
   return departureTimeNowMs;
 }
 
-function getDepartureTimeDateNow(departureTimeQuery: string, isArriveByQuery: boolean) {
-  const departureTimeNowMs = getDepartureTimeWithDelayBuffer(departureTimeQuery, isArriveByQuery);
+function getDepartureTimeDateNow(departureTimeQuery: string, isArriveByQuery: boolean, delayBufferMinutes) {
+  const departureTimeNowMs = getDepartureTime(departureTimeQuery, isArriveByQuery, delayBufferMinutes);
   return new Date(departureTimeNowMs).toISOString();
 }
 
@@ -177,8 +177,8 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
 
 export default {
   fetchRoutes,
+  getDepartureTime,
   getDepartureTimeDateNow,
-  getDepartureTimeWithDelayBuffer,
   getGraphhopperBusParams,
   getGraphhopperWalkingParams,
 };
