@@ -1,20 +1,22 @@
-FROM openjdk:8
+FROM maven:3.6.0-jdk-8-alpine
 
-RUN mkdir /usr/src/app
+RUN mkdir -p /usr/src/app
+RUN apk add git wget
+
 RUN git clone --single-branch -b tcat-map https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app
 
 WORKDIR /usr/src/app
 
-RUN apt-get update
-RUN apt-get -y install maven wget
-
-RUN git clone --single-branch -b 0.10 https://github.com/graphhopper/graphhopper.git
+RUN git clone --single-branch -b 0.12 https://github.com/graphhopper/graphhopper.git
+RUN wget https://s3.amazonaws.com/tcat-gtfs/tcat-ny-us.zip
 
 WORKDIR /usr/src/app/graphhopper
-RUN ./graphhopper.sh buildweb
+RUN ./graphhopper.sh --action build
 
-WORKDIR /usr/src/app
+RUN mv ../map.osm .
+
+COPY config.yml .
 
 EXPOSE 8987
 
-CMD java -Xmx1g -Xms1g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=map.osm jetty.port=8987 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=foot prepare.ch.weightings=no graph.location=./graph-cache
+CMD java -Xmx1g -Xms1g -jar web/target/graphhopper-web-*.jar server config.yml
