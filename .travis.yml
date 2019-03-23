@@ -23,4 +23,8 @@ deploy:
     all_branches: true
     condition: $TRAVIS_BRANCH =~ ^master|release$
 script:
-- 
+- if [[ "$TRAVIS_PULL_REQUEST" != "false" && "$TRAVIS_PULL_REQUEST_BRANCH" == "release" && "$TRAVIS_BRANCH" == "master" ]]; 
+  then 
+    exit 1; 
+  fi
+
