@@ -13,7 +13,8 @@ WORKDIR /usr/src/app/map-matching
 
 RUN mvn package -e -DskipTests
 RUN java -jar matching-web/target/graphhopper-map-matching-web-0.11-SNAPSHOT.jar import ../map.osm --vehicle=car,foot
-RUN rm -rf graph-cache
+
+COPY config.yml .
 
 EXPOSE 8989
 

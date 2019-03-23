@@ -1,0 +1,15 @@
+graphhopper:
+  datareader.file: ../map-data/map.osm
+  graph.location: graph-cache
+  graph.flag_encoders: car,foot
+  prepare.ch.weightings: no
+
+server:
+  applicationConnectors:
+  - type: http
+    port: 8989
+    bindHost: 0.0.0.0
+  adminConnectors:
+  - type: http
+    port: 8990
+    bindHost: 0.0.0.0
