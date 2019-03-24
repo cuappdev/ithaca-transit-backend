@@ -1,0 +1,36 @@
+graphhopper:
+  datareader.file: map.osm
+  graph.flag_encoders: foot
+  graph.location: ./graph-cache
+  prepare.ch.weightings: no
+  prepare.ch.edge_based: off
+  # avoid being stuck in a (oneway) subnetwork, see https://discuss.graphhopper.com/t/93
+  prepare.min_network_size: 200
+  prepare.min_one_way_network_size: 200
+
+# Dropwizard server configuration
+server:
+  applicationConnectors:
+  - type: http
+    port: 8987
+    bindHost: 0.0.0.0
+  requestLog:
+      appenders: []
+  adminConnectors:
+  - type: http
+    port: 8990
+    bindHost: 0.0.0.0
+# See https://www.dropwizard.io/1.3.8/docs/manual/configuration.html#logging
+logging:
+  appenders:
+  - type: file
+    timeZone: UTC
+    currentLogFilename: logs/graphhopper.log
+    logFormat: "%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    archive: true
+    archivedLogFilenamePattern: ./logs/graphhopper-%d.log.gz
+    archivedFileCount: 30
+    neverBlock: true
+  - type: console
+    timeZone: UTC
+    logFormat: "%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
