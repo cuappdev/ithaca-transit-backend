@@ -148,13 +148,16 @@ async function condenseRoute(
 
     /**
      * Discard routes where not possible to walk to bus given departure buffer
-     * We subtract (ONE_MIN_IN_MS - 1) from departureTimeNow to avoid the
+     * We subtract ONE_MIN_IN_MS from departureTimeNow to avoid the
      * case where we don't show a bus leaving at the same minute as departureTime.
+     * We also have to account for the delay time because if a bus is delayed, we want to display
+     * the route even if the start time is earlier than the current time.
      */
-    if (departureDelayBuffer
-      && direction.type === 'depart'
-      && startTime < departureTimeNowMs - (ONE_MIN_IN_MS - 1)) {
-      return null;
+    if (departureDelayBuffer && direction.type === 'depart') {
+      const delayMs = direction.delay !== null ? direction.delay * 1000 : 0;
+      if (startTime < departureTimeNowMs - ONE_MIN_IN_MS - delayMs) {
+        return null;
+      }
     }
 
     if (previousDirection
@@ -340,17 +343,15 @@ function parseWalkingRoute(data: any, dateMs: number, destinationName: string, i
   },
  ...
   ]
- * @param resp
+ * @param busRoutes
  * @param destinationName
- * @returns {Promise<Array>}
+ * @returns {Promise<Array<Object>>}
  */
-function parseBusRoutes(busRoutes: Object, destinationName: string): Promise<Array<Object>> {
-  const { paths } = busRoutes; // array of parsed routes
-
-  return Promise.all(paths.map(async (currPath) => {
+function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Promise<Array<Object>> {
+  return Promise.all(busRoutes.map(async (busRoute) => {
     try {
       // array containing legs of journey. e.g. walk, bus ride, walk
-      const { legs } = currPath;
+      const { legs } = busRoute;
       const numberOfLegs = legs.length;
 
       // string 2018-02-21T17:27:00Z
@@ -364,7 +365,7 @@ function parseBusRoutes(busRoutes: Object, destinationName: string): Promise<Arr
         startCoords,
         endCoords,
       } = getStartEndCoords(startingLocationGeometry, endingLocationGeometry);
-      const boundingBox = generateBoundingBox(currPath);
+      const boundingBox = generateBoundingBox(busRoute);
 
       const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
         let { type } = currLeg;
@@ -517,12 +518,12 @@ function parseBusRoutes(busRoutes: Object, destinationName: string): Promise<Arr
         departureTime,
         directions,
         endCoords,
-        numberOfTransfers: currPath.transfers,
+        numberOfTransfers: busRoute.transfers,
         startCoords,
       };
     } catch (error) {
       throw new Error(
-        LogUtils.logErr(error, paths.length, 'Parse final route failed'),
+        LogUtils.logErr(error, busRoutes.length, 'Parse final route failed'),
       );
     }
   }));
