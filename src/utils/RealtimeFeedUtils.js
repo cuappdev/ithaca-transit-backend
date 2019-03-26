@@ -165,7 +165,7 @@ function getDelayInformation(stopID: String, tripID: String, rtf: Object): ?Obje
   const info = rtf[tripID];
   let delay = parseInt(info.stopUpdates && info.stopUpdates[stopID]);
   if (Number.isNaN(delay)) delay = parseInt(info.delay);
-
+  if (delay <= 120) delay = 0;
   return {
     delay,
     vehicleId: parseInt(info.vehicleId),
