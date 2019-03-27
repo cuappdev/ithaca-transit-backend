@@ -211,7 +211,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
 
   const sharedOptions = { method: 'GET', qsStringifyOptions: { arrayFormat: 'repeat' } };
   // Fetch bus routes using the current start time
-  const busOptionsNow = getBusRequestOptions(end, start, departureTimeDateNow, isArriveByQuery, 0);
+  const busOptionsNow = getBusRequestOptions(end, start, departureTimeDateNow, isArriveByQuery, 0, sharedOptions);
 
   // Fetch bus routes using a delay buffer of FIRST_DELAY_BUFFER_IN_MINUTES.
   // This means that we are fetching routes with (startTime - FIRST_DELAY_BUFFER_IN_MINUTES).
@@ -222,6 +222,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     departureTimeDateNow,
     isArriveByQuery,
     FIRST_DELAY_BUFFER_IN_MINUTES,
+    sharedOptions,
   );
 
   // Fetch bus routes using a delay buffer of SECOND_DELAY_BUFFER_IN_MINUTES.
@@ -231,6 +232,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     departureTimeDateNow,
     isArriveByQuery,
     SECOND_DELAY_BUFFER_IN_MINUTES,
+    sharedOptions,
   );
 
   const walkingOptions = {
