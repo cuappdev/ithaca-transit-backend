@@ -26,6 +26,22 @@ async function isBusStop(location: string): Promise<boolean> {
 }
 
 /**
+ * Returns whether [route] contains a bus trasnfer
+ *
+ * @param route
+ * @returns {boolean}
+ */
+function routeContainsTransfer(route: Object): boolean {
+  const { directions } = route;
+  const routeNumbers = [];
+  directions.forEach((direction) => {
+    const { routeNumber } = direction;
+    if (routeNumber && !routeNumbers.includes(routeNumber)) routeNumbers.push(routeNumber);
+  });
+  return routeNumbers.length > 1;
+}
+
+/**
  * Filter and validate the array of bus routes to send to the client.
  *
  * @param parsedBusRoutes
@@ -197,4 +213,5 @@ export default {
   getRoutes,
   getSectionedRoutes,
   isBusStop,
+  routeContainsTransfer,
 };
