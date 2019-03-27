@@ -29,7 +29,8 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
 
     const isArriveBy = (arriveBy === '1' || arriveBy === true);
     const routes = await RouteUtils.getRoutes(destinationName, end, start, time, isArriveBy);
-    if (routes.length > 0) {
+    const containsTransfer = routes.find(route => RouteUtils.routeContainsTransfer(route)) !== undefined;
+    if (routes.length > 0 && containsTransfer) {
       const request = {
         arriveBy,
         destinationName,
@@ -40,7 +41,7 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
         time,
         uid,
       };
-      LogUtils.log({ category: 'routeRequest', request });
+      LogUtils.log({ category: 'routeRequestWithTransfer', request });
     }
     AnalyticsUtils.assignRouteIdsAndCache(routes);
 
