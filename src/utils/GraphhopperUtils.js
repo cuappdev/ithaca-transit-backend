@@ -5,7 +5,7 @@ import {
 import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 
-const DELAY_BUFFER_IN_MINUTES = 8; // buffer for fast walking speeds
+const DELAY_BUFFER_IN_MINUTES = 20; // buffer for fast walking speeds
 
 /**
  * https://graphhopper.com/api/1/docs/routing/#output
@@ -14,10 +14,16 @@ const DELAY_BUFFER_IN_MINUTES = 8; // buffer for fast walking speeds
  * @param departureTimeQuery
  * @param arriveBy
  */
-const getGraphhopperBusParams = (end: string, start: string, departureTimeQuery: string, arriveBy: boolean) => ({
+const getGraphhopperBusParams = (
+  end: string,
+  start: string,
+  departureTimeQuery: string,
+  arriveBy: boolean,
+  delayBufferMinutes: number,
+) => ({
   'ch.disable': true,
   'pt.arrive_by': arriveBy,
-  'pt.earliest_departure_time': getDepartureTimeDateNow(departureTimeQuery, arriveBy, DELAY_BUFFER_IN_MINUTES),
+  'pt.earliest_departure_time': getDepartureTimeDate(departureTimeQuery, arriveBy, delayBufferMinutes),
   'pt.max_walk_distance_per_leg': 2000,
   'pt.profile': true,
   'pt.walk_speed': 3.0, // > 3.0 suggests getting off bus earlier and walk half a mile instead of waiting longer
@@ -53,9 +59,47 @@ function getDepartureTime(departureTimeQuery: string, isArriveByQuery: boolean, 
   return departureTimeNowMs;
 }
 
-function getDepartureTimeDateNow(departureTimeQuery: string, isArriveByQuery: boolean, delayBufferMinutes) {
-  const departureTimeNowMs = getDepartureTime(departureTimeQuery, isArriveByQuery, delayBufferMinutes);
-  return new Date(departureTimeNowMs).toISOString();
+function getDepartureTimeDate(departureTimeQuery: string, isArriveByQuery: boolean, delayBufferMinutes) {
+  const departureTimeMs = getDepartureTime(departureTimeQuery, isArriveByQuery, delayBufferMinutes);
+  return new Date(departureTimeMs).toISOString();
+}
+
+/**
+ * Returns whether two bus route objects are equal by checking their departureTime, arrivalTime,
+ * route length, and routeId.
+ * @param busRouteA
+ * @param busRouteB
+ * @returns {boolean}
+ */
+
+function busRoutesAreEqual(busRouteA: Object, busRouteB: Object): boolean {
+  const legsA = busRouteA.legs;
+  const legsB = busRouteB.legs;
+
+  // Compare departure and arrival times
+  const departureTimeA = legsA[0].departureTime;
+  const arrivalTimeA = legsA[legsA.length - 1].arrivalTime;
+
+  const departureTimeB = legsB[0].departureTime;
+  const arrivalTimeB = legsB[legsB.length - 1].arrivalTime;
+
+  if (departureTimeA !== departureTimeB || arrivalTimeA !== arrivalTimeB) {
+    return false;
+  }
+
+  // Compare route ids
+  const departLegA = legsA.find(leg => leg.type === 'pt');
+  const departLegB = legsB.find(leg => leg.type === 'pt');
+
+  const isEqualLength = legsA.length === legsB.length;
+
+  // departLegA and departLegB should never be undefined because all bus routes should
+  // have a leg of type pt. (pt refers to taking a bus)
+  if (!departLegA || !departLegB) {
+    return isEqualLength;
+  }
+
+  return (departLegA.route_id === departLegB.route_id) && isEqualLength;
 }
 
 /**
@@ -121,22 +165,37 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
   let walkingRoute;
 
   const sharedOptions = { method: 'GET', qsStringifyOptions: { arrayFormat: 'repeat' } };
-  const busOptions = {
-    qs: getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
+  // Fetch bus routes using the current start time
+  const busOptionsNow = {
+    qs: getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, 0),
     url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
     ...sharedOptions,
   };
+
+  // Fetch bus routes using a delay buffer of DELAY_BUFFER_IN_MINUTES.
+  // This means that we are fetching routes with (startTime - DELAY_BUFFER_IN_MINUTES).
+  // This allows us to display routes that are delayed.
+  const busOptionsBuffered = {
+    qs: getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, DELAY_BUFFER_IN_MINUTES),
+    url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
+    ...sharedOptions,
+  };
+
   const walkingOptions = {
     qs: getGraphhopperWalkingParams(end, start),
     url: `http://${GHOPPER_WALKING || 'ERROR'}:8987/route`,
     ...sharedOptions,
   };
 
-  let busRouteRequest;
-  let walkingRouteRequest;
-  await Promise.all([
+  const [busRouteNowRequest, busRouteBufferedRequest, walkingRouteRequest] = await Promise.all([
     RequestUtils.createRequest(
-      busOptions,
+      busOptionsNow,
+      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+      false,
+      true,
+    ),
+    RequestUtils.createRequest(
+      busOptionsBuffered,
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
       false,
       true,
@@ -147,16 +206,28 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
       false,
       true,
     ),
-  ]).then((vals) => {
-    busRouteRequest = vals[0];
-    walkingRouteRequest = vals[1];
-  });
+  ]);
 
-  if (busRouteRequest && busRouteRequest.statusCode < 300) {
-    busRoutes = JSON.parse(busRouteRequest.body);
+  if (busRouteNowRequest && busRouteNowRequest.statusCode < 300) {
+    busRoutes = JSON.parse(busRouteNowRequest.body).paths;
   } else {
     LogUtils.log(
-      busRouteRequest && busRouteRequest.body,
+      busRouteNowRequest && busRouteNowRequest.body,
+      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
+      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+    );
+  }
+
+  if (busRouteBufferedRequest && busRouteBufferedRequest.statusCode < 300) {
+    const bufferedBusRoutes = JSON.parse(busRouteBufferedRequest.body).paths;
+    const validBusRoutes = bufferedBusRoutes.filter((bufferedRoute) => {
+      const isDuplicateRoute = busRoutes.find(busRoute => busRoutesAreEqual(bufferedRoute, busRoute)) !== undefined;
+      return !isDuplicateRoute;
+    });
+    busRoutes = validBusRoutes.concat(busRoutes);
+  } else {
+    LogUtils.log(
+      busRouteBufferedRequest && busRouteBufferedRequest.body,
       getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
     );
@@ -178,7 +249,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
 export default {
   fetchRoutes,
   getDepartureTime,
-  getDepartureTimeDateNow,
+  getDepartureTimeDate,
   getGraphhopperBusParams,
   getGraphhopperWalkingParams,
 };
