@@ -5,7 +5,11 @@ import {
 import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
 
-const DELAY_BUFFER_IN_MINUTES = 20; // buffer for fast walking speeds
+// buffer to account for routes in past 20 minutes with delays
+const FIRST_DELAY_BUFFER_IN_MINUTES = 20;
+
+// additional buffer to account for time needed to walk from current location to bus stop
+const SECOND_DELAY_BUFFER_IN_MINUTES = 40;
 
 /**
  * https://graphhopper.com/api/1/docs/routing/#output
@@ -65,6 +69,32 @@ function getDepartureTimeDate(departureTimeQuery: string, isArriveByQuery: boole
 }
 
 /**
+ * Returns the graphhopper bus route request options given the following parameters.
+ *
+ * @param end
+ * @param start
+ * @param departureTimeDateNow
+ * @param isArriveByQuery
+ * @param delayBufferMinutes
+ * @param sharedOptions
+ * @returns {Object}
+ */
+function getBusRequestOptions(
+  end: string,
+  start: string,
+  departureTimeDateNow: string,
+  isArriveByQuery: boolean,
+  delayBufferMinutes: number,
+  sharedOptions: Object,
+): Object {
+  return {
+    qs: getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, delayBufferMinutes),
+    url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
+    ...sharedOptions,
+  };
+}
+
+/**
  * Returns whether two bus route objects are equal by checking their departureTime, arrivalTime,
  * route length, and routeId.
  * @param busRouteA
@@ -100,6 +130,21 @@ function busRoutesAreEqual(busRouteA: Object, busRouteB: Object): boolean {
   }
 
   return (departLegA.route_id === departLegB.route_id) && isEqualLength;
+}
+
+/**
+ * Returns the array of valid bus routes from [busRoutesToCheck].
+ * A bus route is valid if it is not equal to any bus route in [busRoutes].
+ *
+ * @param busRoutes
+ * @param busRoutesToCheck
+ * @returns {Array<Object>}
+ */
+function getValidBusRoutes(busRoutes: Array<Object>, busRoutesToCheck: Array<Object>): Array<Object> {
+  return busRoutesToCheck.filter((busRouteToCheck) => {
+    const isDuplicateRoute = busRoutes.find(busRoute => busRoutesAreEqual(busRouteToCheck, busRoute)) !== undefined;
+    return !isDuplicateRoute;
+  });
 }
 
 /**
@@ -166,20 +211,29 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
 
   const sharedOptions = { method: 'GET', qsStringifyOptions: { arrayFormat: 'repeat' } };
   // Fetch bus routes using the current start time
-  const busOptionsNow = {
-    qs: getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, 0),
-    url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
-    ...sharedOptions,
-  };
+  const busOptionsNow = getBusRequestOptions(end, start, departureTimeDateNow, isArriveByQuery, 0, sharedOptions);
 
-  // Fetch bus routes using a delay buffer of DELAY_BUFFER_IN_MINUTES.
-  // This means that we are fetching routes with (startTime - DELAY_BUFFER_IN_MINUTES).
+  // Fetch bus routes using a delay buffer of FIRST_DELAY_BUFFER_IN_MINUTES.
+  // This means that we are fetching routes with (startTime - FIRST_DELAY_BUFFER_IN_MINUTES).
   // This allows us to display routes that are delayed.
-  const busOptionsBuffered = {
-    qs: getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, DELAY_BUFFER_IN_MINUTES),
-    url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
-    ...sharedOptions,
-  };
+  const busOptionsBufferedFirst = getBusRequestOptions(
+    end,
+    start,
+    departureTimeDateNow,
+    isArriveByQuery,
+    FIRST_DELAY_BUFFER_IN_MINUTES,
+    sharedOptions,
+  );
+
+  // Fetch bus routes using a delay buffer of SECOND_DELAY_BUFFER_IN_MINUTES.
+  const busOptionsBufferedSecond = getBusRequestOptions(
+    end,
+    start,
+    departureTimeDateNow,
+    isArriveByQuery,
+    SECOND_DELAY_BUFFER_IN_MINUTES,
+    sharedOptions,
+  );
 
   const walkingOptions = {
     qs: getGraphhopperWalkingParams(end, start),
@@ -187,7 +241,12 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     ...sharedOptions,
   };
 
-  const [busRouteNowRequest, busRouteBufferedRequest, walkingRouteRequest] = await Promise.all([
+  const [
+    busRouteNowRequest,
+    busRouteBufferedFirstRequest,
+    busRouteBufferedSecondRequest,
+    walkingRouteRequest,
+  ] = await Promise.all([
     RequestUtils.createRequest(
       busOptionsNow,
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
@@ -195,7 +254,13 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
       true,
     ),
     RequestUtils.createRequest(
-      busOptionsBuffered,
+      busOptionsBufferedFirst,
+      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+      false,
+      true,
+    ),
+    RequestUtils.createRequest(
+      busOptionsBufferedSecond,
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
       false,
       true,
@@ -218,16 +283,23 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     );
   }
 
-  if (busRouteBufferedRequest && busRouteBufferedRequest.statusCode < 300) {
-    const bufferedBusRoutes = JSON.parse(busRouteBufferedRequest.body).paths;
-    const validBusRoutes = bufferedBusRoutes.filter((bufferedRoute) => {
-      const isDuplicateRoute = busRoutes.find(busRoute => busRoutesAreEqual(bufferedRoute, busRoute)) !== undefined;
-      return !isDuplicateRoute;
-    });
-    busRoutes = validBusRoutes.concat(busRoutes);
+  if (busRouteBufferedFirstRequest && busRouteBufferedFirstRequest.statusCode < 300) {
+    const bufferedBusRoutes = JSON.parse(busRouteBufferedFirstRequest.body).paths;
+    busRoutes = getValidBusRoutes(busRoutes, bufferedBusRoutes).concat(busRoutes);
   } else {
     LogUtils.log(
-      busRouteBufferedRequest && busRouteBufferedRequest.body,
+      busRouteBufferedFirstRequest && busRouteBufferedFirstRequest.body,
+      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
+      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+    );
+  }
+
+  if (busRouteBufferedSecondRequest && busRouteBufferedSecondRequest.statusCode < 300) {
+    const bufferedBusRoutes = JSON.parse(busRouteBufferedSecondRequest.body).paths;
+    busRoutes = getValidBusRoutes(busRoutes, bufferedBusRoutes).concat(busRoutes);
+  } else {
+    LogUtils.log(
+      busRouteBufferedSecondRequest && busRouteBufferedSecondRequest.body,
       getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
     );
