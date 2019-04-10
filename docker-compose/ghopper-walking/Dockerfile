@@ -1,14 +1,13 @@
 FROM maven:3.6.0-jdk-8-alpine
 
 RUN mkdir -p /usr/src/app
-RUN apk add git wget
+RUN apk add git
 
 RUN git clone --single-branch -b tcat-map https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app
 
 WORKDIR /usr/src/app
 
 RUN git clone --single-branch -b 0.12 https://github.com/graphhopper/graphhopper.git
-RUN wget https://s3.amazonaws.com/tcat-gtfs/tcat-ny-us.zip
 
 WORKDIR /usr/src/app/graphhopper
 RUN ./graphhopper.sh --action build
