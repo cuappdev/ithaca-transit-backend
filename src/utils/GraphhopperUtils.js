@@ -278,7 +278,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
   } else {
     LogUtils.log(
       busRouteNowRequest && busRouteNowRequest.body,
-      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
+      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, 0),
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
     );
   }
@@ -289,7 +289,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
   } else {
     LogUtils.log(
       busRouteBufferedFirstRequest && busRouteBufferedFirstRequest.body,
-      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
+      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, FIRST_DELAY_BUFFER_IN_MINUTES),
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
     );
   }
@@ -300,7 +300,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
   } else {
     LogUtils.log(
       busRouteBufferedSecondRequest && busRouteBufferedSecondRequest.body,
-      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery),
+      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, SECOND_DELAY_BUFFER_IN_MINUTES),
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
     );
   }
