@@ -357,22 +357,22 @@
         "fromDate": {
           "type": "string",
           "description": "The first date that the alert begins taking effect. UTC-formatted date string.",
-          "example": "2018-04-10T04:00:00.000Z"
+          "example": "\"2018-04-10T04:00:00.000Z\""
         },
         "toDate": {
           "type": "string",
           "description": "The last date that the alert begins taking effect. UTC-formatted date string.",
-          "example": "2018-04-10T04:00:00.000Z"
+          "example": "\"2018-04-10T04:00:00.000Z\""
         },
         "fromTime": {
           "type": "string",
           "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
-          "example": "2018-04-10T04:00:00.000Z"
+          "example": "\"2018-04-10T04:00:00.000Z\""
         },
         "toTime": {
           "type": "string",
           "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
-          "example": "2018-04-10T04:00:00.000Z"
+          "example": "\"2018-04-10T04:00:00.000Z\""
         },
         "priority": {
           "type": "integer",
@@ -418,22 +418,90 @@
       "properties": {
         "case": {
           "type": "string",
-          "description": "‘noData’ - means the bus for the trip does not support live tracking. ‘validData’ - means we have all the proper tracking info. ‘invalidData’ - means the trip is too far in the future. No bus has been assigned it yet."
+          "description": "‘noData’ - means the bus for the trip does not support live tracking. ‘validData’ - means we have all the proper tracking info. ‘invalidData’ - means the trip is too far in the future. No bus has been assigned it yet.",
+          "example": "\"validData\""
         },
         "commStatus": {
           "type": "string",
           "description": "Unknown, some sort of communication status.",
-          "example": "GOOD"
+          "example": "\"GOOD\""
+        },
+        "delay": {
+          "type": "integer",
+          "description": "delay in seconds",
+          "example": "4"
         },
         "destination": {
           "type": "string",
           "description": "The final destination of the bus.",
-          "example": "Cornell-Mall, Cornell-Downtown"
+          "example": "\"Cornell-Mall, Cornell-Downtown\""
         },
         "deviation": {
           "type": "integer",
           "description": "Unknown.",
           "example": "0, 1, 2"
+        },
+        "direction": {
+          "type": "string",
+          "example": "\"NB\""
+        },
+        "displayStatus": {
+          "type": "string",
+          "example": "\"On Time\""
+        },
+        "gpsStatus": {
+          "type": "integer",
+          "example": "2"
+        },
+        "heading": {
+          "type": "integer",
+          "example": "270"
+        },
+        "lastStop": {
+          "type": "string",
+          "example": "\"Vet School\""
+        },
+        "lastUpdated": {
+          "type": "integer",
+          "example": "1555441212000"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "double",
+          "example": "42.447507"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double",
+          "example": "-76.467818"
+        },
+        "name": {
+          "type": "string",
+          "example": "\"1602\""
+        },
+        "opStatus": {
+          "type": "string",
+          "example": "\"ONTIME\""
+        },
+        "routeID": {
+          "type": "integer",
+          "example": "82"
+        },
+        "runID": {
+          "type": "integer",
+          "example": "5228"
+        },
+        "speed": {
+          "type": "integer",
+          "example": "23"
+        },
+        "tripID": {
+          "type": "integer",
+          "example": "1450"
+        },
+        "vehicleID": {
+          "type": "integer",
+          "example": "1602"
         }
       }
     },
@@ -583,7 +651,6 @@
     },
     "Route": {
       "type": "object",
-      "example": "",
       "properties": {
         "departureTime": {
           "type": "string",
