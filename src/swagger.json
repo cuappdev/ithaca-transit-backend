@@ -605,6 +605,14 @@
           "items": {
             "type": "object",
             "properties": {
+              "lat": {
+                "type": "number",
+                "format": "double"
+              },
+              "long": {
+                "type": "number",
+                "format": "double"
+              },
               "name": {
                 "type": "string"
               },
