@@ -42,6 +42,27 @@ function routeContainsTransfer(route: Object): boolean {
 }
 
 /**
+ * Returns whether [routeA] and [routeB] share the the same start and end bus stops.
+ * @param routeA
+ * @param routeB
+ * @returns {boolean}
+ */
+function routesHaveSameStartEndStops(routeA: Object, routeB: Object): boolean {
+  const routeADirections = routeA.directions;
+  const routeBDirections = routeB.directions;
+
+  if (routeADirections.length < 2 || routeBDirections.length < 2) {
+    return false;
+  }
+
+  const routeAStartStop = routeADirections[0].name;
+  const routeAEndStop = routeADirections[routeADirections.length - 1].name;
+  const routeBStartStop = routeBDirections[0].name;
+  const routeBEndStop = routeBDirections[routeBDirections.length - 1].name;
+  return routeAStartStop === routeBStartStop && routeAEndStop === routeBEndStop;
+}
+
+/**
  * Filter and validate the array of bus routes to send to the client.
  *
  * @param parsedBusRoutes
@@ -80,7 +101,17 @@ async function createFinalBusRoutes(
       departureDelayBuffer,
       departureTimeNowMs,
     )),
-  )).filter(route => route !== null);
+  )).filter(route => route !== null).sort((routeA, routeB) => {
+    // For routes that have the same start and end bus stops, the route with
+    // the earlier departure time should be shown first.
+    if (routesHaveSameStartEndStops(routeA, routeB)) {
+      const routeADepartureTime = new Date(routeA.departureTime);
+      const routeBDepartureTime = new Date(routeB.departureTime);
+      return routeADepartureTime < routeBDepartureTime ? -1 : 1;
+    }
+    // Otherwise, just use the current order.
+    return 0;
+  });
 
   return finalRoutes;
 }

@@ -28,7 +28,7 @@ services:
       - "8987:8987"
 
   live-tracking:
-    image: cornellappdev/transit-python:cc0c4c048fe66036f3372d47703994ce84eb9317
+    image: cornellappdev/transit-python:04_15_19
     env_file: python.env
     ports:
       - "5000:5000"
