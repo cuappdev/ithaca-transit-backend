@@ -8,6 +8,7 @@ import LogUtils from './LogUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import RequestUtils from './RequestUtils';
 
+const ONE_DAY_IN_MS = 86400000;
 const ONE_HOUR_IN_MS = 3600000;
 const ONE_MIN_IN_MS = 60000;
 
@@ -262,6 +263,49 @@ function generateBoundingBox(path: Object): Object {
 }
 
 /**
+ * Returns the distance between [startCoords] and [endCoords] in miles
+ * @param startCoords
+ * @param endCoords
+ * @returns {number}
+ */
+function getDistanceInMiles(startCoords: Object, endCoords: Object): number {
+  const lat1 = startCoords.lat;
+  const lon1 = startCoords.long;
+  const lat2 = endCoords.lat;
+  const lon2 = endCoords.long;
+  if (lat1 === lat2 && lon1 === lon2) {
+    return 0;
+  }
+
+  const radlat1 = Math.PI * lat1 / 180;
+  const radlat2 = Math.PI * lat2 / 180;
+  const theta = lon1 - lon2;
+  const radtheta = Math.PI * theta / 180;
+  let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+  if (dist > 1) {
+    dist = 1;
+  }
+  dist = Math.acos(dist);
+  dist = dist * 180 / Math.PI;
+  dist = dist * 60 * 1.1515;
+  return dist;
+}
+
+/**
+ * Returns the difference between [departureTime] and [arrivalTime] in minutes.
+ * @param departureTime
+ * @param arrivalTime
+ * @returns {number}
+ */
+function getDifferenceInMinutes(departureTime: string, arrivalTime: string): number {
+  const departureDate = new Date(departureTime);
+  const arrivalDate = new Date(arrivalTime);
+  const diffInMs = arrivalDate - departureDate;
+  const diffInMins = Math.round(((diffInMs % ONE_HOUR_IN_MS) % ONE_HOUR_IN_MS) / ONE_MIN_IN_MS);
+  return diffInMins;
+}
+
+/**
  * Returns dateInMs in an ISO String
  *
  * @param dateInMs
@@ -357,6 +401,7 @@ function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Prom
       // string 2018-02-21T17:27:00Z
       const { departureTime } = legs[0];
       const arriveTime = legs[numberOfLegs - 1].arrivalTime;
+      const totalDuration = getDifferenceInMinutes(departureTime, arriveTime);
 
       const startingLocationGeometry = legs[0].geometry;
       const endingLocationGeometry = legs[numberOfLegs - 1].geometry;
@@ -365,6 +410,7 @@ function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Prom
         startCoords,
         endCoords,
       } = getStartEndCoords(startingLocationGeometry, endingLocationGeometry);
+      const travelDistance = getDistanceInMiles(startCoords, endCoords);
       const boundingBox = generateBoundingBox(busRoute);
 
       const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
@@ -512,14 +558,21 @@ function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Prom
         };
       }));
 
+      const startName = directions.length > 0 ? directions[0].name : null;
+      const endName = directions.length > 0 ? directions[directions.length - 1].name : null;
+
       return {
         arrivalTime: arriveTime,
         boundingBox,
         departureTime,
         directions,
         endCoords,
+        endName,
         numberOfTransfers: busRoute.transfers,
         startCoords,
+        startName,
+        totalDuration,
+        travelDistance,
       };
     } catch (error) {
       throw new Error(
