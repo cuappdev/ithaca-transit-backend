@@ -28,6 +28,7 @@ class RouteRouter extends ApplicationRouter<Object> {
     const isOriginBusStop = await RouteUtils.isBusStop(originName);
     const originBusStopName = isOriginBusStop ? originName : null;
     const sectionedRoutes = await RouteUtils.getSectionedRoutes(
+      originName,
       destinationName,
       end,
       start,

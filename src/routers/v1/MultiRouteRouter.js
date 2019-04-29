@@ -5,6 +5,8 @@ import ApplicationRouter from '../../appdev/ApplicationRouter';
 import LogUtils from '../../utils/LogUtils';
 import RouteUtils from '../../utils/RouteUtils';
 
+const CURRENT_LOCATION = 'Current Location';
+
 /**
  * Router object that returns an array of the best available route for each
  * destination, specified from a single start destination.
@@ -37,6 +39,7 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
 
     // get array of routes for each destination
     const multiRoutes = destinationNames.map((destinationName, index) => RouteUtils.getRoutes(
+      CURRENT_LOCATION,
       destinationName,
       end[index],
       start,
