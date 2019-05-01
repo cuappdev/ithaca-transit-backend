@@ -8,6 +8,11 @@ import LogUtils from './LogUtils';
 import RealtimeFeedUtils from './RealtimeFeedUtils';
 import RequestUtils from './RequestUtils';
 
+const DIRECTION_TYPE = {
+  DEPART: 'depart',
+  WALK: 'walk',
+};
+const ONE_DAY_IN_MS = 86400000;
 const ONE_HOUR_IN_MS = 3600000;
 const ONE_MIN_IN_MS = 60000;
 
@@ -153,7 +158,7 @@ async function condenseRoute(
      * We also have to account for the delay time because if a bus is delayed, we want to display
      * the route even if the start time is earlier than the current time.
      */
-    if (departureDelayBuffer && direction.type === 'depart') {
+    if (departureDelayBuffer && direction.type === DIRECTION_TYPE.DEPART) {
       const delayMs = direction.delay !== null ? direction.delay * 1000 : 0;
       if (startTime < departureTimeNowMs - ONE_MIN_IN_MS - delayMs) {
         return null;
@@ -161,8 +166,8 @@ async function condenseRoute(
     }
 
     if (previousDirection
-      && previousDirection.type === 'depart'
-      && direction.type === 'depart') {
+      && previousDirection.type === DIRECTION_TYPE.DEPART
+      && direction.type === DIRECTION_TYPE.DEPART) {
       /*
        * Discard route if a depart direction's last stopID is not equal to the next direction's first stopID,
        * Fixes bug where graphhopper directions are to get off at a stop and get on another stop
@@ -192,7 +197,7 @@ async function condenseRoute(
       }
     }
 
-    if (direction.type === 'walk') {
+    if (direction.type === DIRECTION_TYPE.WALK) {
       totalDistanceWalking += direction.distance;
     }
     previousDirection = direction;
@@ -262,6 +267,50 @@ function generateBoundingBox(path: Object): Object {
 }
 
 /**
+ * Returns the distance between [startCoords] and [endCoords] in miles.
+ * NOTE: Taken from https://www.geodatasource.com/developers/javascript
+ * @param startCoords
+ * @param endCoords
+ * @returns {number}
+ */
+function getDistanceInMiles(startCoords: Object, endCoords: Object): number {
+  const startLat = startCoords.lat;
+  const startLong = startCoords.long;
+  const endLat = endCoords.lat;
+  const endLong = endCoords.long;
+  if (startLat === endLat && startLong === endLong) {
+    return 0;
+  }
+
+  // Convert start and end latitude to radians
+  const startLatRadians = Math.PI * startLat / 180;
+  const endLatRadians = Math.PI * endLat / 180;
+  // Get difference of longitudes and convert to radians
+  const theta = startLong - endLong;
+  const thetaRadians = Math.PI * theta / 180;
+  let dist = Math.sin(startLatRadians) * Math.sin(endLatRadians)
+    + Math.cos(startLatRadians) * Math.cos(endLatRadians) * Math.cos(thetaRadians);
+  dist = Math.min(dist, 1);
+  dist = Math.acos(dist) * 180 * 60 * 1.1515 / Math.PI;
+  return dist;
+}
+
+/**
+ * Returns the difference between [departureTime] and [arrivalTime] in minutes.
+ * @param departureTime
+ * @param arrivalTime
+ * @returns {number}
+ */
+function getDifferenceInMinutes(departureTime: string, arrivalTime: string): number {
+  const departureDate = new Date(departureTime);
+  const arrivalDate = new Date(arrivalTime);
+  const diffInMs = arrivalDate - departureDate;
+  // Need to take % of ONE_DAY_IN_MS and ONE_HOUR_IN_MS to get the current hour and minute respectively
+  const diffInMins = Math.round(((diffInMs % ONE_DAY_IN_MS) % ONE_HOUR_IN_MS) / ONE_MIN_IN_MS);
+  return diffInMins;
+}
+
+/**
  * Returns dateInMs in an ISO String
  *
  * @param dateInMs
@@ -271,7 +320,23 @@ function convertMillisecondsToISOString(dateInMs: number): string {
   return `${new Date(dateInMs).toISOString().split('.')[0]}Z`;
 }
 
-function parseWalkingRoute(data: any, dateMs: number, destinationName: string, isArriveBy: boolean): Object {
+/**
+ * Transform route object from graphhopper into one readable by the client.
+ *
+ * @param data
+ * @param dateMs
+ * @param originName
+ * @param destinationName
+ * @param isArriveBy
+ * @returns {Object}
+ */
+function parseWalkingRoute(
+  data: Object,
+  dateMs: number,
+  originName: string,
+  destinationName: string,
+  isArriveBy: boolean,
+): Object {
   try {
     const path = data.paths[0];
     let startDateMs = dateMs;
@@ -283,8 +348,10 @@ function parseWalkingRoute(data: any, dateMs: number, destinationName: string, i
     }
     const departureTime = convertMillisecondsToISOString(startDateMs);
     const arrivalTime = convertMillisecondsToISOString(endDateMs);
+    const totalDuration = getDifferenceInMinutes(departureTime, arrivalTime);
 
     const { startCoords, endCoords } = getStartEndCoords(path.points, path.points);
+    const travelDistance = getDistanceInMiles(startCoords, endCoords);
     const boundingBox = generateBoundingBox(path);
 
     const walkingPath = path.points.coordinates.map(point => ({
@@ -304,8 +371,21 @@ function parseWalkingRoute(data: any, dateMs: number, destinationName: string, i
       startTime: departureTime,
       stops: [],
       tripIdentifiers: null,
-      type: 'walk',
+      type: DIRECTION_TYPE.WALK,
     };
+
+    const routeSummary = [
+      {
+        stopName: originName,
+        direction: { type: DIRECTION_TYPE.WALK },
+        stayOnBusForTransfer: false,
+      },
+      {
+        stopName: destinationName,
+        direction: null,
+        stayOnBusForTransfer: false,
+      },
+    ];
 
     return adjustRouteTimesIfNecessary({
       arrivalTime,
@@ -313,8 +393,13 @@ function parseWalkingRoute(data: any, dateMs: number, destinationName: string, i
       departureTime,
       directions: [direction],
       endCoords,
+      endName: destinationName,
       numberOfTransfers: 0,
+      routeSummary,
       startCoords,
+      startName: originName,
+      totalDuration,
+      travelDistance,
     });
   } catch (e) {
     throw new Error(
@@ -344,10 +429,11 @@ function parseWalkingRoute(data: any, dateMs: number, destinationName: string, i
  ...
   ]
  * @param busRoutes
+ * @param originName
  * @param destinationName
  * @returns {Promise<Array<Object>>}
  */
-function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Promise<Array<Object>> {
+function parseBusRoutes(busRoutes: Array<Object>, originName: string, destinationName: string): Promise<Array<Object>> {
   return Promise.all(busRoutes.map(async (busRoute) => {
     try {
       // array containing legs of journey. e.g. walk, bus ride, walk
@@ -357,6 +443,7 @@ function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Prom
       // string 2018-02-21T17:27:00Z
       const { departureTime } = legs[0];
       const arriveTime = legs[numberOfLegs - 1].arrivalTime;
+      const totalDuration = getDifferenceInMinutes(departureTime, arriveTime);
 
       const startingLocationGeometry = legs[0].geometry;
       const endingLocationGeometry = legs[numberOfLegs - 1].geometry;
@@ -365,6 +452,7 @@ function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Prom
         startCoords,
         endCoords,
       } = getStartEndCoords(startingLocationGeometry, endingLocationGeometry);
+      const travelDistance = getDistanceInMiles(startCoords, endCoords);
       const boundingBox = generateBoundingBox(busRoute);
 
       const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
@@ -373,18 +461,18 @@ function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Prom
         const endTime = currLeg.arrivalTime;
 
         if (type === 'pt') {
-          type = 'depart';
+          type = DIRECTION_TYPE.DEPART;
         }
 
         let name = '';
-        if (type === 'walk') {
+        if (type === DIRECTION_TYPE.WALK) {
           // means we are at the last direction aka a walk. name needs to equal final destination
           if (j === numberOfLegs - 1) {
             name = destinationName;
           } else {
             name = legsArray[j + 1].departureLocation;
           }
-        } else if (type === 'depart') {
+        } else if (type === DIRECTION_TYPE.DEPART) {
           name = currLeg.departureLocation;
         }
 
@@ -403,7 +491,7 @@ function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Prom
         let stayOnBusForTransfer = false;
 
         const { distance } = currLeg;
-        if (type === 'depart') {
+        if (type === DIRECTION_TYPE.DEPART) {
           if (currLeg.isInSameVehicleAsPrevious) { // last depart was a transfer
             stayOnBusForTransfer = true;
           }
@@ -512,14 +600,55 @@ function parseBusRoutes(busRoutes: Array<Object>, destinationName: string): Prom
         };
       }));
 
+      // Create array of RouteSummaryElements. This array is provided to allow for less logic on client
+      // Each RouteSummaryElement consists of {direction, stayOnBusForTransfer, stopName}.
+      let previousStopName;
+      const routeSummary = directions.map((direction, index) => {
+        const { name, type, stayOnBusForTransfer } = direction;
+
+        // We want to ignore the intial walking direction
+        if (index === 0 && type === DIRECTION_TYPE.WALK) return null;
+
+        const routeSummaryDirection = { busNumber: null, type };
+
+        let stopName = name;
+        if (type === DIRECTION_TYPE.DEPART) {
+          routeSummaryDirection.busNumber = direction.routeNumber;
+          previousStopName = direction.stops[direction.stops.length - 1].name;
+        } else { // Walking direction
+          // If we've already arrived at the destination, then we can ignore this walking direction.
+          if (previousStopName === destinationName) return null;
+          // stopName should be the name of the stop we just got off
+          stopName = previousStopName;
+        }
+
+        return {
+          direction: routeSummaryDirection,
+          stayOnBusForTransfer,
+          stopName,
+        };
+      }).filter(Boolean);
+
+      // The last element in routeSummary should be an object representing arriving to destination
+      routeSummary.push({
+        direction: null,
+        stayOnBusForTransfer: false,
+        stopName: destinationName,
+      });
+
       return {
         arrivalTime: arriveTime,
         boundingBox,
         departureTime,
         directions,
         endCoords,
+        endName: destinationName,
         numberOfTransfers: busRoute.transfers,
+        routeSummary,
         startCoords,
+        startName: originName,
+        totalDuration,
+        travelDistance,
       };
     } catch (error) {
       throw new Error(
