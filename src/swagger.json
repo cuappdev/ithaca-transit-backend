@@ -266,6 +266,44 @@
         }
       }
     },
+    "/routeSelected": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "routeId: The number of the bus route.\nuid: The user identifier.",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "routeId",
+                "uid"
+              ],
+              "properties": {
+                "routeId": {
+                  "type": "string"
+                },
+                "uid": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{success: true}"
+          }
+        }
+      }
+    },
     "/search": {
       "post": {
         "summary": "Returns a list of bus stops and google autocomplete search results given a query string.",
@@ -311,24 +349,27 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The user's search query for a bus stop or place.\nstopID: The unique identifier for a bus stop.\nrouteID: The number of the bus route.\ntripID: The array of unique trip identifiers for the specific routeID.",
+            "description": "The user's search query for a bus stop or place.\nstopID: The unique identifier for a bus stop.\nrouteID: The number of the bus route.\ntripIdentifiers: The array of unique trip identifiers for the specific routeID.",
             "required": true,
             "schema": {
-              "type": "object",
-              "required": [
-                "stopID",
-                "routeID",
-                "tripID"
-              ],
-              "properties": {
-                "stopID": {
-                  "type": "string"
-                },
-                "routeID": {
-                  "type": "integer"
-                },
-                "tripID": {
-                  "type": "string"
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "stopID",
+                  "routeID",
+                  "tripIdentifiers"
+                ],
+                "properties": {
+                  "stopID": {
+                    "type": "string"
+                  },
+                  "routeID": {
+                    "type": "integer"
+                  },
+                  "tripIdentifiers": {
+                    "type": "string"
+                  }
                 }
               }
             }
