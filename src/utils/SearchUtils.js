@@ -13,11 +13,12 @@ async function getCoordsForPlaceID(placeID: String): Object {
   // Return an object of lat and long
   if (cachedValue) return cachedValue;
 
-  // place id is not in cache so we must get lat and long
+  // Place ID is not in cache so we must get lat and long
   const options = {
     ...Constants.GET_OPTIONS,
     url: 'https://maps.googleapis.com/maps/api/place/details/json',
     qs: {
+      fields: 'geometry',
       placeid: placeID,
       key: process.env.PLACES_KEY,
     },

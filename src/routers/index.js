@@ -5,7 +5,7 @@ import DocsRouter from './DocsRouter';
 import HelloWorldRouter from './v1/HelloWorldRouter';
 import MultiRouteRouter from './v1/MultiRouteRouter';
 import PlacesAutocompleteRouter from './v1/PlacesAutocompleteRouter';
-import PlaceIDCoordsRouter from './v1/PlaceIDCoordsRouter';
+import PlaceIDCoordinatesRouter from './v1/PlaceIDCoordinatesRouter';
 import RouteRouter from './v1/RouteRouter';
 import RouteSelectedRouter from './v1/RouteSelectedRouter';
 import RouteV2Router from './v2/RouteRouter';
@@ -20,7 +20,7 @@ export default {
   HelloWorldRouter,
   MultiRouteRouter,
   PlacesAutocompleteRouter,
-  PlaceIDCoordsRouter,
+  PlaceIDCoordinatesRouter,
   RouteRouter,
   RouteSelectedRouter,
   RouteV2Router,
