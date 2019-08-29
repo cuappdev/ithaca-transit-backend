@@ -21,6 +21,7 @@ class API extends ApplicationAPI {
       Routers.HelloWorldRouter,
       Routers.MultiRouteRouter,
       Routers.PlacesAutocompleteRouter,
+      Routers.PlaceIDCoordsRouter,
       Routers.RouteSelectedRouter,
       Routers.SearchRouter,
       Routers.TrackingRouter,
