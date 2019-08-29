@@ -5,6 +5,7 @@ import type Request from 'express';
 import AllStopUtils from '../../utils/AllStopUtils';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import RequestUtils from '../../utils/RequestUtils';
+import SearchUtils from '../../utils/SearchUtils';
 import Constants from '../../utils/Constants';
 
 const BUS_STOP = 'busStop';
@@ -12,11 +13,7 @@ const queryToPredictionsCacheOptions = {
   max: 10000, // Maximum size of cache
   maxAge: 1000 * 60 * 60 * 24 * 5, // Maximum age in milliseconds
 };
-const placeIDToCoordsCacheOptions = {
-  max: 10000, // Maximum size of cache
-};
 const queryToPredictionsCache = LRU(queryToPredictionsCacheOptions);
-const placeIDToCoordsCache = LRU(placeIDToCoordsCacheOptions);
 const GOOGLE_PLACE = 'googlePlace';
 const GOOGLE_PLACE_LOCATION = '42.4440,-76.5019';
 const MIN_FUZZ_RATIO = 75;
@@ -78,7 +75,7 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
       const { predictions } = autocompleteResult;
 
       const googlePredictions = await Promise.all(predictions.map(async (p): Promise<Object> => {
-        const placeIDCoords = await getCoordsForPlaceID(p.place_id);
+        const placeIDCoords = await SearchUtils.getCoordsForPlaceID(p.place_id);
         return {
           type: GOOGLE_PLACE,
           detail: p.structured_formatting.secondary_text,
@@ -97,39 +94,6 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
     }
     return [];
   }
-}
-
-async function getCoordsForPlaceID(placeID: String): Object {
-  const cachedValue = placeIDToCoordsCache.get(placeID);
-  // Return an object of lat and long
-  if (cachedValue) return cachedValue;
-
-  // place id is not in cache so we must get lat and long
-  const options = {
-    ...Constants.GET_OPTIONS,
-    url: 'https://maps.googleapis.com/maps/api/place/details/json',
-    qs: {
-      placeid: placeID,
-      key: process.env.PLACES_KEY,
-    },
-  };
-
-  const placeIDDetailsRequest = await RequestUtils.createRequest(options, 'Place ID Details request failed');
-
-  if (placeIDDetailsRequest) {
-    const placeIDDetailsResult = JSON.parse(placeIDDetailsRequest);
-    const placeIDCoords = {
-      lat: placeIDDetailsResult.result.geometry.location.lat,
-      long: placeIDDetailsResult.result.geometry.location.lng,
-    };
-
-    placeIDToCoordsCache.set(placeID, placeIDCoords);
-    return placeIDCoords;
-  }
-  return {
-    lat: null,
-    long: null,
-  };
 }
 
 /**
