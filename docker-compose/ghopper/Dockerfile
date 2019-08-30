@@ -18,4 +18,4 @@ WORKDIR /usr/src/app
 
 EXPOSE 8988
 
-CMD java -Xmx1g -Xms1g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=map.osm gtfs.file=tcat-ny-us.zip jetty.port=8988 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=pt prepare.ch.weightings=no graph.location=./graph-cache
+CMD java -Xmx4g -Xms4g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=map.osm gtfs.file=tcat-ny-us.zip jetty.port=8988 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=pt prepare.ch.weightings=no graph.location=./graph-cache
