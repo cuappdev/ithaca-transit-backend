@@ -1,6 +1,0 @@
-[submodule "graphhopper-transit-extension/lib/graphhopper-mapmatching/map-matching"]
-	path = graphhopper-transit-extension/lib/graphhopper-mapmatching/map-matching
-	url = https://github.com/graphhopper/map-matching.git
-[submodule "graphhopper-transit-extension/lib/graphhopper"]
-	path = graphhopper-transit-extension/lib/graphhopper
-	url = https://github.com/graphhopper/graphhopper.git
