@@ -8,14 +8,21 @@ WORKDIR /usr/src/app
 RUN apt-get update
 RUN apt-get -y install maven wget
 
-RUN git clone --single-branch -b 0.10 https://github.com/graphhopper/graphhopper.git
+RUN git clone --single-branch -b 0.11 https://github.com/graphhopper/graphhopper.git
 RUN wget https://s3.amazonaws.com/tcat-gtfs/tcat-ny-us.zip
 
 WORKDIR /usr/src/app/graphhopper
-RUN ./graphhopper.sh buildweb
-
-WORKDIR /usr/src/app
+RUN ./graphhopper.sh --action build
 
 EXPOSE 8988
 
-CMD java -Xmx4g -Xms4g -jar graphhopper/web/target/graphhopper-web-*-with-dep.jar datareader.file=map.osm gtfs.file=tcat-ny-us.zip jetty.port=8988 jetty.resourcebase=./graphhopper/web/src/main/webapp graph.flag_encoders=pt prepare.ch.weightings=no graph.location=./graph-cache
+CMD java -Xmx4g -Xms4g \
+  -Dgraphhopper.datareader.file=../map.osm \
+  -Dgraphhopper.gtfs.file=../tcat-ny-us.zip \
+  -Dgraphhopper.jetty.resourcebase=./graphhopper/web/src/main/webapp \
+  -Dgraphhopper.graph.flag_encoders=pt \
+  -Dgraphhopper.prepare.ch.weightings=no \
+  -Dgraphhopper.graph.location=./graph-cache \
+  -Ddw.server.applicationConnectors[0].bindHost=0.0.0.0 \
+  -Ddw.server.applicationConnectors[0].port=8988 \
+  -jar web/target/graphhopper-web-0.11-SNAPSHOT.jar server config.yml
