@@ -137,19 +137,73 @@ async function getParsedWalkingAndBusRoutes(
   departureTimeQuery: number,
   isArriveBy: boolean,
 ): Promise<{ parsedBusRoutes: ?Array<Object>, parsedWalkingRoute: Object }> {
-  const { busRoutes, walkingRoute } = await GraphhopperUtils.fetchRoutes(end, start, departureTimeQuery, isArriveBy);
-  const parsedWalkingRoute = ParseRouteUtils.parseWalkingRoute(
+  const routes = await GraphhopperUtils.fetchRoutes(end, start, departureTimeQuery, isArriveBy);
+
+  if (!routes) {
+    return {
+      parsedWalkingRoute: await getParsedWalkingRoute(
+        originName,
+        destinationName,
+        end,
+        start,
+        departureTimeQuery,
+        isArriveBy,
+      ),
+      parsedBusRoutes: null,
+    };
+  }
+
+  const parsedRoutes = await ParseRouteUtils.parseRoutes(routes, originName, destinationName);
+  let parsedWalkingRoute = parsedRoutes.find(route => route.numberOfTransfers === -1);
+
+  // Make request to Ghopper walking service if the bus service doesn't provide walking directions
+  if (!parsedWalkingRoute) {
+    parsedWalkingRoute = await getParsedWalkingRoute(
+      originName,
+      destinationName,
+      end,
+      start,
+      departureTimeQuery,
+      isArriveBy,
+    );
+  }
+
+  return {
+    parsedWalkingRoute,
+    parsedBusRoutes: parsedRoutes.filter(route => route.numberOfTransfers !== -1),
+  };
+}
+
+/**
+ * Queries Graphhopper for walking directions and returns exactly one walking route.
+ *
+ * We only query the Graphhopper walking service if the Graphhopper bus service doesn't provide
+ * walking directions.
+ *
+ * @param originName
+ * @param destinationName
+ * @param end
+ * @param start
+ * @param departureTimeQuery
+ * @param isArriveBy
+ * @returns {Promise<Object>}
+ */
+async function getParsedWalkingRoute(
+  originName: string,
+  destinationName: string,
+  end: string,
+  start: string,
+  departureTimeQuery: number,
+  isArriveBy: boolean,
+): Promise<Object> {
+  const walkingRoute = await GraphhopperUtils.fetchWalkingRoute(end, start);
+  return ParseRouteUtils.parseWalkingRoute(
     walkingRoute,
     GraphhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0),
     originName,
     destinationName,
     isArriveBy,
   );
-
-  if (!busRoutes) return { parsedWalkingRoute, parsedBusRoutes: null };
-
-  const parsedBusRoutes = await ParseRouteUtils.parseBusRoutes(busRoutes, originName, destinationName);
-  return { parsedWalkingRoute, parsedBusRoutes };
 }
 
 /**

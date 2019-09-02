@@ -433,7 +433,7 @@ function parseWalkingRoute(
  * @param destinationName
  * @returns {Promise<Array<Object>>}
  */
-function parseBusRoutes(busRoutes: Array<Object>, originName: string, destinationName: string): Promise<Array<Object>> {
+function parseRoutes(busRoutes: Array<Object>, originName: string, destinationName: string): Promise<Array<Object>> {
   return Promise.all(busRoutes.map(async (busRoute) => {
     try {
       // array containing legs of journey. e.g. walk, bus ride, walk
@@ -660,6 +660,6 @@ function parseBusRoutes(busRoutes: Array<Object>, originName: string, destinatio
 
 export default {
   condenseRoute,
-  parseBusRoutes,
+  parseRoutes,
   parseWalkingRoute,
 };

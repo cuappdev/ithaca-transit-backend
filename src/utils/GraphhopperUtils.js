@@ -143,14 +143,13 @@ function busRoutesAreEqual(busRouteA: Object, busRouteB: Object): boolean {
 function getValidBusRoutes(busRoutes: Array<Object>, busRoutesToCheck: Array<Object>): Array<Object> {
   return busRoutesToCheck.filter((busRouteToCheck) => {
     const isDuplicateRoute = busRoutes.find(busRoute => busRoutesAreEqual(busRouteToCheck, busRoute)) !== undefined;
-    return !isDuplicateRoute;
+    return !isDuplicateRoute && busRouteToCheck.constructor.transfers !== -1;
   });
 }
 
 /**
- * Return { busRoute, walkingRoute } from graphhopper given the parameters
- * walkingRoute contains an array with length 1 containing the shortest possible walking path
- * busRoute contains an array of length 5 with possible paths
+ * Return {routes} from graphhopper given the parameters
+ * {routes} contains an array of up to length 5, with possible bus and walking routes
  * Example return object:
  {
  busRoute:
@@ -203,11 +202,11 @@ function getValidBusRoutes(busRoutes: Array<Object>, busRoutesToCheck: Array<Obj
  * @param start
  * @param departureTimeDateNow
  * @param isArriveByQuery
- * @returns {Promise<{busRoute: any, walkingRoute: any}>}
+ * @returns {Array<Object>}
  */
-async function fetchRoutes(end: string, start: string, departureTimeDateNow: string, isArriveByQuery: boolean): Object {
-  let busRoutes;
-  let walkingRoute;
+async function fetchRoutes(end: string, start: string, departureTimeDateNow: string,
+  isArriveByQuery: boolean): Array<Object> {
+  let routes;
 
   const sharedOptions = { method: 'GET', qsStringifyOptions: { arrayFormat: 'repeat' } };
   // Fetch bus routes using the current start time
@@ -235,17 +234,10 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     sharedOptions,
   );
 
-  const walkingOptions = {
-    qs: getGraphhopperWalkingParams(end, start),
-    url: `http://${GHOPPER_WALKING || 'ERROR'}:8987/route`,
-    ...sharedOptions,
-  };
-
   const [
     busRouteNowRequest,
     busRouteBufferedFirstRequest,
     busRouteBufferedSecondRequest,
-    walkingRouteRequest,
   ] = await Promise.all([
     RequestUtils.createRequest(
       busOptionsNow,
@@ -265,16 +257,10 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
       false,
       true,
     ),
-    RequestUtils.createRequest(
-      walkingOptions,
-      `Walking failed: ${GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
-      false,
-      true,
-    ),
   ]);
 
   if (busRouteNowRequest && busRouteNowRequest.statusCode < 300) {
-    busRoutes = JSON.parse(busRouteNowRequest.body).paths;
+    routes = JSON.parse(busRouteNowRequest.body).paths;
   } else {
     LogUtils.log(
       busRouteNowRequest && busRouteNowRequest.body,
@@ -285,7 +271,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
 
   if (busRouteBufferedFirstRequest && busRouteBufferedFirstRequest.statusCode < 300) {
     const bufferedBusRoutes = JSON.parse(busRouteBufferedFirstRequest.body).paths;
-    busRoutes = getValidBusRoutes(busRoutes, bufferedBusRoutes).concat(busRoutes);
+    routes = getValidBusRoutes(routes, bufferedBusRoutes).concat(routes);
   } else {
     LogUtils.log(
       busRouteBufferedFirstRequest && busRouteBufferedFirstRequest.body,
@@ -296,7 +282,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
 
   if (busRouteBufferedSecondRequest && busRouteBufferedSecondRequest.statusCode < 300) {
     const bufferedBusRoutes = JSON.parse(busRouteBufferedSecondRequest.body).paths;
-    busRoutes = getValidBusRoutes(busRoutes, bufferedBusRoutes).concat(busRoutes);
+    routes = getValidBusRoutes(routes, bufferedBusRoutes).concat(routes);
   } else {
     LogUtils.log(
       busRouteBufferedSecondRequest && busRouteBufferedSecondRequest.body,
@@ -304,6 +290,33 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
     );
   }
+
+  return routes;
+}
+
+/*
+* Return walkingRoute from the Graphhopper walking service given the parameters
+* walkingRoute contains the shortest possible walking path
+* @param end
+* @param start
+* @returns Object
+*/
+async function fetchWalkingRoute(end: string, start: string): Object {
+  let walkingRoute;
+
+  const walkingOptions = {
+    qs: getGraphhopperWalkingParams(end, start),
+    url: `http://${GHOPPER_WALKING || 'ERROR'}:8987/route`,
+    method: 'GET',
+    qsStringifyOptions: { arrayFormat: 'repeat' },
+  };
+
+  const walkingRouteRequest = await RequestUtils.createRequest(
+    walkingOptions,
+    `Walking failed: ${GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+    false,
+    true,
+  );
 
   if (walkingRouteRequest && walkingRouteRequest.statusCode < 300) {
     walkingRoute = JSON.parse(walkingRouteRequest.body);
@@ -315,11 +328,12 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     );
   }
 
-  return { busRoutes, walkingRoute };
+  return walkingRoute;
 }
 
 export default {
   fetchRoutes,
+  fetchWalkingRoute,
   getDepartureTime,
   getDepartureTimeDate,
   getGraphhopperBusParams,
