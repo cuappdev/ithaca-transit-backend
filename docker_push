@@ -1,4 +1,0 @@
-#!/bin/bash
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-docker build -t cornellappdev/"$NODE_IMAGE":"$TRAVIS_COMMIT" --no-cache .
-docker push cornellappdev/"$NODE_IMAGE":"$TRAVIS_COMMIT"
