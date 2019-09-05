@@ -9,15 +9,18 @@ Download on the App Store [here](https://itunes.apple.com/app/id1290883721)!
 
 Please ensure `npm` ([npm](https://www.npmjs.com/get-npm)) and `docker` ([docker](https://www.docker.com/)) are installed by checking `npm -v` and `docker -v` and that Docker is running.
 
+## Environment Variables
+It's recommended to use [`direnv`](https://direnv.net):
+The required environment variables for this API are the following:
 
-Run the following:
+To use `direnv` with this repository, run the following and set the variables appropriately.
 
+```bash
+cp envrc.template .envrc
+cp python.envrc.template python.envrc
 ```
-cp env.template .env
-cp python.env.template python.env
-```
-
 Environment variable values can be found by asking a member of Cornell AppDev.
+
 
 ## Run
 
