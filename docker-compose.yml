@@ -5,7 +5,7 @@ services:
     build:
       context: .
       target: development
-    env_file: .env
+    env_file: .envrc
     ports:
       - "3000:3000"
     volumes:
@@ -29,6 +29,6 @@ services:
 
   live-tracking:
     image: cornellappdev/transit-python:v1.0.0
-    env_file: python.env
+    env_file: python.envrc
     ports:
       - "5000:5000"

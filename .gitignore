@@ -7,5 +7,5 @@ node_modules/
 config.json
 
 # File Types
-*.env
+*.envrc
 *.zip
