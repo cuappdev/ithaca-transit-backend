@@ -32,10 +32,6 @@ const DEG_MIN_PRECISION = 1;
 const DEG_NEARBY_PRECISION = 4; // 4 degrees of precision is about 11 meters, stop nearby
 const DEG_WALK_PRECISION = 3; // 3 degrees of precision is about 111 meters, stop walkable
 
-/* Server constants */
-const PORT: number = parseInt(process.env.PORT) || 80;
-const SERVER_ADDRESS: string = '0.0.0.0';
-
 /* String & URL constants */
 const CURRENT_LOCATION = 'Current Location';
 const GOOGLE_AUTOCOMPLETE_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
@@ -73,14 +69,12 @@ export default {
   GOOGLE_PLACES_URL,
   HOUR_IN_MS,
   MAX_WALK_DIST_PER_LEG,
-  PORT,
   POSTMAN_TOKEN,
   RADIUS,
   RETRY_COUNT,
   ROUTES_CALC_CACHE_OPTIONS,
   SEC_IN_MS,
   SECOND_DELAY_BUFFER_IN_MINUTES,
-  SERVER_ADDRESS,
   THREE_SEC_IN_MS,
   TOKEN_EXPIRATION_WINDOW_IN_MS,
   TOKEN_URL,
