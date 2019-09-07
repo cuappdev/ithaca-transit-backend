@@ -1,13 +1,10 @@
 // @flow
 import LRU from 'lru-cache';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
+import Constants from '../../utils/Constants';
 import RequestUtils from '../../utils/RequestUtils';
 
-const cacheOptions = {
-  max: 10000,
-  maxAge: 1000 * 60 * 60 * 24 * 5,
-};
-const cache = LRU(cacheOptions);
+const cache = LRU(Constants.AUTOCOMPLETE_CACHE_OPTIONS);
 
 class PlacesAutocompleteRouter extends ApplicationRouter<string> {
   constructor() {
@@ -33,12 +30,12 @@ class PlacesAutocompleteRouter extends ApplicationRouter<string> {
     // not in cache
     const options = {
       method: 'GET',
-      url: 'https://maps.googleapis.com/maps/api/place/autocomplete/json',
+      url: Constants.GOOGLE_AUTOCOMPLETE_URL,
       qs: {
         input: query,
         key: process.env.PLACES_KEY,
         location: '42.4440,-76.5019',
-        radius: 24140,
+        radius: Constants.RADIUS,
         strictbounds: '',
       },
     };

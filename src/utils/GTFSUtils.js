@@ -1,12 +1,12 @@
 // @flow
+import Constants from './Constants';
 import { PYTHON_APP } from './EnvUtils';
 import RequestUtils from './RequestUtils';
 
 async function fetchRoutes(): Object {
   const options = {
-    method: 'GET',
+    ...Constants.GET_OPTIONS,
     url: `http://${PYTHON_APP || 'localhost'}:5000/gtfs`,
-    headers: { 'Cache-Control': 'no-cache' },
   };
   const data = await RequestUtils.createRequest(options, 'Fetch routes request failed');
   return JSON.parse(data);

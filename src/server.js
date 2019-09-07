@@ -3,11 +3,9 @@ import dotenv from 'dotenv';
 import http from 'http';
 
 import API from './API';
+import Constants from './utils/Constants';
 import LogUtils from './utils/LogUtils';
 import TokenUtils from './utils/TokenUtils';
-
-const PORT: number = parseInt(process.env.PORT) || 80;
-const SERVER_ADDRESS: string = '0.0.0.0';
 
 // BEGIN STARTUP CODE
 
@@ -19,6 +17,6 @@ TokenUtils.fetchAuthHeader();
 const app: API = new API();
 const server: http.Server = http.createServer(app.express);
 
-server.listen(PORT, SERVER_ADDRESS, () => {
-  LogUtils.log({ message: `server.js: listening on ${SERVER_ADDRESS}:${PORT}` });
+server.listen(Constants.PORT, Constants.SERVER_ADDRESS, () => {
+  LogUtils.log({ message: `server.js: listening on ${Constants.SERVER_ADDRESS}:${Constants.PORT}` });
 });

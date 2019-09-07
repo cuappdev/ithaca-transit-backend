@@ -16,7 +16,7 @@ async function getCoordsForPlaceID(placeID: String): Object {
   // Place ID is not in cache so we must get lat and long
   const options = {
     ...Constants.GET_OPTIONS,
-    url: 'https://maps.googleapis.com/maps/api/place/details/json',
+    url: Constants.GOOGLE_PLACES_URL,
     qs: {
       fields: 'geometry',
       placeid: placeID,

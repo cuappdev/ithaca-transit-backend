@@ -3,6 +3,7 @@ import interval from 'interval-promise';
 import request from 'request';
 import util from 'util';
 
+import Constants from './Constants';
 import LogUtils from './LogUtils';
 
 function createRequest(
@@ -37,7 +38,7 @@ function createRequest(
  * @param {number} retryCount
  * @returns {any} The result of [fn]
  */
-async function fetchWithRetry(fn: () => any, retryCount: number = 5): any {
+async function fetchWithRetry(fn: () => any, retryCount: number = Constants.RETRY_COUNT): any {
   let error;
   for (let i = 0; i < retryCount; i++) {
     try {
