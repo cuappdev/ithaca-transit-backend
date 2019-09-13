@@ -1,6 +1,7 @@
 // @flow
 import request from 'request';
 
+import Constants from './Constants';
 import { TOKEN } from './EnvUtils';
 import LogUtils from './LogUtils';
 
@@ -25,11 +26,10 @@ function fetchAccessToken(): void {
   const basicAuthHeader = `Basic ${credentials.basic_token}`;
   const options = {
     method: 'POST',
-    url: 'https://gateway.api.cloud.wso2.com:443/token',
+    url: Constants.TOKEN_URL,
     qs: { grant_type: 'client_credentials' },
     headers: {
       Authorization: basicAuthHeader,
-      'Postman-Token': '42201611-965d-4832-a4c5-060ad3ff3b83',
       'Cache-Control': 'no-cache',
     },
   };

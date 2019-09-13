@@ -3,15 +3,6 @@ import Constants from './Constants';
 import { PYTHON_APP } from './EnvUtils';
 import RequestUtils from './RequestUtils';
 
-const SEC_IN_MS = 1000;
-const MIN_IN_MS = SEC_IN_MS * 60;
-const HOUR_IN_MS = MIN_IN_MS * 60;
-const DEG_EXACT_PRECISION = 6; // 6 degrees of precision is about a 111 mm, is exact point
-const DEG_EQ_PRECISION = 5; // 5 degrees of precision is about a 1.1 meters, is a stop
-const DEG_NEARBY_PRECISION = 4; // 4 degrees of precision is about 11 meters, stop nearby
-const DEG_WALK_PRECISION = 3; // 3 degrees of precision is about 111 meters, stop walkable
-const DEG_KM_PRECISION = 2; // 3 degrees of precision is about 1 km, stop barely walkable
-
 /**
  * Used for finding stops at or nearby a point
  * Use getPrecisionMap(precision) to access.
@@ -55,8 +46,8 @@ const updateFunc = async () => {
 
 RequestUtils.updateObjectOnInterval(
   updateFunc,
-  HOUR_IN_MS,
-  MIN_IN_MS,
+  Constants.HOUR_IN_MS,
+  Constants.MIN_IN_MS,
   null,
 );
 
@@ -71,7 +62,7 @@ async function fetchAllStops() {
 
 function fetchPrecisionMaps() {
   const maps = {};
-  maps[DEG_EQ_PRECISION] = getPrecisionMap(DEG_EQ_PRECISION);
+  maps[Constants.DEG_EQ_PRECISION] = getPrecisionMap(Constants.DEG_EQ_PRECISION);
   return maps;
 }
 
@@ -81,8 +72,9 @@ function fetchPrecisionMaps() {
  * @param degreesPrecision
  * @returns {Promise<void>}
  */
-async function getPrecisionMap(degreesPrecision: ?number = DEG_EQ_PRECISION) {
-  if (degreesPrecision < 1 || degreesPrecision > 6) {
+async function getPrecisionMap(degreesPrecision: ?number = Constants.DEG_EQ_PRECISION) {
+  if (degreesPrecision < Constants.DEG_MIN_PRECISION
+    || degreesPrecision > Constants.DEG_MAX_PRECISION) {
     return null;
   }
   const stops = await fetchAllStops();
@@ -108,7 +100,7 @@ async function getPrecisionMap(degreesPrecision: ?number = DEG_EQ_PRECISION) {
  * @param degreesPrecision
  * @returns {Promise<boolean>}
  */
-async function isStopsWithinPrecision(point: Object, degreesPrecision: ?number = DEG_EQ_PRECISION) {
+async function isStopsWithinPrecision(point: Object, degreesPrecision: ?number = Constants.DEG_EQ_PRECISION) {
   const stops = await getPrecisionMap(degreesPrecision);
   const lat = parseFloat(point.lat).toFixed(degreesPrecision);
   let found = stops[lat]; // found stop(s) at lat
@@ -132,15 +124,10 @@ async function isStopsWithinPrecision(point: Object, degreesPrecision: ?number =
  * @returns {Promise<boolean>}
  */
 function isStop(point: Object) {
-  return isStopsWithinPrecision(point, DEG_EQ_PRECISION);
+  return isStopsWithinPrecision(point, Constants.DEG_EQ_PRECISION);
 }
 
 export default {
-  DEG_EQ_PRECISION,
-  DEG_EXACT_PRECISION,
-  DEG_KM_PRECISION,
-  DEG_NEARBY_PRECISION,
-  DEG_WALK_PRECISION,
   fetchAllStops,
   isStop,
   isStopsWithinPrecision,

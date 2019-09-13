@@ -2,14 +2,9 @@ import {
   GHOPPER_BUS,
   GHOPPER_WALKING,
 } from './EnvUtils';
+import Constants from './Constants';
 import LogUtils from './LogUtils';
 import RequestUtils from './RequestUtils';
-
-// buffer to account for routes in past 20 minutes with delays
-const FIRST_DELAY_BUFFER_IN_MINUTES = 20;
-
-// additional buffer to account for time needed to walk from current location to bus stop
-const SECOND_DELAY_BUFFER_IN_MINUTES = 40;
 
 /**
  * https://graphhopper.com/api/1/docs/routing/#output
@@ -28,9 +23,9 @@ const getGraphhopperBusParams = (
   'ch.disable': true,
   'pt.arrive_by': arriveBy,
   'pt.earliest_departure_time': getDepartureTimeDate(departureTimeQuery, arriveBy, delayBufferMinutes),
-  'pt.max_walk_distance_per_leg': 2000,
+  'pt.max_walk_distance_per_leg': Constants.MAX_WALK_DIST_PER_LEG,
   'pt.profile': true,
-  'pt.walk_speed': 3.0, // > 3.0 suggests getting off bus earlier and walk half a mile instead of waiting longer
+  'pt.walk_speed': Constants.WALK_SPEED,
   elevation: false,
   point: [start, end],
   points_encoded: false,
@@ -220,7 +215,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     start,
     departureTimeDateNow,
     isArriveByQuery,
-    FIRST_DELAY_BUFFER_IN_MINUTES,
+    Constants.FIRST_DELAY_BUFFER_IN_MINUTES,
     sharedOptions,
   );
 
@@ -230,7 +225,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
     start,
     departureTimeDateNow,
     isArriveByQuery,
-    SECOND_DELAY_BUFFER_IN_MINUTES,
+    Constants.SECOND_DELAY_BUFFER_IN_MINUTES,
     sharedOptions,
   );
 
@@ -275,7 +270,13 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
   } else {
     LogUtils.log(
       busRouteBufferedFirstRequest && busRouteBufferedFirstRequest.body,
-      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, FIRST_DELAY_BUFFER_IN_MINUTES),
+      getGraphhopperBusParams(
+        end,
+        start,
+        departureTimeDateNow,
+        isArriveByQuery,
+        Constants.FIRST_DELAY_BUFFER_IN_MINUTES,
+      ),
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
     );
   }
@@ -286,7 +287,13 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
   } else {
     LogUtils.log(
       busRouteBufferedSecondRequest && busRouteBufferedSecondRequest.body,
-      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, SECOND_DELAY_BUFFER_IN_MINUTES),
+      getGraphhopperBusParams(
+        end,
+        start,
+        departureTimeDateNow,
+        isArriveByQuery,
+        Constants.SECOND_DELAY_BUFFER_IN_MINUTES,
+      ),
       `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
     );
   }
