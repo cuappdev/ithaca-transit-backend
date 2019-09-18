@@ -1,18 +1,19 @@
 /* Cache constants */
 const AUTOCOMPLETE_CACHE_OPTIONS = {
-  max: 10000,
-  maxAge: 1000 * 60 * 60 * 24 * 5,
+  max: 10000, // Max 10000 autocomplete results
+  maxAge: 1000 * 60 * 60 * 24 * 5, // Max age in 5 days
 };
 const ROUTES_CALC_CACHE_OPTIONS = {
-  max: 1000, // max 1000 routes in storage
-  maxAge: 1000 * 60 * 15, // max age 15 minutes
+  max: 1000, // Max 1000 routes
+  maxAge: 1000 * 60 * 15, // Max age in 15 minutes
 };
 const QUERY_PREDICTIONS_CACHE_OPTIONS = {
-  max: 10000, // Maximum size of cache
-  maxAge: 1000 * 60 * 60 * 24 * 5, // Maximum age in milliseconds
+  max: 10000, // Max 1000 predictions
+  maxAge: 1000 * 60 * 60 * 24 * 5, // Max age in 5 days
 };
 
 /* Count constants */
+// The minimum fuzzy string matching ratio that a word has to match a target word for /search
 const MIN_FUZZ_RATIO = 75;
 
 /* Delay Buffer constants */
@@ -24,17 +25,18 @@ const SECOND_DELAY_BUFFER_IN_MINUTES = 40;
 /* Distance & Speed constants */
 // > 3.0 suggests getting off bus earlier and walk half a mile instead of waiting longer
 const MAX_WALK_DIST_PER_LEG = 2000;
+// The distance (in meters) within which to return Google place results for autocomplete.
 const AUTOCOMPLETE_RADIUS = 24140;
 const WALK_SPEED = 3.0;
 
 /* Degrees Precision constants */
+const DEG_MIN_PRECISION = 1;
+const DEG_KM_PRECISION = 2; // 3 degrees of precision is about 1 km, stop barely walkable
+const DEG_WALK_PRECISION = 3; // 3 degrees of precision is about 111 meters, stop walkable
+const DEG_NEARBY_PRECISION = 4; // 4 degrees of precision is about 11 meters, stop nearby
 const DEG_EQ_PRECISION = 5; // 5 degrees of precision is about a 1.1 meters, is a stop
 const DEG_EXACT_PRECISION = 6; // 6 degrees of precision is about a 111 mm, is exact point
-const DEG_KM_PRECISION = 2; // 3 degrees of precision is about 1 km, stop barely walkable
 const DEG_MAX_PRECISION = 6;
-const DEG_MIN_PRECISION = 1;
-const DEG_NEARBY_PRECISION = 4; // 4 degrees of precision is about 11 meters, stop nearby
-const DEG_WALK_PRECISION = 3; // 3 degrees of precision is about 111 meters, stop walkable
 
 /* String & URL constants */
 const BUS_STOP = 'busStop';

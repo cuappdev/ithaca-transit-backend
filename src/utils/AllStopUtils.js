@@ -74,7 +74,8 @@ function fetchPrecisionMaps() {
  */
 async function getPrecisionMap(degreesPrecision: ?number = Constants.DEG_EQ_PRECISION) {
   if (degreesPrecision < Constants.DEG_MIN_PRECISION
-    || degreesPrecision > Constants.DEG_MAX_PRECISION) {
+    || degreesPrecision > Constants.DEG_MAX_PRECISION
+  ) {
     return null;
   }
   const stops = await fetchAllStops();
