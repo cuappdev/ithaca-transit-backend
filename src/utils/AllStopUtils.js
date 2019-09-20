@@ -3,6 +3,9 @@ import Constants from './Constants';
 import { PYTHON_APP } from './EnvUtils';
 import RequestUtils from './RequestUtils';
 
+// TODO: investigate why importing from Constants.js results in failure of getting routes
+const DEG_EQ_PRECISION = 5; // 5 degrees of precision is about a 1.1 meters, is a stop
+
 /**
  * Used for finding stops at or nearby a point
  * Use getPrecisionMap(precision) to access.
@@ -62,7 +65,7 @@ async function fetchAllStops() {
 
 function fetchPrecisionMaps() {
   const maps = {};
-  maps[Constants.DEG_EQ_PRECISION] = getPrecisionMap(Constants.DEG_EQ_PRECISION);
+  maps[DEG_EQ_PRECISION] = getPrecisionMap(DEG_EQ_PRECISION);
   return maps;
 }
 
@@ -72,8 +75,9 @@ function fetchPrecisionMaps() {
  * @param degreesPrecision
  * @returns {Promise<void>}
  */
-async function getPrecisionMap(degreesPrecision: ?number = Constants.DEG_EQ_PRECISION) {
-  if (degreesPrecision < Constants.DEG_MIN_PRECISION
+async function getPrecisionMap(degreesPrecision: ?number = DEG_EQ_PRECISION) {
+  if (
+    degreesPrecision < Constants.DEG_MIN_PRECISION
     || degreesPrecision > Constants.DEG_MAX_PRECISION
   ) {
     return null;
@@ -125,7 +129,7 @@ async function isStopsWithinPrecision(point: Object, degreesPrecision: ?number =
  * @returns {Promise<boolean>}
  */
 function isStop(point: Object) {
-  return isStopsWithinPrecision(point, Constants.DEG_EQ_PRECISION);
+  return isStopsWithinPrecision(point, DEG_EQ_PRECISION);
 }
 
 export default {

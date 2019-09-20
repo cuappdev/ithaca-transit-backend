@@ -1,12 +1,17 @@
 /* Cache constants */
+// A cache containing Google Autocomplete results
+// TODO: Remove - it is duplicated with QUERY_PREDICTIONS_CACHE_OPTIONS
 const AUTOCOMPLETE_CACHE_OPTIONS = {
   max: 10000, // Max 10000 autocomplete results
   maxAge: 1000 * 60 * 60 * 24 * 5, // Max age in 5 days
 };
+
+// A cache containing saved routes IDs to routes
 const ROUTES_CALC_CACHE_OPTIONS = {
   max: 1000, // Max 1000 routes
   maxAge: 1000 * 60 * 15, // Max age in 15 minutes
 };
+// A cache mapping a /search's request query string to its Google autocomplete predictions
 const QUERY_PREDICTIONS_CACHE_OPTIONS = {
   max: 10000, // Max 1000 predictions
   maxAge: 1000 * 60 * 60 * 24 * 5, // Max age in 5 days
@@ -17,9 +22,9 @@ const QUERY_PREDICTIONS_CACHE_OPTIONS = {
 const MIN_FUZZ_RATIO = 75;
 
 /* Delay Buffer constants */
-// buffer to account for routes in past 20 minutes with delays
+// A buffer to account for routes in past 20 minutes with delays
 const FIRST_DELAY_BUFFER_IN_MINUTES = 20;
-// additional buffer to account for time needed to walk from current location to bus stop
+// An additional buffer to account for time needed to walk from current location to bus stop
 const SECOND_DELAY_BUFFER_IN_MINUTES = 40;
 
 /* Distance & Speed constants */
@@ -31,11 +36,11 @@ const WALK_SPEED = 3.0;
 
 /* Degrees Precision constants */
 const DEG_MIN_PRECISION = 1;
-const DEG_KM_PRECISION = 2; // 3 degrees of precision is about 1 km, stop barely walkable
-const DEG_WALK_PRECISION = 3; // 3 degrees of precision is about 111 meters, stop walkable
-const DEG_NEARBY_PRECISION = 4; // 4 degrees of precision is about 11 meters, stop nearby
-const DEG_EQ_PRECISION = 5; // 5 degrees of precision is about a 1.1 meters, is a stop
-const DEG_EXACT_PRECISION = 6; // 6 degrees of precision is about a 111 mm, is exact point
+const DEG_KM_PRECISION = 2; // 2 degrees of precision is about 1 km, a barely walkable stop
+const DEG_WALK_PRECISION = 3; // 3 degrees of precision is about 111 meters, a walkable stop
+const DEG_NEARBY_PRECISION = 4; // 4 degrees of precision is about 11 meters, a nearby stop
+const DEG_EQ_PRECISION = 5; // 5 degrees of precision is about 1.1 meters, a stop
+const DEG_EXACT_PRECISION = 6; // 6 degrees of precision is about 111 mm, an exact point
 const DEG_MAX_PRECISION = 6;
 
 /* String & URL constants */
