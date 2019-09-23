@@ -1,8 +1,6 @@
 // @flow
-import fuzz from 'fuzzball';
 import LRU from 'lru-cache';
 import type Request from 'express';
-import AllStopUtils from '../../utils/AllStopUtils';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import RequestUtils from '../../utils/RequestUtils';
 import SearchUtils from '../../utils/SearchUtils';
