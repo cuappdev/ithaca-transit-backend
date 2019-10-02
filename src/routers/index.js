@@ -3,6 +3,7 @@ import AllStopsRouter from './v1/AllStopsRouter';
 import ApplePlacesRouter from './v1/ApplePlacesRouter';
 import AppleSearchRouter from './v1/AppleSearchRouter';
 import DelayRouter from './v1/DelayRouter';
+import DelaysRouter from './v2/DelaysRouter';
 import DocsRouter from './DocsRouter';
 import HelloWorldRouter from './v1/HelloWorldRouter';
 import MultiRouteRouter from './v1/MultiRouteRouter';
@@ -20,6 +21,7 @@ export default {
   ApplePlacesRouter,
   AppleSearchRouter,
   DelayRouter,
+  DelaysRouter,
   DocsRouter,
   HelloWorldRouter,
   MultiRouteRouter,
