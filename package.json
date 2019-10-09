@@ -57,7 +57,7 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^9.0.0",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^25.0.0",
     "babel-loader": "^7.1.5",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
@@ -72,7 +72,7 @@
     "eslint-plugin-react": "^7.12.4",
     "extra-watch-webpack-plugin": "^1.0.3",
     "flow-bin": "^0.81.0",
-    "jest": "^23.6.0",
+    "jest": "^25.0.0",
     "nodemon": "^1.18.9",
     "nodemon-webpack-plugin": "^4.0.7",
     "regenerator-runtime": "^0.12.1",
