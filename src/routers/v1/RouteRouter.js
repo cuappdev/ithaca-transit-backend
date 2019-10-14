@@ -27,7 +27,7 @@ class RouteRouter extends ApplicationRouter<Array<Object>> {
       uid,
     } = params;
 
-    const isArriveBy = (arriveBy === '1' || arriveBy === true);
+    const isArriveBy = (arriveBy === '1' || arriveBy === true || arriveBy === 'true' || arriveBy === 'True');
     const routes = await RouteUtils.getRoutes(originName, destinationName, end, start, time, isArriveBy);
     const containsTransfer = routes.find(route => RouteUtils.routeContainsTransfer(route)) !== undefined;
     if (routes.length > 0 && containsTransfer) {

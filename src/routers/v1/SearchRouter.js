@@ -1,14 +1,16 @@
 // @flow
-import fuzz from 'fuzzball';
 import LRU from 'lru-cache';
 import type Request from 'express';
-import AllStopUtils from '../../utils/AllStopUtils';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import RequestUtils from '../../utils/RequestUtils';
 import SearchUtils from '../../utils/SearchUtils';
 import Constants from '../../utils/Constants';
 
-const queryToPredictionsCache = LRU(Constants.QUERY_PREDICTIONS_CACHE_OPTIONS);
+const queryToPredictionsCacheOptions = {
+  max: 10000, // Maximum size of cache
+  maxAge: 1000 * 60 * 60 * 24 * 5, // Maximum age in milliseconds
+};
+const queryToPredictionsCache = LRU(queryToPredictionsCacheOptions);
 
 class SearchRouter extends ApplicationRouter<Array<Object>> {
   constructor() {
@@ -27,21 +29,7 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
     const query = req.body.query.toLowerCase();
     const cachedValue = queryToPredictionsCache.get(query);
 
-    const allStops = await AllStopUtils.fetchAllStops();
-    const filteredStops = allStops.filter(s => (
-      fuzz.partial_ratio(s.name.toLowerCase(), query) >= Constants.MIN_FUZZ_RATIO
-    ));
-    filteredStops.sort((a, b) => {
-      const aPartialRatio = fuzz.partial_ratio(query, a.name.toLowerCase());
-      const bPartialRatio = fuzz.partial_ratio(query, b.name.toLowerCase());
-      return bPartialRatio - aPartialRatio;
-    });
-    const formattedStops = filteredStops.map(s => ({
-      type: Constants.BUS_STOP,
-      lat: s.lat,
-      long: s.long,
-      name: s.name,
-    }));
+    const formattedStops = await SearchUtils.getFormattedStopsForQuery(query);
 
     // Return the list of googlePlaces and busStops
     if (cachedValue) return cachedValue.concat(formattedStops);

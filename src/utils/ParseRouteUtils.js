@@ -1,6 +1,7 @@
 // @flow
 import createGpx from 'gps-to-gpx';
 
+import { isNullOrUndefined } from 'util';
 import { MAP_MATCHING } from './EnvUtils';
 import AllStopUtils from './AllStopUtils';
 import GTFSUtils from './GTFSUtils';
@@ -65,7 +66,25 @@ function mergeDirections(first, second): Object {
   const stops = first.stops.concat(second.stops);
   const tripIDs = first.tripIdentifiers.concat(second.tripIdentifiers);
 
+  // The combined delay is only the first bus route's delay, because that is
+  // how much the combined route is initially delayed by and is what the user
+  // needs to know in order to board the route on time.
+  const delay = isNullOrUndefined(first.delay) ? null : first.delay;
+
+  // If there is any part of the bus route that a passenger does not stay on for
+  // transfer, then the passenger has to get off the bus at some point, so
+  // stayOnBusForTransfer is false if either route's stayOnBusForTransfer is false.
+  const firstStayOnBusForTransfer = isNullOrUndefined(
+    first.stayOnBusForTransfer,
+  ) ? false : first.stayOnBusForTransfer;
+  const secondStayOnBusForTransfer = isNullOrUndefined(
+    second.stayOnBusForTransfer,
+  ) ? false : second.stayOnBusForTransfer;
+  const stayOnBusForTransfer = firstStayOnBusForTransfer
+    && secondStayOnBusForTransfer;
+
   return {
+    delay,
     distance,
     endLocation: second.endLocation,
     endTime: second.endTime,
@@ -74,6 +93,7 @@ function mergeDirections(first, second): Object {
     routeNumber: first.routeNumber,
     startLocation: first.startLocation,
     startTime: first.startTime,
+    stayOnBusForTransfer,
     stops,
     tripIdentifiers: tripIDs,
     type: first.type,
