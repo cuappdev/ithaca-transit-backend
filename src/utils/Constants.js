@@ -1,6 +1,5 @@
 /* Cache constants */
 // A cache containing Google Autocomplete results
-// TODO: Remove - it is duplicated with QUERY_PREDICTIONS_CACHE_OPTIONS
 const AUTOCOMPLETE_CACHE_OPTIONS = {
   max: 10000, // Max 10000 autocomplete results
   maxAge: 1000 * 60 * 60 * 24 * 5, // Max age in 5 days
@@ -11,6 +10,7 @@ const ROUTES_CALC_CACHE_OPTIONS = {
   max: 1000, // Max 1000 routes
   maxAge: 1000 * 60 * 15, // Max age in 15 minutes
 };
+
 // A cache mapping a /search's request query string to its Google autocomplete predictions
 const QUERY_PREDICTIONS_CACHE_OPTIONS = {
   max: 10000, // Max 1000 predictions

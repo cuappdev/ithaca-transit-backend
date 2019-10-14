@@ -5,7 +5,6 @@ import Constants from './Constants';
 import { TOKEN } from './EnvUtils';
 import LogUtils from './LogUtils';
 
-const TOKEN_EXPIRATION_WINDOW_IN_MS = 500;
 let credentials = { basic_token: TOKEN, access_token: '', expiration_date: '' };
 
 function isAccessTokenExpired(): boolean {
@@ -15,7 +14,7 @@ function isAccessTokenExpired(): boolean {
 
   const currentTime = new Date().getTime();
   const tokenExpirationTime = (new Date(credentials.expiration_date)).getTime();
-  return tokenExpirationTime - currentTime < TOKEN_EXPIRATION_WINDOW_IN_MS;
+  return tokenExpirationTime - currentTime < Constants.TOKEN_EXPIRATION_WINDOW_IN_MS;
 }
 
 function fetchAccessToken(): void {

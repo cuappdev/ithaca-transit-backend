@@ -6,11 +6,7 @@ import RequestUtils from '../../utils/RequestUtils';
 import SearchUtils from '../../utils/SearchUtils';
 import Constants from '../../utils/Constants';
 
-const queryToPredictionsCacheOptions = {
-  max: 10000, // Maximum size of cache
-  maxAge: 1000 * 60 * 60 * 24 * 5, // Maximum age in milliseconds
-};
-const queryToPredictionsCache = LRU(queryToPredictionsCacheOptions);
+const queryToPredictionsCache = LRU(Constants.QUERY_PREDICTIONS_CACHE_OPTIONS);
 
 class SearchRouter extends ApplicationRouter<Array<Object>> {
   constructor() {
