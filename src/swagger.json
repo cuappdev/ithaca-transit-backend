@@ -13,28 +13,34 @@
   "paths": {
     "/alerts": {
       "get": {
-        "summary": "Return a list of official TCAT alerts/messages.",
-        "description": "A list should be included in the app, and periodically updated every so often. All fields are optional. The date, time, and daysOfWeek fields can specify an alert that takes place for example from 10 pm March 4 (fromDate) to 12 pm April 10 (toDate) on Weekdays (daysOfWeek) from 1 pm (fromTime) to 11 pm (toTime).",
+        "summary": "Return a list of official TCAT alerts/messages",
+        "description": "All response fields are optional. A list should be included in the app, and periodically updated.",
         "produces": [
           "application/json"
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [Alert]}"
+            "description": "{success: true, data: [Alert]}",
+            "schema": {
+              "$ref": "#/definitions/Alert"
+            }
           }
         }
       }
     },
-    "/allstops": {
+    "/allStops": {
       "get": {
-        "summary": "Return a list of TCAT bus stops to show as a possible start / end location.",
-        "description": "A list should be included in the app, and periodically updated every so often.\nNote: The type field refers to the type of place. We currently have two different possible types, busStop and googlePlace. Look at /search for further details.",
+        "summary": "Return a list of TCAT bus stops to show as a possible start / end location",
+        "description": "A list should be included in the app, and periodically updated.\nNote: The `type` response field refers to the type of place. We currently have two different possible types, busStop and googlePlace. Look at /search for further details.",
         "produces": [
           "application/json"
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [BusStop]}"
+            "description": "{success: true, data: [BusStop]}",
+            "schema": {
+              "$ref": "#/definitions/BusStop"
+            }
           }
         }
       }
@@ -70,7 +76,7 @@
     },
     "/route": {
       "get": {
-        "summary": "Return a list of the best available routes based on the passed in parameters",
+        "summary": "Return a list of the best available routes based on the passed-in query parameters",
         "produces": [
           "application/json"
         ],
@@ -78,7 +84,7 @@
           {
             "name": "start",
             "in": "query",
-            "description": "The starting point of the journey.",
+            "description": "The starting coordinates of the journey (e.g. \"25.5, 25.6\").",
             "required": true,
             "type": "string",
             "format": "<latitude: Double>, <longitude: Double>"
@@ -86,7 +92,7 @@
           {
             "name": "end",
             "in": "query",
-            "description": "The ending point of the journey.",
+            "description": "The ending coordinates of the journey.",
             "required": true,
             "type": "string",
             "format": "<latitude: Double>, <longitude: Double>"
@@ -94,14 +100,14 @@
           {
             "name": "time",
             "in": "query",
-            "description": "The relevant time in the request. If arriveBy is false, departBy functionality is used. The time is when the journey should at earliest begin by.",
+            "description": "The relevant time in the request. If `arriveBy` is false, departBy functionality is used, and `time` is when the journey should at earliest begin by.",
             "required": true,
             "type": "integer"
           },
           {
             "name": "arriveBy",
             "in": "query",
-            "description": "Whether the request requires the route to arrive at the destination by time.",
+            "description": "Whether the request requires the route to arrive at the destination by `time`.",
             "required": true,
             "type": "boolean"
           },
@@ -115,12 +121,16 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [Route]}"
+            "description": "{success: true, data: [Route]}",
+            "schema": {
+              "$ref": "#/definitions/Route"
+            }
           }
         }
       },
       "post": {
-        "summary": "Return a list of the best available routes based on the passed in parameters",
+        "summary": "Return a list of the best available routes based on the passed-in parameters",
+        "description": "Same functionality as the GET endpoint.",
         "produces": [
           "application/json"
         ],
@@ -128,7 +138,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The user's search query for a bus stop or place.\nstart: The starting point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\nend: The ending point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\ntime: The relevant time in the request. If isArriveBy is false, departBy functionality is used. The time is when the journey should at earliest begin by.\narriveBy: Whether the request requires the route to arrive at the destination by time.\ndestinationName: The name of the destination of the trip.",
+            "description": "The user's search query for a bus stop or place.\nstart: The starting point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\nend: The ending point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\ntime: The relevant time in the request. If `arriveBy` is false, departBy functionality is used, and `time` is when the journey should at earliest begin by.\narriveBy: Whether the request requires the route to arrive at the destination by time.\ndestinationName: The name of the destination of the trip.",
             "required": true,
             "schema": {
               "type": "object",
@@ -141,10 +151,12 @@
               ],
               "properties": {
                 "start": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "25.5, 25.5"
                 },
                 "end": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "25.6, 25.6"
                 },
                 "time": {
                   "type": "integer"
@@ -161,14 +173,17 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [Route]}"
+            "description": "{success: true, data: [Route]}",
+            "schema": {
+              "$ref": "#/definitions/Route"
+            }
           }
         }
       }
     },
     "/v2/route": {
       "post": {
-        "summary": "Return a list of the best available routes based on the passed in parameters",
+        "summary": "Return a list of the best available routes based on the passed-in parameters",
         "produces": [
           "application/json"
         ],
@@ -176,7 +191,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The user's search query for a bus stop or place.\nstart: The starting point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\nend: The ending point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\ntime: The relevant time in the request. If isArriveBy is false, departBy functionality is used. The time is when the journey should at earliest begin by.\nisArriveBy: Whether the request requires the route to arrive at the destination by time.\ndestinationName: The name of the destination of the trip.",
+            "description": "The user's search query for a bus stop or place.\nstart: The starting point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\nend: The ending point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\ntime: The relevant time in the request. If `arriveBy` is false, departBy functionality is used, and `time` is when the journey should at earliest begin by.\narriveBy: Whether the request requires the route to arrive at the destination by time.\ndestinationName: The name of the destination of the trip.",
             "required": true,
             "schema": {
               "type": "object",
@@ -184,20 +199,22 @@
                 "start",
                 "end",
                 "time",
-                "isArriveBy",
+                "arriveBy",
                 "destinationName"
               ],
               "properties": {
                 "start": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "25.5, 25.5"
                 },
                 "end": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "25.6, 25.6"
                 },
                 "time": {
                   "type": "integer"
                 },
-                "isArriveBy": {
+                "arriveBy": {
                   "type": "boolean"
                 },
                 "destinationName": {
@@ -209,7 +226,10 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: {fromStop: [Route], boardingSoon: [Route], walking: [Route]}}"
+            "description": "{success: true, data: {fromStop: [Route], boardingSoon: [Route], walking: [Route]}}",
+            "schema": {
+              "$ref": "#/definitions/Route"
+            }
           }
         }
       }
@@ -239,7 +259,7 @@
           {
             "name": "end",
             "in": "query",
-            "description": "An array of latitude-longitude strings to specify ending points. Must contain at least one ending point. Should be the same length as destinationNames.",
+            "description": "An array of latitude-longitude strings to specify ending points. Must contain at least one ending point. Should be the same length as `destinationNames`.",
             "required": true,
             "type": "array",
             "items": {
@@ -250,7 +270,7 @@
           {
             "name": "destinationNames",
             "in": "query",
-            "description": "The names of the destinations. Must contain at least one.",
+            "description": "Array of the names of the destinations. Must contain at least one name.",
             "required": true,
             "format": "['<destinationName: string>']",
             "type": "array",
@@ -261,7 +281,10 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [Route]}"
+            "description": "{success: true, data: [Route]}",
+            "schema": {
+              "$ref": "#/definitions/Route"
+            }
           }
         }
       }
@@ -334,7 +357,16 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [BusStop/GooglePlace]}"
+            "description": "{success: true, data: [BusStop/GooglePlace]}",
+            "schema": {
+              "$ref": "#/definitions/BusStop"
+            }
+          },
+          "x-also 200; also in data": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/GooglePlace"
+            }
           }
         }
       }
@@ -349,7 +381,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The user's search query for a bus stop or place.\nstopID: The unique identifier for a bus stop.\nrouteID: The number of the bus route.\ntripIdentifiers: The array of unique trip identifiers for the specific routeID.",
+            "description": "The user's search query for a bus stop or place.\n* stopID: The unique identifier for a bus stop.\n* routeID: The number of the bus route.\n* tripIdentifiers: The array of unique trip identifiers for the specific `routeID`.",
             "required": true,
             "schema": {
               "type": "array",
@@ -377,7 +409,10 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [BusLocation]}"
+            "description": "{success: true, data: [BusLocation]}",
+            "schema": {
+              "$ref": "#/definitions/BusLocation"
+            }
           }
         }
       }
@@ -551,21 +586,25 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the bus stop."
+          "description": "The name of the bus stop.",
+          "example": "Cradit Farm @ Pleasant Grove"
         },
         "lat": {
           "type": "number",
           "format": "double",
-          "description": "The latitude coordinate of the bus stop."
+          "description": "The latitude coordinate of the bus stop.",
+          "example": 42.1
         },
         "long": {
           "type": "number",
           "format": "double",
-          "description": "The longitude coordinate of the bus stop."
+          "description": "The longitude coordinate of the bus stop.",
+          "example": -76.1
         },
         "type": {
           "type": "string",
-          "description": "This is just the string 'busStop'"
+          "description": "This is just the string 'busStop'",
+          "example": "busStop"
         }
       }
     },
