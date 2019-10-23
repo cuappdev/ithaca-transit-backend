@@ -2,6 +2,7 @@ import AlertsRouter from './v1/AlertsRouter';
 import AllStopsRouter from './v1/AllStopsRouter';
 import DelayRouter from './v1/DelayRouter';
 import DocsRouter from './DocsRouter';
+import GTFSFeedInfoRouter from './v1/GTFSFeedInfoRouter';
 import HelloWorldRouter from './v1/HelloWorldRouter';
 import MultiRouteRouter from './v1/MultiRouteRouter';
 import PlacesAutocompleteRouter from './v1/PlacesAutocompleteRouter';
@@ -17,6 +18,7 @@ export default {
   AllStopsRouter,
   DelayRouter,
   DocsRouter,
+  GTFSFeedInfoRouter,
   HelloWorldRouter,
   MultiRouteRouter,
   PlacesAutocompleteRouter,

@@ -18,6 +18,7 @@ class API extends ApplicationAPI {
       Routers.AlertsRouter,
       Routers.AllStopsRouter,
       Routers.DelayRouter,
+      Routers.GTFSFeedInfoRouter,
       Routers.HelloWorldRouter,
       Routers.MultiRouteRouter,
       Routers.PlacesAutocompleteRouter,

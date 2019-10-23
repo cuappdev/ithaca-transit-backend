@@ -12,6 +12,17 @@ async function fetchRoutes(): Object {
   return JSON.parse(data);
 }
 
+async function getFeedInfo(): Object {
+  const options = {
+    method: 'GET',
+    url: `http://${PYTHON_APP || 'localhost'}:5000/gtfs-date`,
+    headers: { 'Cache-Control': 'no-cache' },
+  };
+  const data = await RequestUtils.createRequest(options, 'Get GTFS feed info request failed');
+  return JSON.parse(data);
+}
+
 export default {
   fetchRoutes,
+  getFeedInfo,
 };
