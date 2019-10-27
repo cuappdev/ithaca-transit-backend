@@ -1,11 +1,11 @@
 // @flow
-import { PYTHON_APP } from './EnvUtils';
+import { PYTHON_APP, PYTHON_PORT } from './EnvUtils';
 import RequestUtils from './RequestUtils';
 
 async function fetchRoutes(): Object {
   const options = {
     method: 'GET',
-    url: `http://${PYTHON_APP || 'localhost'}:5000/gtfs`,
+    url: `http://${PYTHON_APP || 'localhost'}:${+PYTHON_PORT}/gtfs`,
     headers: { 'Cache-Control': 'no-cache' },
   };
   const data = await RequestUtils.createRequest(options, 'Fetch routes request failed');
@@ -15,7 +15,7 @@ async function fetchRoutes(): Object {
 async function getFeedInfo(): Object {
   const options = {
     method: 'GET',
-    url: `http://${PYTHON_APP || 'localhost'}:5000/gtfs-date`,
+    url: `http://${PYTHON_APP || 'localhost'}:${+PYTHON_PORT}/gtfs-feed-info`,
     headers: { 'Cache-Control': 'no-cache' },
   };
   const data = await RequestUtils.createRequest(options, 'Get GTFS feed info request failed');
