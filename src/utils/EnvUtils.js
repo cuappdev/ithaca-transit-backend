@@ -5,6 +5,7 @@ const {
   MAP_MATCHING,
   NODE_ENV,
   PYTHON_APP,
+  PYTHON_PORT,
   TOKEN,
 } = process.env;
 
@@ -14,5 +15,6 @@ export {
   MAP_MATCHING,
   NODE_ENV,
   PYTHON_APP,
+  PYTHON_PORT,
   TOKEN,
 };
