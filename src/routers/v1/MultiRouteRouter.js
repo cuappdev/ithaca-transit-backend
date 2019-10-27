@@ -2,10 +2,9 @@
 import type Request from 'express';
 import AnalyticsUtils from '../../utils/AnalyticsUtils';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
+import Constants from '../../utils/Constants';
 import LogUtils from '../../utils/LogUtils';
 import RouteUtils from '../../utils/RouteUtils';
-
-const CURRENT_LOCATION = 'Current Location';
 
 /**
  * Router object that returns an array of the best available route for each
@@ -39,7 +38,7 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
 
     // get array of routes for each destination
     const multiRoutes = destinationNames.map((destinationName, index) => RouteUtils.getRoutes(
-      CURRENT_LOCATION,
+      Constants.CURRENT_LOCATION,
       destinationName,
       end[index],
       start,

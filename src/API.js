@@ -17,6 +17,8 @@ class API extends ApplicationAPI {
     const sharedRouters = [
       Routers.AlertsRouter,
       Routers.AllStopsRouter,
+      Routers.ApplePlacesRouter,
+      Routers.AppleSearchRouter,
       Routers.DelayRouter,
       Routers.GTFSFeedInfoRouter,
       Routers.HelloWorldRouter,

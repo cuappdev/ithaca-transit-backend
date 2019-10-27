@@ -18,12 +18,14 @@ class RouteRouter extends ApplicationRouter<Object> {
     const {
       destinationName,
       end,
-      isArriveBy,
+      arriveBy,
       originName,
       start,
       time,
       uid,
     } = req.body;
+
+    const isArriveBy = (arriveBy === '1' || arriveBy === true || arriveBy === 'true' || arriveBy === 'True');
 
     const isOriginBusStop = await RouteUtils.isBusStop(originName);
     const originBusStopName = isOriginBusStop ? originName : null;

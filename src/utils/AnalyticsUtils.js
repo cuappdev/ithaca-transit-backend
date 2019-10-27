@@ -1,12 +1,10 @@
 // @flow
 import crypto from 'crypto';
 import LRU from 'lru-cache';
+import Constants from './Constants';
 import LogUtils from './LogUtils';
 
-const routesCalculationsCache = LRU({
-  max: 1000, // max 1000 routes in storage
-  maxAge: 1000 * 60 * 15, // max age 15 minutes
-});
+const routesCalculationsCache = LRU(Constants.ROUTES_CALC_CACHE_OPTIONS);
 
 function getUniqueId(numBytes: ?number = 10) {
   return crypto.randomBytes(numBytes).toString('hex');

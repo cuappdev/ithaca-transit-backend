@@ -39,9 +39,9 @@ class ApplicationAPI {
     AppDevUtilities.tryCheckAppDevURL(this.getPath());
     const middleware = this.middleware();
     const routerGroups = this.routerGroups();
-    for (let i = 0; i < middleware.length; i++) {
-      this.express.use(middleware[i]);
-    }
+    middleware.forEach((m) => {
+      this.express.use(m);
+    });
 
     Object.keys(routerGroups).forEach((version) => {
       const routers = routerGroups[version];
