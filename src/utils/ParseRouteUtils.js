@@ -359,15 +359,15 @@ function parseWalkingRoute(
 ): Object {
   try {
     const path = data.paths[0];
-    let startDateMs = dateMs;
-    let endDateMs = dateMs + path.time;
+    let startTimeMs = dateMs;
+    let endTimeMs = dateMs + path.time;
 
     if (isArriveBy) {
-      startDateMs = dateMs - path.time;
-      endDateMs = dateMs;
+      startTimeMs = dateMs - path.time;
+      endTimeMs = dateMs;
     }
-    const departureTime = convertMillisecondsToISOString(startDateMs);
-    const arrivalTime = convertMillisecondsToISOString(endDateMs);
+    const departureTime = convertMillisecondsToISOString(startTimeMs);
+    const arrivalTime = convertMillisecondsToISOString(endTimeMs);
     const totalDuration = getDifferenceInMinutes(departureTime, arrivalTime);
 
     const { startCoords, endCoords } = getStartEndCoords(path.points, path.points);
@@ -453,7 +453,13 @@ function parseWalkingRoute(
  * @param destinationName
  * @returns {Promise<Array<Object>>}
  */
-function parseRoutes(busRoutes: Array<Object>, originName: string, destinationName: string): Promise<Array<Object>> {
+function parseRoutes(
+  busRoutes: Array<Object>,
+  originName: string,
+  destinationName: string,
+  originalDepartureTimeMs: number,
+  isArriveByQuery: boolean,
+): Promise<Array<Object>> {
   return Promise.all(busRoutes.map(async (busRoute) => {
     try {
       // array containing legs of journey. e.g. walk, bus ride, walk
@@ -655,6 +661,39 @@ function parseRoutes(busRoutes: Array<Object>, originName: string, destinationNa
         stayOnBusForTransfer: false,
         stopName: destinationName,
       });
+
+      // Readjust the walking start and end times by accounting for the buffer
+      // times that were initially passed into Graphhopper to get routes
+      if (busRoute.transfers === -1) {
+        let startTimeMs = originalDepartureTimeMs;
+        let endTimeMs = originalDepartureTimeMs + busRoute.time;
+
+        if (isArriveByQuery) {
+          startTimeMs = originalDepartureTimeMs - busRoute.time;
+          endTimeMs = originalDepartureTimeMs;
+        }
+
+        const walkDepartureTime = convertMillisecondsToISOString(startTimeMs);
+        const walkArrivalTime = convertMillisecondsToISOString(endTimeMs);
+
+        directions[0].startTime = walkDepartureTime;
+        directions[0].endTime = walkArrivalTime;
+
+        return {
+          arrivalTime: walkArrivalTime,
+          boundingBox,
+          departureTime: walkDepartureTime,
+          directions,
+          endCoords,
+          endName: destinationName,
+          numberOfTransfers: busRoute.transfers,
+          routeSummary,
+          startCoords,
+          startName: originName,
+          totalDuration,
+          travelDistance,
+        };
+      }
 
       return {
         arrivalTime: arriveTime,
