@@ -153,7 +153,10 @@ async function getParsedWalkingAndBusRoutes(
     };
   }
 
-  const parsedRoutes = await ParseRouteUtils.parseRoutes(routes, originName, destinationName);
+  const departureTimeMs = GraphhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0);
+  const parsedRoutes = await ParseRouteUtils.parseRoutes(
+    routes, originName, destinationName, departureTimeMs, isArriveBy,
+  );
   let parsedWalkingRoute = parsedRoutes.find(route => route.numberOfTransfers === -1);
 
   // Make request to Ghopper walking service if the bus service doesn't provide walking directions
