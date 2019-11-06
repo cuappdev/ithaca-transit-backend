@@ -676,14 +676,17 @@ function parseRoutes(
         const walkDepartureTime = convertMillisecondsToISOString(startTimeMs);
         const walkArrivalTime = convertMillisecondsToISOString(endTimeMs);
 
-        directions[0].startTime = walkDepartureTime;
-        directions[0].endTime = walkArrivalTime;
+        const walkDirections = {
+          ...directions[0],
+          startTime: walkDepartureTime,
+          endTime: walkArrivalTime,
+        };
 
         return {
           arrivalTime: walkArrivalTime,
           boundingBox,
           departureTime: walkDepartureTime,
-          directions,
+          directions: [walkDirections],
           endCoords,
           endName: destinationName,
           numberOfTransfers: busRoute.transfers,
