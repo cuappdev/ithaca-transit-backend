@@ -2,6 +2,7 @@ import AlertsRouter from './v1/AlertsRouter';
 import AllStopsRouter from './v1/AllStopsRouter';
 import ApplePlacesRouter from './v1/ApplePlacesRouter';
 import AppleSearchRouter from './v1/AppleSearchRouter';
+import DelayNotification from './v2/DelayNotification';
 import DelayRouter from './v1/DelayRouter';
 import DelaysRouter from './v2/DelaysRouter';
 import DocsRouter from './DocsRouter';
@@ -20,6 +21,7 @@ export default {
   AllStopsRouter,
   ApplePlacesRouter,
   AppleSearchRouter,
+  DelayNotification,
   DelayRouter,
   DelaysRouter,
   DocsRouter,

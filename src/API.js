@@ -23,6 +23,7 @@ class API extends ApplicationAPI {
       Routers.DelaysRouter,
       Routers.HelloWorldRouter,
       Routers.MultiRouteRouter,
+      Routers.DelayNotification,
       Routers.PlacesAutocompleteRouter,
       Routers.PlaceIDCoordinatesRouter,
       Routers.RouteSelectedRouter,
