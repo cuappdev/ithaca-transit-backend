@@ -460,8 +460,8 @@ function parseRoutes(
   originalDepartureTimeMs: number,
   isArriveByQuery: boolean,
 ): Promise<Array<Object>> {
-  return Promise.all(busRoutes.map(async (busRoute) => {
-    try {
+  try {
+    return Promise.all(busRoutes.map(async (busRoute) => {
       // array containing legs of journey. e.g. walk, bus ride, walk
       const { legs } = busRoute;
       const numberOfLegs = legs.length;
@@ -694,12 +694,12 @@ function parseRoutes(
         totalDuration,
         travelDistance,
       };
-    } catch (error) {
-      throw new Error(
-        LogUtils.logErr(error, busRoutes.length, 'Parse final route failed'),
-      );
-    }
-  }));
+    }));
+  } catch (error) {
+    throw new Error(
+      LogUtils.logErr(error, busRoutes.length, 'Parse final route failed'),
+    );
+  }
 }
 
 export default {
