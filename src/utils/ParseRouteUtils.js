@@ -467,8 +467,21 @@ function parseRoutes(
       const numberOfLegs = legs.length;
 
       // string 2018-02-21T17:27:00Z
-      const { departureTime } = legs[0];
-      const arriveTime = legs[numberOfLegs - 1].arrivalTime;
+      let { departureTime } = legs[0];
+      let arriveTime = legs[numberOfLegs - 1].arrivalTime;
+
+      // Readjust the walking start and end times by accounting for the buffer
+      // times that were initially passed into Graphhopper to get routes
+      if (busRoute.transfers === -1) {
+        let startTimeMs = originalDepartureTimeMs;
+        let endTimeMs = originalDepartureTimeMs + busRoute.time;
+        if (isArriveByQuery) {
+          startTimeMs = originalDepartureTimeMs - busRoute.time;
+          endTimeMs = originalDepartureTimeMs;
+        }
+        departureTime = convertMillisecondsToISOString(startTimeMs);
+        arriveTime = convertMillisecondsToISOString(endTimeMs);
+      }
       const totalDuration = getDifferenceInMinutes(departureTime, arriveTime);
 
       const startingLocationGeometry = legs[0].geometry;
@@ -483,8 +496,13 @@ function parseRoutes(
 
       const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
         let { type } = currLeg;
-        const startTime = currLeg.departureTime;
-        const endTime = currLeg.arrivalTime;
+        let startTime = currLeg.departureTime;
+        let endTime = currLeg.arrivalTime;
+
+        if (busRoute.transfers === -1) {
+          startTime = departureTime;
+          endTime = arriveTime;
+        }
 
         if (type === 'pt') {
           type = DIRECTION_TYPE.DEPART;
@@ -661,42 +679,6 @@ function parseRoutes(
         stayOnBusForTransfer: false,
         stopName: destinationName,
       });
-
-      // Readjust the walking start and end times by accounting for the buffer
-      // times that were initially passed into Graphhopper to get routes
-      if (busRoute.transfers === -1) {
-        let startTimeMs = originalDepartureTimeMs;
-        let endTimeMs = originalDepartureTimeMs + busRoute.time;
-
-        if (isArriveByQuery) {
-          startTimeMs = originalDepartureTimeMs - busRoute.time;
-          endTimeMs = originalDepartureTimeMs;
-        }
-
-        const walkDepartureTime = convertMillisecondsToISOString(startTimeMs);
-        const walkArrivalTime = convertMillisecondsToISOString(endTimeMs);
-
-        const walkDirections = {
-          ...directions[0],
-          startTime: walkDepartureTime,
-          endTime: walkArrivalTime,
-        };
-
-        return {
-          arrivalTime: walkArrivalTime,
-          boundingBox,
-          departureTime: walkDepartureTime,
-          directions: [walkDirections],
-          endCoords,
-          endName: destinationName,
-          numberOfTransfers: busRoute.transfers,
-          routeSummary,
-          startCoords,
-          startName: originName,
-          totalDuration,
-          travelDistance,
-        };
-      }
 
       return {
         arrivalTime: arriveTime,
