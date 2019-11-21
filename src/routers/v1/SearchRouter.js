@@ -6,7 +6,13 @@ import RequestUtils from '../../utils/RequestUtils';
 import SearchUtils from '../../utils/SearchUtils';
 import Constants from '../../utils/Constants';
 
-const queryToPredictionsCache = LRU(Constants.QUERY_PREDICTIONS_CACHE_OPTIONS);
+const queryToPredictionsCacheOptions = {
+  max: 10000, // Maximum size of cache
+  maxAge: 1000 * 60 * 60 * 24 * 5, // Maximum age in milliseconds
+};
+const queryToPredictionsCache = LRU(queryToPredictionsCacheOptions);
+const GOOGLE_PLACE = 'googlePlace';
+const GOOGLE_PLACE_LOCATION = '42.4440,-76.5019';
 
 class SearchRouter extends ApplicationRouter<Array<Object>> {
   constructor() {
@@ -33,11 +39,11 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
     // not in cache
     const options = {
       ...Constants.GET_OPTIONS,
-      url: Constants.GOOGLE_AUTOCOMPLETE_URL,
+      url: 'https://maps.googleapis.com/maps/api/place/autocomplete/json',
       qs: {
         input: query,
         key: process.env.PLACES_KEY,
-        location: Constants.GOOGLE_PLACE_LOCATION,
+        location: GOOGLE_PLACE_LOCATION,
         radius: 24140,
         strictbounds: '',
       },
@@ -53,7 +59,7 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
       const googlePredictions = await Promise.all(predictions.map(async (p): Promise<Object> => {
         const placeIDCoords = await SearchUtils.getCoordsForPlaceID(p.place_id);
         return {
-          type: Constants.GOOGLE_PLACE,
+          type: GOOGLE_PLACE,
           detail: p.structured_formatting.secondary_text,
           name: p.structured_formatting.main_text,
           placeID: p.place_id,
