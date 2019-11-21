@@ -200,7 +200,7 @@ function getValidBusRoutes(busRoutes: Array<Object>, busRoutesToCheck: Array<Obj
  * @returns {Array<Object>}
  */
 async function fetchRoutes(end: string, start: string, departureTimeDateNow: string,
-  isArriveByQuery: boolean): Array<Object> {
+  isArriveByQuery: boolean): Promise<Array<Object>> {
   let routes;
 
   const sharedOptions = { method: 'GET', qsStringifyOptions: { arrayFormat: 'repeat' } };
