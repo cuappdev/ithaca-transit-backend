@@ -3,13 +3,13 @@ import type Request from 'express';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import NotificationUtils from '../../utils/NotificationUtils';
 
-class DelayNotification extends ApplicationRouter<Array<Object>> {
+class DepartNotification extends ApplicationRouter<Array<Object>> {
   constructor() {
     super(['POST']);
   }
 
   getPath(): string {
-    return '/delayNotification/';
+    return '/departNotification/';
   }
 
   // eslint-disable-next-line require-await
@@ -18,6 +18,8 @@ class DelayNotification extends ApplicationRouter<Array<Object>> {
       !req.body
       || !req.body.deviceToken
       || typeof req.body.deviceToken !== 'string'
+      || !req.body.minutesBefore
+      || typeof req.body.minutesBefore !== 'number'
       || !req.body.stopID
       || typeof req.body.stopID !== 'string'
       || !req.body.tripID
@@ -28,12 +30,19 @@ class DelayNotification extends ApplicationRouter<Array<Object>> {
     }
     const {
       deviceToken,
+      minutesBefore,
       stopID,
       tripID,
       uid,
     } = req.body;
-    return NotificationUtils.notifyForDelays(deviceToken, tripID, stopID, uid);
+    return NotificationUtils.notifyForDeparture(
+      deviceToken,
+      minutesBefore,
+      stopID,
+      tripID,
+      uid,
+    );
   }
 }
 
-export default new DelayNotification().router;
+export default new DepartNotification().router;

@@ -5,6 +5,7 @@ import AppleSearchRouter from './v1/AppleSearchRouter';
 import DelayNotification from './v2/DelayNotification';
 import DelayRouter from './v1/DelayRouter';
 import DelaysRouter from './v2/DelaysRouter';
+import DepartNotification from './v2/DepartNotification';
 import DocsRouter from './DocsRouter';
 import HelloWorldRouter from './v1/HelloWorldRouter';
 import MultiRouteRouter from './v1/MultiRouteRouter';
@@ -24,6 +25,7 @@ export default {
   DelayNotification,
   DelayRouter,
   DelaysRouter,
+  DepartNotification,
   DocsRouter,
   HelloWorldRouter,
   MultiRouteRouter,
