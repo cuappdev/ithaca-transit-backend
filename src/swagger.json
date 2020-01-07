@@ -150,7 +150,7 @@
                   "type": "string"
                 },
                 "minutesBefore": {
-                  "type": "integer"
+                  "type": "string"
                 },
                 "stopID": {
                   "type": "string"
