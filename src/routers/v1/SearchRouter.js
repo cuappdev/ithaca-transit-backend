@@ -1,16 +1,16 @@
 // @flow
-import LRU from 'lru-cache';
+// import LRU from 'lru-cache';
 import type Request from 'express';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import RequestUtils from '../../utils/RequestUtils';
 import SearchUtils from '../../utils/SearchUtils';
 import Constants from '../../utils/Constants';
 
-const queryToPredictionsCacheOptions = {
-  max: 10000, // Maximum size of cache
-  maxAge: 1000 * 60 * 60 * 24 * 5, // Maximum age in milliseconds
-};
-const queryToPredictionsCache = LRU(queryToPredictionsCacheOptions);
+// const queryToPredictionsCacheOptions = {
+//   max: 10000, // Maximum size of cache
+//   maxAge: 1000 * 60 * 60 * 24 * 5, // Maximum age in milliseconds
+// };
+// const queryToPredictionsCache = LRU(queryToPredictionsCacheOptions);
 const GOOGLE_PLACE = 'googlePlace';
 const GOOGLE_PLACE_LOCATION = '42.4440,-76.5019';
 
@@ -29,7 +29,7 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
     }
 
     const query = req.body.query.toLowerCase();
-    const cachedValue = queryToPredictionsCache.get(query);
+    const cachedValue = SearchUtils.queryToPredictionsCache.get(query);
 
     const formattedStops = await SearchUtils.getFormattedStopsForQuery(query);
 
@@ -70,7 +70,7 @@ class SearchRouter extends ApplicationRouter<Array<Object>> {
 
       if (googlePredictions) {
         const filteredPredictions = getFilteredPredictions(googlePredictions, formattedStops);
-        queryToPredictionsCache.set(query, filteredPredictions);
+        SearchUtils.queryToPredictionsCache.set(query, filteredPredictions);
         return filteredPredictions.concat(formattedStops);
       }
     }
