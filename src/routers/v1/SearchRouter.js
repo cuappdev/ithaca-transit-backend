@@ -1,16 +1,9 @@
-// @flow
-// import LRU from 'lru-cache';
 import type Request from 'express';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import RequestUtils from '../../utils/RequestUtils';
 import SearchUtils from '../../utils/SearchUtils';
 import Constants from '../../utils/Constants';
 
-// const queryToPredictionsCacheOptions = {
-//   max: 10000, // Maximum size of cache
-//   maxAge: 1000 * 60 * 60 * 24 * 5, // Maximum age in milliseconds
-// };
-// const queryToPredictionsCache = LRU(queryToPredictionsCacheOptions);
 const GOOGLE_PLACE = 'googlePlace';
 const GOOGLE_PLACE_LOCATION = '42.4440,-76.5019';
 
