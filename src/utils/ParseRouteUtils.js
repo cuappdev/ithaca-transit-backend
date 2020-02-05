@@ -183,6 +183,12 @@ async function condenseRoute(
       if (startTime < departureTimeNowMs - ONE_MIN_IN_MS - delayMs) {
         return null;
       }
+
+      // Temporary fix to prevent bus routes starting before departure time from
+      // being returned.
+      if (startTime < departureTimeNowMs) {
+        return null;
+      }
     }
 
     if (previousDirection
