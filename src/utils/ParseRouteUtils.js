@@ -179,14 +179,9 @@ async function condenseRoute(
      * the route even if the start time is earlier than the current time.
      */
     if (departureDelayBuffer && direction.type === DIRECTION_TYPE.DEPART) {
-      const delayMs = direction.delay !== null ? direction.delay * 1000 : 0;
+      // direction.delay could be undefined, NaN, or null
+      const delayMs = direction.delay ? direction.delay * 1000 : 0;
       if (startTime < departureTimeNowMs - ONE_MIN_IN_MS - delayMs) {
-        return null;
-      }
-
-      // Temporary fix to prevent bus routes starting before departure time from
-      // being returned.
-      if (startTime < departureTimeNowMs) {
         return null;
       }
     }
