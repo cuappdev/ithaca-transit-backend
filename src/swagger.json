@@ -57,14 +57,16 @@
             "in": "query",
             "description": "The stop you want to get the delay for",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "1113"
           },
           {
             "name": "tripID",
             "in": "query",
             "description": "The tripID for the route",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "t536-b67-slB"
           }
         ],
         "responses": {
@@ -150,22 +152,33 @@
                 "destinationName"
               ],
               "properties": {
-                "start": {
-                  "type": "string",
-                  "example": "25.5, 25.5"
-                },
                 "end": {
                   "type": "string",
-                  "example": "25.6, 25.6"
+                  "example": "42.45322,-76.477264"
+                },
+                "uid": {
+                  "type": "string",
+                  "example": "B1CD4726-0CA8-41DC-A2F4-01D5D8F3A3E0"
                 },
                 "time": {
-                  "type": "integer"
-                },
-                "arriveBy": {
-                  "type": "boolean"
+                  "type": "integer",
+                  "example": 1582309886.406827
                 },
                 "destinationName": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "Helen Newman Hall"
+                },
+                "start": {
+                  "type": "string",
+                  "example": "42.45070406588394,-76.49342862932777"
+                },
+                "arriveBy": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "originName": {
+                  "type": "string",
+                  "example": "Current Location"
                 }
               }
             }
@@ -203,22 +216,33 @@
                 "destinationName"
               ],
               "properties": {
-                "start": {
-                  "type": "string",
-                  "example": "25.5, 25.5"
-                },
                 "end": {
                   "type": "string",
-                  "example": "25.6, 25.6"
+                  "example": "42.45322,-76.477264"
+                },
+                "uid": {
+                  "type": "string",
+                  "example": "B1CD4726-0CA8-41DC-A2F4-01D5D8F3A3E0"
                 },
                 "time": {
-                  "type": "integer"
-                },
-                "arriveBy": {
-                  "type": "boolean"
+                  "type": "integer",
+                  "example": 1582309886.406827
                 },
                 "destinationName": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "Helen Newman Hall"
+                },
+                "start": {
+                  "type": "string",
+                  "example": "42.45070406588394,-76.49342862932777"
+                },
+                "arriveBy": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "originName": {
+                  "type": "string",
+                  "example": "Current Location"
                 }
               }
             }
@@ -394,13 +418,16 @@
                 ],
                 "properties": {
                   "stopID": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "1511"
                   },
                   "routeID": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": "10"
                   },
                   "tripIdentifiers": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "t536-b67-s1B"
                   }
                 }
               }
