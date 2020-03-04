@@ -30,8 +30,8 @@
     },
     "/allStops": {
       "get": {
-        "summary": "Return a list of TCAT bus stops to show as a possible start / end location",
-        "description": "A list should be included in the app, and periodically updated.\nNote: The `type` response field refers to the type of place. We currently have two different possible types, busStop and googlePlace. Look at /search for further details.",
+        "summary": "Return a list of TCAT bus stops to show as a possible start / end location.",
+        "description": "A list of all 'BusStop's.",
         "produces": [
           "application/json"
         ],
@@ -55,7 +55,7 @@
           {
             "name": "stopID",
             "in": "query",
-            "description": "The stop you want to get the delay for",
+            "description": "ex. 1113",
             "required": true,
             "type": "string",
             "example": "1113"
@@ -63,7 +63,7 @@
           {
             "name": "tripID",
             "in": "query",
-            "description": "The tripID for the route",
+            "description": "ex. t536-b67-slB",
             "required": true,
             "type": "string",
             "example": "t536-b67-slB"
@@ -72,124 +72,6 @@
         "responses": {
           "200": {
             "description": "{success: true, data: {delay: int64}}"
-          }
-        }
-      }
-    },
-    "/route": {
-      "get": {
-        "summary": "Return a list of the best available routes based on the passed-in query parameters",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "start",
-            "in": "query",
-            "description": "The starting coordinates of the journey (e.g. \"25.5, 25.6\").",
-            "required": true,
-            "type": "string",
-            "format": "<latitude: Double>, <longitude: Double>"
-          },
-          {
-            "name": "end",
-            "in": "query",
-            "description": "The ending coordinates of the journey.",
-            "required": true,
-            "type": "string",
-            "format": "<latitude: Double>, <longitude: Double>"
-          },
-          {
-            "name": "time",
-            "in": "query",
-            "description": "The relevant time in the request. If `arriveBy` is false, departBy functionality is used, and `time` is when the journey should at earliest begin by.",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "arriveBy",
-            "in": "query",
-            "description": "Whether the request requires the route to arrive at the destination by `time`.",
-            "required": true,
-            "type": "boolean"
-          },
-          {
-            "name": "destinationName",
-            "in": "query",
-            "description": "The name of the destination of the trip.",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "{success: true, data: [Route]}",
-            "schema": {
-              "$ref": "#/definitions/Route"
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Return a list of the best available routes based on the passed-in parameters",
-        "description": "Same functionality as the GET endpoint.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "The user's search query for a bus stop or place.\nstart: The starting point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\nend: The ending point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\ntime: The relevant time in the request. If `arriveBy` is false, departBy functionality is used, and `time` is when the journey should at earliest begin by.\narriveBy: Whether the request requires the route to arrive at the destination by time.\ndestinationName: The name of the destination of the trip.",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "start",
-                "end",
-                "time",
-                "arriveBy",
-                "destinationName"
-              ],
-              "properties": {
-                "end": {
-                  "type": "string",
-                  "example": "42.45322,-76.477264"
-                },
-                "uid": {
-                  "type": "string",
-                  "example": "B1CD4726-0CA8-41DC-A2F4-01D5D8F3A3E0"
-                },
-                "time": {
-                  "type": "integer",
-                  "example": 1582309886.406827
-                },
-                "destinationName": {
-                  "type": "string",
-                  "example": "Helen Newman Hall"
-                },
-                "start": {
-                  "type": "string",
-                  "example": "42.45070406588394,-76.49342862932777"
-                },
-                "arriveBy": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "originName": {
-                  "type": "string",
-                  "example": "Current Location"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "{success: true, data: [Route]}",
-            "schema": {
-              "$ref": "#/definitions/Route"
-            }
           }
         }
       }
@@ -351,9 +233,9 @@
         }
       }
     },
-    "/search": {
+    "/v2/appleSearch": {
       "post": {
-        "summary": "Returns a list of bus stops and google autocomplete search results given a query string.",
+        "summary": "Returns a list of bus stops and apple places autocomplete search results given a query string.",
         "consumes": [
           "application/json"
         ],
@@ -381,7 +263,7 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [BusStop/GooglePlace]}",
+            "description": "{success: true, data: [BusStop/ApplePlace]}",
             "schema": {
               "$ref": "#/definitions/BusStop"
             }
@@ -389,7 +271,7 @@
           "x-also 200; also in data": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/GooglePlace"
+              "$ref": "#/definitions/ApplePlace"
             }
           }
         }
@@ -449,42 +331,6 @@
     "Alert": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "integer",
-          "description": "The ID number of the alert."
-        },
-        "message": {
-          "type": "string",
-          "description": "The message of the alert."
-        },
-        "fromDate": {
-          "type": "string",
-          "description": "The first date that the alert begins taking effect. UTC-formatted date string.",
-          "example": "\"2018-04-10T04:00:00.000Z\""
-        },
-        "toDate": {
-          "type": "string",
-          "description": "The last date that the alert begins taking effect. UTC-formatted date string.",
-          "example": "\"2018-04-10T04:00:00.000Z\""
-        },
-        "fromTime": {
-          "type": "string",
-          "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
-          "example": "\"2018-04-10T04:00:00.000Z\""
-        },
-        "toTime": {
-          "type": "string",
-          "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
-          "example": "\"2018-04-10T04:00:00.000Z\""
-        },
-        "priority": {
-          "type": "integer",
-          "description": "Priority of the alert, from 0 (highest) to 3 (lowest). Potential Return Values: [0, 1, 2, 3]"
-        },
-        "daysOfWeek": {
-          "type": "string",
-          "description": "A String enum representing a day of the week: Potential Return Values: [\"Every day”, “Weekend”, “Weekdays”, “Monday”, “Tuesday”, “Wednesday”, “Thursday”, “Friday”, “Saturday”, “Sunday”, “”]"
-        },
         "routes": {
           "type": "array",
           "description": "A list of route numbers affected by alert.",
@@ -498,6 +344,43 @@
           "items": {
             "type": "integer"
           }
+        },
+        "toDate": {
+          "type": "string",
+          "description": "The last date that the alert begins taking effect. UTC-formatted date string.",
+          "example": "2018-04-10T04:00:00.000Z"
+        },
+        "id": {
+          "type": "integer",
+          "example": 1194,
+          "description": "The ID number of the alert."
+        },
+        "toTime": {
+          "type": "string",
+          "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
+          "example": "2018-04-10T04:00:00.000Z"
+        },
+        "message": {
+          "type": "string",
+          "description": "The message of the alert."
+        },
+        "daysOfWeek": {
+          "type": "string",
+          "description": "A String enum representing a day of the week: Potential Return Values: [Every day, Weekend, Weekdays, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]"
+        },
+        "fromDate": {
+          "type": "string",
+          "description": "The first date that the alert begins taking effect. UTC-formatted date string.",
+          "example": "2018-04-10T04:00:00.000Z"
+        },
+        "fromTime": {
+          "type": "string",
+          "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
+          "example": "\"2018-04-10T04:00:00.000Z\""
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Priority of the alert, from 0 (highest) to 3 (lowest). Potential Return Values: [0, 1, 2, 3]"
         },
         "channelMessages": {
           "type": "array",
@@ -611,27 +494,25 @@
     "BusStop": {
       "type": "object",
       "properties": {
+        "lat": {
+          "type": "double",
+          "description": "The latitude coordinate of the bus stop.",
+          "example": 42.585087000000001
+        },
+        "long": {
+          "type": "double",
+          "description": "The longitude coordinate of the bus stop.",
+          "example": -76.365729999999999
+        },
+        "type": {
+          "type": "string",
+          "only response": "busStop",
+          "description": "This is just the string 'busStop'."
+        },
         "name": {
           "type": "string",
           "description": "The name of the bus stop.",
           "example": "Cradit Farm @ Pleasant Grove"
-        },
-        "lat": {
-          "type": "number",
-          "format": "double",
-          "description": "The latitude coordinate of the bus stop.",
-          "example": 42.1
-        },
-        "long": {
-          "type": "number",
-          "format": "double",
-          "description": "The longitude coordinate of the bus stop.",
-          "example": -76.1
-        },
-        "type": {
-          "type": "string",
-          "description": "This is just the string 'busStop'",
-          "example": "busStop"
         }
       }
     },
@@ -746,21 +627,33 @@
         }
       }
     },
-    "GooglePlace": {
+    "ApplePlace": {
       "type": "object",
       "properties": {
-        "detail": {
-          "type": "string",
-          "description": "The address of the place."
+        "lat": {
+          "type": "double",
+          "description": "The latitude coordinate of the place.",
+          "example": "42.441701090621599"
+        },
+        "long": {
+          "type": "double",
+          "description": "The longitude coordinate of the place.",
+          "example": "-76.485410928726196"
         },
         "name": {
           "type": "string",
+          "example": "Saigon Kitchen",
           "description": "The name of the place."
         },
-        "placeID": {
-          "type": "number",
-          "format": "double",
-          "description": "The Google place ID."
+        "detail": {
+          "type": "string",
+          "example": "College Ave, Ithaca, NY, United States",
+          "description": "The address of the place."
+        },
+        "type": {
+          "type": "string",
+          "only response": "applePlace",
+          "description": "This is just the string 'applePlace'."
         }
       }
     },
