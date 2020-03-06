@@ -58,7 +58,7 @@
             "description": "ex. 1113",
             "required": true,
             "type": "string",
-            "example": "1113"
+            "example": "\"1113\""
           },
           {
             "name": "tripID",
@@ -66,7 +66,7 @@
             "description": "ex. t536-b67-slB",
             "required": true,
             "type": "string",
-            "example": "t536-b67-slB"
+            "example": "\"t536-b67-slB\""
           }
         ],
         "responses": {
@@ -362,25 +362,18 @@
         },
         "message": {
           "type": "string",
-          "description": "The message of the alert."
+          "description": "The message of the alert.",
+          "example": "the 4:35 Route 53 from Green Street experienced a mecanical issue and is running late. The next route 53 will be on time."
         },
         "daysOfWeek": {
           "type": "string",
-          "description": "A String enum representing a day of the week: Potential Return Values: [Every day, Weekend, Weekdays, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]"
+          "description": "A String enum representing a day of the week: Potential Return Values: [Every day, Weekend, Weekdays, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]",
+          "example": "Sunday"
         },
         "fromDate": {
           "type": "string",
           "description": "The first date that the alert begins taking effect. UTC-formatted date string.",
           "example": "2018-04-10T04:00:00.000Z"
-        },
-        "fromTime": {
-          "type": "string",
-          "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
-          "example": "\"2018-04-10T04:00:00.000Z\""
-        },
-        "priority": {
-          "type": "integer",
-          "description": "Priority of the alert, from 0 (highest) to 3 (lowest). Potential Return Values: [0, 1, 2, 3]"
         },
         "channelMessages": {
           "type": "array",
@@ -396,6 +389,16 @@
               }
             }
           }
+        },
+        "fromTime": {
+          "type": "string",
+          "description": "The start time during the date range that the alert is in effect. UTC-formatted date string.",
+          "example": "2018-04-10T04:00:00.000Z"
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Priority of the alert, from 0 (highest) to 3 (lowest). Potential Return Values: [0, 1, 2, 3]",
+          "priority": 1
         }
       }
     },
@@ -506,13 +509,13 @@
         },
         "type": {
           "type": "string",
-          "only response": "busStop",
+          "only response": "\"busStop\"",
           "description": "This is just the string 'busStop'."
         },
         "name": {
           "type": "string",
           "description": "The name of the bus stop.",
-          "example": "Cradit Farm @ Pleasant Grove"
+          "example": "\"Cradit Farm @ Pleasant Grove\""
         }
       }
     },
@@ -662,110 +665,119 @@
       "properties": {
         "departureTime": {
           "type": "string",
-          "description": "The time a user begins their journey (e.g. when to start walking)."
-        },
-        "arrivalTime": {
-          "type": "string",
-          "description": "The time a user arrives at their destination."
-        },
-        "travelDistance": {
-          "type": "number",
-          "format": "double",
-          "description": "The distance between start and end coords in miles."
+          "description": "The time a user begins their journey (e.g. when to start walking).",
+          "example": "2020-03-06T21:54:17Z"
         },
         "startName": {
           "type": "string",
-          "description": "The name of the origin for this route."
-        },
-        "endName": {
-          "type": "string",
-          "description": "The name of the destination for this route."
-        },
-        "totalDuration": {
-          "type": "number",
-          "format": "int",
-          "description": "The number of minutes between departureTime and arrivalTime"
+          "description": "The name of the origin for this route.",
+          "example": "Current Location"
         },
         "routeSummary": {
           "type": "array",
           "description": "A list of RouteSummaryElement objects.",
           "items": {
             "type": "object",
-            "format": "RouteSummaryElement",
             "properties": {
-              "stayOnBusForTransfer": {
-                "description": "Whether the user should stay on the bus for an upcoming transfer.",
-                "type": "boolean"
-              },
               "stopName": {
                 "description": "The current stopName at this point in the route.",
-                "type": "string"
+                "type": "string",
+                "example": "Schwartz Performing Arts Center"
               },
               "direction": {
                 "type": "object",
-                "format": "RouteSummaryDirection",
                 "properties": {
                   "type": {
                     "description": "Either depart or walk.",
-                    "type": "string"
+                    "type": "string",
+                    "example": "depart"
                   },
                   "busNumber": {
                     "description": "If type is depart, this will be the busNumber of the current bus. Otherwise, this will be null.",
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 30
                   }
                 }
+              },
+              "stayOnBusForTransfer": {
+                "description": "Whether the user should stay on the bus for an upcoming transfer.",
+                "type": "boolean",
+                "example": "false"
               }
             }
           }
+        },
+        "startCoords": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "double",
+              "example": 42.44212461191496
+            },
+            "long": {
+              "type": "double",
+              "example": -76.48527391503616
+            }
+          }
+        },
+        "routeId": {
+          "type": "string",
+          "example": "ab05ad6e1a8facafad98"
         },
         "directions": {
           "type": "array",
           "description": "A list of Direction objects.",
           "items": {
             "type": "object",
-            "format": "Direction",
             "properties": {
-              "type": {
-                "type": "string"
+              "endLocation": {
+                "description": "The ending location associated with the direction.",
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "double",
+                    "example": 42.44244491552811
+                  },
+                  "long": {
+                    "type": "double",
+                    "example": -76.4852889214148
+                  }
+                }
               },
-              "name": {
-                "type": "string"
+              "tripIdentifiers": {
+                "type": "array",
+                "items": {
+                  "description": "The unique identifier(s) for the specific bus related to the direction. Only exists when type is .depart.",
+                  "type": "string"
+                }
               },
-              "startTime": {
-                "description": "The starting time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
-                "type": "string"
+              "stayOnBusForTransfer": {
+                "type": "boolean",
+                "description": "Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective routeNumber in the next .depart Direction.",
+                "example": "false"
               },
-              "endTime": {
-                "description": "The ending time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
-                "type": "string"
+              "delay": {
+                "type": "integer",
+                "example": 1,
+                "description": "In seconds. The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
               },
               "startLocation": {
                 "description": "The starting location associated with the direction.",
                 "type": "object",
                 "properties": {
                   "lat": {
-                    "type": "number",
-                    "format": "double"
+                    "type": "double",
+                    "example": "42.44212461191496"
                   },
                   "long": {
-                    "type": "number",
-                    "format": "double"
+                    "type": "double",
+                    "example": "-76.48527391503616"
                   }
                 }
               },
-              "endLocation": {
-                "description": "The ending location associated with the direction.",
-                "type": "object",
-                "properties": {
-                  "lat": {
-                    "type": "number",
-                    "format": "double"
-                  },
-                  "long": {
-                    "type": "number",
-                    "format": "double"
-                  }
-                }
+              "routeNumber": {
+                "type": "integer",
+                "description": "depart: The number representing the bus route. other: null."
               },
               "path": {
                 "description": "The corresponding path of the direction.",
@@ -774,24 +786,19 @@
                   "type": "object",
                   "properties": {
                     "lat": {
-                      "type": "number",
-                      "format": "double"
+                      "type": "double",
+                      "example": "42.44212461191496"
                     },
                     "long": {
-                      "type": "number",
-                      "format": "double"
+                      "type": "double",
+                      "exzample": "-76.48527391503616"
                     }
                   }
                 }
               },
-              "distance": {
-                "description": "The total distance of the direction (meters).",
-                "type": "number",
-                "format": "double"
-              },
-              "routeNumber": {
-                "type": "integer",
-                "description": "depart: The number representing the bus route. other: null."
+              "type": {
+                "type": "string",
+                "example": "walk"
               },
               "stops": {
                 "type": "array",
@@ -808,23 +815,55 @@
                   }
                 }
               },
-              "stayOnBusForTransfer": {
-                "type": "boolean",
-                "description": "Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective routeNumber in the next .depart Direction."
+              "endTime": {
+                "description": "The ending time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+                "type": "string",
+                "example": "2020-03-06T21:55:00Z"
               },
-              "tripIdentifiers": {
-                "type": "array",
-                "items": {
-                  "description": "The unique identifier(s) for the specific bus related to the direction. Only exists when type is .depart.",
-                  "type": "string"
-                }
+              "distance": {
+                "description": "The total distance of the direction (meters).",
+                "type": "double",
+                "example": 35.63741707587268
               },
-              "delay": {
-                "type": "integer",
-                "description": "The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
+              "startTime": {
+                "description": "The starting time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+                "type": "string",
+                "example": "2020-03-06T21:54:17Z"
+              },
+              "name": {
+                "type": "string",
+                "example": "Schwartz Performing Arts Center"
               }
             }
           }
+        },
+        "boundingBox": {
+          "type": "object",
+          "properties": {
+            "maxLong": {
+              "type": "double",
+              "example": -76.48513
+            },
+            "maxLat": {}
+          }
+        },
+        "arrivalTime": {
+          "type": "string",
+          "description": "The time a user arrives at their destination."
+        },
+        "travelDistance": {
+          "type": "number",
+          "format": "double",
+          "description": "The distance between start and end coords in miles."
+        },
+        "endName": {
+          "type": "string",
+          "description": "The name of the destination for this route."
+        },
+        "totalDuration": {
+          "type": "number",
+          "format": "int",
+          "description": "The number of minutes between departureTime and arrivalTime"
         }
       }
     }
