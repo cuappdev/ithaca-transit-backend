@@ -140,61 +140,6 @@
         }
       }
     },
-    "/multiroute": {
-      "get": {
-        "summary": "Returns the best available route for each destination specified from a single start location",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "start",
-            "in": "query",
-            "description": "The starting point of the journey.",
-            "required": true,
-            "type": "string",
-            "format": "<latitude: Double>, <longitude: Double>"
-          },
-          {
-            "name": "time",
-            "in": "query",
-            "description": "The relevant time in the request.",
-            "required": true,
-            "type": "integer"
-          },
-          {
-            "name": "end",
-            "in": "query",
-            "description": "An array of latitude-longitude strings to specify ending points. Must contain at least one ending point. Should be the same length as `destinationNames`.",
-            "required": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "format": "['<latitude: Double>, <longitude: Double>']"
-          },
-          {
-            "name": "destinationNames",
-            "in": "query",
-            "description": "Array of the names of the destinations. Must contain at least one name.",
-            "required": true,
-            "format": "['<destinationName: string>']",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "{success: true, data: [Route]}",
-            "schema": {
-              "$ref": "#/definitions/Route"
-            }
-          }
-        }
-      }
-    },
     "/routeSelected": {
       "post": {
         "consumes": [
@@ -207,7 +152,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "routeId: The number of the bus route.\nuid: The user identifier.",
+            "description": "Used for analytics -- for iOS or Android to tell backend what routes users are selecting.\nrouteId: The number of the bus route.\nuid: The user identifier.",
             "required": true,
             "schema": {
               "type": "object",
@@ -217,10 +162,12 @@
               ],
               "properties": {
                 "routeId": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "82"
                 },
                 "uid": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "B1CD4726-0CA8-41DC-A2F4-01D5D8F3A3E0"
                 }
               }
             }
@@ -255,7 +202,8 @@
               ],
               "properties": {
                 "query": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "Statl"
                 }
               }
             }
@@ -405,92 +353,92 @@
     "BusLocation": {
       "type": "object",
       "properties": {
+        "delay": {
+          "type": "integer",
+          "description": "delay in seconds, could be null",
+          "example": 4
+        },
+        "lastStop": {
+          "type": "string",
+          "example": "Highland @ Lakeland"
+        },
         "case": {
           "type": "string",
           "description": "‘noData’ - means the bus for the trip does not support live tracking. ‘validData’ - means we have all the proper tracking info. ‘invalidData’ - means the trip is too far in the future. No bus has been assigned it yet.",
-          "example": "\"validData\""
+          "example": "validData"
         },
-        "commStatus": {
+        "displayStatus": {
           "type": "string",
-          "description": "Unknown, some sort of communication status.",
-          "example": "\"GOOD\""
+          "example": "On Time"
         },
-        "delay": {
+        "speed": {
           "type": "integer",
-          "description": "delay in seconds",
-          "example": "4"
+          "example": 23
+        },
+        "latitude": {
+          "type": "double",
+          "example": 42.457631999999997
+        },
+        "opStatus": {
+          "type": "string",
+          "example": "ONTIME"
+        },
+        "runID": {
+          "type": "integer",
+          "example": 5053
+        },
+        "name": {
+          "type": "string",
+          "example": "1602"
         },
         "destination": {
           "type": "string",
           "description": "The final destination of the bus.",
-          "example": "\"Cornell-Mall, Cornell-Downtown\""
-        },
-        "deviation": {
-          "type": "integer",
-          "description": "Unknown.",
-          "example": "0, 1, 2"
-        },
-        "direction": {
-          "type": "string",
-          "example": "\"NB\""
-        },
-        "displayStatus": {
-          "type": "string",
-          "example": "\"On Time\""
-        },
-        "gpsStatus": {
-          "type": "integer",
-          "example": "2"
+          "example": "Cornell-Mall, Cornell-Downtown"
         },
         "heading": {
           "type": "integer",
-          "example": "270"
+          "example": 270
         },
-        "lastStop": {
+        "commStatus": {
           "type": "string",
-          "example": "\"Vet School\""
-        },
-        "lastUpdated": {
-          "type": "integer",
-          "example": "1555441212000"
-        },
-        "latitude": {
-          "type": "number",
-          "format": "double",
-          "example": "42.447507"
+          "description": "Unknown, some sort of communication status.",
+          "example": "GOOD"
         },
         "longitude": {
           "type": "number",
           "format": "double",
-          "example": "-76.467818"
+          "example": -76.467818
         },
-        "name": {
-          "type": "string",
-          "example": "\"1602\""
+        "lastUpdated": {
+          "type": "integer",
+          "example": 1555441212000
         },
-        "opStatus": {
+        "gpsStatus": {
+          "type": "integer",
+          "example": 2
+        },
+        "deviation": {
+          "type": "integer",
+          "description": "Unknown. Could be 0, 1, or 2.",
+          "example": 0
+        },
+        "direction": {
           "type": "string",
-          "example": "\"ONTIME\""
+          "description": "Unknown. Could be NB or I.",
+          "example": "NB"
         },
         "routeID": {
           "type": "integer",
-          "example": "82"
-        },
-        "runID": {
-          "type": "integer",
-          "example": "5228"
-        },
-        "speed": {
-          "type": "integer",
-          "example": "23"
-        },
-        "tripID": {
-          "type": "integer",
-          "example": "1450"
+          "example": 82
         },
         "vehicleID": {
           "type": "integer",
-          "example": "1602"
+          "example": 1602
+        },
+        "tripID": {
+          "type": "integer",
+          "example": 1450
         }
       }
     },
@@ -509,13 +457,13 @@
         },
         "type": {
           "type": "string",
-          "only response": "\"busStop\"",
+          "example": "busStop",
           "description": "This is just the string 'busStop'."
         },
         "name": {
           "type": "string",
           "description": "The name of the bus stop.",
-          "example": "\"Cradit Farm @ Pleasant Grove\""
+          "example": "Cradit Farm @ Pleasant Grove"
         }
       }
     },
@@ -655,7 +603,7 @@
         },
         "type": {
           "type": "string",
-          "only response": "applePlace",
+          "example": "applePlace",
           "description": "This is just the string 'applePlace'."
         }
       }
