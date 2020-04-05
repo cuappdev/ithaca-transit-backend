@@ -36,21 +36,19 @@ async function fetchVehicles(): Object {
  */
 async function getTrackingResponse(requestData: Object): Object {
   LogUtils.log({ message: 'getTrackingResponse: entering function' });
-  const trackingInformation = [];
   const vehicles = await fetchVehicles();
+  console.log('vehicles', vehicles);
 
-  // for each input
-  await Promise.all(requestData.map((data) => {
+  const trackingInformation = requestData.map((data) => {
     const { routeID, tripID } = data;
     const vehicleData = getVehicleInformation(routeID, tripID, vehicles);
-
     if (!vehicleData) {
       LogUtils.log({ message: 'getVehicleResponse: noData', vehicleData });
-      return false;
+      return null;
     }
-    trackingInformation.push(vehicleData);
-    return true;
-  }));
+    return vehicleData;
+  }).filter(Boolean);
+
   return trackingInformation;
 }
 
@@ -61,7 +59,11 @@ async function getTrackingResponse(requestData: Object): Object {
  * @param rtf
  * @returns Object
  */
-function getDelayInformation(stopID: String, tripID: String, rtf: Object): ?Object {
+function getDelayInformation(
+  stopID: ?String,
+  tripID: ?String,
+  rtf: ?Object,
+): ?Object {
   // rtf param ensures the realtimeFeed doesn't update in the middle of execution
   // if invalid params or the trip is inactive
   if (!stopID
@@ -88,10 +90,10 @@ function getDelayInformation(stopID: String, tripID: String, rtf: Object): ?Obje
 }
 
 function getVehicleInformation(
-  routeID: String,
-  tripID: String,
-  vehicles: Object,
-): ?Array<Object> {
+  routeID: ?String,
+  tripID: ?String,
+  vehicles: ?Object,
+): ?Object {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
   if (!routeID
@@ -105,9 +107,8 @@ function getVehicleInformation(
     });
     return null;
   }
-  return Object.values(vehicles).filter(
-    v => v.routeID === routeID && v.tripID === tripID,
-  )[0];
+
+  return Object.values(vehicles).find(v => v.routeID === routeID && v.tripID === tripID);
 }
 
 export default {
