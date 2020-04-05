@@ -14,13 +14,11 @@ async function fetchRTF(): Object {
 }
 
 async function fetchVehicles(): Object {
-  console.log('fetching vehicles');
   const options = {
     ...Constants.GET_OPTIONS,
     url: `http://${PYTHON_APP || 'localhost'}:5000/vehicles`,
   };
   const data = await RequestUtils.createRequest(options, 'Vehicles request failed');
-  console.log('data:', data);
   return JSON.parse(data);
 }
 
@@ -93,7 +91,7 @@ function getVehicleInformation(
   routeID: String,
   tripID: String,
   vehicles: Object,
-): ?Object {
+): ?Array<Object> {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
   if (!routeID
@@ -107,16 +105,9 @@ function getVehicleInformation(
     });
     return null;
   }
-  const vehicleData = {};
-  console.log('VEHICLES:', vehicles);
-
-  // vehicles.forEach((vehicle) => {
-  //   console.log('vehicle is:', vehicle);
-  //   if (vehicle.routeID === routeID && vehicle.tripID === tripID) {
-  //     vehicleData.id = vehicle.id;
-  //   }
-  // });
-  return vehicleData;
+  return Object.values(vehicles).filter(
+    v => v.routeID === routeID && v.tripID === tripID,
+  )[0];
 }
 
 export default {
