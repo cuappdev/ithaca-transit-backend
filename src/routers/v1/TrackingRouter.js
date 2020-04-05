@@ -14,7 +14,6 @@ class TrackingRouter extends ApplicationRouter<Object> {
   // eslint-disable-next-line require-await
   async content(req): Promise<any> {
     if (!req.body || !req.body.data || !req.body.data.length || req.body.data.length === 0) {
-      console.log('req.body:', req.body);
       return {
         case: 'invalidRequest',
       };
