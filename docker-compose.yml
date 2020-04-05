@@ -13,7 +13,7 @@ services:
       - /usr/src/app/node_modules
 
   ghopper:
-    image: cornellappdev/transit-ghopper:v1.1.8
+    image: cornellappdev/transit-ghopper:v1.2.1
     ports:
       - "8988:8988"
 
@@ -28,7 +28,7 @@ services:
       - "8987:8987"
 
   live-tracking:
-    image: cornellappdev/transit-python:v1.1.8
+    image: cornellappdev/transit-python:alanna
     env_file: python.envrc
     ports:
       - "5000:5000"
