@@ -20,7 +20,7 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [Alert]}",
+            "description": "{\"success\": true, \"data\": [Alert]}",
             "schema": {
               "$ref": "#/definitions/Alert"
             }
@@ -37,7 +37,7 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [BusStop]}",
+            "description": "{\"success\": true, \"data\": [BusStop]}",
             "schema": {
               "$ref": "#/definitions/BusStop"
             }
@@ -45,33 +45,44 @@
         }
       }
     },
-    "/delay": {
-      "get": {
-        "summary": "Returns the bus delay for a bus at a specific stop",
+    "/delays": {
+      "post": {
+        "summary": "Return a list of bus delays for buses at a specific stop",
+        "description": "Takes in a list of objects with fields routeID and trip ID and returns a list of objects with fields routeID, tripID, and delay.",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "stopID",
-            "in": "query",
-            "description": "ex. 1113",
+            "in": "body",
+            "name": "body",
+            "description": "The stop information to get the delay in seconds for. The request body has only one field, data, which is an array of objects with the following fields: \n* stopID: The unique bus stop identifier. \n* tripID: The unique trip identifier for the specific `routeID`.\n Ex. {\"data\": [{\"stopID\": string, \"tripID\": string}]",
             "required": true,
-            "type": "string",
-            "example": "\"1113\""
-          },
-          {
-            "name": "tripID",
-            "in": "query",
-            "description": "ex. t536-b67-slB",
-            "required": true,
-            "type": "string",
-            "example": "\"t536-b67-slB\""
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "stopID",
+                  "tripID"
+                ],
+                "properties": {
+                  "stopID": {
+                    "type": "string",
+                    "example": "2406"
+                  },
+                  "tripID": {
+                    "type": "string",
+                    "example": "t536-b67-s1B"
+                  }
+                }
+              }
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: {delay: int64}}"
+            "description": "{\"success\": true, \"data\": [{\"tripID\": string, \"stopID\": string, \"delay\": int}]}"
           }
         }
       }
@@ -132,7 +143,7 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: {fromStop: [Route], boardingSoon: [Route], walking: [Route]}}",
+            "description": "{\"success\": true, \"data\": {fromStop: [Route], boardingSoon: [Route], walking: [Route]}}",
             "schema": {
               "$ref": "#/definitions/Route"
             }
@@ -175,7 +186,7 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true}"
+            "description": "{\"success\": true}"
           }
         }
       }
@@ -211,7 +222,7 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [BusStop/ApplePlace]}",
+            "description": "{\"success\": true, data: [BusStop/ApplePlace]}",
             "schema": {
               "$ref": "#/definitions/BusStop"
             }
@@ -227,7 +238,7 @@
     },
     "/tracking": {
       "post": {
-        "summary": "Return a list information about live bus locations.",
+        "summary": "Return a list information about live bus information (to help draw buses on the map).",
         "produces": [
           "application/json"
         ],
@@ -235,27 +246,22 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The user's search query for a bus stop or place.\n* stopID: The unique identifier for a bus stop.\n* routeID: The number of the bus route.\n* tripIdentifiers: The array of unique trip identifiers for the specific `routeID`.",
+            "description": "The bus information to get the live location and other relevant vehicle data from. The request body has only one field, data, which is an array of objects with the following fields: \n* routeID: The number of the bus route.\n* tripID: The unique trip identifier for the specific `routeID`.\n Ex. {\"data\": [{\"routeID\": string, \"tripID\": string}]",
             "required": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "object",
                 "required": [
-                  "stopID",
                   "routeID",
-                  "tripIdentifiers"
+                  "tripID"
                 ],
                 "properties": {
-                  "stopID": {
-                    "type": "string",
-                    "example": "1511"
-                  },
                   "routeID": {
                     "type": "integer",
                     "example": "10"
                   },
-                  "tripIdentifiers": {
+                  "tripID": {
                     "type": "string",
                     "example": "t536-b67-s1B"
                   }
@@ -266,7 +272,7 @@
         ],
         "responses": {
           "200": {
-            "description": "{success: true, data: [BusLocation]}",
+            "description": "{\"success\": true, \"data\": [BusLocation]}",
             "schema": {
               "$ref": "#/definitions/BusLocation"
             }
@@ -350,95 +356,70 @@
         }
       }
     },
-    "BusLocation": {
+    "ApplePlace": {
       "type": "object",
       "properties": {
-        "delay": {
-          "type": "integer",
-          "description": "delay in seconds, could be null",
-          "example": 4
-        },
-        "lastStop": {
-          "type": "string",
-          "example": "Highland @ Lakeland"
-        },
-        "case": {
-          "type": "string",
-          "description": "‘noData’ - means the bus for the trip does not support live tracking. ‘validData’ - means we have all the proper tracking info. ‘invalidData’ - means the trip is too far in the future. No bus has been assigned it yet.",
-          "example": "validData"
-        },
-        "displayStatus": {
-          "type": "string",
-          "example": "On Time"
-        },
-        "speed": {
-          "type": "integer",
-          "example": 23
-        },
-        "latitude": {
+        "lat": {
           "type": "double",
-          "example": 42.457631999999997
+          "description": "The latitude coordinate of the place.",
+          "example": "42.441701090621599"
         },
-        "opStatus": {
-          "type": "string",
-          "example": "ONTIME"
-        },
-        "runID": {
-          "type": "integer",
-          "example": 5053
+        "long": {
+          "type": "double",
+          "description": "The longitude coordinate of the place.",
+          "example": "-76.485410928726196"
         },
         "name": {
           "type": "string",
-          "example": "1602"
+          "example": "Saigon Kitchen",
+          "description": "The name of the place."
         },
-        "destination": {
+        "detail": {
           "type": "string",
-          "description": "The final destination of the bus.",
-          "example": "Cornell-Mall, Cornell-Downtown"
+          "example": "College Ave, Ithaca, NY, United States",
+          "description": "The address of the place."
         },
-        "heading": {
-          "type": "integer",
-          "example": 270
-        },
-        "commStatus": {
+        "type": {
           "type": "string",
-          "description": "Unknown, some sort of communication status.",
-          "example": "GOOD"
+          "example": "applePlace",
+          "description": "This is just the string 'applePlace'."
+        }
+      }
+    },
+    "BusLocation": {
+      "type": "object",
+      "properties": {
+        "bearing": {
+          "type": "double",
+          "example": 266.0
         },
-        "longitude": {
-          "type": "number",
-          "format": "double",
-          "example": -76.467818
-        },
-        "lastUpdated": {
+        "congestionLevel": {
           "type": "integer",
-          "example": 1555441212000
-        },
-        "gpsStatus": {
-          "type": "integer",
-          "example": 2
-        },
-        "deviation": {
-          "type": "integer",
-          "description": "Unknown. Could be 0, 1, or 2.",
           "example": 0
         },
-        "direction": {
-          "type": "string",
-          "description": "Unknown. Could be NB or I.",
-          "example": "NB"
+        "latitude": {
+          "type": "double",
+          "example": 42.459849543945
+        },
+        "longitude": {
+          "type": "double",
+          "example": -76.55484845435
         },
         "routeID": {
-          "type": "integer",
-          "example": 82
+          "type": "string",
+          "example": 77
         },
-        "vehicleID": {
+        "speed": {
+          "type": "double",
+          "example": 0.0
+        },
+        "timestamp": {
           "type": "integer",
-          "example": 1602
+          "example": 1586033827
         },
         "tripID": {
-          "type": "integer",
-          "example": 1450
+          "type": "string",
+          "example": "t677-b73-slF"
         }
       }
     },
@@ -575,36 +556,6 @@
         "delay": {
           "type": "integer",
           "description": "The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
-        }
-      }
-    },
-    "ApplePlace": {
-      "type": "object",
-      "properties": {
-        "lat": {
-          "type": "double",
-          "description": "The latitude coordinate of the place.",
-          "example": "42.441701090621599"
-        },
-        "long": {
-          "type": "double",
-          "description": "The longitude coordinate of the place.",
-          "example": "-76.485410928726196"
-        },
-        "name": {
-          "type": "string",
-          "example": "Saigon Kitchen",
-          "description": "The name of the place."
-        },
-        "detail": {
-          "type": "string",
-          "example": "College Ave, Ithaca, NY, United States",
-          "description": "The address of the place."
-        },
-        "type": {
-          "type": "string",
-          "example": "applePlace",
-          "description": "This is just the string 'applePlace'."
         }
       }
     },
