@@ -37,7 +37,6 @@ async function fetchVehicles(): Object {
 async function getTrackingResponse(requestData: Object): Object {
   LogUtils.log({ message: 'getTrackingResponse: entering function' });
   const vehicles = await fetchVehicles();
-  console.log('vehicles', vehicles);
 
   const trackingInformation = requestData.map((data) => {
     const { routeNumber, tripID } = data;
