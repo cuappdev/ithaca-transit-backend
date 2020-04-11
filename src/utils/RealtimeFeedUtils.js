@@ -107,7 +107,7 @@ function getVehicleInformation(
     return null;
   }
 
-  const vehicleData = Object.values(vehicles).find(v => v.routeID == routeNumber && v.tripID === tripID);
+  const vehicleData = Object.values(vehicles).find(v => parseInt(v.routeID) === routeNumber && v.tripID === tripID);
   if (!vehicleData) {
     LogUtils.log({
       category: 'getVehicleInformation no data',
