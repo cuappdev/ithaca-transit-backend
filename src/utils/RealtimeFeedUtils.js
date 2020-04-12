@@ -37,11 +37,10 @@ async function fetchVehicles(): Object {
 async function getTrackingResponse(requestData: Object): Object {
   LogUtils.log({ message: 'getTrackingResponse: entering function' });
   const vehicles = await fetchVehicles();
-  console.log('vehicles', vehicles);
 
   const trackingInformation = requestData.map((data) => {
-    const { routeID, tripID } = data;
-    const vehicleData = getVehicleInformation(routeID, tripID, vehicles);
+    const { routeNumber, tripID } = data;
+    const vehicleData = getVehicleInformation(routeNumber, tripID, vehicles);
     if (!vehicleData) {
       LogUtils.log({ message: 'getVehicleResponse: noData', vehicleData });
       return null;
@@ -90,25 +89,45 @@ function getDelayInformation(
 }
 
 function getVehicleInformation(
-  routeID: ?String,
+  routeNumber: ?Number,
   tripID: ?String,
   vehicles: ?Object,
 ): ?Object {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
-  if (!routeID
+  if (!routeNumber
     || !tripID
     || !vehicles
     || vehicles === {}) {
     LogUtils.log({
       category: 'getVehicleInformation NULL',
-      routeID,
+      routeNumber,
       tripID,
     });
     return null;
   }
 
-  return Object.values(vehicles).find(v => v.routeID === routeID && v.tripID === tripID);
+  const vehicleData = Object.values(vehicles).find(
+    v => parseInt(v.routeID) === routeNumber && v.tripID === tripID,
+  );
+  if (!vehicleData) {
+    LogUtils.log({
+      category: 'getVehicleInformation no data',
+      routeNumber,
+      tripID,
+    });
+    return null;
+  }
+  return {
+    bearing: vehicleData.bearing,
+    congestionLevel: vehicleData.congestionLevel,
+    latitude: vehicleData.latitude,
+    longitude: vehicleData.longitude,
+    routeNumber,
+    speed: vehicleData.speed,
+    timestamp: vehicleData.timestamp,
+    tripID,
+  };
 }
 
 export default {

@@ -246,20 +246,20 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The bus information to get the live location and other relevant vehicle data from. The request body has only one field, data, which is an array of objects with the following fields: \n* routeID: The number of the bus route.\n* tripID: The unique trip identifier for the specific `routeID`.\n Ex. {\"data\": [{\"routeID\": string, \"tripID\": string}]",
+            "description": "The bus information to get the live location and other relevant vehicle data from. The request body has only one field, data, which is an array of objects with the following fields: \n* routeNumber: The number of the bus route.\n* tripID: The unique trip identifier for the specific `routeNumber`.\n Ex. {\"data\": [{\"routeNumber\": integer, \"tripID\": string}]",
             "required": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "object",
                 "required": [
-                  "routeID",
+                  "routeNumber",
                   "tripID"
                 ],
                 "properties": {
-                  "routeID": {
+                  "routeNumber": {
                     "type": "integer",
-                    "example": "10"
+                    "example": 10
                   },
                   "tripID": {
                     "type": "string",
@@ -405,8 +405,8 @@
           "type": "double",
           "example": -76.55484845435
         },
-        "routeID": {
-          "type": "string",
+        "routeNumber": {
+          "type": "integer",
           "example": 77
         },
         "speed": {
