@@ -16,8 +16,6 @@ RUN ./graphhopper.sh -a build
 
 EXPOSE 8988
 
-RUN ls web/target
-
 CMD java -Xmx4g -Xms4g \
   -Ddw.graphhopper.datareader.file=../map.osm \
   -Ddw.graphhopper.gtfs.file=../tcat-ny-us.zip \
