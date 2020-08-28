@@ -437,16 +437,14 @@ function parseWalkingRoute(
  * @param date
  * @returns formatted date string
  */
-function formatDate(
-  date: string,
-): string {
+function formatDate(date: string): string {
   if (date) {
     const dateBeforeMs = date.split('.')[0];
     if (date === dateBeforeMs) {
       // date already does not have milliseconds
       return date;
     }
-    return `${date.split('.')[0]}Z`;
+    return `${dateBeforeMs}Z`;
   }
   return date;
 }
