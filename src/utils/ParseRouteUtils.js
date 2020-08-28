@@ -430,6 +430,26 @@ function parseWalkingRoute(
 }
 
 /**
+ * Ensure that the route times are in this format: "2020-08-27T23:11:58Z".
+ * Sometimes, we will get dates in the format of "2020-08-27T23:11:58.741+0000"
+ * and if this is the case, strip the milliseconds off. Otherwise, return the
+ * date we were given.
+ * @param date
+ * @returns formatted date string
+ */
+function formatDate(date: string): string {
+  if (date) {
+    const dateBeforeMs = date.split('.')[0];
+    if (date === dateBeforeMs) {
+      // date already does not have milliseconds
+      return date;
+    }
+    return `${dateBeforeMs}Z`;
+  }
+  return date;
+}
+
+/**
  * Transform route object from graphhopper into one readable by the client, an array of
  * five routes. Includes delay calculations, asynchronous.
  *
@@ -469,7 +489,8 @@ function parseRoutes(
 
       // string 2018-02-21T17:27:00Z
       let { departureTime } = legs[0];
-      let arriveTime = legs[numberOfLegs - 1].arrivalTime;
+      departureTime = formatDate(departureTime);
+      let arriveTime = formatDate(legs[numberOfLegs - 1].arrivalTime);
 
       // Readjust the walking start and end times by accounting for the buffer
       // times that were initially passed into Graphhopper to get routes
@@ -497,8 +518,8 @@ function parseRoutes(
 
       const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
         let { type } = currLeg;
-        let startTime = currLeg.departureTime;
-        let endTime = currLeg.arrivalTime;
+        let startTime = formatDate(currLeg.departureTime);
+        let endTime = formatDate(currLeg.arrivalTime);
 
         if (busRoute.transfers === -1) {
           startTime = departureTime;
