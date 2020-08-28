@@ -9,7 +9,7 @@ RUN apt-get update
 RUN apt-get -y install maven wget
 
 RUN git clone --single-branch -b 0.13 https://github.com/graphhopper/graphhopper.git
-RUN wget https://s3.amazonaws.com/tcat-gtfs/tcat-ny-us.zip
+COPY tcat-ny-us.zip /usr/src/app/tcat-ny-us.zip
 
 WORKDIR /usr/src/app/graphhopper
 RUN ./graphhopper.sh build
