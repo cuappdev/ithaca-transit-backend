@@ -137,6 +137,8 @@ function getVehicleInformation(
   tripID: ?String,
   vehicles: ?Object,
 ): ?Object {
+  console.log(vehicles);
+
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
   if (!routeID
@@ -160,7 +162,7 @@ function getVehicleInformation(
       tripID,
     });
     return {
-      dataType: 'noData',
+      dataType: 'case',
       delay: 0,
       destination: '',
       deviation: 0,
@@ -177,21 +179,20 @@ function getVehicleInformation(
       routeID: Number(routeID), // although input is string, old clients expect a number
       runID: 0,
       speed: 0,
-      tripID,
+      tripID: 0,
       vehicleID: 0,
-      bearing: 0,
       congestionLevel: 0,
     };
   }
   return {
-    dataType: 'validData',
+    dataType: 'case',
     delay: 0,
     destination: '',
     deviation: 0,
     direction: '',
     displayStatus: '',
     gpsStatus: 0,
-    heading: 0,
+    heading: vehicleData.bearing,
     lastStop: '',
     lastUpdated: vehicleData.timestamp,
     latitude: vehicleData.latitude,
@@ -200,10 +201,9 @@ function getVehicleInformation(
     opStatus: '',
     routeID: Number(routeID), // although input is string, old clients expect a number
     runID: 0,
-    speed: vehicleData.speed,
-    tripID,
-    vehicleID: 0,
-    bearing: vehicleData.bearing,
+    speed: parseInt(vehicleData.speed),
+    tripID: 0,
+    vehicleID: Number(vehicleData.vehicleID),
     congestionLevel: vehicleData.congestionLevel,
   };
 }
