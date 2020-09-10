@@ -149,7 +149,7 @@ function getVehicleInformation(
 
   console.log('vehicles', vehicles);
   const vehicleData = Object.values(vehicles).find(
-    v => (v.routeID == routeID) && (v.tripID === tripID),
+    v => (Number(v.routeID) === routeID) && (v.tripID === tripID),
     // v.routeID === routeID && v.tripID === tripID,
   );
   console.log('vehicledata', vehicleData);
@@ -159,17 +159,52 @@ function getVehicleInformation(
       routeID,
       tripID,
     });
-    return null;
+    return {
+      dataType: 'noData',
+      delay: 0,
+      destination: '',
+      deviation: 0,
+      direction: '',
+      displayStatus: '',
+      gpsStatus: 0,
+      heading: 0,
+      lastStop: '',
+      lastUpdated: 0,
+      latitude: 0,
+      longitude: 0,
+      name: '',
+      opStatus: '',
+      routeID,
+      runID: 0,
+      speed: 0,
+      tripID,
+      vehicleID: 0,
+      bearing: 0,
+      congestionLevel: 0,
+    };
   }
   return {
-    bearing: vehicleData.bearing,
-    congestionLevel: vehicleData.congestionLevel,
+    dataType: 'validData',
+    delay: 0,
+    destination: '',
+    deviation: 0,
+    direction: '',
+    displayStatus: '',
+    gpsStatus: 0,
+    heading: 0,
+    lastStop: '',
+    lastUpdated: vehicleData.timestamp,
     latitude: vehicleData.latitude,
     longitude: vehicleData.longitude,
+    name: '',
+    opStatus: '',
     routeID,
+    runID: 0,
     speed: vehicleData.speed,
-    timestamp: vehicleData.timestamp,
     tripID,
+    vehicleID: 0,
+    bearing: vehicleData.bearing,
+    congestionLevel: vehicleData.congestionLevel,
   };
 }
 
