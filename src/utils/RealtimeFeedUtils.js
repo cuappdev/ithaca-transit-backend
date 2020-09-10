@@ -137,8 +137,6 @@ function getVehicleInformation(
   tripID: ?String,
   vehicles: ?Object,
 ): ?Object {
-  console.log(vehicles);
-
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
   if (!routeID
@@ -162,7 +160,7 @@ function getVehicleInformation(
       tripID,
     });
     return {
-      dataType: 'case',
+      case: 'noData',
       delay: 0,
       destination: '',
       deviation: 0,
@@ -185,7 +183,7 @@ function getVehicleInformation(
     };
   }
   return {
-    dataType: 'case',
+    case: 'validData',
     delay: 0,
     destination: '',
     deviation: 0,
