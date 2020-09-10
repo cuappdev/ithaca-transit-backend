@@ -23,24 +23,64 @@ async function fetchVehicles(): Object {
 }
 
 /**
+ * We want to format the old data:
+ * [
+ *  {
+ *   "stopID": "523",
+ *   "routeID": "15",
+ *   "tripIdentifiers": ["t607-b29-s1C"]
+ *  },
+ *  ...
+ * ]
+ * into the new data format type:
+ * [
+ *  {
+ *   "routeNumber" : Integer,
+ *   "tripID" : String
+ *  },
+ *  ...
+ * ]
+ * @param {*} requestData
+ */
+function formatOldRequestData(requestData: Object): Object {
+  console.log('THIS IS THE REQUEST', requestData);
+  if (requestData == null || !('tripIdentifiers' in requestData[0])) {
+    console.log('um');
+    return requestData;
+  }
+  const formattedData = requestData.map((data) => {
+    const { routeID } = data;
+    const { tripIdentifiers } = data;
+    const test = tripIdentifiers.map(tripID => ({ routeID, tripID }));
+    return test;
+  });
+  console.log('THIS IS formattedData INFO', formattedData);
+  const merged = Array.prototype.concat.apply([], formattedData);
+  return merged;
+}
+
+/**
  * Given an array of { routeID, tripID },
  * Return bus information
  * Input:
  [
  {
-   “routeID” : String,
+   routeNumber : Integer,
    tripID : String
  },
  …
  ]
  */
 async function getTrackingResponse(requestData: Object): Object {
+  const formattedData = formatOldRequestData(requestData);
   LogUtils.log({ message: 'getTrackingResponse: entering function' });
   const vehicles = await fetchVehicles();
 
-  const trackingInformation = requestData.map((data) => {
-    const { routeNumber, tripID } = data;
-    const vehicleData = getVehicleInformation(routeNumber, tripID, vehicles);
+  const trackingInformation = formattedData.map((data) => {
+    let { routeID } = data;
+    routeID = Number(routeID);
+    const { tripID } = data;
+    const vehicleData = getVehicleInformation(routeID, tripID, vehicles);
     if (!vehicleData) {
       LogUtils.log({ message: 'getVehicleResponse: noData', vehicleData });
       return null;
@@ -89,31 +129,34 @@ function getDelayInformation(
 }
 
 function getVehicleInformation(
-  routeNumber: ?Number,
+  routeID: ?Number,
   tripID: ?String,
   vehicles: ?Object,
 ): ?Object {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
-  if (!routeNumber
+  if (!routeID
     || !tripID
     || !vehicles
     || vehicles === {}) {
     LogUtils.log({
       category: 'getVehicleInformation NULL',
-      routeNumber,
+      routeID,
       tripID,
     });
     return null;
   }
 
+  console.log('vehicles', vehicles);
   const vehicleData = Object.values(vehicles).find(
-    v => parseInt(v.routeID) === routeNumber && v.tripID === tripID,
+    v => (v.routeID == routeID) && (v.tripID === tripID),
+    // v.routeID === routeID && v.tripID === tripID,
   );
+  console.log('vehicledata', vehicleData);
   if (!vehicleData) {
     LogUtils.log({
       category: 'getVehicleInformation no data',
-      routeNumber,
+      routeID,
       tripID,
     });
     return null;
@@ -123,7 +166,7 @@ function getVehicleInformation(
     congestionLevel: vehicleData.congestionLevel,
     latitude: vehicleData.latitude,
     longitude: vehicleData.longitude,
-    routeNumber,
+    routeID,
     speed: vehicleData.speed,
     timestamp: vehicleData.timestamp,
     tripID,
