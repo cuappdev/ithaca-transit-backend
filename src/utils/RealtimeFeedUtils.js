@@ -35,7 +35,7 @@ async function fetchVehicles(): Object {
  * into the new data format type:
  * [
  *  {
- *   "routeNumber" : Integer,
+ *   "routeID" : String,
  *   "tripID" : String
  *  },
  *  ...
@@ -43,33 +43,33 @@ async function fetchVehicles(): Object {
  * @param {*} requestData
  */
 function formatOldRequestData(requestData: Object): Object {
-  console.log('THIS IS THE REQUEST', requestData);
+  // don't format requests that follow the new format
   if (requestData == null || !('tripIdentifiers' in requestData[0])) {
-    console.log('um');
     return requestData;
   }
   const formattedData = requestData.map((data) => {
     const { routeID } = data;
     const { tripIdentifiers } = data;
-    const test = tripIdentifiers.map(tripID => ({ routeID, tripID }));
-    return test;
+    return tripIdentifiers.map(tripID => ({ routeID, tripID }));
   });
-  console.log('THIS IS formattedData INFO', formattedData);
-  const merged = Array.prototype.concat.apply([], formattedData);
-  return merged;
+  // flatten the data so that we don't have nested arrays
+  return Array.prototype.concat.apply([], formattedData);
 }
 
 /**
  * Given an array of { routeID, tripID },
  * Return bus information
- * Input:
- [
- {
-   routeNumber : Integer,
-   tripID : String
- },
- …
- ]
+ * Input:[
+ * {
+ * routeID : String,
+ * tripID : String
+ * },... ]
+ * NOTE: Because we need to provide backwards compatibility with old iOS clients
+ * we have to follow their janky way of routeID input is String but routeID
+ * output is Number. This "routeID" is also named jankily, which is supposed to
+ * be routeNumber from v2/route/. We cast this to Number in getVehicleInformation.
+ *
+ *
  */
 async function getTrackingResponse(requestData: Object): Object {
   const formattedData = formatOldRequestData(requestData);
@@ -77,9 +77,7 @@ async function getTrackingResponse(requestData: Object): Object {
   const vehicles = await fetchVehicles();
 
   const trackingInformation = formattedData.map((data) => {
-    let { routeID } = data;
-    routeID = Number(routeID);
-    const { tripID } = data;
+    const { routeID, tripID } = data;
     const vehicleData = getVehicleInformation(routeID, tripID, vehicles);
     if (!vehicleData) {
       LogUtils.log({ message: 'getVehicleResponse: noData', vehicleData });
@@ -128,8 +126,14 @@ function getDelayInformation(
   };
 }
 
+/**
+ *
+ * @param {*} routeID
+ * @param {*} tripID
+ * @param {*} vehicles
+ */
 function getVehicleInformation(
-  routeID: ?Number,
+  routeID: ?String,
   tripID: ?String,
   vehicles: ?Object,
 ): ?Object {
@@ -146,13 +150,9 @@ function getVehicleInformation(
     });
     return null;
   }
-
-  console.log('vehicles', vehicles);
   const vehicleData = Object.values(vehicles).find(
-    v => (Number(v.routeID) === routeID) && (v.tripID === tripID),
-    // v.routeID === routeID && v.tripID === tripID,
+    v => (v.routeID === routeID) && (v.tripID === tripID),
   );
-  console.log('vehicledata', vehicleData);
   if (!vehicleData) {
     LogUtils.log({
       category: 'getVehicleInformation no data',
@@ -174,7 +174,7 @@ function getVehicleInformation(
       longitude: 0,
       name: '',
       opStatus: '',
-      routeID,
+      routeID: Number(routeID), // although input is string, old clients expect a number
       runID: 0,
       speed: 0,
       tripID,
@@ -198,7 +198,7 @@ function getVehicleInformation(
     longitude: vehicleData.longitude,
     name: '',
     opStatus: '',
-    routeID,
+    routeID: Number(routeID), // although input is string, old clients expect a number
     runID: 0,
     speed: vehicleData.speed,
     tripID,
