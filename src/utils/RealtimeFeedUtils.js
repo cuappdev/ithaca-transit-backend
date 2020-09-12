@@ -23,24 +23,62 @@ async function fetchVehicles(): Object {
 }
 
 /**
+ * We want to format the old data:
+ * [
+ *  {
+ *   "stopID": "523",
+ *   "routeID": "15",
+ *   "tripIdentifiers": ["t607-b29-s1C"]
+ *  },
+ *  ...
+ * ]
+ * into the new data format type:
+ * [
+ *  {
+ *   "routeID" : String,
+ *   "tripID" : String
+ *  },
+ *  ...
+ * ]
+ * @param {*} requestData
+ */
+function formatOldRequestData(requestData: Object): Object {
+  // don't format requests that follow the new format
+  if (requestData == null || !('tripIdentifiers' in requestData[0])) {
+    return requestData;
+  }
+  const formattedData = requestData.map((data) => {
+    const { routeID } = data;
+    const { tripIdentifiers } = data;
+    return tripIdentifiers.map(tripID => ({ routeID, tripID }));
+  });
+  // flatten the data so that we don't have nested arrays
+  return Array.prototype.concat.apply([], formattedData);
+}
+
+/**
  * Given an array of { routeID, tripID },
  * Return bus information
- * Input:
- [
- {
-   “routeID” : String,
-   tripID : String
- },
- …
- ]
+ * Input:[
+ * {
+ * routeID : String,
+ * tripID : String
+ * },... ]
+ * NOTE: Because we need to provide backwards compatibility with old iOS clients
+ * we have to follow their janky way of routeID input is String but routeID
+ * output is Number. This "routeID" is also named jankily, which is supposed to
+ * be routeNumber from v2/route/. We cast this to Number in getVehicleInformation.
+ *
+ *
  */
 async function getTrackingResponse(requestData: Object): Object {
+  const formattedData = formatOldRequestData(requestData);
   LogUtils.log({ message: 'getTrackingResponse: entering function' });
   const vehicles = await fetchVehicles();
 
-  const trackingInformation = requestData.map((data) => {
-    const { routeNumber, tripID } = data;
-    const vehicleData = getVehicleInformation(routeNumber, tripID, vehicles);
+  const trackingInformation = formattedData.map((data) => {
+    const { routeID, tripID } = data;
+    const vehicleData = getVehicleInformation(routeID, tripID, vehicles);
     if (!vehicleData) {
       LogUtils.log({ message: 'getVehicleResponse: noData', vehicleData });
       return null;
@@ -88,45 +126,83 @@ function getDelayInformation(
   };
 }
 
+/**
+ *
+ * @param {*} routeID
+ * @param {*} tripID
+ * @param {*} vehicles
+ */
 function getVehicleInformation(
-  routeNumber: ?Number,
+  routeID: ?String,
   tripID: ?String,
   vehicles: ?Object,
 ): ?Object {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
-  if (!routeNumber
+  if (!routeID
     || !tripID
     || !vehicles
     || vehicles === {}) {
     LogUtils.log({
       category: 'getVehicleInformation NULL',
-      routeNumber,
+      routeID,
       tripID,
     });
     return null;
   }
-
   const vehicleData = Object.values(vehicles).find(
-    v => parseInt(v.routeID) === routeNumber && v.tripID === tripID,
+    v => (v.routeID === routeID) && (v.tripID === tripID),
   );
   if (!vehicleData) {
     LogUtils.log({
       category: 'getVehicleInformation no data',
-      routeNumber,
+      routeID,
       tripID,
     });
-    return null;
+    return {
+      case: 'noData',
+      delay: 0,
+      destination: '',
+      deviation: 0,
+      direction: '',
+      displayStatus: '',
+      gpsStatus: 0,
+      heading: 0,
+      lastStop: '',
+      lastUpdated: 0,
+      latitude: 0,
+      longitude: 0,
+      name: '',
+      opStatus: '',
+      routeID: Number(routeID), // although input is string, old clients expect a number
+      runID: 0,
+      speed: 0,
+      tripID: 0,
+      vehicleID: 0,
+      congestionLevel: 0,
+    };
   }
   return {
-    bearing: vehicleData.bearing,
-    congestionLevel: vehicleData.congestionLevel,
+    case: 'validData',
+    delay: 0,
+    destination: '',
+    deviation: 0,
+    direction: '',
+    displayStatus: '',
+    gpsStatus: 0,
+    heading: vehicleData.bearing,
+    lastStop: '',
+    lastUpdated: vehicleData.timestamp,
     latitude: vehicleData.latitude,
     longitude: vehicleData.longitude,
-    routeNumber,
-    speed: vehicleData.speed,
-    timestamp: vehicleData.timestamp,
-    tripID,
+    name: '',
+    opStatus: '',
+    routeID: Number(routeID), // although input is string, old clients expect a number
+    runID: 0,
+    speed: parseInt(vehicleData.speed),
+    tripID: 0,
+    vehicleID: Number(vehicleData.vehicleID),
+    congestionLevel: vehicleData.congestionLevel,
   };
 }
 
