@@ -39,6 +39,10 @@ class API extends ApplicationAPI {
         ...sharedRouters,
         Routers.RouteV2Router,
       ],
+      v3: [
+        ...sharedRouters,
+        Routers.RouteV3Router,
+      ],
     };
   }
 }
