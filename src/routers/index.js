@@ -12,6 +12,7 @@ import PlaceIDCoordinatesRouter from './v1/PlaceIDCoordinatesRouter';
 import RouteRouter from './v1/RouteRouter';
 import RouteSelectedRouter from './v1/RouteSelectedRouter';
 import RouteV2Router from './v2/RouteRouter';
+import RouteV3Router from './v3/RouteRouter';
 import SearchRouter from './v1/SearchRouter';
 import TrackingRouter from './v1/TrackingRouter';
 
@@ -30,6 +31,7 @@ export default {
   RouteRouter,
   RouteSelectedRouter,
   RouteV2Router,
+  RouteV3Router,
   SearchRouter,
   TrackingRouter,
 };
