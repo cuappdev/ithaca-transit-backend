@@ -45,7 +45,7 @@
         }
       }
     },
-    "/delays": {
+    "/v2/delays": {
       "post": {
         "summary": "Return a list of bus delays for buses at a specific stop",
         "description": "Takes in a list of objects with fields routeID and trip ID and returns a list of objects with fields routeID, tripID, and delay.",
@@ -236,7 +236,7 @@
         }
       }
     },
-    "/tracking": {
+    "/v2/tracking": {
       "post": {
         "summary": "Return a list information about live bus information (to help draw buses on the map).",
         "produces": [
