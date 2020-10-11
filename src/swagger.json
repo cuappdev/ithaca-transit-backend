@@ -397,6 +397,10 @@
           "type": "integer",
           "example": 0
         },
+        "lastUpdated": {
+          "type": "integer",
+          "example": 1599773185
+        },
         "latitude": {
           "type": "double",
           "example": 42.459849543945
@@ -405,17 +409,17 @@
           "type": "double",
           "example": -76.55484845435
         },
-        "routeNumber": {
+        "routeID": {
           "type": "integer",
           "example": 77
         },
         "speed": {
           "type": "double",
-          "example": 0.0
+          "example": 9.834879875183105
         },
-        "timestamp": {
+        "vehicleID": {
           "type": "integer",
-          "example": 1586033827
+          "example": 0
         },
         "tripID": {
           "type": "string",
