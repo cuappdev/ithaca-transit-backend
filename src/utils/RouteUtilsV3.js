@@ -26,7 +26,7 @@ async function isBusStop(location: string): Promise<boolean> {
 }
 
 /**
- * Returns whether [route] contains a bus trasnfer
+ * Returns whether [route] contains a bus transfer
  *
  * @param route
  * @returns {boolean}

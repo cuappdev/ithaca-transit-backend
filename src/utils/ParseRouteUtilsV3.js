@@ -48,7 +48,7 @@ function createGpxJson(stops: Array<Object>, startTime: String): Object {
 }
 
 /**
- * Merge two dirctions
+ * Merge two directions
  * @param first
  * @param second
  * @returns {{type: *, name: *, startTime: *, endTime: *,
@@ -210,11 +210,10 @@ async function condenseRoute(
       }
 
       // Discard routes with over 1 hours time waiting between each direction
-      if (previousDirection) {
-        const prevEndTime = Date.parse(previousDirection.endTime);
-        if (prevEndTime + ONE_HOUR_IN_MS < startTime) {
-          return null;
-        }
+
+      const prevEndTime = Date.parse(previousDirection.endTime);
+      if (prevEndTime + ONE_HOUR_IN_MS < startTime) {
+        return null;
       }
     }
 
