@@ -395,19 +395,6 @@ function parseWalkingRoute(
       type: DIRECTION_TYPE.WALK,
     };
 
-    const routeSummary = [
-      {
-        stopName: originName,
-        direction: { type: DIRECTION_TYPE.WALK },
-        stayOnBusForTransfer: false,
-      },
-      {
-        stopName: destinationName,
-        direction: null,
-        stayOnBusForTransfer: false,
-      },
-    ];
-
     return adjustRouteTimesIfNecessary({
       arrivalTime,
       boundingBox,
@@ -416,7 +403,6 @@ function parseWalkingRoute(
       endCoords,
       endName: destinationName,
       numberOfTransfers: 0,
-      routeSummary,
       startCoords,
       startName: originName,
       totalDuration,
@@ -666,42 +652,6 @@ function parseRoutes(
         };
       }));
 
-      // Create array of RouteSummaryElements. This array is provided to allow for less logic on client
-      // Each RouteSummaryElement consists of {direction, stayOnBusForTransfer, stopName}.
-      let previousStopName;
-      const routeSummary = directions.map((direction, index) => {
-        const { name, type, stayOnBusForTransfer } = direction;
-
-        // We want to ignore the intial walking direction
-        if (index === 0 && type === DIRECTION_TYPE.WALK) return null;
-
-        const routeSummaryDirection = { busNumber: null, type };
-
-        let stopName = name;
-        if (type === DIRECTION_TYPE.DEPART) {
-          routeSummaryDirection.busNumber = direction.routeNumber;
-          previousStopName = direction.stops[direction.stops.length - 1].name;
-        } else { // Walking direction
-          // If we've already arrived at the destination, then we can ignore this walking direction.
-          if (previousStopName === destinationName) return null;
-          // stopName should be the name of the stop we just got off
-          stopName = previousStopName;
-        }
-
-        return {
-          direction: routeSummaryDirection,
-          stayOnBusForTransfer,
-          stopName,
-        };
-      }).filter(Boolean);
-
-      // The last element in routeSummary should be an object representing arriving to destination
-      routeSummary.push({
-        direction: null,
-        stayOnBusForTransfer: false,
-        stopName: destinationName,
-      });
-
       return {
         arrivalTime: arriveTime,
         boundingBox,
@@ -710,7 +660,6 @@ function parseRoutes(
         endCoords,
         endName: destinationName,
         numberOfTransfers: busRoute.transfers,
-        routeSummary,
         startCoords,
         startName: originName,
         totalDuration,
