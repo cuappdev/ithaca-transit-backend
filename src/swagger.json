@@ -47,7 +47,7 @@
     },
     "/v2/delays": {
       "post": {
-        "summary": "Returns a list of bus delays for buses at a specific stop.",
+        "summary": "Returns a list of bus delays for buses at a specific stop. Outdated as of 2020.",
         "description": "Takes in a list of objects with fields routeID and trip ID and returns a list of objects with fields routeID, tripID, and delay.",
         "produces": [
           "application/json"
@@ -131,7 +131,7 @@
     },
     "/v2/route": {
       "post": {
-        "summary": "Returns a list of the best available routes based on the passed-in parameters.",
+        "summary": "Returns a list of the best available routes based on the passed-in parameters. Outdated as of 2020.",
         "produces": [
           "application/json"
         ],
@@ -304,7 +304,7 @@
     },
     "/v2/tracking": {
       "post": {
-        "summary": "Returns a list information about live bus information (to help draw buses on the map).",
+        "summary": "Returns a list information about live bus information (to help draw buses on the map). Outdated as of 2020.",
         "produces": [
           "application/json"
         ],
@@ -348,7 +348,7 @@
     },
     "/v3/tracking": {
       "post": {
-        "summary": "Returns a list information about live bus information (to help draw buses on the map).",
+        "summary": "Returns a list information about live bus information (to help draw buses on the map). **Recommended and most up-to-date.",
         "produces": [
           "application/json"
         ],
@@ -356,22 +356,22 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The bus information to get the live location and other relevant vehicle data from. The request body has only one field, data, which is an array of objects with the following fields: \n* routeID: The number of the bus route. Note this corresponds to routeNumber from v2/route (v2/route has bad naming, so please stick with this in the meantime). \n* tripID: The unique trip identifier for the specific `routeID`.\n Ex. {\"data\": [{\"routeID\": integer, \"tripID\": string}]",
+            "description": "The bus information to get the live location and other relevant vehicle data from. The request body has only one field, data, which is an array of objects with the following fields: \n* routeId: The number of the bus route, corresponding with General Transit Feed Specification (GTFS) RouteId. Be aware that this is a string. \n* tripId: The unique trip identifier for the specific `routeId`, corresponding with GTFS tripId. \n Ex. {\"data\": [{\"routeId\": string, \"tripId\": string}]",
             "required": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "object",
                 "required": [
-                  "routeID",
-                  "tripID"
+                  "routeId",
+                  "tripId"
                 ],
                 "properties": {
-                  "routeID": {
-                    "type": "integer",
-                    "example": 10
+                  "routeId": {
+                    "type": "string",
+                    "example": "10"
                   },
-                  "tripID": {
+                  "tripId": {
                     "type": "string",
                     "example": "t536-b67-s1B"
                   }
@@ -382,9 +382,9 @@
         ],
         "responses": {
           "200": {
-            "description": "{\"success\": true, \"data\": [BusLocation]}",
+            "description": "{\"success\": true, \"data\": [BusLocationV3]}",
             "schema": {
-              "$ref": "#/definitions/BusLocation"
+              "$ref": "#/definitions/BusLocationV3"
             }
           }
         }
@@ -534,6 +534,27 @@
         "tripID": {
           "type": "string",
           "example": "t677-b73-slF"
+        }
+      }
+    },
+    "BusLocationV3": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "double",
+          "example": 42.459849543945
+        },
+        "longitude": {
+          "type": "double",
+          "example": -76.55484845435
+        },
+        "routeId": {
+          "type": "string",
+          "example": "77"
+        },
+        "vehicleId": {
+          "type": "string",
+          "example": "0"
         }
       }
     },
@@ -741,7 +762,8 @@
           "format": "double"
         },
         "routeId": {
-          "type": "integer",
+          "type": "string",
+          "example": "44",
           "description": "depart: The number representing the bus route. other: null. Matches the General Transit Feed Specification (GTFS) RouteId."
         },
         "stops": {

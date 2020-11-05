@@ -136,7 +136,7 @@ function getVehicleInformation(
     case: 'validData',
     latitude: vehicleData.latitude,
     longitude: vehicleData.longitude,
-    routeId: routeID,
+    routeId,
     vehicleId: vehicleData.vehicleID,
   };
 }
