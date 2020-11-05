@@ -13,7 +13,7 @@ services:
       - /usr/src/app/node_modules
 
   ghopper:
-    image: cornellappdev/transit-ghopper:v1.2.8
+    image: cornellappdev/transit-ghopper:v1.2.9
     ports:
       - "8988:8988"
 

@@ -1,6 +1,5 @@
 // @flow
 import type Request from 'express';
-import AnalyticsUtils from '../../utils/AnalyticsUtils';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import LogUtils from '../../utils/LogUtils';
 import RouteUtils from '../../utils/RouteUtilsV3';
@@ -52,8 +51,6 @@ class RouteRouter extends ApplicationRouter<Object> {
       };
       LogUtils.log({ category: 'routeRequest', request });
     }
-    AnalyticsUtils.assignRouteIdsAndCache(routes);
-
     return sectionedRoutes;
   }
 }
