@@ -23,40 +23,6 @@ async function fetchVehicles(): Object {
 }
 
 /**
- * We want to format the old data:
- * [
- *  {
- *   "stopID": "523",
- *   "routeID": "15",
- *   "tripIdentifiers": ["t607-b29-s1C"]
- *  },
- *  ...
- * ]
- * into the new data format type:
- * [
- *  {
- *   "routeID" : String,
- *   "tripID" : String
- *  },
- *  ...
- * ]
- * @param {*} requestData
- */
-function formatOldRequestData(requestData: Object): Object {
-  // don't format requests that follow the new format
-  if (requestData == null || !('tripIdentifiers' in requestData[0])) {
-    return requestData;
-  }
-  const formattedData = requestData.map((data) => {
-    const { routeID } = data;
-    const { tripIdentifiers } = data;
-    return tripIdentifiers.map(tripID => ({ routeID, tripID }));
-  });
-  // flatten the data so that we don't have nested arrays
-  return Array.prototype.concat.apply([], formattedData);
-}
-
-/**
  * Given an array of { routeID, tripID },
  * Return bus information
  * Input:[
@@ -72,13 +38,12 @@ function formatOldRequestData(requestData: Object): Object {
  *
  */
 async function getTrackingResponse(requestData: Object): Object {
-  const formattedData = formatOldRequestData(requestData);
   LogUtils.log({ message: 'getTrackingResponse: entering function' });
   const vehicles = await fetchVehicles();
 
-  const trackingInformation = formattedData.map((data) => {
-    const { routeID, tripID } = data;
-    const vehicleData = getVehicleInformation(routeID, tripID, vehicles);
+  const trackingInformation = requestData.map((data) => {
+    const { routeId, tripId } = data;
+    const vehicleData = getVehicleInformation(routeId, tripId, vehicles);
     if (!vehicleData) {
       LogUtils.log({ message: 'getVehicleResponse: noData', vehicleData });
       return null;
@@ -91,33 +56,33 @@ async function getTrackingResponse(requestData: Object): Object {
 
 /**
  * Returns a { vehicleID, delay } object
- * @param stopID
- * @param tripID
+ * @param stopId
+ * @param tripId
  * @param rtf
  * @returns Object
  */
 function getDelayInformation(
-  stopID: ?String,
-  tripID: ?String,
+  stopId: ?String,
+  tripId: ?String,
   rtf: ?Object,
 ): ?Object {
   // rtf param ensures the realtimeFeed doesn't update in the middle of execution
   // if invalid params or the trip is inactive
-  if (!stopID
-    || !tripID
+  if (!stopId
+    || !tripId
     || !rtf
     || rtf === {}
-    || !rtf[tripID]) {
+    || !rtf[tripId]) {
     LogUtils.log({
       category: 'getDelayInformation NULL',
-      stopID,
-      tripID,
+      stopId,
+      tripId,
     });
     return null;
   }
 
-  const info = rtf[tripID];
-  let delay = parseInt(info.stopUpdates && info.stopUpdates[stopID]);
+  const info = rtf[tripId];
+  let delay = parseInt(info.stopUpdates && info.stopUpdates[stopId]);
   if (Number.isNaN(delay)) delay = parseInt(info.delay);
 
   return {
@@ -128,81 +93,51 @@ function getDelayInformation(
 
 /**
  *
- * @param {*} routeID
- * @param {*} tripID
+ * @param {*} routeId
+ * @param {*} tripId
  * @param {*} vehicles
  */
 function getVehicleInformation(
-  routeID: ?String,
-  tripID: ?String,
+  routeId: ?String,
+  tripId: ?String,
   vehicles: ?Object,
 ): ?Object {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
-  if (!routeID
-    || !tripID
+  if (!routeId
+    || !tripId
     || !vehicles
     || vehicles === {}) {
     LogUtils.log({
       category: 'getVehicleInformation NULL',
-      routeID,
-      tripID,
+      routeId,
+      tripId,
     });
     return null;
   }
   const vehicleData = Object.values(vehicles).find(
-    v => (v.routeID === routeID) && (v.tripID === tripID),
+    v => (v.routeID === routeId) && (v.tripID === tripId),
   );
   if (!vehicleData) {
     LogUtils.log({
       category: 'getVehicleInformation no data',
-      routeID,
-      tripID,
+      routeId,
+      tripId,
     });
     return {
       case: 'noData',
-      delay: 0,
-      destination: '',
-      deviation: 0,
-      direction: '',
-      displayStatus: '',
-      gpsStatus: 0,
-      heading: 0,
-      lastStop: '',
-      lastUpdated: 0,
       latitude: 0,
       longitude: 0,
-      name: '',
-      opStatus: '',
-      routeID: Number(routeID), // although input is string, old clients expect a number
-      runID: 0,
-      speed: 0,
-      tripID: 0,
-      vehicleID: 0,
-      congestionLevel: 0,
+      routeId,
+      vehicleId: 0,
     };
   }
   return {
     case: 'validData',
-    delay: 0,
-    destination: '',
-    deviation: 0,
-    direction: '',
-    displayStatus: '',
-    gpsStatus: 0,
-    heading: vehicleData.bearing,
-    lastStop: '',
-    lastUpdated: vehicleData.timestamp,
     latitude: vehicleData.latitude,
     longitude: vehicleData.longitude,
-    name: '',
-    opStatus: '',
-    routeID: Number(routeID), // although input is string, old clients expect a number
-    runID: 0,
-    speed: parseInt(vehicleData.speed),
-    tripID: 0,
-    vehicleID: Number(vehicleData.vehicleID),
-    congestionLevel: vehicleData.congestionLevel,
+    routeId: routeID,
+    vehicleId: vehicleData.vehicleID,
   };
 }
 

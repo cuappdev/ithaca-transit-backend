@@ -15,6 +15,7 @@ import RouteV2Router from './v2/RouteRouter';
 import RouteV3Router from './v3/RouteRouter';
 import SearchRouter from './v1/SearchRouter';
 import TrackingRouter from './v1/TrackingRouter';
+import TrackingV3Router from './v3/TrackingRouter';
 
 export default {
   AlertsRouter,
@@ -34,4 +35,5 @@ export default {
   RouteV3Router,
   SearchRouter,
   TrackingRouter,
+  TrackingV3Router,
 };

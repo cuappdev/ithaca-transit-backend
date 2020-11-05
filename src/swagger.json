@@ -345,6 +345,50 @@
           }
         }
       }
+    },
+    "/v3/tracking": {
+      "post": {
+        "summary": "Returns a list information about live bus information (to help draw buses on the map).",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The bus information to get the live location and other relevant vehicle data from. The request body has only one field, data, which is an array of objects with the following fields: \n* routeID: The number of the bus route. Note this corresponds to routeNumber from v2/route (v2/route has bad naming, so please stick with this in the meantime). \n* tripID: The unique trip identifier for the specific `routeID`.\n Ex. {\"data\": [{\"routeID\": integer, \"tripID\": string}]",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "routeID",
+                  "tripID"
+                ],
+                "properties": {
+                  "routeID": {
+                    "type": "integer",
+                    "example": 10
+                  },
+                  "tripID": {
+                    "type": "string",
+                    "example": "t536-b67-s1B"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true, \"data\": [BusLocation]}",
+            "schema": {
+              "$ref": "#/definitions/BusLocation"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {

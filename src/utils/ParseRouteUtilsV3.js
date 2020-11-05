@@ -6,7 +6,7 @@ import { MAP_MATCHING } from './EnvUtils';
 import AllStopUtils from './AllStopUtils';
 import GTFSUtils from './GTFSUtils';
 import LogUtils from './LogUtils';
-import RealtimeFeedUtils from './RealtimeFeedUtils';
+import RealtimeFeedUtils from './RealtimeFeedUtilsV3';
 import RequestUtils from './RequestUtils';
 
 const DIRECTION_TYPE = {

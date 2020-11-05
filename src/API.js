@@ -24,7 +24,6 @@ class API extends ApplicationAPI {
       Routers.PlacesAutocompleteRouter,
       Routers.PlaceIDCoordinatesRouter,
       Routers.SearchRouter,
-      Routers.TrackingRouter,
     ];
     return {
       docs: [Routers.DocsRouter],
@@ -32,16 +31,19 @@ class API extends ApplicationAPI {
         ...sharedRouters,
         Routers.RouteRouter,
         Routers.DelayRouter,
+        Routers.TrackingRouter,
       ],
       v2: [
         ...sharedRouters,
         Routers.RouteV2Router,
         Routers.DelaysV2Router,
+        Routers.TrackingRouter,
       ],
       v3: [
         ...sharedRouters,
         Routers.RouteV3Router,
         Routers.DelaysV3Router,
+        Routers.TrackingV3Router,
       ],
     };
   }

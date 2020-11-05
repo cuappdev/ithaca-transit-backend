@@ -1,6 +1,6 @@
 // @flow
 import ApplicationRouter from '../../appdev/ApplicationRouter';
-import RealtimeFeedUtils from '../../utils/RealtimeFeedUtils';
+import RealtimeFeedUtils from '../../utils/RealtimeFeedUtilsV3';
 
 class DelaysRouter extends ApplicationRouter<Object> {
   constructor() {
@@ -13,13 +13,13 @@ class DelaysRouter extends ApplicationRouter<Object> {
 
   async content(req): Promise<any> {
     const rtf = await RealtimeFeedUtils.fetchRTF();
-    const delays = req.body.data.map(async ({ stopID, tripID }) => {
+    const delays = req.body.data.map(async ({ stopId, tripId }) => {
       const res = await RealtimeFeedUtils.getDelayInformation(
-        stopID, tripID, rtf,
+        stopId, tripId, rtf,
       );
       return {
-        stopId: stopID,
-        tripId: tripID,
+        stopId,
+        tripId,
         delay: res ? res.delay : null,
       };
     });
