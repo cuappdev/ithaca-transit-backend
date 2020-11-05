@@ -63,15 +63,15 @@
               "items": {
                 "type": "object",
                 "required": [
-                  "stopID",
-                  "tripID"
+                  "stopId",
+                  "tripId"
                 ],
                 "properties": {
-                  "stopID": {
+                  "stopId": {
                     "type": "string",
                     "example": "2406"
                   },
-                  "tripID": {
+                  "tripId": {
                     "type": "string",
                     "example": "t536-b67-s1B"
                   }
@@ -82,7 +82,49 @@
         ],
         "responses": {
           "200": {
-            "description": "{\"success\": true, \"data\": [{\"tripID\": string, \"stopID\": string, \"delay\": int}]}"
+            "description": "{\"success\": true, \"data\": [{\"tripId\": string, \"stopId\": string, \"delay\": int}]}"
+          }
+        }
+      }
+    },
+    "/v3/delays": {
+      "post": {
+        "summary": "Return a list of bus delays for buses at a specific stop",
+        "description": "Takes in a list of objects with fields routeId and tripId and returns a list of objects with fields routeId, tripId, and delay.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The stop information to get the delay in seconds for. The request body has only one field, data, which is an array of objects with the following fields: \n* stopId: The unique bus stop identifier. \n* tripID: The unique trip identifier for the specific `routeId`.\n Ex. {\"data\": [{\"stopId\": string, \"tripId\": string}]",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "stopId",
+                  "tripId"
+                ],
+                "properties": {
+                  "stopId": {
+                    "type": "string",
+                    "example": "2406"
+                  },
+                  "tripId": {
+                    "type": "string",
+                    "example": "t536-b67-s1B"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true, \"data\": [{\"tripId\": string, \"stopId\": string, \"delay\": int}]}"
           }
         }
       }
@@ -151,11 +193,9 @@
         }
       }
     },
-    "/routeSelected": {
+    "/v3/route": {
       "post": {
-        "consumes": [
-          "application/json"
-        ],
+        "summary": "Return a list of the best available routes based on the passed-in parameters",
         "produces": [
           "application/json"
         ],
@@ -163,22 +203,45 @@
           {
             "in": "body",
             "name": "body",
-            "description": "Used for analytics -- for iOS or Android to tell backend what routes users are selecting.\nrouteId: The number of the bus route.\nuid: The user identifier.",
+            "description": "The user's search query for a bus stop or place.\nstart: The starting point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\nend: The ending point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\ntime: The relevant time in the request. If `arriveBy` is false, departBy functionality is used, and `time` is when the journey should at earliest begin by.\narriveBy: Whether the request requires the route to arrive at the destination by time.\ndestinationName: The name of the destination of the trip.",
             "required": true,
             "schema": {
               "type": "object",
               "required": [
-                "routeId",
-                "uid"
+                "start",
+                "end",
+                "time",
+                "arriveBy",
+                "destinationName"
               ],
               "properties": {
-                "routeId": {
+                "end": {
                   "type": "string",
-                  "example": "82"
+                  "example": "42.45322,-76.477264"
                 },
                 "uid": {
                   "type": "string",
                   "example": "B1CD4726-0CA8-41DC-A2F4-01D5D8F3A3E0"
+                },
+                "time": {
+                  "type": "integer",
+                  "example": 1582309886.406827
+                },
+                "destinationName": {
+                  "type": "string",
+                  "example": "Helen Newman Hall"
+                },
+                "start": {
+                  "type": "string",
+                  "example": "42.45070406588394,-76.49342862932777"
+                },
+                "arriveBy": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "originName": {
+                  "type": "string",
+                  "example": "Current Location"
                 }
               }
             }
@@ -186,7 +249,10 @@
         ],
         "responses": {
           "200": {
-            "description": "{\"success\": true}"
+            "description": "{\"success\": true, \"data\": {fromStop: [RouteV3], boardingSoon: [RouteV3], walking: [Route]}}",
+            "schema": {
+              "$ref": "#/definitions/Route"
+            }
           }
         }
       }
@@ -563,6 +629,119 @@
         }
       }
     },
+    "DirectionV3": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "startTime": {
+          "description": "The starting time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+          "type": "string"
+        },
+        "endTime": {
+          "description": "The ending time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+          "type": "string"
+        },
+        "startLocation": {
+          "description": "The starting location associated with the direction.",
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number",
+              "format": "double"
+            },
+            "long": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        },
+        "endLocation": {
+          "description": "The ending location associated with the direction.",
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "number",
+              "format": "double"
+            },
+            "long": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        },
+        "path": {
+          "description": "The corresponding path of the direction.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "format": "double"
+              },
+              "long": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          }
+        },
+        "distance": {
+          "description": "The total distance of the direction (meters).",
+          "type": "number",
+          "format": "double"
+        },
+        "routeId": {
+          "type": "integer",
+          "description": "depart: The number representing the bus route. other: null. Matches the General Transit Feed Specification (GTFS) RouteId."
+        },
+        "stops": {
+          "type": "array",
+          "description": "depart: An array of bus stop names that are passed, including the departure and arrival stop. other: Return [ ]",
+          "items": {
+            "type": "object",
+            "properties": {
+              "lat": {
+                "type": "number",
+                "format": "double"
+              },
+              "long": {
+                "type": "number",
+                "format": "double"
+              },
+              "name": {
+                "type": "string"
+              },
+              "stopId": {
+                "type": "string",
+                "description": "Matches the General Transit Feed Specification (GTFS) StopId.",
+                "example": "911"
+              }
+            }
+          }
+        },
+        "stayOnBusForTransfer": {
+          "type": "boolean",
+          "description": "Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective routeNumber in the next .depart Direction."
+        },
+        "tripIdentifiers": {
+          "type": "array",
+          "items": {
+            "description": "The unique identifier(s) for the specific bus related to the direction. Only exists when type is .depart.",
+            "type": "string"
+          }
+        },
+        "delay": {
+          "type": "integer",
+          "description": "The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
+        }
+      }
+    },
     "Route": {
       "type": "object",
       "properties": {
@@ -714,6 +893,187 @@
                     },
                     "id": {
                       "type": "string"
+                    }
+                  }
+                }
+              },
+              "endTime": {
+                "description": "The ending time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+                "type": "string",
+                "example": "2020-03-06T21:55:00Z"
+              },
+              "distance": {
+                "description": "The total distance of the direction (meters).",
+                "type": "double",
+                "example": 35.63741707587268
+              },
+              "startTime": {
+                "description": "The starting time (UTC) associated with the direction Format: \"yyyy-MM-dd'T'HH:mm:ssZZZZ",
+                "type": "string",
+                "example": "2020-03-06T21:54:17Z"
+              },
+              "name": {
+                "type": "string",
+                "example": "Schwartz Performing Arts Center"
+              }
+            }
+          }
+        },
+        "boundingBox": {
+          "type": "object",
+          "properties": {
+            "maxLong": {
+              "type": "double",
+              "example": -76.48513
+            },
+            "maxLat": {}
+          }
+        },
+        "arrivalTime": {
+          "type": "string",
+          "description": "The time a user arrives at their destination."
+        },
+        "travelDistance": {
+          "type": "number",
+          "format": "double",
+          "description": "The distance between start and end coords in miles."
+        },
+        "endName": {
+          "type": "string",
+          "description": "The name of the destination for this route."
+        },
+        "totalDuration": {
+          "type": "number",
+          "format": "int",
+          "description": "The number of minutes between departureTime and arrivalTime"
+        }
+      }
+    },
+    "RouteV3": {
+      "type": "object",
+      "properties": {
+        "departureTime": {
+          "type": "string",
+          "description": "The time a user begins their journey (e.g. when to start walking).",
+          "example": "2020-03-06T21:54:17Z"
+        },
+        "startName": {
+          "type": "string",
+          "description": "The name of the origin for this route.",
+          "example": "Current Location"
+        },
+        "startCoords": {
+          "type": "object",
+          "properties": {
+            "lat": {
+              "type": "double",
+              "example": 42.44212461191496
+            },
+            "long": {
+              "type": "double",
+              "example": -76.48527391503616
+            }
+          }
+        },
+        "directions": {
+          "type": "array",
+          "description": "A list of Direction objects.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "endLocation": {
+                "description": "The ending location associated with the direction.",
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "double",
+                    "example": 42.44244491552811
+                  },
+                  "long": {
+                    "type": "double",
+                    "example": -76.4852889214148
+                  }
+                }
+              },
+              "routeId": {
+                "type": "string",
+                "description": "Matches the General Transit Feed Specification (GTFS) RouteId. The number representing the bus route. Note this is still a string!",
+                "example": "43"
+              },
+              "tripIds": {
+                "type": "array",
+                "description": "Matches the General Transit Feed Specification (GTFS) TripId, except here it is an array of TripIds.",
+                "items": {
+                  "description": "The unique identifier(s) for the specific bus related to the direction. Only exists when type is .depart.",
+                  "type": "string"
+                }
+              },
+              "stayOnBusForTransfer": {
+                "type": "boolean",
+                "description": "Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective routeNumber in the next .depart Direction.",
+                "example": "false"
+              },
+              "delay": {
+                "type": "integer",
+                "example": 1,
+                "description": "In seconds. The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
+              },
+              "startLocation": {
+                "description": "The starting location associated with the direction.",
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "double",
+                    "example": "42.44212461191496"
+                  },
+                  "long": {
+                    "type": "double",
+                    "example": "-76.48527391503616"
+                  }
+                }
+              },
+              "path": {
+                "description": "The corresponding path of the direction.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "lat": {
+                      "type": "double",
+                      "example": "42.44212461191496"
+                    },
+                    "long": {
+                      "type": "double",
+                      "exzample": "-76.48527391503616"
+                    }
+                  }
+                }
+              },
+              "type": {
+                "type": "string",
+                "example": "walk"
+              },
+              "stops": {
+                "type": "array",
+                "description": "depart: An array of bus stop names that are passed, including the departure and arrival stop. other: Return [ ]",
+                "items": {
+                  "lat": {
+                    "type": "double",
+                    "example": "42.44212461191496"
+                  },
+                  "long": {
+                    "type": "double",
+                    "exzample": "-76.48527391503616"
+                  },
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "stopId": {
+                      "type": "string",
+                      "description": "Matches the General Transit Feed Specification (GTFS) StopId.",
+                      "example": "911"
                     }
                   }
                 }

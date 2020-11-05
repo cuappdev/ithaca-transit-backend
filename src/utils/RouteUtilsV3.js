@@ -33,12 +33,12 @@ async function isBusStop(location: string): Promise<boolean> {
  */
 function routeContainsTransfer(route: Object): boolean {
   const { directions } = route;
-  const routeNumbers = [];
+  const routeIds = [];
   directions.forEach((direction) => {
-    const { routeNumber } = direction;
-    if (routeNumber && !routeNumbers.includes(routeNumber)) routeNumbers.push(routeNumber);
+    const { routeId } = direction;
+    if (routeId && !routeIds.includes(routeId)) routeIds.push(routeId);
   });
-  return routeNumbers.length > 1;
+  return routeIds.length > 1;
 }
 
 /**

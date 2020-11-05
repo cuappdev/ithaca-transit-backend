@@ -26,8 +26,8 @@ async function fetchVehicles(): Object {
  * We want to format the old data:
  * [
  *  {
- *   "stopID": "523",
- *   "routeID": "15",
+ *   "stopId": "523",
+ *   "routeId": "15",
  *   "tripIdentifiers": ["t607-b29-s1C"]
  *  },
  *  ...
@@ -35,8 +35,8 @@ async function fetchVehicles(): Object {
  * into the new data format type:
  * [
  *  {
- *   "routeID" : String,
- *   "tripID" : String
+ *   "routeId" : String,
+ *   "tripId" : String
  *  },
  *  ...
  * ]
@@ -48,25 +48,25 @@ function formatOldRequestData(requestData: Object): Object {
     return requestData;
   }
   const formattedData = requestData.map((data) => {
-    const { routeID } = data;
+    const { routeId } = data;
     const { tripIdentifiers } = data;
-    return tripIdentifiers.map(tripID => ({ routeID, tripID }));
+    return tripIdentifiers.map(tripId => ({ routeId, tripId }));
   });
   // flatten the data so that we don't have nested arrays
   return Array.prototype.concat.apply([], formattedData);
 }
 
 /**
- * Given an array of { routeID, tripID },
+ * Given an array of { routeId, tripId },
  * Return bus information
  * Input:[
  * {
- * routeID : String,
- * tripID : String
+ * routeId : String,
+ * tripId : String
  * },... ]
  * NOTE: Because we need to provide backwards compatibility with old iOS clients
- * we have to follow their janky way of routeID input is String but routeID
- * output is Number. This "routeID" is also named jankily, which is supposed to
+ * we have to follow their janky way of routeId input is String but routeId
+ * output is Number. This "routeId" is also named jankily, which is supposed to
  * be routeNumber from v2/route/. We cast this to Number in getVehicleInformation.
  *
  *
@@ -77,8 +77,8 @@ async function getTrackingResponse(requestData: Object): Object {
   const vehicles = await fetchVehicles();
 
   const trackingInformation = formattedData.map((data) => {
-    const { routeID, tripID } = data;
-    const vehicleData = getVehicleInformation(routeID, tripID, vehicles);
+    const { routeId, tripId } = data;
+    const vehicleData = getVehicleInformation(routeId, tripId, vehicles);
     if (!vehicleData) {
       LogUtils.log({ message: 'getVehicleResponse: noData', vehicleData });
       return null;
@@ -91,33 +91,33 @@ async function getTrackingResponse(requestData: Object): Object {
 
 /**
  * Returns a { vehicleID, delay } object
- * @param stopID
- * @param tripID
+ * @param stopId
+ * @param tripId
  * @param rtf
  * @returns Object
  */
 function getDelayInformation(
-  stopID: ?String,
-  tripID: ?String,
+  stopId: ?String,
+  tripId: ?String,
   rtf: ?Object,
 ): ?Object {
   // rtf param ensures the realtimeFeed doesn't update in the middle of execution
   // if invalid params or the trip is inactive
-  if (!stopID
-    || !tripID
+  if (!stopId
+    || !tripId
     || !rtf
     || rtf === {}
-    || !rtf[tripID]) {
+    || !rtf[tripId]) {
     LogUtils.log({
       category: 'getDelayInformation NULL',
-      stopID,
-      tripID,
+      stopId,
+      tripId,
     });
     return null;
   }
 
-  const info = rtf[tripID];
-  let delay = parseInt(info.stopUpdates && info.stopUpdates[stopID]);
+  const info = rtf[tripId];
+  let delay = parseInt(info.stopUpdates && info.stopUpdates[stopId]);
   if (Number.isNaN(delay)) delay = parseInt(info.delay);
 
   return {
@@ -128,36 +128,36 @@ function getDelayInformation(
 
 /**
  *
- * @param {*} routeID
- * @param {*} tripID
+ * @param {*} routeId
+ * @param {*} tripId
  * @param {*} vehicles
  */
 function getVehicleInformation(
-  routeID: ?String,
-  tripID: ?String,
+  routeId: ?String,
+  tripId: ?String,
   vehicles: ?Object,
 ): ?Object {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
-  if (!routeID
-    || !tripID
+  if (!routeId
+    || !tripId
     || !vehicles
     || vehicles === {}) {
     LogUtils.log({
       category: 'getVehicleInformation NULL',
-      routeID,
-      tripID,
+      routeId,
+      tripId,
     });
     return null;
   }
   const vehicleData = Object.values(vehicles).find(
-    v => (v.routeID === routeID) && (v.tripID === tripID),
+    v => (v.routeId === routeId) && (v.tripId === tripId),
   );
   if (!vehicleData) {
     LogUtils.log({
       category: 'getVehicleInformation no data',
-      routeID,
-      tripID,
+      routeId,
+      tripId,
     });
     return {
       case: 'noData',
@@ -174,10 +174,10 @@ function getVehicleInformation(
       longitude: 0,
       name: '',
       opStatus: '',
-      routeID: Number(routeID), // although input is string, old clients expect a number
+      routeId: Number(routeId), // although input is string, old clients expect a number
       runID: 0,
       speed: 0,
-      tripID: 0,
+      tripId: 0,
       vehicleID: 0,
       congestionLevel: 0,
     };
@@ -197,10 +197,10 @@ function getVehicleInformation(
     longitude: vehicleData.longitude,
     name: '',
     opStatus: '',
-    routeID: Number(routeID), // although input is string, old clients expect a number
+    routeId: Number(routeId), // although input is string, old clients expect a number
     runID: 0,
     speed: parseInt(vehicleData.speed),
-    tripID: 0,
+    tripId: 0,
     vehicleID: Number(vehicleData.vehicleID),
     congestionLevel: vehicleData.congestionLevel,
   };

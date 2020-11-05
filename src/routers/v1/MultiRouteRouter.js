@@ -1,6 +1,5 @@
 // @flow
 import type Request from 'express';
-import AnalyticsUtils from '../../utils/AnalyticsUtils';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import LogUtils from '../../utils/LogUtils';
 import RouteUtils from '../../utils/RouteUtils';
@@ -50,7 +49,6 @@ class MultiRouteRouter extends ApplicationRouter<Array<Object>> {
     // return the best route for each destination
     return Promise.all(multiRoutes).then((val) => {
       const bestRoutes = val.map(routes => (routes.length > 0 ? routes[0] : null));
-      AnalyticsUtils.assignRouteIdsAndCache(bestRoutes.filter(Boolean));
       return bestRoutes;
     }).catch((err) => {
       throw LogUtils.logErr(err, multiRoutes, 'Could not get all specified routes');
