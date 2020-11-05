@@ -13,7 +13,7 @@
   "paths": {
     "/alerts": {
       "get": {
-        "summary": "Return a list of official TCAT alerts/messages",
+        "summary": "Returns a list of official TCAT alerts and messages.",
         "description": "All response fields are optional. A list should be included in the app, and periodically updated.",
         "produces": [
           "application/json"
@@ -30,7 +30,7 @@
     },
     "/allStops": {
       "get": {
-        "summary": "Return a list of TCAT bus stops to show as a possible start / end location.",
+        "summary": "Returns a list of TCAT bus stops to show as a possible start or end location.",
         "description": "A list of all 'BusStop's.",
         "produces": [
           "application/json"
@@ -47,7 +47,7 @@
     },
     "/v2/delays": {
       "post": {
-        "summary": "Return a list of bus delays for buses at a specific stop",
+        "summary": "Returns a list of bus delays for buses at a specific stop.",
         "description": "Takes in a list of objects with fields routeID and trip ID and returns a list of objects with fields routeID, tripID, and delay.",
         "produces": [
           "application/json"
@@ -56,7 +56,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The stop information to get the delay in seconds for. The request body has only one field, data, which is an array of objects with the following fields: \n* stopID: The unique bus stop identifier. \n* tripID: The unique trip identifier for the specific `routeID`.\n Ex. {\"data\": [{\"stopID\": string, \"tripID\": string}]",
+            "description": "The stop information to get the delay in seconds for. Positive delay means the bus is late, negative delay means the bus is early, and null delay means the delay is unknown. The request body has only one field, data, which is an array of objects with the following fields: \n* stopID: The unique bus stop identifier. \n* tripID: The unique trip identifier for the specific `routeID`.\n Ex. {\"data\": [{\"stopID\": string, \"tripID\": string}]",
             "required": true,
             "schema": {
               "type": "array",
@@ -89,7 +89,7 @@
     },
     "/v3/delays": {
       "post": {
-        "summary": "Return a list of bus delays for buses at a specific stop",
+        "summary": "Returns a list of bus delays for buses at a specific stop. **Recommended and most up-to-date.",
         "description": "Takes in a list of objects with fields routeId and tripId and returns a list of objects with fields routeId, tripId, and delay.",
         "produces": [
           "application/json"
@@ -98,7 +98,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The stop information to get the delay in seconds for. The request body has only one field, data, which is an array of objects with the following fields: \n* stopId: The unique bus stop identifier. \n* tripID: The unique trip identifier for the specific `routeId`.\n Ex. {\"data\": [{\"stopId\": string, \"tripId\": string}]",
+            "description": "The stop information to get the delay in seconds for. Positive delay means the bus is late, negative delay means the bus is early, and null delay means the delay is unknown. The request body has only one field, data, which is an array of objects with the following fields: \n* stopId: The unique bus stop identifier. \n* tripId: The unique trip identifier for the specific `routeId`.\n Ex. {\"data\": [{\"stopId\": string, \"tripId\": string}]",
             "required": true,
             "schema": {
               "type": "array",
@@ -131,7 +131,7 @@
     },
     "/v2/route": {
       "post": {
-        "summary": "Return a list of the best available routes based on the passed-in parameters",
+        "summary": "Returns a list of the best available routes based on the passed-in parameters.",
         "produces": [
           "application/json"
         ],
@@ -195,7 +195,7 @@
     },
     "/v3/route": {
       "post": {
-        "summary": "Return a list of the best available routes based on the passed-in parameters",
+        "summary": "Returns a list of the best available routes based on the passed-in parameters. **Recommended and most up-to-date.",
         "produces": [
           "application/json"
         ],
@@ -249,9 +249,9 @@
         ],
         "responses": {
           "200": {
-            "description": "{\"success\": true, \"data\": {fromStop: [RouteV3], boardingSoon: [RouteV3], walking: [Route]}}",
+            "description": "{\"success\": true, \"data\": {fromStop: [RouteV3], boardingSoon: [RouteV3], walking: [RouteV3]}}",
             "schema": {
-              "$ref": "#/definitions/Route"
+              "$ref": "#/definitions/RouteV3"
             }
           }
         }
@@ -259,7 +259,7 @@
     },
     "/v2/appleSearch": {
       "post": {
-        "summary": "Returns a list of bus stops and apple places autocomplete search results given a query string.",
+        "summary": "Returns a list of bus stops and ApplePlaces autocomplete search results given a query string.",
         "consumes": [
           "application/json"
         ],
@@ -304,7 +304,7 @@
     },
     "/v2/tracking": {
       "post": {
-        "summary": "Return a list information about live bus information (to help draw buses on the map).",
+        "summary": "Returns a list information about live bus information (to help draw buses on the map).",
         "produces": [
           "application/json"
         ],
@@ -591,7 +591,7 @@
         },
         "stops": {
           "type": "array",
-          "description": "depart: An array of bus stop names that are passed, including the departure and arrival stop. other: Return [ ]",
+          "description": "depart: An array of bus stop names that are passed, including the departure and arrival stop. other: Return []",
           "items": {
             "type": "object",
             "properties": {
@@ -1005,7 +1005,8 @@
                 "description": "Matches the General Transit Feed Specification (GTFS) TripId, except here it is an array of TripIds. If there are no tripIds we return [].",
                 "items": {
                   "description": "The unique identifier(s) for the specific bus related to the direction. Only exists when type is .depart.",
-                  "type": "string"
+                  "type": "string",
+                  "example": "t77E-b1F-slC"
                 }
               },
               "stayOnBusForTransfer": {
@@ -1044,7 +1045,7 @@
                     },
                     "long": {
                       "type": "double",
-                      "exzample": "-76.48527391503616"
+                      "example": "-76.48527391503616"
                     }
                   }
                 }
@@ -1055,20 +1056,21 @@
               },
               "stops": {
                 "type": "array",
-                "description": "depart: An array of bus stop names that are passed, including the departure and arrival stop. other: Return [ ]",
+                "description": "depart: An array of bus stop names that are passed, including the departure and arrival stop. other: Return []",
                 "items": {
-                  "lat": {
-                    "type": "double",
-                    "example": "42.44212461191496"
-                  },
-                  "long": {
-                    "type": "double",
-                    "exzample": "-76.48527391503616"
-                  },
                   "type": "object",
                   "properties": {
+                    "lat": {
+                      "type": "double",
+                      "example": "42.44212461191496"
+                    },
+                    "long": {
+                      "type": "double",
+                      "example": "-76.48527391503616"
+                    },
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Ithaca Commons - Seneca St"
                     },
                     "stopId": {
                       "type": "string",
@@ -1117,16 +1119,19 @@
         "travelDistance": {
           "type": "number",
           "format": "double",
-          "description": "The distance between start and end coords in miles."
+          "description": "The distance between start and end coords in miles.",
+          "example": 1.3873497706662632
         },
         "endName": {
           "type": "string",
-          "description": "The name of the destination for this route."
+          "description": "The name of the destination for this route.",
+          "example": "Wegmans"
         },
         "totalDuration": {
           "type": "number",
           "format": "int",
-          "description": "The number of minutes between departureTime and arrivalTime"
+          "description": "The number of minutes between departureTime and arrivalTime",
+          "example": 34
         }
       }
     }
