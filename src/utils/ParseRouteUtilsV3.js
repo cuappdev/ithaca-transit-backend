@@ -64,7 +64,7 @@ function mergeDirections(first, second): Object {
   const path = first.path.concat(second.path);
   const distance = first.distance + second.distance;
   const stops = first.stops.concat(second.stops);
-  const tripIDs = first.tripIds.concat(second.tripIds);
+  const tripIds = first.tripIds.concat(second.tripIds);
 
   // The combined delay is only the first bus route's delay, because that is
   // how much the combined route is initially delayed by and is what the user
@@ -95,7 +95,7 @@ function mergeDirections(first, second): Object {
     startTime: first.startTime,
     stayOnBusForTransfer,
     stops,
-    tripIds: tripIDs,
+    tripIds,
     type: first.type,
   };
 }
@@ -536,7 +536,7 @@ function parseRoutes(
         const startLocation = path[0];
         const endLocation = path[path.length - 1];
         let routeId = null;
-        let tripID = null;
+        let tripId = null;
         let delay = null;
         let stops = [];
         let stayOnBusForTransfer = false;
@@ -547,7 +547,7 @@ function parseRoutes(
             stayOnBusForTransfer = true;
           }
 
-          tripID = [currLeg.trip_id];
+          tripId = [currLeg.trip_id];
 
           const routeJson = await GTFSUtils.fetchRoutes();
           const route = routeJson.filter(
@@ -629,7 +629,7 @@ function parseRoutes(
           }));
 
           const rtf = await RealtimeFeedUtils.fetchRTF();
-          const realtimeData = RealtimeFeedUtils.getDelayInformation(stops[0].stopId, tripID[0], rtf);
+          const realtimeData = RealtimeFeedUtils.getDelayInformation(stops[0].stopId, tripId[0], rtf);
 
           delay = (realtimeData && realtimeData.delay);
         }
@@ -646,7 +646,7 @@ function parseRoutes(
           startTime,
           stayOnBusForTransfer,
           stops,
-          tripIds: tripID,
+          tripIds: tripId || [],
           type,
         };
       }));

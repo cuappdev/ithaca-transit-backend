@@ -625,7 +625,7 @@
         },
         "delay": {
           "type": "integer",
-          "description": "The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
+          "description": "The bus delay for stops[0]. If delay is null, means we don’t have delay information yet."
         }
       }
     },
@@ -738,7 +738,7 @@
         },
         "delay": {
           "type": "integer",
-          "description": "The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
+          "description": "The bus delay for stops[0]. If delay is null, means we don’t have delay information yet."
         }
       }
     },
@@ -841,7 +841,7 @@
               "delay": {
                 "type": "integer",
                 "example": 1,
-                "description": "In seconds. The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
+                "description": "In seconds. The bus delay for stops[0]. If delay is null, means we don’t have delay information yet."
               },
               "startLocation": {
                 "description": "The starting location associated with the direction.",
@@ -997,12 +997,12 @@
               },
               "routeId": {
                 "type": "string",
-                "description": "Matches the General Transit Feed Specification (GTFS) RouteId. The number representing the bus route. Note this is still a string!",
+                "description": "Matches the General Transit Feed Specification (GTFS) RouteId. The number representing the bus route. Note this is still a string! If there is no routeId, we return null.",
                 "example": "43"
               },
               "tripIds": {
                 "type": "array",
-                "description": "Matches the General Transit Feed Specification (GTFS) TripId, except here it is an array of TripIds.",
+                "description": "Matches the General Transit Feed Specification (GTFS) TripId, except here it is an array of TripIds. If there are no tripIds we return [].",
                 "items": {
                   "description": "The unique identifier(s) for the specific bus related to the direction. Only exists when type is .depart.",
                   "type": "string"
@@ -1010,13 +1010,13 @@
               },
               "stayOnBusForTransfer": {
                 "type": "boolean",
-                "description": "Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective routeNumber in the next .depart Direction.",
+                "description": "Whether the user should stay on the bus for an upcoming transfer. It is assumed the bus line number will become the next respective routeNumber in the next .depart DirectionV3.",
                 "example": "false"
               },
               "delay": {
                 "type": "integer",
                 "example": 1,
-                "description": "In seconds. The bus delay for stops[0]. If delay is nil, means we don’t have delay information yet."
+                "description": "In seconds. The bus delay for stops[0]. If delay is null, means we don’t have delay information yet."
               },
               "startLocation": {
                 "description": "The starting location associated with the direction.",
