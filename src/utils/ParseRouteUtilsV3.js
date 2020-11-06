@@ -6,7 +6,7 @@ import { MAP_MATCHING } from './EnvUtils';
 import AllStopUtils from './AllStopUtils';
 import GTFSUtils from './GTFSUtils';
 import LogUtils from './LogUtils';
-import RealtimeFeedUtils from './RealtimeFeedUtils';
+import RealtimeFeedUtils from './RealtimeFeedUtilsV3';
 import RequestUtils from './RequestUtils';
 
 const DIRECTION_TYPE = {
@@ -55,7 +55,7 @@ function createGpxJson(stops: Array<Object>, startTime: String): Object {
  * startLocation: ({lat: *, long: *}|*),
  * endLocation: ({lat: *, long: *}|*),
  * path: T[] | string | *, distance: *,
- * routeNumber: (null|*), stops: T[], tripIdentifiers: T[] | string | *}}
+ * routeId: (null|*), stops: T[], tripIds: T[] | string | *}}
  */
 function mergeDirections(first, second): Object {
   second.stops.shift();
@@ -64,7 +64,7 @@ function mergeDirections(first, second): Object {
   const path = first.path.concat(second.path);
   const distance = first.distance + second.distance;
   const stops = first.stops.concat(second.stops);
-  const tripIDs = first.tripIdentifiers.concat(second.tripIdentifiers);
+  const tripIds = first.tripIds.concat(second.tripIds);
 
   // The combined delay is only the first bus route's delay, because that is
   // how much the combined route is initially delayed by and is what the user
@@ -90,12 +90,12 @@ function mergeDirections(first, second): Object {
     endTime: second.endTime,
     name: first.name,
     path,
-    routeNumber: first.routeNumber,
+    routeId: first.routeId,
     startLocation: first.startLocation,
     startTime: first.startTime,
     stayOnBusForTransfer,
     stops,
-    tripIdentifiers: tripIDs,
+    tripIds,
     type: first.type,
   };
 }
@@ -190,21 +190,21 @@ async function condenseRoute(
       && previousDirection.type === DIRECTION_TYPE.DEPART
       && direction.type === DIRECTION_TYPE.DEPART) {
       /*
-       * Discard route if a depart direction's last stopID is not equal to the next direction's first stopID,
+       * Discard route if a depart direction's last stopId is not equal to the next direction's first stopId,
        * Fixes bug where graphhopper directions are to get off at a stop and get on another stop
        * far away with no walking direction in between, EG: 1. get off at Statler 2. board at RPCC
        */
-      if (previousDirection.stops[previousDirection.stops.length - 1].stopID
-        !== direction.stops[0].stopID) {
+      if (previousDirection.stops[previousDirection.stops.length - 1].stopId
+        !== direction.stops[0].stopId) {
         return null;
       }
 
       /*
-       * If consecutive bus directions have the same routeNumber,
+       * If consecutive bus directions have the same routeId,
        * then replace the last direction with merged directions and remove the current direction.
        * No real transfer, probably just change in trip_ids.
        */
-      if (previousDirection.routeNumber === direction.routeNumber) {
+      if (previousDirection.routeId === direction.routeId) {
         route.directions.splice(index - 1, 2, mergeDirections(previousDirection, direction));
         index -= 1; // since we removed an element from the array
       }
@@ -386,11 +386,11 @@ function parseWalkingRoute(
       endTime: arrivalTime,
       name: destinationName,
       path: walkingPath,
-      routeNumber: null,
+      routeId: null,
       startLocation: startCoords,
       startTime: departureTime,
       stops: [],
-      tripIdentifiers: null,
+      tripIds: null,
       type: DIRECTION_TYPE.WALK,
     };
 
@@ -535,8 +535,8 @@ function parseRoutes(
 
         const startLocation = path[0];
         const endLocation = path[path.length - 1];
-        let routeNumber = null;
-        let tripID = null;
+        let routeId = null;
+        let tripId = null;
         let delay = null;
         let stops = [];
         let stayOnBusForTransfer = false;
@@ -547,7 +547,7 @@ function parseRoutes(
             stayOnBusForTransfer = true;
           }
 
-          tripID = [currLeg.trip_id];
+          tripId = [currLeg.trip_id];
 
           const routeJson = await GTFSUtils.fetchRoutes();
           const route = routeJson.filter(
@@ -561,7 +561,7 @@ function parseRoutes(
 
           if (route.length === 1) {
             // this gets the correct route number for the gtfs data
-            routeNumber = route[0].route_short_name.match(/\d+/g).map(Number)[0];
+            routeId = route[0].route_short_name.match(/\d+/g).map(Number)[0];
           }
 
           if (path.length >= 2) {
@@ -625,11 +625,11 @@ function parseRoutes(
             lat: stop.geometry.coordinates[1],
             long: stop.geometry.coordinates[0],
             name: stop.stop_name,
-            stopID: stop.stop_id,
+            stopId: stop.stop_id,
           }));
 
           const rtf = await RealtimeFeedUtils.fetchRTF();
-          const realtimeData = RealtimeFeedUtils.getDelayInformation(stops[0].stopID, tripID[0], rtf);
+          const realtimeData = RealtimeFeedUtils.getDelayInformation(stops[0].stopId, tripId[0], rtf);
 
           delay = (realtimeData && realtimeData.delay);
         }
@@ -641,12 +641,12 @@ function parseRoutes(
           endTime,
           name,
           path,
-          routeNumber,
+          routeId,
           startLocation,
           startTime,
           stayOnBusForTransfer,
           stops,
-          tripIdentifiers: tripID,
+          tripIds: tripId || [],
           type,
         };
       }));

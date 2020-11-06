@@ -19,29 +19,31 @@ class API extends ApplicationAPI {
       Routers.AllStopsRouter,
       Routers.ApplePlacesRouter,
       Routers.AppleSearchRouter,
-      Routers.DelayRouter,
-      Routers.DelaysRouter,
       Routers.HelloWorldRouter,
       Routers.MultiRouteRouter,
       Routers.PlacesAutocompleteRouter,
       Routers.PlaceIDCoordinatesRouter,
-      Routers.RouteSelectedRouter,
       Routers.SearchRouter,
-      Routers.TrackingRouter,
     ];
     return {
       docs: [Routers.DocsRouter],
       v1: [
         ...sharedRouters,
         Routers.RouteRouter,
+        Routers.DelayRouter,
+        Routers.TrackingRouter,
       ],
       v2: [
         ...sharedRouters,
         Routers.RouteV2Router,
+        Routers.DelaysV2Router,
+        Routers.TrackingRouter,
       ],
       v3: [
         ...sharedRouters,
         Routers.RouteV3Router,
+        Routers.DelaysV3Router,
+        Routers.TrackingV3Router,
       ],
     };
   }
