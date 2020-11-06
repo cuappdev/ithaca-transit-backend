@@ -1,6 +1,5 @@
 // @flow
 import crypto from 'crypto';
-import LogUtils from './LogUtils';
 
 function getUniqueId(numBytes: ?number = 10) {
   return crypto.randomBytes(numBytes).toString('hex');
