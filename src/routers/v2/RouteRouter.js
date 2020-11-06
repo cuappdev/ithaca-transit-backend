@@ -44,7 +44,7 @@ class RouteRouter extends ApplicationRouter<Object> {
         destinationName,
         end: routes[0].endCoords,
         originName,
-        routeId: routes[0].routeId,
+        routeId: null,
         start: routes[0].startCoords,
         time,
         uid,
