@@ -23,17 +23,14 @@ async function fetchVehicles(): Object {
 }
 
 /**
- * Given an array of { routeID, tripID },
+ * Given an array of { routeId, tripId },
  * Return bus information
  * Input:[
  * {
- * routeID : String,
- * tripID : String
+ * routeId : String,
+ * tripId : String
  * },... ]
- * NOTE: Because we need to provide backwards compatibility with old iOS clients
- * we have to follow their janky way of routeID input is String but routeID
- * output is Number. This "routeID" is also named jankily, which is supposed to
- * be routeNumber from v2/route/. We cast this to Number in getVehicleInformation.
+ * Corresponds to GTFS RouteId and TripId.
  *
  *
  */
@@ -116,6 +113,7 @@ function getVehicleInformation(
     return null;
   }
   const vehicleData = Object.values(vehicles).find(
+    // Naming here is routeID and tripID due how the microservice names fields
     v => (v.routeID === routeId) && (v.tripID === tripId),
   );
   if (!vehicleData) {
