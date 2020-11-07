@@ -113,7 +113,7 @@ function getVehicleInformation(
     return null;
   }
   const vehicleData = Object.values(vehicles).find(
-    // Naming here is routeID and tripID due how the microservice names fields
+    // Naming here is routeID and tripID due to how the microservice names fields
     v => (v.routeID === routeId) && (v.tripID === tripId),
   );
   if (!vehicleData) {
