@@ -23,6 +23,7 @@ class API extends ApplicationAPI {
       Routers.MultiRouteRouter,
       Routers.PlacesAutocompleteRouter,
       Routers.PlaceIDCoordinatesRouter,
+      Routers.RouteSelectedRouter,
       Routers.SearchRouter,
     ];
     return {
