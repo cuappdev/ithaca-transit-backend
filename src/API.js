@@ -37,6 +37,7 @@ class API extends ApplicationAPI {
       v2: [
         ...sharedRouters,
         Routers.RouteV2Router,
+        Routers.DelayV2Router,
         Routers.DelaysV2Router,
         Routers.TrackingRouter,
       ],
