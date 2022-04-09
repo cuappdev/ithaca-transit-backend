@@ -45,7 +45,7 @@
     "json-query": "^2.2.2",
     "jsondiffpatch": "^0.3.11",
     "lru-cache": "^4.1.5",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.23",
     "morgan-body": "^2.4.5",
     "qs": "^6.6.0",
