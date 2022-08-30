@@ -46,7 +46,7 @@
     "jsondiffpatch": "^0.3.11",
     "lru-cache": "^4.1.5",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.23",
+    "moment-timezone": "^0.5.35",
     "morgan-body": "^2.4.5",
     "qs": "^6.6.0",
     "request": "^2.88.0",
