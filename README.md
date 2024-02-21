@@ -5,6 +5,7 @@ Ithaca Transit is a new end-to-end navigation service built for the TCAT bus ser
 
 Download on the App Store [here](https://itunes.apple.com/app/id1290883721)!
 
+API Docs [here](https://transit-backend.cornellappdev.com/api/docs/).
 ## Setup
 
 Please ensure `npm` ([npm](https://www.npmjs.com/get-npm)) and `docker` ([docker](https://www.docker.com/)) are installed by checking `npm -v` and `docker -v` and that Docker is running.
