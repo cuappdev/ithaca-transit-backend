@@ -57,9 +57,12 @@ const getGraphhopperWalkingParams = (end, start) => ({
  */
 function getDepartureTime(departureTimeQuery: string, isArriveByQuery: boolean, delayBufferMinutes: number) {
   let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
-  if (!isArriveByQuery) { // 'leave at' query
-    departureTimeNowMs -= delayBufferMinutes * 60 * 1000; // so we can potentially display delayed routes
-  }
+  departureTimeNowMs -= delayBufferMinutes * 60 * 1000;
+  // if (!isArriveByQuery) { // 'leave at' query
+  //   departureTimeNowMs -= delayBufferMinutes * 60 * 1000; // so we can potentially display delayed routes
+  // } else {
+  //   departureTimeNowMs -= 10 * 60 * 1000;
+  // }
   return departureTimeNowMs;
 }
 
