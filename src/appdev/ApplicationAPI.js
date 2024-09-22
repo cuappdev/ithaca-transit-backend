@@ -3,6 +3,7 @@ import http from 'http';
 import express, {
   Application, NextFunction, Request, Response,
 } from 'express';
+import admin from 'firebase-admin';
 import AppDevUtilities from './ApplicationUtils';
 import LogUtils from '../utils/LogUtils';
 
@@ -48,6 +49,13 @@ class ApplicationAPI {
       routers.forEach((router) => {
         this.express.use(this.getPath() + version, router);
       });
+    });
+    // this.express.use(express.json());
+
+    // // Setup Firebase Admin
+    admin.initializeApp({
+      credential: admin.credential.cert(process.env.FCM_AUTH_KEY_PATH),
+      databaseURL: 'https://ithaca-transit.firebaseio.com',
     });
   }
 

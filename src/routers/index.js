@@ -18,12 +18,14 @@ import RouteV3Router from './v3/RouteRouter';
 import SearchRouter from './v1/SearchRouter';
 import TrackingRouter from './v1/TrackingRouter';
 import TrackingV3Router from './v3/TrackingRouter';
+import DelayNotificationRouter from './v1/DelayNotificationRouter';
 
 export default {
   AlertsRouter,
   AllStopsRouter,
   ApplePlacesRouter,
   AppleSearchRouter,
+  DelayNotificationRouter,
   DelayRouter,
   DelayV2Router,
   DelaysV2Router,
