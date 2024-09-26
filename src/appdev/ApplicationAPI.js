@@ -53,6 +53,8 @@ class ApplicationAPI {
     // this.express.use(express.json());
 
     // // Setup Firebase Admin
+    console.log('here');
+    console.log(process.env.FCM_AUTH_KEY_PATH);
     admin.initializeApp({
       credential: admin.credential.cert(process.env.FCM_AUTH_KEY_PATH),
       databaseURL: 'https://ithaca-transit.firebaseio.com',

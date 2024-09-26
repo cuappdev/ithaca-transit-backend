@@ -1,18 +1,11 @@
+// eslint-disable-next-line no-unused-vars
 import * as admin from 'firebase-admin';
-import { getMessaging } from "firebase-admin/messaging";
-import LogUtils from './LogUtils';
+// eslint-disable-next-line import/no-unresolved
+import { getMessaging } from 'firebase-admin/messaging';
 
-function notifyForDelays(deviceToken: string, stopID: String, tripID: String, uid: string) {
-  // TODO: Implement
+const schedule = require('node-schedule');
 
-  const notifData = {
-    data: 'test',
-    notification: 'testBody',
-  };
-  const options = {
-    priority: 'high',
-    timeToLive: 60 * 60 * 24,
-  };
+function sendNotification(deviceToken: string, notifData) {
   const message = {
     data: notifData,
     token: deviceToken,
@@ -20,8 +13,6 @@ function notifyForDelays(deviceToken: string, stopID: String, tripID: String, ui
   if (deviceToken !== '') {
     getMessaging().send(message)
       .then((response) => {
-        LogUtils.log({ message: response });
-        console.log('hi');
         console.log(response);
       })
       .catch((error) => {
@@ -30,6 +21,20 @@ function notifyForDelays(deviceToken: string, stopID: String, tripID: String, ui
   }
 }
 
+function waitForDeparture(deviceToken: string, startTime: string) {
+  const startDate = new Date((parseInt(startTime) * 1000) - (60000 * 10));
+
+  const notifData = {
+    data: 'You should board your bus in 10 minutes',
+    notification: 'testBody',
+  };
+  schedule.scheduleJob(startDate,
+    () => {
+      sendNotification(deviceToken, notifData);
+    });
+}
+
 export default {
-  notifyForDelays,
+  sendNotification,
+  waitForDeparture,
 };

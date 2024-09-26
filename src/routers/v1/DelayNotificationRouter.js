@@ -1,7 +1,6 @@
 import type Request from 'express';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import NotificationUtils from '../../utils/NotificationUtils';
-import LogUtils from '../../utils/LogUtils';
 
 class DelayNotification extends ApplicationRouter<Array<Object>> {
   constructor() {
@@ -28,16 +27,14 @@ class DelayNotification extends ApplicationRouter<Array<Object>> {
     }
     const {
       deviceToken,
-      stopID,
-      tripID,
-      uid,
     } = req.body;
 
-    // these notes are for departures
-    // calculate when you need to schedule the notif
-    // schedule the notif
-    // https://www.npmjs.com/package/node-schedule
-    return NotificationUtils.notifyForDelays(deviceToken, tripID, stopID, uid);
+    const notifData = {
+      data: 'Not implmeneted yet',
+      notification: 'testBody',
+    };
+
+    return NotificationUtils.sendNotification(deviceToken, notifData);
   }
 }
 

@@ -1,15 +1,14 @@
 import type Request from 'express';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import NotificationUtils from '../../utils/NotificationUtils';
-import LogUtils from '../../utils/LogUtils';
 
-class DelayNotification extends ApplicationRouter<Array<Object>> {
+class DepartureNotification extends ApplicationRouter<Array<Object>> {
   constructor() {
     super(['POST']);
   }
 
   getPath(): string {
-    return '/departueNotifications/';
+    return '/departueNotification/';
   }
 
   // eslint-disable-next-line require-await
@@ -18,27 +17,19 @@ class DelayNotification extends ApplicationRouter<Array<Object>> {
       !req.body
       || !req.body.deviceToken
       || typeof req.body.deviceToken !== 'string'
-      || !req.body.stopID
-      || typeof req.body.stopID !== 'string'
-      || !req.body.tripID
-      || typeof req.body.tripID !== 'string'
+      || !req.body.startTime
+      || typeof req.body.startTime !== 'string'
       || !req.body.uid
       || typeof req.body.uid !== 'string') {
       return null;
     }
     const {
       deviceToken,
-      stopID,
-      tripID,
-      uid,
+      startTime,
     } = req.body;
 
-    // these notes are for departures
-    // calculate when you need to schedule the notif
-    // schedule the notif
-    // https://www.npmjs.com/package/node-schedule
-    return NotificationUtils.notifyForDelays(deviceToken, tripID, stopID, uid);
+    return NotificationUtils.waitForDeparture(deviceToken, startTime);
   }
 }
 
-export default new DelayNotification().router;
+export default new DepartureNotification().router;

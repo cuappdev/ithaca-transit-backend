@@ -9,7 +9,7 @@ EXPOSE 3000
 CMD npm run start:dev
 
 # PRODUCTION
-FROM node:20 AS release
+FROM node:20-alpine AS release
 WORKDIR /usr/src/app
 COPY . .
 COPY --from=development /usr/src/app/node_modules /usr/src/app/node_modules

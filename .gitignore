@@ -5,6 +5,7 @@ node_modules/
 
 # Specific Files
 config.json
+service-account-credentials.json
 
 # File Types
 *.envrc
