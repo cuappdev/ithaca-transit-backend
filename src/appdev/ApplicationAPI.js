@@ -50,7 +50,6 @@ class ApplicationAPI {
         this.express.use(this.getPath() + version, router);
       });
     });
-    // this.express.use(express.json());
 
     // // Setup Firebase Admin
     console.log('here');
