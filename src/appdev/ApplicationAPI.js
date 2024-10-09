@@ -3,7 +3,7 @@ import http from 'http';
 import express, {
   Application, NextFunction, Request, Response,
 } from 'express';
-import admin from 'firebase-admin';
+// import admin from 'firebase-admin';
 import AppDevUtilities from './ApplicationUtils';
 import LogUtils from '../utils/LogUtils';
 
@@ -52,12 +52,11 @@ class ApplicationAPI {
     });
 
     // // Setup Firebase Admin
-    console.log('here');
-    console.log(process.env.FCM_AUTH_KEY_PATH);
-    admin.initializeApp({
-      credential: admin.credential.cert(process.env.FCM_AUTH_KEY_PATH),
-      databaseURL: 'https://ithaca-transit.firebaseio.com',
-    });
+    // console.log(process.env.FCM_AUTH_KEY_PATH);
+    // admin.initializeApp({
+    //   credential: admin.credential.cert(process.env.FCM_AUTH_KEY_PATH),
+    //   databaseURL: 'https://ithaca-transit.firebaseio.com',
+    // });
   }
 
   /**

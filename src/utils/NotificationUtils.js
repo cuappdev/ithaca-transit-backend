@@ -16,6 +16,7 @@ function sendNotification(deviceToken: string, notifData) {
         console.log(response);
       })
       .catch((error) => {
+        console.log('Missing device token');
         console.log(error);
       });
   }
@@ -26,7 +27,7 @@ function waitForDeparture(deviceToken: string, startTime: string) {
 
   const notifData = {
     data: 'You should board your bus in 10 minutes',
-    notification: 'testBody',
+    notification: 'Bording Reminder',
   };
   schedule.scheduleJob(startDate,
     () => {

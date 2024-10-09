@@ -1,6 +1,7 @@
 import type Request from 'express';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
 import NotificationUtils from '../../utils/NotificationUtils';
+// import { PYTHON_APP } from '../../utils/EnvUtils';
 
 class DelayNotification extends ApplicationRouter<Array<Object>> {
   constructor() {
@@ -27,12 +28,29 @@ class DelayNotification extends ApplicationRouter<Array<Object>> {
     }
     const {
       deviceToken,
+      // tripID,
     } = req.body;
 
     const notifData = {
-      data: 'Not implmeneted yet',
+      data: 'Your bus is delayed',
       notification: 'testBody',
     };
+
+    // const options = {
+    //   method: 'POST',
+    //   url: `http://${PYTHON_APP || 'ERROR'}:5000/delayNotifs`,
+    //   body: {
+    //     deviceToken,
+    //     tripId: tripID,
+    //   },
+    //   headers: { 'Cache-Control': 'no-cache' },
+    //   timeout: THREE_SEC_IN_MS,
+    // };
+
+    // const delayNotifsRequest = await RequestUtils.createRequest(
+    //   options,
+    //   'delayNotifsRequestFailed',
+    // );
 
     return NotificationUtils.sendNotification(deviceToken, notifData);
   }
