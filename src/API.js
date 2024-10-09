@@ -19,6 +19,8 @@ class API extends ApplicationAPI {
       Routers.AllStopsRouter,
       Routers.ApplePlacesRouter,
       Routers.AppleSearchRouter,
+      Routers.DelayNotificationRouter,
+      Routers.DepartureNotificationRouter,
       Routers.HelloWorldRouter,
       Routers.MultiRouteRouter,
       Routers.PlacesAutocompleteRouter,
