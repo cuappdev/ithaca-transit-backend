@@ -25,7 +25,6 @@ server.listen(PORT, SERVER_ADDRESS, () => {
 });
 
 // Setup Firebase Admin
-console.log(process.env.FCM_AUTH_KEY_PATH);
 admin.initializeApp({
   credential: admin.credential.cert(process.env.FCM_AUTH_KEY_PATH),
   databaseURL: 'https://ithaca-transit.firebaseio.com',

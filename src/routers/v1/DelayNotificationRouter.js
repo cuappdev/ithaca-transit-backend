@@ -1,8 +1,11 @@
 import type Request from 'express';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
-import NotificationUtils from '../../utils/NotificationUtils';
 // import { PYTHON_APP } from '../../utils/EnvUtils';
+// eslint-disable-next-line no-unused-vars
+import RequestUtils from '../../utils/RequestUtils';
 
+// DelayNotification sends a request to the microservice with a deviceToken
+// and tripID for user's who want to be notified of a tripID's given delays
 class DelayNotification extends ApplicationRouter<Array<Object>> {
   constructor() {
     super(['POST']);
@@ -28,31 +31,25 @@ class DelayNotification extends ApplicationRouter<Array<Object>> {
     }
     const {
       deviceToken,
-      // tripID,
+      tripID,
     } = req.body;
 
-    const notifData = {
-      data: 'Your bus is delayed',
-      notification: 'testBody',
+    const options = {
+      method: 'POST',
+      url: 'http://host.docker.internal:8000/delayNotifs/',
+      body: JSON.stringify({
+        tripId: tripID,
+        deviceToken,
+      }),
+      headers: { 'Content-Type': 'application/json' },
     };
 
-    // const options = {
-    //   method: 'POST',
-    //   url: `http://${PYTHON_APP || 'ERROR'}:5000/delayNotifs`,
-    //   body: {
-    //     deviceToken,
-    //     tripId: tripID,
-    //   },
-    //   headers: { 'Cache-Control': 'no-cache' },
-    //   timeout: THREE_SEC_IN_MS,
-    // };
+    const delayNotifsRequest = await RequestUtils.createRequest(
+      options,
+      'delayNotifsRequestFailed',
+    );
 
-    // const delayNotifsRequest = await RequestUtils.createRequest(
-    //   options,
-    //   'delayNotifsRequestFailed',
-    // );
-
-    return NotificationUtils.sendNotification(deviceToken, notifData);
+    return delayNotifsRequest;
   }
 }
 

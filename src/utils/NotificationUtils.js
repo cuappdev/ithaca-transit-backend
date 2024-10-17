@@ -19,6 +19,8 @@ function sendNotification(deviceToken: string, notifData) {
         console.log('Missing device token');
         console.log(error);
       });
+  } else {
+    console.log('Missing device token');
   }
 }
 

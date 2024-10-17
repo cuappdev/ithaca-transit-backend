@@ -20,6 +20,7 @@ import TrackingRouter from './v1/TrackingRouter';
 import TrackingV3Router from './v3/TrackingRouter';
 import DelayNotificationRouter from './v1/DelayNotificationRouter';
 import DepartureNotificationRouter from './v1/DepartureNotificationRouter';
+import MicroserviceDelayNotifRouter from './v1/MicroserviceDelayNotifRouter';
 
 export default {
   AlertsRouter,
@@ -34,6 +35,7 @@ export default {
   DelaysV3Router,
   DocsRouter,
   HelloWorldRouter,
+  MicroserviceDelayNotifRouter,
   MultiRouteRouter,
   PlacesAutocompleteRouter,
   PlaceIDCoordinatesRouter,

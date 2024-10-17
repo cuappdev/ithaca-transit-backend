@@ -20,6 +20,7 @@ class API extends ApplicationAPI {
       Routers.ApplePlacesRouter,
       Routers.AppleSearchRouter,
       Routers.DelayNotificationRouter,
+      Routers.MicroserviceDelayNotifRouter,
       Routers.DepartureNotificationRouter,
       Routers.HelloWorldRouter,
       Routers.MultiRouteRouter,
