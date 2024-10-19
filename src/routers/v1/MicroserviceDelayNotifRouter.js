@@ -33,7 +33,7 @@ class MicroserviceNotif extends ApplicationRouter<Array<Object>> {
       data: `The bus on ${routeID} is delayed`,
       notification: 'testBody',
     };
-    console.log(routeID);
+
     return NotificationUtils.sendNotification(deviceToken, notifData);
   }
 }

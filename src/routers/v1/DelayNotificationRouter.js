@@ -1,7 +1,6 @@
 import type Request from 'express';
 import ApplicationRouter from '../../appdev/ApplicationRouter';
-// import { PYTHON_APP } from '../../utils/EnvUtils';
-// eslint-disable-next-line no-unused-vars
+import { PYTHON_APP } from '../../utils/EnvUtils';
 import RequestUtils from '../../utils/RequestUtils';
 
 // DelayNotification sends a request to the microservice with a deviceToken
@@ -36,7 +35,7 @@ class DelayNotification extends ApplicationRouter<Array<Object>> {
 
     const options = {
       method: 'POST',
-      url: 'http://host.docker.internal:8000/delayNotifs/',
+      url: `http://${PYTHON_APP || 'localhost'}:5000/delayNotifs/`,
       body: JSON.stringify({
         tripId: tripID,
         deviceToken,
