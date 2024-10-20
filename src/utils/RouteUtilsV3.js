@@ -254,6 +254,30 @@ async function getSectionedRoutes(
     isArriveBy,
   );
 
+  LogUtils.log('new testing delay 1');
+  LogUtils.log(finalBusRoutes.length);
+
+  // finalBusRoutes.forEach((route) => {
+  //   let totalDelay = 0;
+  //   const { directions } = route;
+  //   LogUtils.log('testing delay');
+  //   for (let i = 0; i < directions.length; i++) {
+  //     const segment = directions[i];
+  //     const { delay } = segment;
+  //     LogUtils.log('heres the delay');
+  //     LogUtils.log(delay);
+  //     if (delay !== null) {
+  //       totalDelay += delay;
+  //     }
+  //   }
+  //   if (directions[-1].type === 'walk') {
+  //     directions[-1].delay = totalDelay;
+  //   }
+  // });
+
+  LogUtils.log('testing');
+  LogUtils.log(finalBusRoutes);
+
   finalBusRoutes.forEach((route) => {
     if (originBusStopName !== null
       && route.directions
