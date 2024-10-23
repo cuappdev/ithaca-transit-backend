@@ -254,29 +254,22 @@ async function getSectionedRoutes(
     isArriveBy,
   );
 
-  LogUtils.log('new testing delay 1');
-  LogUtils.log(finalBusRoutes.length);
-
+  // For each bus route, accumulate the total delay from all segments, and if the final segment is a 'walk' type,
+  // assign the total delay to the last 'walk' segment.
   finalBusRoutes.forEach((route) => {
     let totalDelay = 0;
-    const { directions } = route;
-    LogUtils.log('testing delay');
+    const directions = route.directions;
     for (let i = 0; i < directions.length; i++) {
       const segment = directions[i];
-      const { delay } = segment;
-      LogUtils.log('heres the delay');
-      LogUtils.log(delay);
+      const delay = segment.delay;
       if (delay !== null) {
         totalDelay += delay;
       }
     }
-    if (directions[-1].type === 'walk') {
-      directions[-1].delay = totalDelay;
+    if (directions[directions.length - 1].type === 'walk' && totalDelay > 0) {
+      directions[directions.length - 1].delay = totalDelay;
     }
   });
-
-  LogUtils.log('testing');
-  LogUtils.log(finalBusRoutes);
 
   finalBusRoutes.forEach((route) => {
     if (originBusStopName !== null
