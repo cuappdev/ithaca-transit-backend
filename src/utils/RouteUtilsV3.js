@@ -258,16 +258,34 @@ async function getSectionedRoutes(
   // and applies this delay to the 'walk' segment if it follows a delayed bus segment.
   finalBusRoutes.forEach((route) => {
     let totalDelay = 0;
+    let firstDelay = null;
+    let foundFirstDelay = false;
+    let firstDelayIndex = 0;
+
     const { directions } = route;
 
     for (let i = 0; i < directions.length; i++) {
       const segment = directions[i];
       const { delay } = segment;
+      if (!foundFirstDelay && delay !== null) {
+        firstDelay = delay;
+        foundFirstDelay = true;
+        firstDelayIndex = i;
+      }
 
       if (segment.type === 'walk' && totalDelay > 0) {
         segment.delay = totalDelay;
       } else if (delay !== null) {
         totalDelay += delay;
+      }
+    }
+
+    // assign delay to walking route before first bus delay
+    let i = 0;
+    if (foundFirstDelay) {
+      while (directions[i].type === 'walk' && firstDelay != null && i < firstDelayIndex) {
+        directions[i].delay = firstDelay;
+        i += 1;
       }
     }
   });
