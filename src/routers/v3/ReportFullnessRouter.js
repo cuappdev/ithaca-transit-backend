@@ -8,7 +8,7 @@ class ReportFullnessRouter extends ApplicationRouter<Object> {
   }
 
   getPath(): string {
-    return '/reportBusFull/';
+    return '/reportBusFullness/';
   }
 
   // eslint-disable-next-line require-await
