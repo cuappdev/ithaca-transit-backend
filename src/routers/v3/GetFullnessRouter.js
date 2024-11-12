@@ -1,5 +1,6 @@
 // @flow
 import ApplicationRouter from '../../appdev/ApplicationRouter';
+import ReliabilityUtils from '../../utils/ReliabilityUtils';
 
 class GetFullnessRouter extends ApplicationRouter<Object> {
   constructor() {
@@ -12,11 +13,20 @@ class GetFullnessRouter extends ApplicationRouter<Object> {
 
   // eslint-disable-next-line require-await
   async content(req): Promise<any> {
-    // const {
-    //   tripId,
-    //   timestamp,
-    //   fullness
-    // } = req.body
+    const {
+      tripId,
+    } = req.body;
+
+    // Validate input
+    if (typeof tripId !== 'number') {
+      return {
+        message: 'Invalid input.',
+      };
+    }
+
+    const recentReport = ReliabilityUtils.getBusFullness(tripId);
+
+    return recentReport;
   }
 }
 

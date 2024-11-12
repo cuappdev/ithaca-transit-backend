@@ -25,9 +25,9 @@ class ReportFullnessRouter extends ApplicationRouter<Object> {
     }
 
     // Store new report in json file
-    const storeSuccess = await ReliabilityUtils.storeReportJson(tripId, time, fullness);
+    const storeReport = await ReliabilityUtils.storeReportJson(tripId, time, fullness);
 
-    return storeSuccess;
+    return storeReport;
   }
 }
 

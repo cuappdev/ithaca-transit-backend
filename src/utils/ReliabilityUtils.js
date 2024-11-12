@@ -21,16 +21,6 @@ async function storeReportJson(
 
   const jsonFilePath = './busFullness.json';
 
-  LogUtils.log(jsonFilePath);
-
-  if (fs.existsSync(jsonFilePath)) {
-    // File exists
-    LogUtils.log('File exists!');
-  } else {
-    // File does not exist
-    LogUtils.log('File does not exist.');
-  }
-
   try {
     // Read existing reports from JSON file
     const fileContent = await fs.promises.readFile(jsonFilePath, 'utf-8');
@@ -56,4 +46,59 @@ async function storeReportJson(
   }
 }
 
-export default { storeReportJson };
+/**
+ * Returns fullness of requested trip and minutes since last fullness was reported
+ *
+ * @param tripId
+ * @returns {Object}
+ */
+async function getBusFullness(
+  tripId,
+):
+  Object {
+  const jsonFilePath = './busFullness.json';
+
+  try {
+    // Read existing reports from JSON file
+    const fileContent = await fs.promises.readFile(jsonFilePath, 'utf-8');
+
+    // Parse data into JSON
+    const jsonData = JSON.parse(fileContent);
+
+    let tripFullness = 0;
+    let minSinceLastReport = 0;
+
+    // Filter reports for the specified tripId
+    const reportsForTrip = jsonData.reports.filter(report => report.tripId === tripId);
+
+    // Check if there are any reports for that tripId
+    if (reportsForTrip.length === 0) {
+      return null;
+    }
+
+    // Find the report with the maximum time value
+    const recentTime = (latest, current) => (current.time > latest.time ? current : latest);
+    const mostRecentReport = reportsForTrip.reduce(recentTime);
+
+    // Get trip fullness
+    tripFullness = mostRecentReport.fullness;
+    // Get minutes since last report for trip
+    minSinceLastReport = Math.floor((Math.floor(Date.now() / 1000) - mostRecentReport.time) / 60);
+
+    // Return success response
+    return {
+      fullness: tripFullness,
+      timeSinceLastReport: minSinceLastReport,
+    };
+  } catch (err) {
+    LogUtils.log({ message: err });
+    return {
+      message: err,
+    };
+  }
+}
+
+export default {
+  storeReportJson,
+  getBusFullness,
+};
