@@ -25,6 +25,8 @@ class API extends ApplicationAPI {
       Routers.PlaceIDCoordinatesRouter,
       Routers.RouteSelectedRouter,
       Routers.SearchRouter,
+      Routers.ReportFullnessRouter,
+      Routers.GetFullnessRouter,
     ];
     return {
       docs: [Routers.DocsRouter],
