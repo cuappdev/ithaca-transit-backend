@@ -18,6 +18,8 @@ import RouteV3Router from './v3/RouteRouter';
 import SearchRouter from './v1/SearchRouter';
 import TrackingRouter from './v1/TrackingRouter';
 import TrackingV3Router from './v3/TrackingRouter';
+import ReportFullnessRouter from './v3/ReportFullnessRouter';
+import GetFullnessRouter from './v3/GetFullnessRouter';
 
 export default {
   AlertsRouter,
@@ -40,4 +42,6 @@ export default {
   SearchRouter,
   TrackingRouter,
   TrackingV3Router,
+  ReportFullnessRouter,
+  GetFullnessRouter,
 };
