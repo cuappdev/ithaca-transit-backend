@@ -48,7 +48,7 @@
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.23",
     "morgan-body": "^2.4.5",
-    "qs": "^6.6.0",
+    "qs": "^6.6.1",
     "request": "^2.88.0",
     "rotating-file-stream": "^1.4.0",
     "swagger-ui-express": "^4.0.2",
