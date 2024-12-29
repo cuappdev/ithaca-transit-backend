@@ -1,16 +1,16 @@
-// @flow
+
 import interval from 'interval-promise';
 import request from 'request';
 import util from 'util';
 
-import LogUtils from './LogUtils';
+import LogUtils from './LogUtils.js';
 
 function createRequest(
-  options: Object,
-  errorMessage: ?string = 'Request failed',
-  verbose: ?boolean = false,
-  returnRes: ?boolean = false,
-): Object {
+  options,
+  errorMessage = 'Request failed',
+  verbose = false,
+  returnRes = false,
+) {
   options.time = true;
   return new Promise((resolve, reject) => {
     request(options, (error, response, body) => {
@@ -37,7 +37,7 @@ function createRequest(
  * @param {number} retryCount
  * @returns {any} The result of [fn]
  */
-async function fetchWithRetry(fn: () => any, retryCount: number = 5): any {
+async function fetchWithRetry(fn, retryCount = 5) {
   let error;
   for (let i = 0; i < retryCount; i++) {
     try {
@@ -60,14 +60,14 @@ async function fetchWithRetry(fn: () => any, retryCount: number = 5): any {
  * @param {Object} objectToUpdate
  */
 function updateObjectOnInterval(
-  fn: () => Object,
-  refreshInterval: number,
-  timeout: number,
-  objectToUpdate: Object,
-): void {
+  fn,
+  refreshInterval,
+  timeout,
+  objectToUpdate,
+) {
   interval(async (iteration, stop) => {
     try {
-      const optionalUpdatedObject: ?Object = await Promise.race([
+      const optionalUpdatedObject = await Promise.race([
         fn(),
         (util.promisify(setTimeout))(timeout)
           .then(() => null),

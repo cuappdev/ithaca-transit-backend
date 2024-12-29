@@ -1,13 +1,46 @@
-// @flow
-import createGpx from 'gps-to-gpx';
+
+function createGpx(waypoints, options = {}) {
+  const {
+    activityName = 'GPX Route',
+    startTime = new Date().toISOString(),
+  } = options;
+
+  const gpxHeader = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="gps-to-gpx">
+  <metadata>
+    <name>${activityName}</name>
+    <time>${startTime}</time>
+  </metadata>
+  <trk>
+    <name>${activityName}</name>
+    <trkseg>`;
+
+  const gpxWaypoints = waypoints
+    .map(
+      (wp) => `
+      <trkpt lat="${wp.latitude}" lon="${wp.longitude}">
+        ${wp.elevation ? `<ele>${wp.elevation}</ele>` : ''}
+        ${wp.time ? `<time>${wp.time}</time>` : ''}
+      </trkpt>`
+    )
+    .join('');
+
+  const gpxFooter = `
+    </trkseg>
+  </trk>
+</gpx>`;
+
+  return `${gpxHeader}${gpxWaypoints}${gpxFooter}`;
+}
+
 
 import { isNullOrUndefined } from 'util';
-import { MAP_MATCHING } from './EnvUtils';
-import AllStopUtils from './AllStopUtils';
-import GTFSUtils from './GTFSUtils';
-import LogUtils from './LogUtils';
-import RealtimeFeedUtils from './RealtimeFeedUtilsV3';
-import RequestUtils from './RequestUtils';
+import { MAP_MATCHING } from './EnvUtils.js';
+import AllStopUtils from './AllStopUtils.js';
+import GTFSUtils from './GTFSUtils.js';
+import LogUtils from './LogUtils.js';
+import RealtimeFeedUtils from './RealtimeFeedUtilsV3.js';
+import RequestUtils from './RequestUtils.js';
 
 const DIRECTION_TYPE = {
   DEPART: 'depart',
@@ -21,7 +54,7 @@ const ONE_MIN_IN_MS = 60000;
  * distanceBetweenPoints(point1, point2) returns the distance between two points in miles
  * using the Haversine formula
  */
-function distanceBetweenPointsMiles(point1: Object, point2: Object): number {
+function distanceBetweenPointsMiles(point1, point2) {
   const radlat1 = Math.PI * point1.lat / 180;
   const radlat2 = Math.PI * point2.lat / 180;
   const theta = point1.long - point2.long;
@@ -33,7 +66,7 @@ function distanceBetweenPointsMiles(point1: Object, point2: Object): number {
   return dist;
 }
 
-function createGpxJson(stops: Array<Object>, startTime: String): Object {
+function createGpxJson(stops, startTime) {
   const waypoints = stops.map(stop => ({
     latitude: stop.lat,
     longitude: stop.long,
@@ -57,7 +90,7 @@ function createGpxJson(stops: Array<Object>, startTime: String): Object {
  * path: T[] | string | *, distance: *,
  * routeId: (null|*), stops: T[], tripIds: T[] | string | *}}
  */
-function mergeDirections(first, second): Object {
+function mergeDirections(first, second) {
   second.stops.shift();
   second.path.shift();
 
@@ -149,12 +182,12 @@ async function trimFirstLastDirections(route, startCoords, endCoords) {
  * @returns {Object}
  */
 async function condenseRoute(
-  route: Object,
-  startCoords: Object,
-  endCoords: Object,
-  maxWalkingDistance: number,
-  departureDelayBuffer: boolean,
-  departureTimeNowMs: number,
+  route,
+  startCoords,
+  endCoords,
+  maxWalkingDistance,
+  departureDelayBuffer,
+  departureTimeNowMs,
 ) {
   await trimFirstLastDirections(route, startCoords, endCoords);
 
@@ -238,7 +271,7 @@ async function condenseRoute(
  * @param route
  * @returns {Object}
  */
-function adjustRouteTimesIfNecessary(route: Object): Object {
+function adjustRouteTimesIfNecessary(route) {
   const departureDate = new Date(route.departureTime);
   const arrivalDate = new Date(route.arrivalTime);
 
@@ -258,7 +291,7 @@ function adjustRouteTimesIfNecessary(route: Object): Object {
  * @param endPathPoints
  * @returns {Object}
  */
-function getStartEndCoords(startPathPoints: Object, endPathPoints: Object): { startCoords: Object, endCoords: Object } {
+function getStartEndCoords(startPathPoints, endPathPoints) {
   const startCoords = {
     lat: startPathPoints.coordinates[0][1],
     long: startPathPoints.coordinates[0][0],
@@ -277,7 +310,7 @@ function getStartEndCoords(startPathPoints: Object, endPathPoints: Object): { st
  * @param endPathPoints
  * @returns {Object}
  */
-function generateBoundingBox(path: Object): Object {
+function generateBoundingBox(path) {
   return {
     minLat: path.bbox[1],
     minLong: path.bbox[0],
@@ -293,7 +326,7 @@ function generateBoundingBox(path: Object): Object {
  * @param endCoords
  * @returns {number}
  */
-function getDistanceInMiles(startCoords: Object, endCoords: Object): number {
+function getDistanceInMiles(startCoords, endCoords) {
   const startLat = startCoords.lat;
   const startLong = startCoords.long;
   const endLat = endCoords.lat;
@@ -321,7 +354,7 @@ function getDistanceInMiles(startCoords: Object, endCoords: Object): number {
  * @param arrivalTime
  * @returns {number}
  */
-function getDifferenceInMinutes(departureTime: string, arrivalTime: string): number {
+function getDifferenceInMinutes(departureTime, arrivalTime) {
   const departureDate = new Date(departureTime);
   const arrivalDate = new Date(arrivalTime);
   const diffInMs = arrivalDate - departureDate;
@@ -336,7 +369,7 @@ function getDifferenceInMinutes(departureTime: string, arrivalTime: string): num
  * @param dateInMs
  * @returns {string}
  */
-function convertMillisecondsToISOString(dateInMs: number): string {
+function convertMillisecondsToISOString(dateInMs) {
   return `${new Date(dateInMs).toISOString().split('.')[0]}Z`;
 }
 
@@ -351,12 +384,12 @@ function convertMillisecondsToISOString(dateInMs: number): string {
  * @returns {Object}
  */
 function parseWalkingRoute(
-  data: Object,
-  dateMs: number,
-  originName: string,
-  destinationName: string,
-  isArriveBy: boolean,
-): Object {
+  data,
+  dateMs,
+  originName,
+  destinationName,
+  isArriveBy,
+) {
   try {
     const path = data.paths[0];
     let startTimeMs = dateMs;
@@ -422,7 +455,7 @@ function parseWalkingRoute(
  * @param date
  * @returns formatted date string
  */
-function formatDate(date: string): string {
+function formatDate(date) {
   if (date) {
     const dateBeforeMs = date.split('.')[0];
     if (date === dateBeforeMs) {
@@ -460,12 +493,12 @@ function formatDate(date: string): string {
  * @returns {Promise<Array<Object>>}
  */
 function parseRoutes(
-  busRoutes: Array<Object>,
-  originName: string,
-  destinationName: string,
-  originalDepartureTimeMs: number,
-  isArriveByQuery: boolean,
-): Promise<Array<Object>> {
+  busRoutes,
+  originName,
+  destinationName,
+  originalDepartureTimeMs,
+  isArriveByQuery,
+){
   try {
     return Promise.all(busRoutes.map(async (busRoute) => {
       // array containing legs of journey. e.g. walk, bus ride, walk

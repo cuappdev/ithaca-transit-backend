@@ -1,10 +1,10 @@
-// @flow
-import { PYTHON_APP } from './EnvUtils';
-import Constants from './Constants';
-import LogUtils from './LogUtils';
-import RequestUtils from './RequestUtils';
 
-async function fetchRTF(): Object {
+import { PYTHON_APP } from './EnvUtils.js';
+import Constants from './Constants.js';
+import LogUtils from './LogUtils.js';
+import RequestUtils from './RequestUtils.js';
+
+async function fetchRTF() {
   const options = {
     ...Constants.GET_OPTIONS,
     url: `http://${PYTHON_APP || 'localhost'}:5000/rtf`,
@@ -13,7 +13,7 @@ async function fetchRTF(): Object {
   return JSON.parse(data);
 }
 
-async function fetchVehicles(): Object {
+async function fetchVehicles() {
   const options = {
     ...Constants.GET_OPTIONS,
     url: `http://${PYTHON_APP || 'localhost'}:5000/vehicles`,
@@ -34,7 +34,7 @@ async function fetchVehicles(): Object {
  *
  *
  */
-async function getTrackingResponse(requestData: Object): Object {
+async function getTrackingResponse(requestData) {
   LogUtils.log({ message: 'getTrackingResponse: entering function' });
   const vehicles = await fetchVehicles();
 
@@ -59,16 +59,15 @@ async function getTrackingResponse(requestData: Object): Object {
  * @returns Object
  */
 function getDelayInformation(
-  stopId: ?String,
-  tripId: ?String,
-  rtf: ?Object,
-): ?Object {
+  stopId,
+  tripId,
+  rtf,
+) {
   // rtf param ensures the realtimeFeed doesn't update in the middle of execution
   // if invalid params or the trip is inactive
   if (!stopId
     || !tripId
     || !rtf
-    || rtf === {}
     || !rtf[tripId]) {
     LogUtils.log({
       category: 'getDelayInformation NULL',
@@ -95,16 +94,15 @@ function getDelayInformation(
  * @param {*} vehicles
  */
 function getVehicleInformation(
-  routeId: ?String,
-  tripId: ?String,
-  vehicles: ?Object,
-): ?Object {
+  routeId,
+  tripId,
+  vehicles,
+) {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
   if (!routeId
     || !tripId
-    || !vehicles
-    || vehicles === {}) {
+    || !vehicles) {
     LogUtils.log({
       category: 'getVehicleInformation NULL',
       routeId,
