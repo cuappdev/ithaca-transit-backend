@@ -1,9 +1,9 @@
 import {
   GHOPPER_BUS,
   GHOPPER_WALKING,
-} from './EnvUtils';
-import LogUtils from './LogUtils';
-import RequestUtils from './RequestUtils';
+} from './EnvUtils.js';
+import LogUtils from './LogUtils.js';
+import RequestUtils from './RequestUtils.js';
 
 // buffer to account for routes in past 20 minutes with delays
 const FIRST_DELAY_BUFFER_IN_MINUTES = 20;
@@ -19,11 +19,11 @@ const SECOND_DELAY_BUFFER_IN_MINUTES = 40;
  * @param arriveBy
  */
 const getGraphhopperBusParams = (
-  end: string,
-  start: string,
-  departureTimeQuery: string,
-  arriveBy: boolean,
-  delayBufferMinutes: number,
+  end,
+  start,
+  departureTimeQuery,
+  arriveBy,
+  delayBufferMinutes,
 ) => ({
   'ch.disable': true,
   'pt.arrive_by': arriveBy,
@@ -55,7 +55,7 @@ const getGraphhopperWalkingParams = (end, start) => ({
  *
  * @param departureTimeQuery
  */
-function getDepartureTime(departureTimeQuery: string, isArriveByQuery: boolean, delayBufferMinutes: number) {
+function getDepartureTime(departureTimeQuery, isArriveByQuery, delayBufferMinutes) {
   let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
   departureTimeNowMs -= delayBufferMinutes * 60 * 1000;
   // if (!isArriveByQuery) { // 'leave at' query
@@ -66,7 +66,7 @@ function getDepartureTime(departureTimeQuery: string, isArriveByQuery: boolean, 
   return departureTimeNowMs;
 }
 
-function getDepartureTimeDate(departureTimeQuery: string, isArriveByQuery: boolean, delayBufferMinutes) {
+function getDepartureTimeDate(departureTimeQuery, isArriveByQuery, delayBufferMinutes) {
   const departureTimeMs = getDepartureTime(departureTimeQuery, isArriveByQuery, delayBufferMinutes);
   return new Date(departureTimeMs).toISOString();
 }
@@ -83,13 +83,13 @@ function getDepartureTimeDate(departureTimeQuery: string, isArriveByQuery: boole
  * @returns {Object}
  */
 function getBusRequestOptions(
-  end: string,
-  start: string,
-  departureTimeDateNow: string,
-  isArriveByQuery: boolean,
-  delayBufferMinutes: number,
-  sharedOptions: Object,
-): Object {
+  end,
+  start,
+  departureTimeDateNow,
+  isArriveByQuery,
+  delayBufferMinutes,
+  sharedOptions,
+) {
   return {
     qs: getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, delayBufferMinutes),
     url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
@@ -105,7 +105,7 @@ function getBusRequestOptions(
  * @returns {boolean}
  */
 
-function busRoutesAreEqual(busRouteA: Object, busRouteB: Object): boolean {
+function busRoutesAreEqual(busRouteA, busRouteB) {
   const legsA = busRouteA.legs;
   const legsB = busRouteB.legs;
 
@@ -143,7 +143,7 @@ function busRoutesAreEqual(busRouteA: Object, busRouteB: Object): boolean {
  * @param busRoutesToCheck
  * @returns {Array<Object>}
  */
-function getValidBusRoutes(busRoutes: Array<Object>, busRoutesToCheck: Array<Object>): Array<Object> {
+function getValidBusRoutes(busRoutes, busRoutesToCheck) {
   return busRoutesToCheck.filter((busRouteToCheck) => {
     const isDuplicateRoute = busRoutes.find(busRoute => busRoutesAreEqual(busRouteToCheck, busRoute)) !== undefined;
     return !isDuplicateRoute && busRouteToCheck.constructor.transfers !== -1;
@@ -207,8 +207,8 @@ function getValidBusRoutes(busRoutes: Array<Object>, busRoutesToCheck: Array<Obj
  * @param isArriveByQuery
  * @returns {Array<Object>}
  */
-async function fetchRoutes(end: string, start: string, departureTimeDateNow: string,
-  isArriveByQuery: boolean): Promise<Array<Object>> {
+async function fetchRoutes(end, start, departureTimeDateNow,
+  isArriveByQuery) {
   let routes;
 
   const sharedOptions = { method: 'GET', qsStringifyOptions: { arrayFormat: 'repeat' } };
@@ -304,7 +304,7 @@ async function fetchRoutes(end: string, start: string, departureTimeDateNow: str
 * @param start
 * @returns Object
 */
-async function fetchWalkingRoute(end: string, start: string): Object {
+async function fetchWalkingRoute(end, start) {
   let walkingRoute;
 
   const walkingOptions = {

@@ -1,9 +1,9 @@
-// @flow
-import Constants from './Constants';
-import { PYTHON_APP } from './EnvUtils';
-import RequestUtils from './RequestUtils';
 
-async function fetchAlerts(): Object {
+import Constants from './Constants.js';
+import { PYTHON_APP } from './EnvUtils.js';
+import RequestUtils from './RequestUtils.js';
+
+async function fetchAlerts() {
   const options = {
     ...Constants.GET_OPTIONS,
     url: `http://${PYTHON_APP || 'localhost'}:5000/alerts`,
