@@ -1,4 +1,4 @@
-// @flow
+
 const {
   GHOPPER_BUS,
   GHOPPER_WALKING,
@@ -6,6 +6,7 @@ const {
   NODE_ENV,
   PYTHON_APP,
   TOKEN,
+  FCM_AUTH_KEY_PATH
 } = process.env;
 
 export {
@@ -15,4 +16,5 @@ export {
   NODE_ENV,
   PYTHON_APP,
   TOKEN,
+  FCM_AUTH_KEY_PATH
 };

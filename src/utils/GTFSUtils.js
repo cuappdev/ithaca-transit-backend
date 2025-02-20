@@ -1,8 +1,8 @@
-// @flow
-import { PYTHON_APP } from './EnvUtils';
-import RequestUtils from './RequestUtils';
 
-async function fetchRoutes(): Object {
+import { PYTHON_APP } from './EnvUtils.js';
+import RequestUtils from './RequestUtils.js';
+
+async function fetchRoutes(){
   const options = {
     method: 'GET',
     url: `http://${PYTHON_APP || 'localhost'}:5000/gtfs`,

@@ -1,6 +1,6 @@
-// @flow
+
 import util from 'util';
-import { NODE_ENV } from './EnvUtils';
+import { NODE_ENV } from './EnvUtils.js';
 
 /**
  * Write object to console, if in production, condense message
@@ -8,7 +8,7 @@ import { NODE_ENV } from './EnvUtils';
  * @param obj
  * @param error
  */
-function log(obj: Object, error: ?boolean = false) {
+function log(obj, error= false) {
   const options = {
     showHidden: false,
     depth: Infinity,
@@ -40,10 +40,10 @@ function log(obj: Object, error: ?boolean = false) {
  * @returns {*}
  */
 function logErr(
-  error: Object,
-  data: ?Object = {},
-  note: ?string = '', //
-  disableConsoleOut: ?boolean = false,
+  error,
+  data,
+  note, //
+  disableConsoleOut,
 ) {
   try { // try block because if the error logging has an error... ?
     if (!error) {
