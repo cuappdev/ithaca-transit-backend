@@ -1,15 +1,10 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
-    "description": "This is documentation for the ithaca-transit-backend API.",
+    "title": "ithaca-transit-backend",
     "version": "1.0.0",
-    "title": "ithaca-transit-backend"
+    "description": "This is documentation for the ithaca-transit-backend API."
   },
-  "host": "transit-backend.cornellappdev.com",
-  "basePath": "/api/v1",
-  "schemes": [
-    "https"
-  ],
   "paths": {
     "/alerts": {
       "get": {
@@ -45,49 +40,7 @@
         }
       }
     },
-    "/v2/delays": {
-      "post": {
-        "summary": "Returns a list of bus delays for buses at a specific stop. Outdated as of 2020.",
-        "description": "Takes in a list of objects with fields routeID and trip ID and returns a list of objects with fields routeID, tripID, and delay.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "The stop information to get the delay in seconds for. Positive delay means the bus is late, negative delay means the bus is early, and null delay means the delay is unknown. The request body has only one field, data, which is an array of objects with the following fields: \n* stopID: The unique bus stop identifier. \n* tripID: The unique trip identifier for the specific `routeID`.\n Ex. {\"data\": [{\"stopID\": string, \"tripID\": string}]",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": [
-                  "stopId",
-                  "tripId"
-                ],
-                "properties": {
-                  "stopId": {
-                    "type": "string",
-                    "example": "2406"
-                  },
-                  "tripId": {
-                    "type": "string",
-                    "example": "t536-b67-s1B"
-                  }
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "{\"success\": true, \"data\": [{\"tripId\": string, \"stopId\": string, \"delay\": int}]}"
-          }
-        }
-      }
-    },
-    "/v3/delays": {
+    "/delays": {
       "post": {
         "summary": "Returns a list of bus delays for buses at a specific stop. **Recommended and most up-to-date.",
         "description": "Takes in a list of objects with fields routeId and tripId and returns a list of objects with fields routeId, tripId, and delay.",
@@ -101,21 +54,26 @@
             "description": "The stop information to get the delay in seconds for. Positive delay means the bus is late, negative delay means the bus is early, and null delay means the delay is unknown. The request body has only one field, data, which is an array of objects with the following fields: \n* stopId: The unique bus stop identifier. \n* tripId: The unique trip identifier for the specific `routeId`.\n Ex. {\"data\": [{\"stopId\": string, \"tripId\": string}]",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": [
-                  "stopId",
-                  "tripId"
-                ],
-                "properties": {
-                  "stopId": {
-                    "type": "string",
-                    "example": "2406"
-                  },
-                  "tripId": {
-                    "type": "string",
-                    "example": "t536-b67-s1B"
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "stopId",
+                      "tripId"
+                    ],
+                    "properties": {
+                      "stopId": {
+                        "type": "string",
+                        "example": "1327"
+                      },
+                      "tripId": {
+                        "type": "string",
+                        "example": "t844-b3F2-slC"
+                      }
+                    }
                   }
                 }
               }
@@ -129,71 +87,7 @@
         }
       }
     },
-    "/v2/route": {
-      "post": {
-        "summary": "Returns a list of the best available routes based on the passed-in parameters. Outdated as of 2020.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "The user's search query for a bus stop or place.\nstart: The starting point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\nend: The ending point of the journey. (i.e. '<latitude: Double>, <longitude: Double>')\ntime: The relevant time in the request. If `arriveBy` is false, departBy functionality is used, and `time` is when the journey should at earliest begin by.\narriveBy: Whether the request requires the route to arrive at the destination by time.\ndestinationName: The name of the destination of the trip.",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "start",
-                "end",
-                "time",
-                "arriveBy",
-                "destinationName"
-              ],
-              "properties": {
-                "end": {
-                  "type": "string",
-                  "example": "42.45322,-76.477264"
-                },
-                "uid": {
-                  "type": "string",
-                  "example": "B1CD4726-0CA8-41DC-A2F4-01D5D8F3A3E0"
-                },
-                "time": {
-                  "type": "integer",
-                  "example": 1582309886.406827
-                },
-                "destinationName": {
-                  "type": "string",
-                  "example": "Helen Newman Hall"
-                },
-                "start": {
-                  "type": "string",
-                  "example": "42.45070406588394,-76.49342862932777"
-                },
-                "arriveBy": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "originName": {
-                  "type": "string",
-                  "example": "Current Location"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "{\"success\": true, \"data\": {fromStop: [Route], boardingSoon: [Route], walking: [Route]}}",
-            "schema": {
-              "$ref": "#/definitions/Route"
-            }
-          }
-        }
-      }
-    },
-    "/v3/route": {
+    "/route": {
       "post": {
         "summary": "Returns a list of the best available routes based on the passed-in parameters. **Recommended and most up-to-date.",
         "produces": [
@@ -257,7 +151,7 @@
         }
       }
     },
-    "/v2/appleSearch": {
+    "/appleSearch": {
       "post": {
         "summary": "Returns a list of bus stops and ApplePlaces autocomplete search results given a query string.",
         "consumes": [
@@ -302,51 +196,7 @@
         }
       }
     },
-    "/v2/tracking": {
-      "post": {
-        "summary": "Returns a list information about live bus information (to help draw buses on the map). Outdated as of 2020.",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "The bus information to get the live location and other relevant vehicle data from. The request body has only one field, data, which is an array of objects with the following fields: \n* routeID: The number of the bus route. Note this corresponds to routeNumber from v2/route (v2/route has bad naming, so please stick with this in the meantime). \n* tripID: The unique trip identifier for the specific `routeID`.\n Ex. {\"data\": [{\"routeID\": integer, \"tripID\": string}]",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": [
-                  "routeID",
-                  "tripID"
-                ],
-                "properties": {
-                  "routeID": {
-                    "type": "integer",
-                    "example": 10
-                  },
-                  "tripID": {
-                    "type": "string",
-                    "example": "t536-b67-s1B"
-                  }
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "{\"success\": true, \"data\": [BusLocation]}",
-            "schema": {
-              "$ref": "#/definitions/BusLocation"
-            }
-          }
-        }
-      }
-    },
-    "/v3/tracking": {
+    "/tracking": {
       "post": {
         "summary": "Returns a list information about live bus information (to help draw buses on the map). **Recommended and most up-to-date.",
         "produces": [
@@ -356,24 +206,29 @@
           {
             "in": "body",
             "name": "body",
-            "description": "The bus information to get the live location and other relevant vehicle data from. The request body has only one field, data, which is an array of objects with the following fields: \n* routeId: The number of the bus route, corresponding with General Transit Feed Specification (GTFS) RouteId. Be aware that this is a string. \n* tripId: The unique trip identifier for the specific `routeId`, corresponding with GTFS tripId. \n Ex. {\"data\": [{\"routeId\": string, \"tripId\": string}]",
+            "description": "The bus information to get the live location and other relevant vehicle data from. The request body has only one field, data, which is an array of objects with the following fields: \n* routeId: The number of the bus route, corresponding with General Transit Feed Specification (GTFS) RouteId. Be aware that this is a string. \n* tripId: The unique trip identifier for the specific routeId, corresponding with GTFS tripId. \n Ex. {\"data\": [{\"routeId\": string, \"tripId\": string}]",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": [
-                  "routeId",
-                  "tripId"
-                ],
-                "properties": {
-                  "routeId": {
-                    "type": "string",
-                    "example": "10"
-                  },
-                  "tripId": {
-                    "type": "string",
-                    "example": "t536-b67-s1B"
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "routeId",
+                      "tripId"
+                    ],
+                    "properties": {
+                      "routeId": {
+                        "type": "string",
+                        "example": "10"
+                      },
+                      "tripId": {
+                        "type": "string",
+                        "example": "t536-b67-s1B"
+                      }
+                    }
                   }
                 }
               }
@@ -386,6 +241,168 @@
             "schema": {
               "$ref": "#/definitions/BusLocationV3"
             }
+          }
+        }
+      }
+    },
+    "/departureNotification": {
+      "post": {
+        "summary": "Sends a request to get departure notifications for a given deviceToken and time stamp ",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Users device token and start time of the given route",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "deviceToken",
+                "startTime"
+              ],
+              "properties": {
+                "deviceToken": {
+                  "type": "string",
+                  "example": "d5yOxYOS8UakmiJWNFX2Nr:APA91bGb6PSrXFd4vmD7XQN3vALrZEwTWXf2z9HeEMOXrYtNj0psn5qO_-zv0VLsPpuZYdFMXi3YSkJ2FTnJV75Fc7LNw01GGJTFzf9CWf-W-f6r9c7oKsXEVfqjz8k-BkXnTTqQhG2d"
+                },
+                "startTime": {
+                  "type": "integer",
+                  "example": 1582309886.406827
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true}"
+          }
+        }
+      }
+    },
+    "/cancelDepartureNotification": {
+      "post": {
+        "summary": "Sends a request to get cancel a departure notifications for a given deviceToken and time stamp ",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Users device token and start time of the given route",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "deviceToken",
+                "startTime"
+              ],
+              "properties": {
+                "deviceToken": {
+                  "type": "string",
+                  "example": "d5yOxYOS8UakmiJWNFX2Nr:APA91bGb6PSrXFd4vmD7XQN3vALrZEwTWXf2z9HeEMOXrYtNj0psn5qO_-zv0VLsPpuZYdFMXi3YSkJ2FTnJV75Fc7LNw01GGJTFzf9CWf-W-f6r9c7oKsXEVfqjz8k-BkXnTTqQhG2d"
+                },
+                "startTime": {
+                  "type": "integer",
+                  "example": 1582309886.406827
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true}"
+          }
+        }
+      }
+    },
+    "/delayNotification": {
+      "post": {
+        "summary": "Sends a request to get delay notifications for a given deviceToken, stopID, and tripID ",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Users device token, stopID, and tripID for a given route request",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "deviceToken",
+                "stopID",
+                "tripID"
+              ],
+              "properties": {
+                "deviceToken": {
+                  "type": "string",
+                  "example": "d5yOxYOS8UakmiJWNFX2Nr:APA91bGb6PSrXFd4vmD7XQN3vALrZEwTWXf2z9HeEMOXrYtNj0psn5qO_-zv0VLsPpuZYdFMXi3YSkJ2FTnJV75Fc7LNw01GGJTFzf9CWf-W-f6r9c7oKsXEVfqjz8k-BkXnTTqQhG2d"
+                },
+                "stopID": {
+                  "type": "string",
+                  "example": "911"
+                },
+                "tripID": {
+                  "type": "string",
+                  "example": "t776-bFA1-slD"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true}"
+          }
+        }
+      }
+    },
+    "/cancelDelayNotification": {
+      "post": {
+        "summary": "Sends a request to cancel delay notifications for a given deviceToken, stopID, and tripID ",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Users device token, stopID, and tripID for a given route request",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "deviceToken",
+                "stopID",
+                "tripID"
+              ],
+              "properties": {
+                "deviceToken": {
+                  "type": "string",
+                  "example": "d5yOxYOS8UakmiJWNFX2Nr:APA91bGb6PSrXFd4vmD7XQN3vALrZEwTWXf2z9HeEMOXrYtNj0psn5qO_-zv0VLsPpuZYdFMXi3YSkJ2FTnJV75Fc7LNw01GGJTFzf9CWf-W-f6r9c7oKsXEVfqjz8k-BkXnTTqQhG2d"
+                },
+                "stopID": {
+                  "type": "string",
+                  "example": "911"
+                },
+                "tripID": {
+                  "type": "string",
+                  "example": "t776-bFA1-slD"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true}"
           }
         }
       }

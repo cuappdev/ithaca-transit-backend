@@ -1,7 +1,7 @@
-// @flow
-import Constants from './Constants';
-import { PYTHON_APP } from './EnvUtils';
-import RequestUtils from './RequestUtils';
+
+import Constants from './Constants.js';
+import { PYTHON_APP } from './EnvUtils.js';
+import RequestUtils from './RequestUtils.js';
 
 const SEC_IN_MS = 1000;
 const MIN_IN_MS = SEC_IN_MS * 60;
@@ -81,7 +81,7 @@ function fetchPrecisionMaps() {
  * @param degreesPrecision
  * @returns {Promise<void>}
  */
-async function getPrecisionMap(degreesPrecision: ?number = DEG_EQ_PRECISION) {
+async function getPrecisionMap(degreesPrecision = DEG_EQ_PRECISION) {
   if (degreesPrecision < 1 || degreesPrecision > 6) {
     return null;
   }
@@ -108,7 +108,7 @@ async function getPrecisionMap(degreesPrecision: ?number = DEG_EQ_PRECISION) {
  * @param degreesPrecision
  * @returns {Promise<boolean>}
  */
-async function isStopsWithinPrecision(point: Object, degreesPrecision: ?number = DEG_EQ_PRECISION) {
+async function isStopsWithinPrecision(point, degreesPrecision = DEG_EQ_PRECISION) {
   const stops = await getPrecisionMap(degreesPrecision);
   const lat = parseFloat(point.lat).toFixed(degreesPrecision);
   let found = stops[lat]; // found stop(s) at lat
@@ -131,7 +131,7 @@ async function isStopsWithinPrecision(point: Object, degreesPrecision: ?number =
  * @param point
  * @returns {Promise<boolean>}
  */
-function isStop(point: Object) {
+function isStop(point) {
   return isStopsWithinPrecision(point, DEG_EQ_PRECISION);
 }
 

@@ -1,13 +1,12 @@
-// @flow
 import request from 'request';
 
-import { TOKEN } from './EnvUtils';
-import LogUtils from './LogUtils';
+import { TOKEN } from './EnvUtils.js';
+import LogUtils from './LogUtils.js';
 
 const TOKEN_EXPIRATION_WINDOW_IN_MS = 500;
 let credentials = { basic_token: TOKEN, access_token: '', expiration_date: '' };
 
-function isAccessTokenExpired(): boolean {
+function isAccessTokenExpired() {
   if (credentials.access_token === '') { // need to generate token
     return true;
   }
@@ -17,7 +16,7 @@ function isAccessTokenExpired(): boolean {
   return tokenExpirationTime - currentTime < TOKEN_EXPIRATION_WINDOW_IN_MS;
 }
 
-function fetchAccessToken(): void {
+function fetchAccessToken() {
   if (!credentials.basic_token) {
     throw new Error(`Basic token ${credentials.access_token || 'unknown'}`);
   }
@@ -39,7 +38,7 @@ function fetchAccessToken(): void {
       if (error) reject(error);
       resolve(body);
     });
-  }).then((tokenRequest: any) => {
+  }).then((tokenRequest) => {
     const token = JSON.parse(tokenRequest);
     const currentDate = new Date();
     const newCredentials = {

@@ -1,16 +1,16 @@
-// @flow
-import AllStopUtils from './AllStopUtils';
-import GraphhopperUtils from './GraphhopperUtils';
-import LogUtils from './LogUtils';
-import ParseRouteUtils from './ParseRouteUtilsV3';
 
+import AllStopUtils from './AllStopUtils.js';
+import GraphhopperUtils from './GraphhopperUtils.js';
+import LogUtils from './LogUtils.js';
+import ParseRouteUtils from './ParseRouteUtilsV3.js';
+import createGpx  from 'gps-to-gpx';
 /**
  * Returns the flattened version of arr.
  *
  * @param arr
  * @returns {Array<Object>}
  */
-function flatten(arr: Array<Array<Object>>): Array<Object> {
+function flatten(arr){
   return [].concat(...arr);
 }
 
@@ -20,7 +20,7 @@ function flatten(arr: Array<Array<Object>>): Array<Object> {
  * @param location
  * @returns {Promise<boolean>}
  */
-async function isBusStop(location: string): Promise<boolean> {
+async function isBusStop(location){
   const stops = await AllStopUtils.fetchAllStops();
   return stops.filter(s => s.name === location).length > 0;
 }
@@ -31,7 +31,7 @@ async function isBusStop(location: string): Promise<boolean> {
  * @param route
  * @returns {boolean}
  */
-function routeContainsTransfer(route: Object): boolean {
+function routeContainsTransfer(route) {
   const { directions } = route;
   const routeIds = [];
   directions.forEach((direction) => {
@@ -47,7 +47,7 @@ function routeContainsTransfer(route: Object): boolean {
  * @param routeB
  * @returns {boolean}
  */
-function routesHaveSameStartEndStops(routeA: Object, routeB: Object): boolean {
+function routesHaveSameStartEndStops(routeA, routeB) {
   const routeADirections = routeA.directions;
   const routeBDirections = routeB.directions;
 
@@ -75,14 +75,14 @@ function routesHaveSameStartEndStops(routeA: Object, routeB: Object): boolean {
  * @returns {Promise<Object>}
  */
 async function createFinalBusRoutes(
-  parsedBusRoutes: Array<Object>,
-  parsedWalkingRoute: Object,
-  start: string,
-  end: string,
-  departureTimeQuery: number,
-  isArriveBy: boolean,
-  originBusStopName: ?string,
-): Promise<Array<Object>> {
+  parsedBusRoutes,
+  parsedWalkingRoute,
+  start,
+  end,
+  departureTimeQuery,
+  isArriveBy,
+  originBusStopName,
+) {
   const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
   const departureDelayBuffer = !isArriveBy;
 
@@ -130,13 +130,13 @@ async function createFinalBusRoutes(
  * @returns {Promise<Object>}
  */
 async function getParsedWalkingAndBusRoutes(
-  originName: string,
-  destinationName: string,
-  end: string,
-  start: string,
-  departureTimeQuery: number,
-  isArriveBy: boolean,
-): Promise<{ parsedBusRoutes: ?Array<Object>, parsedWalkingRoute: Object }> {
+  originName,
+  destinationName,
+  end,
+  start,
+  departureTimeQuery,
+  isArriveBy,
+) {
   const routes = await GraphhopperUtils.fetchRoutes(end, start, departureTimeQuery, isArriveBy);
 
   if (!routes) {
@@ -192,13 +192,13 @@ async function getParsedWalkingAndBusRoutes(
  * @returns {Promise<Object>}
  */
 async function getParsedWalkingRoute(
-  originName: string,
-  destinationName: string,
-  end: string,
-  start: string,
-  departureTimeQuery: number,
-  isArriveBy: boolean,
-): Promise<Object> {
+  originName,
+  destinationName,
+  end,
+  start,
+  departureTimeQuery,
+  isArriveBy,
+){
   const walkingRoute = await GraphhopperUtils.fetchWalkingRoute(end, start);
   return ParseRouteUtils.parseWalkingRoute(
     walkingRoute,
@@ -222,14 +222,14 @@ async function getParsedWalkingRoute(
  * @returns {Promise<Object>}
  */
 async function getSectionedRoutes(
-  originName: string,
-  destinationName: string,
-  end: string,
-  start: string,
-  departureTimeQuery: number,
-  isArriveBy: boolean,
-  originBusStopName: ?string,
-): Promise<Object> {
+  originName,
+  destinationName,
+  end,
+  start,
+  departureTimeQuery,
+  isArriveBy,
+  originBusStopName,
+) {
   const {
     parsedBusRoutes,
     parsedWalkingRoute,
@@ -271,13 +271,13 @@ async function getSectionedRoutes(
 }
 
 async function getRoutes(
-  originName: string,
-  destinationName: string,
-  end: string,
-  start: string,
-  departureTimeQuery: number,
-  isArriveBy: boolean,
-): Promise<Array<Object>> {
+  originName,
+  destinationName,
+  end,
+  start,
+  departureTimeQuery,
+  isArriveBy,
+){
   const {
     parsedBusRoutes,
     parsedWalkingRoute,

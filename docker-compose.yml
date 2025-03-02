@@ -4,7 +4,6 @@ services:
   node:
     build:
       context: .
-      target: development
     env_file: .envrc
     ports:
       - "3000:3000"
@@ -13,7 +12,7 @@ services:
       - /usr/src/app/node_modules
 
   ghopper:
-    image: cornellappdev/transit-ghopper:06_01_24
+    image: cornellappdev/transit-ghopper:08_24_24
     ports:
       - "8988:8988"
 
@@ -28,7 +27,7 @@ services:
       - "8987:8987"
 
   live-tracking:
-    image: cornellappdev/transit-python:06_01_24
+    image: cornellappdev/transit-python:11_05_24
     env_file: python.envrc
     ports:
       - "5000:5000"
