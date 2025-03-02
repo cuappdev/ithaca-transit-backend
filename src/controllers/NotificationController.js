@@ -153,7 +153,7 @@ router.post('/microserviceNotif', async (req, res) => {
     // Send the notification
     const result = await NotificationUtils.sendNotification(deviceToken, notifData);
 
-    res.status(200).json(result);
+    res.status(200).json({ "sucess": 'successfully sent microservice notification' });
   } catch (error) {
     console.error('Error sending notification:', error.message);
     res.status(500).json({ error: 'Failed to send notification' });
