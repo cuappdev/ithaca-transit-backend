@@ -13,7 +13,7 @@ router.get('/alerts', async (req, res) => {
   }
 });
 
-router.post('/delays/', async (req, res) => {
+router.post('/delays', async (req, res) => {
   try {
     const rtf = await RealtimeFeedUtilsV3.fetchRTF();
 
