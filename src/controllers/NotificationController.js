@@ -39,7 +39,7 @@ router.post('/delayNotification', async (req, res) => {
     );
 
     // Respond with the result from the microservice
-    res.status(200).json(delayNotifsRequest);
+    res.status(200).json({ "sucess": 'successfully sent delay notification' });
   } catch (error) {
     console.error('Error creating delay notification:', error.message);
     res.status(500).json({ error: 'Failed to create delay notification' });
@@ -99,7 +99,7 @@ router.post('/departureNotification', async (req, res) => {
     const result = await NotificationUtils.waitForDeparture(deviceToken, startTime);
 
     // Respond with the result
-    res.status(200).json(result);
+    res.status(200).json({ "sucess": 'successfully sent departure notification' });
   } catch (error) {
     console.error('Error setting up departure notification:', error.message);
     res.status(500).json({ error: 'Failed to set up departure notification' });
@@ -124,7 +124,7 @@ router.post('/cancelDepartureNotification', async (req, res) => {
     const result = await NotificationUtils.cancelDeparture(deviceToken, startTime);
 
     // Respond with the result
-    res.status(200).json(result);
+    res.status(200).json({ "sucess": 'successfully canceled departure notification' });
   } catch (error) {
     console.error('Error canceling departure notification:', error.message);
     res.status(500).json({ error: 'Failed to cancel departure notification' });
@@ -153,7 +153,7 @@ router.post('/microserviceNotif', async (req, res) => {
     // Send the notification
     const result = await NotificationUtils.sendNotification(deviceToken, notifData);
 
-    res.status(200).json(result);
+    res.status(200).json({ "sucess": 'successfully sent microservice notification' });
   } catch (error) {
     console.error('Error sending notification:', error.message);
     res.status(500).json({ error: 'Failed to send notification' });
