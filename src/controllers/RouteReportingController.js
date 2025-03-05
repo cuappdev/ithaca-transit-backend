@@ -1,5 +1,6 @@
 import express from 'express';
-import RouteReportingUtils from '../utils/RouteReportingUtils';
+import LogUtils from '../utils/LogUtils.js';
+import RouteReportingUtils from '../utils/RouteReportingUtils.js';
 
 const router = express.Router();
 

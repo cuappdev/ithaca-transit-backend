@@ -707,6 +707,7 @@ function parseRoutes(
 
 export default {
   condenseRoute,
+  distanceBetweenPointsMiles,
   parseRoutes,
   parseWalkingRoute,
 };

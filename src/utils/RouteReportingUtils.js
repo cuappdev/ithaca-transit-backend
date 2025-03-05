@@ -9,7 +9,7 @@ import ParseRouteUtilsV3 from './ParseRouteUtilsV3.js';
  * @returns {Object}
  */
 async function getClosestBus(routeId, start) {
-  LogUtils.log({ message: 'getClosestBus: entering function', routeId, tripId });
+  LogUtils.log({ message: 'getClosestBus: entering function', routeId });
   const vehicles = await RealtimeFeedUtilsV3.fetchVehicles();
 
   if (!vehicles) {
@@ -27,19 +27,14 @@ async function getClosestBus(routeId, start) {
 
   const startPointList = start.split(',');
   const startPoint = { lat: startPointList[0], long: startPointList[1] };
-
-  const rtf = await RealtimeFeedUtilsV3.fetchRTF();
   
   let closestVehicle = null;
   let minDistance = Infinity;
   
   for (const vehicle of routeVehicles) {
-    const vehicleInfo = RealtimeFeedUtilsV3.getVehicleData(vehicle.vehicleID, rtf);
-    if (!vehicleInfo) continue;
-
     const vehiclePosition = {
-      lat: vehicleInfo.position[1],
-      long: vehicleInfo.position[0],
+      lat: vehicle.latitude,
+      long: vehicle.longitude,
     };
       
     const distance = ParseRouteUtilsV3.distanceBetweenPointsMiles(
@@ -49,7 +44,7 @@ async function getClosestBus(routeId, start) {
       
     if (distance < minDistance) {
       minDistance = distance;
-      closestVehicle = vehicleInfo;
+      closestVehicle = vehicle;
     }
   }
   
