@@ -4,6 +4,7 @@ import trackingRoutes from './controllers/TrackingController.js';
 import searchRoutes from './controllers/SearchController.js';
 import notifRoutes from './controllers/NotificationController.js'
 import stopsRoutes from './controllers/StopsController.js'
+import stopsRoutes from './controllers/StopsController.js'
 import TokenUtils from './utils/TokenUtils.js';
 import admin from 'firebase-admin';
 import swaggerUi from 'swagger-ui-express'
@@ -18,17 +19,17 @@ const port = process.env.PORT;
 
 app.use(express.json());
 
-app.use('/', delayRoutes);
+app.use('/api/v1/', delayRoutes);
 
-app.use('/', routeRoutes);
+app.use('/api/v3/', routeRoutes);
 
-app.use('/', trackingRoutes);
+app.use('/api/v3/', trackingRoutes);
 
-app.use('/', searchRoutes);
+app.use('/api/v2/', searchRoutes);
 
-app.use('/', stopsRoutes);
+app.use('/api/v1/', stopsRoutes);
 
-app.use('/', notifRoutes);
+app.use('/api/v1/', notifRoutes);
 
 TokenUtils.fetchAuthHeader();
 
