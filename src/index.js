@@ -5,6 +5,7 @@ import searchRoutes from './controllers/SearchController.js';
 import notifRoutes from './controllers/NotificationController.js'
 import reportingRoutes from './controllers/RouteReportingController.js'
 import stopsRoutes from './controllers/StopsController.js'
+import ecosystemRoutes from './controllers/EcosystemController.js'
 import TokenUtils from './utils/TokenUtils.js';
 import admin from 'firebase-admin';
 import swaggerUi from 'swagger-ui-express'
@@ -30,6 +31,8 @@ app.use('/', searchRoutes);
 app.use('/', stopsRoutes);
 
 app.use('/', notifRoutes);
+
+app.use('/', ecosystemRoutes);
 
 app.use('/', reportingRoutes);
 
