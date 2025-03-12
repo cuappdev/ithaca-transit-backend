@@ -19,4 +19,15 @@ router.get('/closestBus', async (req, res) => {
   }
 });
 
+router.get('/reports/:vehicleId', async (req, res) => {
+  try {
+    const { vehicleId } = req.params;
+    const reports = await RouteReportingUtils.fetchReportsByBus(vehicleId);
+    res.status(200).json(reports);
+  } catch (error) {
+    LogUtils.logErr(error, req.params, 'Error fetching reports by vehicleId');
+    res.status(500).json({ error: 'Failed to fetch reports by vehicleId' });
+  }
+});
+
 export default router;
