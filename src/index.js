@@ -3,6 +3,7 @@ import routeRoutes from './controllers/RouteController.js';
 import trackingRoutes from './controllers/TrackingController.js';
 import searchRoutes from './controllers/SearchController.js';
 import notifRoutes from './controllers/NotificationController.js'
+import ecosystemRoutes from './controllers/EcosystemController.js'
 import TokenUtils from './utils/TokenUtils.js';
 import admin from 'firebase-admin';
 import swaggerUi from 'swagger-ui-express'
@@ -26,6 +27,8 @@ app.use('/', trackingRoutes);
 app.use('/', searchRoutes);
 
 app.use('/', notifRoutes);
+
+app.use('/', ecosystemRoutes);
 
 TokenUtils.fetchAuthHeader();
 
