@@ -440,6 +440,47 @@
           }
         }
       }
+    },
+    "/closestBus": {
+      "get": {
+        "summary": "Returns the closest bus to a given location on a route.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The routeID and user's starting location for a given route request",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "routeId",
+                "start"
+              ],
+              "properties": {
+                "routeId": {
+                  "type": "string",
+                  "example": "10"
+                },
+                "start": {
+                  "type": "string",
+                  "example": "42.45070406588394,-76.49342862932777"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true, \"data\": [BusLocationV3]}",
+            "schema": {
+              "$ref": "#/definitions/BusLocationV3"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {

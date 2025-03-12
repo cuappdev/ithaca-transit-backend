@@ -22,7 +22,7 @@
     "eslint-loader": "^4.0.2",
     "express": "^4.21.2",
     "extra-watch-webpack-plugin": "^1.0.3",
-    "firebase-admin": "^13.0.2",
+    "firebase-admin": "^13.1.0",
     "fuzzball": "^2.1.3",
     "gps-to-gpx": "^1.5.1",
     "interval-promise": "^1.4.0",
