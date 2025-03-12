@@ -3,6 +3,7 @@ import routeRoutes from './controllers/RouteController.js';
 import trackingRoutes from './controllers/TrackingController.js';
 import searchRoutes from './controllers/SearchController.js';
 import notifRoutes from './controllers/NotificationController.js'
+import reportingRoutes from './controllers/RouteReportingController.js'
 import stopsRoutes from './controllers/StopsController.js'
 import TokenUtils from './utils/TokenUtils.js';
 import admin from 'firebase-admin';
@@ -29,6 +30,8 @@ app.use('/', searchRoutes);
 app.use('/', stopsRoutes);
 
 app.use('/', notifRoutes);
+
+app.use('/', reportingRoutes);
 
 TokenUtils.fetchAuthHeader();
 
