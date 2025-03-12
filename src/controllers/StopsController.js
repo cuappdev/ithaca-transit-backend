@@ -1,5 +1,5 @@
 import express from 'express';
-import AllStopUtils from '../../utils/AllStopUtils';
+import AllStopUtils from '../utils/AllStopUtils.js';
 
 const router = express.Router();
 

@@ -3,6 +3,7 @@ import routeRoutes from './controllers/RouteController.js';
 import trackingRoutes from './controllers/TrackingController.js';
 import searchRoutes from './controllers/SearchController.js';
 import notifRoutes from './controllers/NotificationController.js'
+import stopsRoutes from './controllers/StopsController.js'
 import ecosystemRoutes from './controllers/EcosystemController.js'
 import TokenUtils from './utils/TokenUtils.js';
 import admin from 'firebase-admin';
@@ -25,6 +26,8 @@ app.use('/', routeRoutes);
 app.use('/', trackingRoutes);
 
 app.use('/', searchRoutes);
+
+app.use('/', stopsRoutes);
 
 app.use('/', notifRoutes);
 
