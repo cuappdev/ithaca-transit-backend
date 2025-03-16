@@ -24,22 +24,22 @@ jobs:
       - name: Docker Build & Push ghopper
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: ./docker-compose/ghopper/Dockerfile
+          context: ./docker-compose/ghopper
+          file: ./Dockerfile
           push: true
           tags: cornellappdev/transit-ghopper:latest
       - name: Docker Build & Push ghopper-walking
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: ./docker-compose/ghopper-walking/Dockerfile
+          context: ./docker-compose/ghopper-walking
+          file: ./Dockerfile
           push: true
           tags: cornellappdev/transit-ghopper-walking:latest
       - name: Docker Build & Push map
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          file: ./docker-compose/map/Dockerfile
+          context: ./docker-compose/map
+          file: ./Dockerfile
           push: true
           tags: cornellappdev/transit-map:latest
 
