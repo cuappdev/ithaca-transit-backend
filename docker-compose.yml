@@ -1,10 +1,8 @@
-version: "3.4"
-
 services:
   node:
     build:
       context: .
-    env_file: .envrc
+    env_file: .env
     ports:
       - "3000:3000"
     volumes:
@@ -27,7 +25,6 @@ services:
       - "8987:8987"
 
   live-tracking:
-    image: cornellappdev/transit-python:11_05_24
-    env_file: python.envrc
+    image: cornellappdev/transit-python:latest
     ports:
       - "5000:5000"
