@@ -21,13 +21,28 @@ jobs:
       # - name: Get SHA
       #   id: vars
       #   run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-      - name: Docker Build & Push Ghopper
+      - name: Docker Build & Push ghopper
         uses: docker/build-push-action@v2
         with:
           context: ./
           file: ./docker-compose/ghopper/Dockerfile
           push: true
           tags: cornellappdev/transit-ghopper:latest
+      - name: Docker Build & Push ghopper-walking
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./docker-compose/ghopper-walking/Dockerfile
+          push: true
+          tags: cornellappdev/transit-ghopper-walking:latest
+      - name: Docker Build & Push map
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./docker-compose/map/Dockerfile
+          push: true
+          tags: cornellappdev/transit-map:latest
+
       # - name: Remote SSH and Deploy
       #   uses: appleboy/ssh-action@master
       #   env:
