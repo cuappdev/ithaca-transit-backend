@@ -7,7 +7,7 @@ RUN git clone --single-branch -b tcat-map https://github.com/cuappdev/ithaca-tra
 
 WORKDIR /usr/src/app
 
-RUN git clone --single-branch -b master https://github.com/graphhopper/graphhopper.git
+RUN git clone --single-branch -b 0.12 https://github.com/graphhopper/graphhopper.git
 
 WORKDIR /usr/src/app/graphhopper
 RUN ./graphhopper.sh --action build
