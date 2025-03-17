@@ -1,51 +1,48 @@
-import delayRoutes from './controllers/DelaysController.js';
-import routeRoutes from './controllers/RouteController.js';
-import trackingRoutes from './controllers/TrackingController.js';
-import searchRoutes from './controllers/SearchController.js';
-import notifRoutes from './controllers/NotificationController.js'
-import reportingRoutes from './controllers/RouteReportingController.js'
-import stopsRoutes from './controllers/StopsController.js'
-import ecosystemRoutes from './controllers/EcosystemController.js'
-import TokenUtils from './utils/TokenUtils.js';
-import admin from 'firebase-admin';
-import swaggerUi from 'swagger-ui-express'
-import swaggerDoc from './swagger.json'  assert { type: 'json' };
-import express from 'express';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import "dotenv/config";
+import express from "express";
+import delayRoutes from "./controllers/DelaysController.js";
+import routeRoutes from "./controllers/RouteController.js";
+import trackingRoutes from "./controllers/TrackingController.js";
+import searchRoutes from "./controllers/SearchController.js";
+import notifRoutes from "./controllers/NotificationController.js";
+import reportingRoutes from "./controllers/RouteReportingController.js";
+import stopsRoutes from "./controllers/StopsController.js";
+import ecosystemRoutes from "./controllers/EcosystemController.js";
+import TokenUtils from "./utils/TokenUtils.js";
+import admin from "firebase-admin";
+import swaggerUi from "swagger-ui-express";
+import swaggerDoc from "./swagger.json" with { type: "json" };
 
 const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
 
-app.use('/', delayRoutes);
+app.use("/", delayRoutes);
 
-app.use('/', routeRoutes);
+app.use("/", routeRoutes);
 
-app.use('/', trackingRoutes);
+app.use("/", trackingRoutes);
 
-app.use('/', searchRoutes);
+app.use("/", searchRoutes);
 
-app.use('/', stopsRoutes);
+app.use("/", stopsRoutes);
 
-app.use('/', notifRoutes);
+app.use("/", notifRoutes);
 
-app.use('/', ecosystemRoutes);
+app.use("/", ecosystemRoutes);
 
-app.use('/', reportingRoutes);
+app.use("/", reportingRoutes);
 
 TokenUtils.fetchAuthHeader();
 
 // Swagger docs
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 // Setup Firebase Admin
-console.log(process.env.FCM_AUTH_KEY_PATH);
 admin.initializeApp({
   credential: admin.credential.cert(process.env.FCM_AUTH_KEY_PATH),
-  databaseURL: 'https://ithaca-transit.firebaseio.com',
+  databaseURL: "https://ithaca-transit.firebaseio.com",
 });
 
 app.listen(port, () => {

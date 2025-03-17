@@ -1,0 +1,15 @@
+services:
+  ghopper-bus:
+    image: cornellappdev/transit-ghopper:${IMAGE_TAG}
+    ports:
+      - "8988:8988"
+
+  ghopper-map:
+    image: cornellappdev/transit-map:latest
+    ports:
+      - "8989:8989"
+
+  ghopper-walking:
+    image: cornellappdev/transit-ghopper-walking:latest
+    ports:
+      - "8987:8987"

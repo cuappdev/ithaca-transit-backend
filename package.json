@@ -1,5 +1,5 @@
 {
-  "name": "ithaca-transit-backend-refactor",
+  "name": "ithaca-transit-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -19,7 +19,6 @@
     "babel-loader": "^9.2.1",
     "babel-polyfill": "^6.26.0",
     "dotenv": "^16.4.7",
-    "eslint-loader": "^4.0.2",
     "express": "^4.21.2",
     "extra-watch-webpack-plugin": "^1.0.3",
     "firebase-admin": "^13.1.0",
