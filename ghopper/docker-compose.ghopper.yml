@@ -1,6 +1,6 @@
 services:
   ghopper-bus:
-    image: cornellappdev/transit-ghopper:latest
+    image: cornellappdev/transit-ghopper:${IMAGE_TAG}
     ports:
       - "8988:8988"
 
