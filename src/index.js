@@ -8,7 +8,6 @@ import notifRoutes from "./controllers/NotificationController.js";
 import reportingRoutes from "./controllers/RouteReportingController.js";
 import stopsRoutes from "./controllers/StopsController.js";
 import ecosystemRoutes from "./controllers/EcosystemController.js";
-import TokenUtils from "./utils/TokenUtils.js";
 import admin from "firebase-admin";
 import swaggerUi from "swagger-ui-express";
 import swaggerDoc from "./swagger.json" with { type: "json" };
@@ -33,8 +32,6 @@ app.use("/", notifRoutes);
 app.use("/", ecosystemRoutes);
 
 app.use("/", reportingRoutes);
-
-TokenUtils.fetchAuthHeader();
 
 // Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));

@@ -1,15 +1,14 @@
+import interval from "interval-promise";
+import request from "request";
+import util from "util";
 
-import interval from 'interval-promise';
-import request from 'request';
-import util from 'util';
-
-import LogUtils from './LogUtils.js';
+import LogUtils from "./LogUtils.js";
 
 function createRequest(
   options,
-  errorMessage = 'Request failed',
+  errorMessage = "Request failed",
   verbose = false,
-  returnRes = false,
+  returnRes = false
 ) {
   options.time = true;
   return new Promise((resolve, reject) => {
@@ -23,10 +22,12 @@ function createRequest(
       }
       resolve(body);
     });
-  }).then(value => value).catch((error) => {
-    LogUtils.logErr(error, options, errorMessage);
-    return null;
-  });
+  })
+    .then((value) => value)
+    .catch((error) => {
+      LogUtils.logErr(error, options, errorMessage);
+      return null;
+    });
 }
 
 /**
@@ -42,7 +43,7 @@ async function fetchWithRetry(fn, retryCount = 5) {
   for (let i = 0; i < retryCount; i++) {
     try {
       // eslint-disable-next-line no-await-in-loop
-      return (await fn());
+      return await fn();
     } catch (err) {
       error = err;
     }
@@ -59,27 +60,32 @@ async function fetchWithRetry(fn, retryCount = 5) {
  * @param {number} timeout Ms to wait before request times out
  * @param {Object} objectToUpdate
  */
-function updateObjectOnInterval(
-  fn,
-  refreshInterval,
-  timeout,
-  objectToUpdate,
-) {
-  interval(async (iteration, stop) => {
-    try {
-      const optionalUpdatedObject = await Promise.race([
-        fn(),
-        (util.promisify(setTimeout))(timeout)
-          .then(() => null),
-      ]);
+function updateObjectOnInterval(fn, refreshInterval, timeout, objectToUpdate) {
+  interval(
+    async (iteration, stop) => {
+      try {
+        const optionalUpdatedObject = await Promise.race([
+          fn(),
+          util
+            .promisify(setTimeout)(timeout)
+            .then(() => null),
+        ]);
 
-      if (optionalUpdatedObject != null) { // eslint-disable-next-line no-param-reassign
-        objectToUpdate = optionalUpdatedObject;
+        if (optionalUpdatedObject != null) {
+          // eslint-disable-next-line no-param-reassign
+          objectToUpdate = optionalUpdatedObject;
+        }
+      } catch (error) {
+        LogUtils.logErr(
+          error,
+          objectToUpdate,
+          "Error occurred while in repeated interval"
+        );
       }
-    } catch (error) {
-      LogUtils.logErr(error, objectToUpdate, 'Error occurred while in repeated interval');
-    }
-  }, refreshInterval, { stopOnError: false });
+    },
+    refreshInterval,
+    { stopOnError: false }
+  );
 }
 
 export default {
