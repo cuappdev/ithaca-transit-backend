@@ -5,7 +5,7 @@ const router = express.Router();
 
 // Fetch all libraries
 router.get("/libraries", async (req, res) => {
-  // TODO: use different sqlite3 library
+  // TODO: use different sqlite3 library because node does not support (maybe better-sqlite3)
   return res.status(500).json({ error: "Failed to fetch libraries" });
   try {
     const libraries = await EcosystemUtils.fetchAllLibraries();
@@ -18,7 +18,7 @@ router.get("/libraries", async (req, res) => {
 
 // Fetch all printers
 router.get("/printers", async (req, res) => {
-  // TODO: use different sqlite3 library
+  // TODO: use different sqlite3 library because node does not support (maybe better-sqlite3)
   return res.status(500).json({ error: "Failed to fetch printers" });
   try {
     const printers = await EcosystemUtils.fetchAllPrinters();

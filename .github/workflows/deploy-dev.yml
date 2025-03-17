@@ -2,7 +2,7 @@ name: Docker Build & Push and Deploy to transit-dev
 
 on:
   push:
-    branches: [master, autodeploy]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
