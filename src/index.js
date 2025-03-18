@@ -17,34 +17,40 @@ import RealtimeFeedUtilsV3 from "./utils/RealtimeFeedUtilsV3.js";
 import admin from "firebase-admin";
 import swaggerUi from "swagger-ui-express";
 import swaggerDoc from "./swagger.json" with { type: "json" };
+import AlertsUtils from "./utils/AlertsUtils.js";
+import AllStopUtils from "./utils/AllStopUtils.js";
+import GTFSUtils from "./utils/GTFSUtils.js";
+
 
 const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
 
+// Setup routes
 app.use("/", delayRoutes);
-
 app.use("/", routeRoutes);
-
 app.use("/", trackingRoutes);
-
 app.use("/", searchRoutes);
-
 app.use("/", stopsRoutes);
-
 app.use("/", notifRoutes);
-
 app.use("/", ecosystemRoutes);
-
 app.use("/", reportingRoutes);
 
-// Swagger docs
+// Setup Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
-// Setup recurring events
-schedule.scheduleJob("*/30 * * * * *", NotificationUtils.sendNotifications);
-schedule.scheduleJob("*/30 * * * * *", RealtimeFeedUtilsV3.getRTFData);
+// Setup recurring events (every 30 seconds)
+schedule.scheduleJob("*/30 * * * * *", () => {
+  AlertsUtils.fetchAlerts();
+  RealtimeFeedUtilsV3.fetchRTF();
+  AllStopUtils.fetchAllStops();
+  RealtimeFeedUtilsV3.fetchVehicles();
+  NotificationUtils.sendNotifications();
+});
+
+// Retrieve GTFS data
+GTFSUtils.fetchGTFS();
 
 // Setup Firebase Admin
 admin.initializeApp({
@@ -52,6 +58,7 @@ admin.initializeApp({
   databaseURL: "https://ithaca-transit.firebaseio.com",
 });
 
+// Start the server
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
   console.log(`Swagger docs available at http://localhost:${port}/api-docs`);

@@ -2,11 +2,15 @@ import fetch from "node-fetch";
 import { fileURLToPath } from "url";
 import protobuf from "protobufjs";
 import path from "path";
+import LogUtils from "./LogUtils.js";
 
 const RTF_URL =
   "https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=TripUpdate";
+const VEHICLES_URL =
+  "https://realtimetcatbus.availtec.com/InfoPoint/GTFS-Realtime.ashx?&Type=VehiclePosition&serverid=0";
 
 let rtfData = null;
+let vehicleData = null;
 
 // Load and compile the gtfs-realtime.proto file
 const __filename = fileURLToPath(import.meta.url);
@@ -17,7 +21,7 @@ const root = protobuf.loadSync(
 );
 const FeedMessage = root.lookupType("transit_realtime.FeedMessage");
 
-async function parseProtobuf(buffer) {
+async function parseProtobufRTF(buffer) {
   const feed = FeedMessage.decode(buffer);
   const entityDict = {};
 
@@ -30,7 +34,10 @@ async function parseProtobuf(buffer) {
       const stopUpdates = {};
 
       entity.tripUpdate.stopTimeUpdate.forEach((stopUpdate) => {
-        if (stopUpdate.scheduleRelationship !== "NO_DATA") {
+        if (
+          stopUpdate.scheduleRelationship !== "NO_DATA" &&
+          stopUpdate.arrival
+        ) {
           stopUpdates[stopUpdate.stopId] = stopUpdate.arrival.delay;
         }
       });
@@ -50,7 +57,7 @@ async function fetchRTF() {
   try {
     const response = await fetch(RTF_URL);
     const buffer = await response.buffer();
-    rtfData = await parseProtobuf(buffer);
+    rtfData = await parseProtobufRTF(buffer);
   } catch (error) {
     console.error(error);
   }
@@ -60,21 +67,70 @@ function getRTFData() {
   return rtfData;
 }
 
-import { PYTHON_APP } from "./EnvUtils.js";
-import Constants from "./Constants.js";
-import LogUtils from "./LogUtils.js";
-import RequestUtils from "./RequestUtils.js";
+async function parseProtobufVehicles(buffer) {
+  const feed = FeedMessage.decode(buffer);
+  const entityDict = {};
+
+  feed.entity.forEach((entity) => {
+    if (entity.vehicle) {
+      const vehicleId = entity.id;
+      const congestionLevel = entity.vehicle.congestionLevel;
+      const currentStatus = entity.vehicle.currentStatus;
+      const currentStopSequence = entity.vehicle.currentStopSequence;
+      const occupancyStatus = entity.vehicle.occupancyStatus;
+      const stopId = entity.vehicle.stopId;
+      const timestamp = entity.vehicle.timestamp;
+      let routeId = null;
+      let tripId = null;
+      let bearing = null;
+      let latitude = null;
+      let longitude = null;
+      let speed = null;
+
+      if (entity.vehicle.trip) {
+        routeId = entity.vehicle.trip.routeId;
+        tripId = entity.vehicle.trip.tripId;
+      }
+
+      if (entity.vehicle.position) {
+        bearing = entity.vehicle.position.bearing;
+        latitude = entity.vehicle.position.latitude;
+        longitude = entity.vehicle.position.longitude;
+        speed = entity.vehicle.position.speed;
+      }
+
+      entityDict[vehicleId] = {
+        bearing: bearing,
+        congestionLevel: congestionLevel,
+        currentStatus: currentStatus,
+        currentStopSequence: currentStopSequence,
+        latitude: latitude,
+        longitude: longitude,
+        occupancyStatus: occupancyStatus,
+        routeId: routeId,
+        speed: speed,
+        stopId: stopId,
+        timestamp: timestamp,
+        tripId: tripId,
+        vehicleId: vehicleId,
+      };
+    }
+  });
+  return entityDict;
+}
 
 async function fetchVehicles() {
-  const options = {
-    ...Constants.GET_OPTIONS,
-    url: `http://${PYTHON_APP || "localhost"}:5000/vehicles`,
-  };
-  const data = await RequestUtils.createRequest(
-    options,
-    "Vehicles request failed"
-  );
-  return JSON.parse(data);
+  try {
+    const response = await fetch(VEHICLES_URL);
+    const buffer = await response.buffer();
+    vehicleData = await parseProtobufVehicles(buffer);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function getVehicleData() {
+  return vehicleData;
 }
 
 /**
@@ -91,7 +147,7 @@ async function fetchVehicles() {
  */
 async function getTrackingResponse(requestData) {
   LogUtils.log({ message: "getTrackingResponse: entering function" });
-  const vehicles = await fetchVehicles();
+  const vehicles = getVehicleData();
 
   const trackingInformation = requestData
     .map((data) => {
@@ -155,8 +211,7 @@ function getVehicleInformation(routeId, tripId, vehicles) {
     return null;
   }
   const vehicleData = Object.values(vehicles).find(
-    // Naming here is routeID and tripID due to how the microservice names fields
-    (v) => v.routeID === routeId && v.tripID === tripId
+    (v) => v.routeId === routeId && v.tripId === tripId
   );
   if (!vehicleData) {
     LogUtils.log({
@@ -183,6 +238,8 @@ function getVehicleInformation(routeId, tripId, vehicles) {
 
 export default {
   getRTFData,
+  fetchRTF,
+  getVehicleData,
   fetchVehicles,
   getDelayInformation,
   getVehicleInformation,

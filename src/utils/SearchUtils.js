@@ -54,7 +54,7 @@ async function getCoordsForPlaceID(placeID) {
 }
 
 async function getFormattedStopsForQuery(query) {
-  const allStops = await AllStopUtils.fetchAllStops();
+  const allStops = await AllStopUtils.getAllStops();
   const filteredStops = allStops.filter(
     (s) => partial_ratio(s.name.toLowerCase(), query) >= MIN_FUZZ_RATIO
   );

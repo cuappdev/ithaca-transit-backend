@@ -130,7 +130,6 @@ export default {
   addDelayNotification,
   deleteDelayNotification,
   sendNotifications,
-  sendNotification,
   waitForDeparture,
   cancelDeparture,
 };

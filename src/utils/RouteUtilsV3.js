@@ -20,7 +20,7 @@ function flatten(arr) {
  * @returns {Promise<boolean>}
  */
 async function isBusStop(location) {
-  const stops = await AllStopUtils.fetchAllStops();
+  const stops = await AllStopUtils.getAllStops();
   return stops.filter((s) => s.name === location).length > 0;
 }
 

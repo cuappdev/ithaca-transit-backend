@@ -616,7 +616,7 @@ function parseRoutes(
 
               tripId = [currLeg.trip_id];
 
-              const routeJson = await GTFSUtils.fetchRoutes();
+              const routeJson = await GTFSUtils.getGTFSData();
               const route = routeJson.filter(
                 (routeObj) =>
                   routeObj.route_id.toString() === currLeg.route_id.toString()
