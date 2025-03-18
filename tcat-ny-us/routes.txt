@@ -1,0 +1,26 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color,route_sort_order
+10,0,"10","10","Cornell - Commons",3,,211561,ffffff,1
+11,0,"11","11","Ithaca College - Commons",3,,F36623,FFFFFF,12
+13,0,"13","13","IHS - Northside - Commons",3,,00736C,FFFFFF,18
+14,0,"14","14","West Hill - Hospital - Commons",3,,00AEAF,FFFFFF,20
+15,0,"15","15","Southside Shopper",3,,d54f28,ffffff,28
+17,0,"17","17","TCAT - Fall Creek - Commons",3,,AAA000,FFFFFF,30
+20,0,"20","20","Enfield - Commons",3,,F5977A,FFFFFF,32
+21,0,"21","21","Trumansburg - Commons",3,,ED1D26,FFFFFF,34
+30,0,"30","30","Commons - Cornell - Shops at Ithaca Mall",3,,AB6339,FFFFFF,38
+31,0,"31","31","Northeast Ithaca - Etna",3,,027524,ffffff,40
+32,0,"32","32","Airport - Cornell - Commons",3,,615CA8,FFFFFF,41
+36,0,"36","36","South Lansing - Cornell - Commons",3,,3bc016,FFFFFF,42
+37,0,"37","37","North Lansing - Cornell - Commons",3,,005F22,FFFFFF,46
+40,0,"40","40","Groton - Freeville- Cornell - Commons",3,,0077A4,FFFFFF,48
+43,0,"43","43","TC3 - Varna - Cornell - Commons",3,,014964,FFFFFF,52
+51,0,"51","51","Commons - Cornell - EHP - Eastern Height",3,,009955,FFFFFF,54
+52,0,"52","52","Caroline - Brooktondale - Commons",3,,2D3194,FFFFFF,56
+65,0,"65","65","Danby",3,,F5999D,000000,60
+67,0,"67","67","Newfield - Commons",3,,EB048E,FFFFFF,62
+77,0,"77","77","Mall Lansing-Etna",3,,91288F,FFFFFF,72
+81,0,"81","81","Cornell Daytime Campus Service",3,,f24040,ffffff,74
+82,0,"82","82","Cornell Campus Service - East Hill Offic",3,,00A99E,FFFFFF,75
+90,0,"90","90","Ithaca Commons - Cornell University",3,,400080,ffffff,90
+92,0,"92","92","Cornell Campus Service-Nights",3,,789795,ffffff,92
+145,0,"145","14S","West Hill - Shopping",3,,881407,ffffff,2

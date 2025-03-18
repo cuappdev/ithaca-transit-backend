@@ -127,20 +127,15 @@ router.post("/microserviceNotif", async (req, res) => {
       return res.status(400).json({ error: "Invalid input parameters" });
     }
 
-    const notifData = {
-      data: `The bus on ${routeID} is delayed`,
-      notification: "testBody",
-    };
-
     // Send the notification
-    const result = await NotificationUtils.sendNotification(
+    await NotificationUtils.sendNotification(
       deviceToken,
-      notifData
+      `The bus on ${routeID} is delayed`,
+      "testBody"
     );
-
-    res
+    return res
       .status(200)
-      .json({ sucess: "successfully sent microservice notification" });
+      .json({ success: "successfully sent microservice notification" });
   } catch (error) {
     console.error("Error sending notification:", error.message);
     res.status(500).json({ error: "Failed to send notification" });

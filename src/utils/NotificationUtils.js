@@ -9,6 +9,8 @@ const __dirname = path.dirname(__filename);
 const notifPath = path.join(__dirname, "..", "data", "notifRequests.json");
 
 let notifRequests;
+let rtfData;
+
 try {
   const data = fs.readFileSync(notifPath, "utf8");
   notifRequests = JSON.parse(data);
@@ -21,7 +23,7 @@ const saveNotifs = () => {
   fs.writeFileSync(notifPath, JSON.stringify(notifRequests, null, 2));
 };
 
-const departures = {};
+let departures = {};
 // add a dictionary that keeps tracks of the events that are scheduled and
 // delete them when a delete request comes in
 
@@ -55,24 +57,41 @@ function deleteDelayNotification(tripID, stopID, deviceToken) {
   saveNotifs();
 }
 
-function sendNotification(deviceToken, notifData) {
+function sendNotifications() {
+  for (const id in rtfData) {
+    if (id in notifRequests) {
+      for (const stopID in notifRequests[id]) {
+        if (stopID in rtfData[id]["stopUpdates"]) {
+          for (const deviceToken of notifRequests[id][stopID]) {
+            sendNotification(
+              deviceToken,
+              `The bus on ${rtfData[id]["routeId"]} is delayed`,
+              "testBody"
+            );
+          }
+        }
+      }
+    }
+  }
+  saveNotifs();
+}
+
+function sendNotification(deviceToken, data, notification) {
   const message = {
-    data: notifData,
+    data: {
+      data,
+      notification,
+    },
     token: deviceToken,
   };
-  if (deviceToken !== "") {
-    getMessaging()
-      .send(message)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log("Missing device token");
-        console.log(error);
-      });
-  } else {
-    console.log("Missing device token");
+  if (!message.token) {
+    throw new Error("Invalid device token");
   }
+  getMessaging()
+    .send(message)
+    .then((response) => {
+      console.log(response);
+    });
 }
 
 function waitForDeparture(deviceToken, startTime) {
@@ -103,8 +122,6 @@ function cancelDeparture(deviceToken, startTime) {
         departures[deviceToken][startDate].cancel();
         console.log("Job canceled.");
       }
-
-      // delete departures[deviceToken][startDate]
     }
   }
 }
@@ -112,6 +129,7 @@ function cancelDeparture(deviceToken, startTime) {
 export default {
   addDelayNotification,
   deleteDelayNotification,
+  sendNotifications,
   sendNotification,
   waitForDeparture,
   cancelDeparture,

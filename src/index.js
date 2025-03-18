@@ -1,5 +1,7 @@
 import "dotenv/config";
 import express from "express";
+import schedule from "node-schedule";
+
 import delayRoutes from "./controllers/DelaysController.js";
 import routeRoutes from "./controllers/RouteController.js";
 import trackingRoutes from "./controllers/TrackingController.js";
@@ -8,6 +10,10 @@ import notifRoutes from "./controllers/NotificationController.js";
 import reportingRoutes from "./controllers/RouteReportingController.js";
 import stopsRoutes from "./controllers/StopsController.js";
 import ecosystemRoutes from "./controllers/EcosystemController.js";
+
+import NotificationUtils from "./utils/NotificationUtils.js";
+import RealtimeFeedUtilsV3 from "./utils/RealtimeFeedUtilsV3.js";
+
 import admin from "firebase-admin";
 import swaggerUi from "swagger-ui-express";
 import swaggerDoc from "./swagger.json" with { type: "json" };
@@ -35,6 +41,10 @@ app.use("/", reportingRoutes);
 
 // Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+
+// Setup recurring events
+schedule.scheduleJob("*/30 * * * * *", NotificationUtils.sendNotifications);
+schedule.scheduleJob("*/30 * * * * *", RealtimeFeedUtilsV3.getRTFData);
 
 // Setup Firebase Admin
 admin.initializeApp({

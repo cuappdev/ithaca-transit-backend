@@ -1,0 +1,2 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email
+0,Tompkins Consolidated Area Transit Inc,http://www.tcatbus.com/,America/New_York,en,607-277-RIDE,https://www.tcatbus.com/ride/fare-pass-options/,support@availtec.com

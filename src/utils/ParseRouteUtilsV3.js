@@ -712,7 +712,7 @@ function parseRoutes(
                 stopId: stop.stop_id,
               }));
 
-              const rtf = await RealtimeFeedUtils.fetchRTF();
+              const rtf = await RealtimeFeedUtils.getRTFData();
               const realtimeData = RealtimeFeedUtils.getDelayInformation(
                 stops[0].stopId,
                 tripId[0],

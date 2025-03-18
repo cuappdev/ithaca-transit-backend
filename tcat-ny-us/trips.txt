@@ -1,0 +1,1557 @@
+route_id,service_id,trip_id,trip_headsign,direction_id,block_id,shape_id,wheelchair_accessible,bikes_allowed
+11,10,t92E-b3F9-slA,"IC via None",1,1017,40461_shp,0,0
+11,10,tCD-b3F9-slA,"IC via None",1,1017,40461_shp,0,0
+11,10,tDC-b3F9-slA,"Downtown Express",0,1017,40485_shp,0,0
+11,11,t1B-b7DE-slB,"IC via None",1,2014,40461_shp,0,0
+11,11,t2A-b7DE-slB,"Downtown",0,2014,40366_shp,0,0
+11,11,t328-b7D8-slB,"IC via Longview",1,2008,40433_shp,0,0
+11,11,t33E-b7D8-slB,"Downtown",0,2008,40366_shp,0,0
+11,11,t38C-b7D7-slB,"IC via Longview",1,2007,40433_shp,0,0
+11,11,t3A2-b7D7-slB,"Downtown",0,2007,40366_shp,0,0
+11,11,t3F0-b7D8-slB,"IC via Longview",1,2008,40433_shp,0,0
+11,11,t406-b7D8-slB,"Downtown",0,2008,40366_shp,0,0
+11,11,t454-b7D7-slB,"IC via Longview",1,2007,40433_shp,0,0
+11,11,t46A-b7D7-slB,"Downtown",0,2007,40366_shp,0,0
+11,11,t46A-b7DD-slB,"IC via Longview",1,2013,40433_shp,0,0
+11,11,t47C-b7DD-slB,"Downtown Cont as 15",0,2013,40475_shp,0,0
+11,11,t4B8-b7D8-slB,"IC via Longview",1,2008,40433_shp,0,0
+11,11,t4CE-b7D8-slB,"Downtown",0,2008,40366_shp,0,0
+11,11,t4DD-b7DD-slB,"IC via Longview",1,2013,40433_shp,0,0
+11,11,t517-b7DD-slB,"Downtown Cont as 15",0,2013,40475_shp,0,0
+11,11,t51C-b7D7-slB,"IC via Longview",1,2007,40433_shp,0,0
+11,11,t532-b7D7-slB,"Downtown",0,2007,40366_shp,0,0
+11,11,t578-b7DD-slB,"IC via Longview",1,2013,40433_shp,0,0
+11,11,t580-b7D8-slB,"IC via Longview",1,2008,40433_shp,0,0
+11,11,t58A-b7DD-slB,"Downtown Cont as 15",0,2013,40475_shp,0,0
+11,11,t596-b7D8-slB,"Downtown",0,2008,40366_shp,0,0
+11,11,t5E4-b7D7-slB,"IC via Longview",1,2007,40433_shp,0,0
+11,11,t5EB-b7DD-slB,"IC via Longview",1,2013,40433_shp,0,0
+11,11,t5FA-b7D7-slB,"Downtown",0,2007,40366_shp,0,0
+11,11,t5FD-b7DD-slB,"Downtown Cont as 15",0,2013,40475_shp,0,0
+11,11,t648-b7D8-slB,"IC via Longview",1,2008,40433_shp,0,0
+11,11,t65E-b7D8-slB,"Downtown",0,2008,40366_shp,0,0
+11,11,t65E-b7DD-slB,"IC via Longview",1,2013,40433_shp,0,0
+11,11,t670-b7DD-slB,"Downtown Cont as 15",0,2013,40475_shp,0,0
+11,11,t6AC-b7D7-slB,"IC via Longview",1,2007,40433_shp,0,0
+11,11,t6C2-b7D7-slB,"Downtown",0,2007,40366_shp,0,0
+11,11,t6D1-b7DD-slB,"IC via Longview",1,2013,40433_shp,0,0
+11,11,t70-b7DE-slB,"IC via None",1,2014,40461_shp,0,0
+11,11,t70B-b7DD-slB,"Downtown Cont as 15",0,2013,40475_shp,0,0
+11,11,t710-b7D8-slB,"IC via Longview",1,2008,40433_shp,0,0
+11,11,t726-b7D8-slB,"Downtown",0,2008,40366_shp,0,0
+11,11,t73-b7D8-slB,"IC via None",1,2008,40376_shp,0,0
+11,11,t76C-b7DD-slB,"IC via Longview",1,2013,40433_shp,0,0
+11,11,t774-b7D7-slB,"IC via None",1,2007,40461_shp,0,0
+11,11,t77E-b7DD-slB,"Downtown",0,2013,40366_shp,0,0
+11,11,t78A-b7D7-slB,"Downtown",0,2007,40366_shp,0,0
+11,11,t7D0-b7DE-slB,"IC via None",1,2014,40461_shp,0,0
+11,11,t7E0-b7DE-slB,"Downtown",0,2014,40366_shp,0,0
+11,11,t7FA-b7DE-slB,"IC via None",1,2014,40461_shp,0,0
+11,11,t7F-b7DE-slB,"Downtown",0,2014,40366_shp,0,0
+11,11,t809-b7DE-slB,"Downtown",0,2014,40366_shp,0,0
+11,11,t80-b7D8-slB,"Downtown Express",0,2008,40485_shp,0,0
+11,11,t84F-b7DE-slB,"IC via None",1,2014,40461_shp,0,0
+11,11,t85E-b7DE-slB,"Downtown",0,2014,40366_shp,0,0
+11,11,t8A4-b7DE-slB,"IC via None",1,2014,40461_shp,0,0
+11,11,t8A7-b7E3-slB,"IC Express",1,2019,40402_shp,0,0
+11,11,t8B3-b7DE-slB,"Downtown",0,2014,40366_shp,0,0
+11,11,t8B3-b7E3-slB,"Downtown",0,2019,40366_shp,0,0
+11,11,t8D1-b7DE-slB,"IC via None",1,2014,40461_shp,0,0
+11,11,t908-b7DE-slB,"Downtown",0,2014,40366_shp,0,0
+11,11,t926-b7DE-slB,"IC via None",1,2014,40461_shp,0,0
+11,11,t935-b7DE-slB,"Downtown",0,2014,40366_shp,0,0
+11,11,t9D-b7DE-slB,"IC via None",1,2014,40461_shp,0,0
+11,11,tD4-b7DE-slB,"Downtown Express",0,2014,40485_shp,0,0
+11,12,t328-b3EF-slC,"IC via Longview",1,1007,40433_shp,0,0
+11,12,t33E-b3EF-slC,"Downtown",0,1007,40366_shp,0,0
+11,12,t38C-b3EE-slC,"IC via Longview",1,1006,40433_shp,0,0
+11,12,t3A2-b3EE-slC,"Downtown",0,1006,40366_shp,0,0
+11,12,t3F0-b3EF-slC,"IC via Longview",1,1007,40433_shp,0,0
+11,12,t406-b3EF-slC,"Downtown",0,1007,40366_shp,0,0
+11,12,t454-b3EE-slC,"IC via Longview",1,1006,40433_shp,0,0
+11,12,t46A-b3EA-slC,"IC via Longview",1,1002,40433_shp,0,0
+11,12,t46A-b3EE-slC,"Downtown",0,1006,40366_shp,0,0
+11,12,t47C-b3EA-slC,"Downtown Cont as 15",0,1002,40475_shp,0,0
+11,12,t4B8-b3EF-slC,"IC via Longview",1,1007,40433_shp,0,0
+11,12,t4CE-b3EF-slC,"Downtown",0,1007,40366_shp,0,0
+11,12,t4DD-b3EA-slC,"IC via Longview",1,1002,40433_shp,0,0
+11,12,t517-b3EA-slC,"Downtown Cont as 15",0,1002,40475_shp,0,0
+11,12,t51C-b3EE-slC,"IC via Longview",1,1006,40433_shp,0,0
+11,12,t532-b3EE-slC,"Downtown",0,1006,40366_shp,0,0
+11,12,t578-b3EA-slC,"IC via Longview",1,1002,40433_shp,0,0
+11,12,t580-b3EF-slC,"IC via Longview",1,1007,40433_shp,0,0
+11,12,t58A-b3EA-slC,"Downtown Cont as 15",0,1002,40475_shp,0,0
+11,12,t596-b3EF-slC,"Downtown",0,1007,40366_shp,0,0
+11,12,t5E4-b3EE-slC,"IC via Longview",1,1006,40433_shp,0,0
+11,12,t5EB-b3EA-slC,"IC via Longview",1,1002,40433_shp,0,0
+11,12,t5FA-b3EE-slC,"Downtown",0,1006,40366_shp,0,0
+11,12,t5FD-b3EA-slC,"Downtown Cont as 15",0,1002,40475_shp,0,0
+11,12,t648-b3EF-slC,"IC via Longview",1,1007,40433_shp,0,0
+11,12,t65E-b3EA-slC,"IC via Longview",1,1002,40433_shp,0,0
+11,12,t65E-b3EF-slC,"Downtown",0,1007,40366_shp,0,0
+11,12,t670-b3EA-slC,"Downtown Cont as 15",0,1002,40475_shp,0,0
+11,12,t6AC-b3EE-slC,"IC via Longview",1,1006,40433_shp,0,0
+11,12,t6C2-b3EE-slC,"Downtown",0,1006,40366_shp,0,0
+11,12,t6D1-b3EA-slC,"IC via Longview",1,1002,40433_shp,0,0
+11,12,t70B-b3EA-slC,"Downtown Cont as 15",0,1002,40475_shp,0,0
+11,12,t710-b3EF-slC,"IC via Longview",1,1007,40433_shp,0,0
+11,12,t726-b3EF-slC,"Downtown",0,1007,40366_shp,0,0
+11,12,t76C-b3EA-slC,"IC via Longview",1,1002,40433_shp,0,0
+11,12,t774-b3EE-slC,"IC via None",1,1006,40461_shp,0,0
+11,12,t77E-b3EA-slC,"Downtown Cont as 15",0,1002,40475_shp,0,0
+11,12,t78A-b3EE-slC,"Downtown",0,1006,40366_shp,0,0
+13,10,t2C6-b3FD-slA,"Downtown via Fall Creek",0,1021,40479_shp,0,0
+13,10,t2DF-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t2F3-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t334-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t348-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t34D-b3ED-slA,"Stewart Park Cont as 36",1,1005,40404_shp,0,0
+13,10,t389-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t39D-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t3B6-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t3F2-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t40B-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t41F-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t460-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t474-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t4B5-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t4C9-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t4E2-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t51E-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t537-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t54B-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t58C-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t5A0-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t5E1-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t5F5-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t60E-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t64A-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t663-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t677-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t6B8-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t6CC-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t70D-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t721-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t73A-b3FD-slA,"Guthrie City Harbor",1,1021,40486_shp,0,0
+13,10,t776-b3FD-slA,"Downtown via Cayuga Med",0,1021,40361_shp,0,0
+13,10,t787-b3FD-slA,"TCAT Garage",1,1021,40450_shp,0,0
+13,11,t2BC-b7D4-slB,"Downtown via Fall Creek",0,2004,40368_shp,0,0
+13,11,t2E8-b7D7-slB,"Downtown via Fall Creek",0,2007,40368_shp,0,0
+13,11,t39A-b7DA-slB,"Downtown via Fall Creek",0,2010,40479_shp,0,0
+13,11,t3B1-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t3ED-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t406-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t41A-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t45B-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t46F-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t4B0-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t4C4-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t4DD-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t519-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t532-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t546-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t587-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t59B-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t5DC-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t5F0-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t609-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t645-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t65E-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t672-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t6B3-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t6C7-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,11,t708-b7DA-slB,"Guthrie City Harbor",1,2010,40486_shp,0,0
+13,11,t71C-b7DA-slB,"Downtown via Cayuga Med",0,2010,40361_shp,0,0
+13,12,t28C-b3EA-slC,"Downtown via Fall Creek",0,1002,40368_shp,0,0
+13,12,t39A-b3F2-slC,"Downtown via Fall Creek",0,1010,40479_shp,0,0
+13,12,t3B1-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t3ED-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t406-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t41A-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t45B-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t46F-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t4B0-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t4C4-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t4DD-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t519-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t532-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t546-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t587-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t59B-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t5DC-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t5F0-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t609-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t645-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t65E-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t672-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t6B3-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t6C7-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t708-b3F2-slC,"Guthrie City Harbor",1,1010,40486_shp,0,0
+13,12,t71C-b3F2-slC,"Downtown via Cayuga Med",0,1010,40361_shp,0,0
+13,12,t730-b3F2-slC,"TCAT Garage",1,1010,40450_shp,0,0
+14,10,t25D-b3EB-slA,"Hospital Express",1,1003,40371_shp,0,0
+14,10,t271-b3EB-slA,"Downtown via OA, LC",0,1003,40350_shp,0,0
+14,10,t2BC-b3EB-slA,"Hospital via WV, Prof",1,1003,40510_shp,0,0
+14,10,t2D5-b3EB-slA,"Downtown via OA, LC",0,1003,40350_shp,0,0
+14,10,t320-b3FA-slA,"Hospital via WV, Prof",1,1018,40510_shp,0,0
+14,10,t339-b3FA-slA,"Downtown via OA, LC",0,1018,40350_shp,0,0
+14,10,t384-b3EB-slA,"Hospital via WV, Prof",1,1003,40510_shp,0,0
+14,10,t39F-b3EB-slA,"Downtown via OA, LC",0,1003,40350_shp,0,0
+14,10,t3E8-b3FA-slA,"Hospital via WV, Prof",1,1018,40510_shp,0,0
+14,10,t403-b3FA-slA,"Downtown via OA, LC",0,1018,40350_shp,0,0
+14,10,t44C-b3EB-slA,"Hospital via WV, Prof",1,1003,40510_shp,0,0
+14,10,t467-b3EB-slA,"Downtown via OA, LC",0,1003,40350_shp,0,0
+14,10,t4B0-b3FA-slA,"Hospital via WV, Prof",1,1018,40510_shp,0,0
+14,10,t4CB-b3FA-slA,"Downtown via OA, LC",0,1018,40350_shp,0,0
+14,10,t514-b3F9-slA,"Hospital via WV, Prof",1,1017,40510_shp,0,0
+14,10,t52F-b3F9-slA,"Downtown via OA, LC",0,1017,40350_shp,0,0
+14,10,t578-b3FA-slA,"Hospital via All Apts, Prof",1,1018,40519_shp,0,0
+14,10,t59B-b3FA-slA,"Downtown via None",0,1018,40351_shp,0,0
+14,10,t5DC-b3F9-slA,"Hospital via All Apts, Prof",1,1017,40519_shp,0,0
+14,10,t5FF-b3F9-slA,"Downtown via None",0,1017,40351_shp,0,0
+14,10,t640-b3FA-slA,"Hospital via All Apts, Prof",1,1018,40519_shp,0,0
+14,10,t663-b3FA-slA,"Downtown via None",0,1018,40351_shp,0,0
+14,10,t6A4-b3F9-slA,"Hospital via All Apts",1,1017,40399_shp,0,0
+14,10,t6C7-b3F9-slA,"Downtown via None",0,1017,40351_shp,0,0
+14,10,t708-b3FA-slA,"Hospital via All Apts",1,1018,40399_shp,0,0
+14,10,t72B-b3FA-slA,"Downtown via None",0,1018,40351_shp,0,0
+14,10,t76C-b3F9-slA,"Hospital via All Apts",1,1017,40399_shp,0,0
+14,10,t78F-b3F9-slA,"Downtown via None",0,1017,40351_shp,0,0
+14,10,t7D0-b3FA-slA,"Hospital via All Apts",1,1018,40399_shp,0,0
+14,10,t7F3-b3FA-slA,"Downtown via None",0,1018,40351_shp,0,0
+14,11,t320-b7D7-slB,"Hospital via WV",1,2007,40477_shp,0,0
+14,11,t339-b7D7-slB,"Downtown via OA, LC",0,2007,40350_shp,0,0
+14,11,t3E8-b7D7-slB,"Hospital via WV",1,2007,40477_shp,0,0
+14,11,t3F4-b7DC-slB,"State @ Fulton",1,2012,40487_shp,0,0
+14,11,t403-b7D7-slB,"Downtown via OA, LC",0,2007,40350_shp,0,0
+14,11,t4B0-b7D7-slB,"Hospital via WV",1,2007,40477_shp,0,0
+14,11,t4CB-b7D7-slB,"Downtown via OA, LC",0,2007,40350_shp,0,0
+14,11,t578-b7D7-slB,"Hospital via WV",1,2007,40477_shp,0,0
+14,11,t593-b7D7-slB,"Downtown via OA, LC",0,2007,40350_shp,0,0
+14,11,t640-b7D7-slB,"Hospital via All Apts",1,2007,40399_shp,0,0
+14,11,t663-b7D7-slB,"Downtown via None",0,2007,40351_shp,0,0
+14,11,t708-b7D7-slB,"Hospital via All Apts",1,2007,40399_shp,0,0
+14,11,t72B-b7D7-slB,"Downtown via None",0,2007,40351_shp,0,0
+14,11,t7D0-b7D7-slB,"Hospital via All Apts",1,2007,40399_shp,0,0
+14,11,t7F3-b7D7-slB,"Downtown via None",0,2007,40351_shp,0,0
+14,12,t320-b3EE-slC,"Hospital via WV",1,1006,40477_shp,0,0
+14,12,t339-b3EE-slC,"Downtown via OA, LC",0,1006,40350_shp,0,0
+14,12,t3E8-b3EE-slC,"Hospital via WV",1,1006,40477_shp,0,0
+14,12,t403-b3EE-slC,"Downtown via OA, LC",0,1006,40350_shp,0,0
+14,12,t4B0-b3EE-slC,"Hospital via WV",1,1006,40477_shp,0,0
+14,12,t4CB-b3EE-slC,"Downtown via OA, LC",0,1006,40350_shp,0,0
+14,12,t578-b3EE-slC,"Hospital via WV",1,1006,40477_shp,0,0
+14,12,t593-b3EE-slC,"Downtown via OA, LC",0,1006,40350_shp,0,0
+14,12,t640-b3EE-slC,"Hospital via All Apts",1,1006,40399_shp,0,0
+14,12,t663-b3EE-slC,"Downtown via None",0,1006,40351_shp,0,0
+14,12,t708-b3EE-slC,"Hospital via All Apts",1,1006,40399_shp,0,0
+14,12,t72B-b3EE-slC,"Downtown via None",0,1006,40351_shp,0,0
+14,12,t7D0-b3EE-slC,"Hospital via All Apts",1,1006,40399_shp,0,0
+14,12,t7F3-b3EE-slC,"Downtown via None",0,1006,40351_shp,0,0
+15,10,t2D1-b3EF-slA,"SW Shopping",1,1007,40363_shp,0,0
+15,10,t2E5-b3EF-slA,"Downtown",0,1007,40349_shp,0,0
+15,10,t335-b3F8-slA,"SW Shopping",1,1016,40363_shp,0,0
+15,10,t349-b3F8-slA,"Downtown",0,1016,40349_shp,0,0
+15,10,t399-b3EF-slA,"SW Shopping",1,1007,40363_shp,0,0
+15,10,t3AD-b3EF-slA,"Downtown",0,1007,40349_shp,0,0
+15,10,t3FD-b3F8-slA,"SW Shopping",1,1016,40363_shp,0,0
+15,10,t411-b3F8-slA,"Downtown",0,1016,40349_shp,0,0
+15,10,t461-b3EF-slA,"SW Shopping",1,1007,40363_shp,0,0
+15,10,t475-b3EF-slA,"Downtown",0,1007,40349_shp,0,0
+15,10,t4C5-b3F8-slA,"SW Shopping",1,1016,40363_shp,0,0
+15,10,t4D9-b3F8-slA,"Downtown",0,1016,40349_shp,0,0
+15,10,t529-b3EF-slA,"SW Shopping",1,1007,40363_shp,0,0
+15,10,t53D-b3EF-slA,"Downtown",0,1007,40349_shp,0,0
+15,10,t58D-b3F8-slA,"SW Shopping",1,1016,40363_shp,0,0
+15,10,t5A1-b3F8-slA,"Downtown",0,1016,40349_shp,0,0
+15,10,t5F1-b3EF-slA,"SW Shopping",1,1007,40363_shp,0,0
+15,10,t605-b3EF-slA,"Downtown",0,1007,40349_shp,0,0
+15,10,t655-b3F8-slA,"SW Shopping",1,1016,40363_shp,0,0
+15,10,t669-b3F8-slA,"Downtown",0,1016,40349_shp,0,0
+15,10,t6B9-b3EF-slA,"SW Shopping",1,1007,40363_shp,0,0
+15,10,t6CD-b3EF-slA,"Downtown",0,1007,40349_shp,0,0
+15,10,t71D-b3F8-slA,"SW Shopping",1,1016,40363_shp,0,0
+15,10,t731-b3F8-slA,"Downtown",0,1016,40349_shp,0,0
+15,10,t781-b3EF-slA,"SW Shopping",1,1007,40363_shp,0,0
+15,10,t795-b3EF-slA,"Downtown",0,1007,40349_shp,0,0
+15,11,t335-b7D3-slB,"SW Shopping",1,2003,40363_shp,0,0
+15,11,t349-b7D3-slB,"Downtown",0,2003,40349_shp,0,0
+15,11,t399-b7D2-slB,"SW Shopping",1,2002,40363_shp,0,0
+15,11,t3AD-b7D2-slB,"Downtown",0,2002,40349_shp,0,0
+15,11,t3FD-b7D3-slB,"SW Shopping",1,2003,40363_shp,0,0
+15,11,t411-b7D3-slB,"Downtown",0,2003,40349_shp,0,0
+15,11,t461-b7D2-slB,"SW Shopping",1,2002,40363_shp,0,0
+15,11,t475-b7D2-slB,"Downtown",0,2002,40349_shp,0,0
+15,11,t4B8-b7DD-slB,"Express via Clinton",1,2013,40497_shp,0,0
+15,11,t4C5-b7D5-slB,"SW Shopping",1,2005,40363_shp,0,0
+15,11,t4C5-b7DD-slB,"Downtown",0,2013,40349_shp,0,0
+15,11,t4D9-b7D5-slB,"Downtown",0,2005,40349_shp,0,0
+15,11,t529-b7D2-slB,"SW Shopping",1,2002,40363_shp,0,0
+15,11,t52B-b7DD-slB,"Express via Clinton",1,2013,40497_shp,0,0
+15,11,t538-b7DD-slB,"Downtown",0,2013,40349_shp,0,0
+15,11,t53D-b7D2-slB,"Downtown",0,2002,40349_shp,0,0
+15,11,t58D-b7D5-slB,"SW Shopping",1,2005,40363_shp,0,0
+15,11,t59E-b7DD-slB,"Express via Clinton",1,2013,40497_shp,0,0
+15,11,t5A1-b7D5-slB,"Downtown",0,2005,40349_shp,0,0
+15,11,t5AB-b7DD-slB,"Downtown",0,2013,40349_shp,0,0
+15,11,t5F1-b7D2-slB,"SW Shopping",1,2002,40363_shp,0,0
+15,11,t605-b7D2-slB,"Downtown",0,2002,40349_shp,0,0
+15,11,t611-b7DD-slB,"Express via Clinton",1,2013,40497_shp,0,0
+15,11,t646-b7DD-slB,"Downtown",0,2013,40349_shp,0,0
+15,11,t655-b7D5-slB,"SW Shopping",1,2005,40363_shp,0,0
+15,11,t669-b7D5-slB,"Downtown",0,2005,40349_shp,0,0
+15,11,t6AC-b7DD-slB,"Express via Clinton",1,2013,40497_shp,0,0
+15,11,t6B9-b7D2-slB,"SW Shopping",1,2002,40363_shp,0,0
+15,11,t6B9-b7DD-slB,"Downtown",0,2013,40349_shp,0,0
+15,11,t6CD-b7D2-slB,"Downtown",0,2002,40349_shp,0,0
+15,11,t71D-b7D5-slB,"SW Shopping",1,2005,40363_shp,0,0
+15,11,t71F-b7DD-slB,"Express via Clinton",1,2013,40497_shp,0,0
+15,11,t72C-b7DD-slB,"Downtown",0,2013,40349_shp,0,0
+15,11,t732-b7D5-slB,"Downtown",0,2005,40349_shp,0,0
+15,11,t781-b7D2-slB,"SW Shopping",1,2002,40363_shp,0,0
+15,11,t795-b7D2-slB,"Downtown",0,2002,40349_shp,0,0
+15,11,t7E5-b7D5-slB,"SW Shopping",1,2005,40363_shp,0,0
+15,11,t7F9-b7D5-slB,"Downtown",0,2005,40349_shp,0,0
+15,12,t335-b3EC-slC,"SW Shopping",1,1004,40363_shp,0,0
+15,12,t349-b3EC-slC,"Downtown",0,1004,40349_shp,0,0
+15,12,t399-b3EB-slC,"SW Shopping",1,1003,40363_shp,0,0
+15,12,t3AD-b3EB-slC,"Downtown",0,1003,40349_shp,0,0
+15,12,t3FD-b3EC-slC,"SW Shopping",1,1004,40363_shp,0,0
+15,12,t411-b3EC-slC,"Downtown",0,1004,40349_shp,0,0
+15,12,t461-b3EB-slC,"SW Shopping",1,1003,40363_shp,0,0
+15,12,t475-b3EB-slC,"Downtown",0,1003,40349_shp,0,0
+15,12,t4B8-b3EA-slC,"Express via Clinton",1,1002,40497_shp,0,0
+15,12,t4C5-b3EA-slC,"Downtown",0,1002,40349_shp,0,0
+15,12,t4C5-b3EC-slC,"SW Shopping",1,1004,40363_shp,0,0
+15,12,t4D9-b3EC-slC,"Downtown",0,1004,40349_shp,0,0
+15,12,t529-b3EB-slC,"SW Shopping",1,1003,40363_shp,0,0
+15,12,t52B-b3EA-slC,"Express via Clinton",1,1002,40497_shp,0,0
+15,12,t538-b3EA-slC,"Downtown",0,1002,40349_shp,0,0
+15,12,t53D-b3EB-slC,"Downtown",0,1003,40349_shp,0,0
+15,12,t58D-b3EC-slC,"SW Shopping",1,1004,40363_shp,0,0
+15,12,t59E-b3EA-slC,"Express via Clinton",1,1002,40497_shp,0,0
+15,12,t5A1-b3EC-slC,"Downtown",0,1004,40349_shp,0,0
+15,12,t5AB-b3EA-slC,"Downtown",0,1002,40349_shp,0,0
+15,12,t5F1-b3EB-slC,"SW Shopping",1,1003,40363_shp,0,0
+15,12,t605-b3EB-slC,"Downtown",0,1003,40349_shp,0,0
+15,12,t611-b3EA-slC,"Express via Clinton",1,1002,40497_shp,0,0
+15,12,t646-b3EA-slC,"Downtown",0,1002,40349_shp,0,0
+15,12,t655-b3EC-slC,"SW Shopping",1,1004,40363_shp,0,0
+15,12,t669-b3EC-slC,"Downtown",0,1004,40349_shp,0,0
+15,12,t6AC-b3EA-slC,"Express via Clinton",1,1002,40497_shp,0,0
+15,12,t6B9-b3EA-slC,"Downtown",0,1002,40349_shp,0,0
+15,12,t6B9-b3EB-slC,"SW Shopping",1,1003,40363_shp,0,0
+15,12,t6CD-b3EB-slC,"Downtown",0,1003,40349_shp,0,0
+15,12,t71D-b3EC-slC,"SW Shopping",1,1004,40363_shp,0,0
+15,12,t71F-b3EA-slC,"Express via Clinton",1,1002,40497_shp,0,0
+15,12,t72C-b3EA-slC,"Downtown",0,1002,40349_shp,0,0
+15,12,t731-b3EC-slC,"Downtown",0,1004,40349_shp,0,0
+17,10,t226-b3EA-slA,"TCAT Garage",0,1002,40357_shp,0,0
+17,10,t22B-b3EB-slA,"TCAT Garage",0,1003,40357_shp,0,0
+17,10,t262-b3EC-slA,"TCAT Garage",0,1004,40357_shp,0,0
+17,10,t26A-b3EE-slA,"TCAT Garage",0,1006,40357_shp,0,0
+17,10,t26A-b3F0-slA,"TCAT Garage",0,1008,40357_shp,0,0
+17,10,t26-b3EE-slA,"TCAT Garage",1,1006,40454_shp,0,0
+17,10,t26C-b3ED-slA,"TCAT Garage",0,1005,40357_shp,0,0
+17,10,t273-b3F1-slA,"TCAT Garage",0,1009,40357_shp,0,0
+17,10,t274-b3F2-slA,"TCAT Garage",0,1010,40357_shp,0,0
+17,10,t278-b3F3-slA,"TCAT Garage",0,1011,40357_shp,0,0
+17,10,t285-b3F7-slA,"TCAT Garage",0,1015,40382_shp,0,0
+17,10,t288-b3F8-slA,"TCAT Garage",0,1016,40357_shp,0,0
+17,10,t290-b3FA-slA,"TCAT Garage",0,1018,40357_shp,0,0
+17,10,t291-b3FB-slA,"TCAT Garage",0,1019,40382_shp,0,0
+17,10,t2E4-b401-slA,"TCAT Garage",0,1025,40357_shp,0,0
+17,10,t332-b400-slA,"TCAT Garage",0,1024,40357_shp,0,0
+17,10,t41E-b3F1-slA,"TCAT Garage",1,1009,40415_shp,0,0
+17,10,t47A-b401-slA,"TCAT Garage",1,1025,40454_shp,0,0
+17,10,t47F-b3FC-slA,"TCAT Garage",1,1020,40415_shp,0,0
+17,10,t585-b402-slA,"TCAT Garage",0,1026,40357_shp,0,0
+17,10,t585-b403-slA,"TCAT Garage",0,1027,40357_shp,0,0
+17,10,t64B-b404-slA,"Downtown Cont as 20",0,1028,40504_shp,0,0
+17,10,t6C6-b3ED-slA,"TCAT Garage",1,1005,40415_shp,0,0
+17,10,t6C8-b3FB-slA,"TCAT Garage",1,1019,40454_shp,0,0
+17,10,t6C9-b3EB-slA,"TCAT Garage",1,1003,40454_shp,0,0
+17,10,t6D5-b3FF-slA,"TCAT Garage",1,1023,40415_shp,0,0
+17,10,t6DD-b400-slA,"TCAT Garage",1,1024,40454_shp,0,0
+17,10,t786-b3F7-slA,"TCAT Garage",1,1015,40454_shp,0,0
+17,10,t7A4-b3F5-slA,"TCAT Garage",1,1013,40454_shp,0,0
+17,10,t7E4-b3F3-slA,"TCAT Garage",1,1011,40454_shp,0,0
+17,10,t7FE-b3F0-slA,"TCAT Garage",1,1008,40454_shp,0,0
+17,10,t83C-b3EC-slA,"TCAT Garage",1,1004,40395_shp,0,0
+17,10,tDE-b403-slA,"TCAT Garage",1,1027,40454_shp,0,0
+17,10,tE9-b3F9-slA,"TCAT Garage",1,1017,40454_shp,0,0
+17,10,tF2-b3F4-slA,"TCAT Garage",1,1012,40454_shp,0,0
+17,11,t28A-b7D1-slB,"TCAT Garage",0,2001,40357_shp,0,0
+17,11,t292-b7D2-slB,"TCAT Garage",0,2002,40382_shp,0,0
+17,11,t292-b7D3-slB,"TCAT Garage",0,2003,40357_shp,0,0
+17,11,t2C1-b7D5-slB,"TCAT Garage",0,2005,40357_shp,0,0
+17,11,t2D4-b7D6-slB,"TCAT Garage",0,2006,40357_shp,0,0
+17,11,t2F6-b7D8-slB,"TCAT Garage",0,2008,40357_shp,0,0
+17,11,t390-b7D5-slB,"TCAT Garage",1,2005,40415_shp,0,0
+17,11,t3EA-b7DC-slB,"TCAT Garage",0,2012,40357_shp,0,0
+17,11,t41A-b7D5-slB,"TCAT Garage",0,2005,40357_shp,0,0
+17,11,t45E-b7DD-slB,"TCAT Garage",0,2013,40357_shp,0,0
+17,11,t46D-b7DE-slB,"TCAT Garage",0,2014,40357_shp,0,0
+17,11,t4B3-b7DF-slB,"TCAT Garage",0,2015,40357_shp,0,0
+17,11,t4C2-b7E0-slB,"TCAT Garage",0,2016,40357_shp,0,0
+17,11,t6CA-b7E3-slB,"TCAT Garage",0,2019,40357_shp,0,0
+17,11,t714-b7DF-slB,"TCAT Garage",1,2015,40454_shp,0,0
+17,11,t721-b7E0-slB,"TCAT Garage",1,2016,40355_shp,0,0
+17,11,t788-b7DA-slB,"TCAT Garage",1,2010,40415_shp,0,0
+17,11,t7F2-b7D4-slB,"TCAT Garage",1,2004,40415_shp,0,0
+17,11,t834-b7D7-slB,"TCAT Garage",1,2007,40415_shp,0,0
+17,11,t8D-b7D8-slB,"TCAT Garage",1,2008,40454_shp,0,0
+17,11,tDE-b7DD-slB,"TCAT Garage",1,2013,40454_shp,0,0
+17,11,tE1-b7DE-slB,"TCAT Garage",1,2014,40454_shp,0,0
+17,11,tF2-b7E3-slB,"TCAT Garage",1,2019,40454_shp,0,0
+17,12,t28A-b3E9-slC,"TCAT Garage",0,1001,40357_shp,0,0
+17,12,t292-b3EB-slC,"TCAT Garage",0,1003,40382_shp,0,0
+17,12,t292-b3EC-slC,"TCAT Garage",0,1004,40357_shp,0,0
+17,12,t2D4-b3ED-slC,"TCAT Garage",0,1005,40357_shp,0,0
+17,12,t2EE-b3EE-slC,"TCAT Garage",0,1006,40357_shp,0,0
+17,12,t2F6-b3EF-slC,"TCAT Garage",0,1007,40357_shp,0,0
+17,12,t348-b3F1-slC,"TCAT Garage",0,1009,40357_shp,0,0
+17,12,t46D-b3F4-slC,"TCAT Garage",0,1012,40357_shp,0,0
+17,12,t4B3-b3F5-slC,"TCAT Garage",0,1013,40357_shp,0,0
+17,12,t4C2-b3F6-slC,"TCAT Garage",0,1014,40357_shp,0,0
+17,12,t4D1-b3F7-slC,"TCAT Garage",0,1015,40357_shp,0,0
+17,12,t73F-b3F4-slC,"TCAT Garage",1,1012,40454_shp,0,0
+17,12,t77E-b3EB-slC,"TCAT Garage",1,1003,40454_shp,0,0
+17,12,t77E-b3F6-slC,"TCAT Garage",1,1014,40415_shp,0,0
+17,12,t780-b3F5-slC,"TCAT Garage",1,1013,40454_shp,0,0
+17,12,t785-b3F1-slC,"TCAT Garage",1,1009,40454_shp,0,0
+17,12,t790-b3EA-slC,"TCAT Garage",1,1002,40454_shp,0,0
+17,12,t79E-b3EF-slC,"TCAT Garage",1,1007,40355_shp,0,0
+17,12,t7E2-b3ED-slC,"TCAT Garage",1,1005,40454_shp,0,0
+17,12,t866-b3EE-slC,"TCAT Garage",1,1006,40454_shp,0,0
+20,10,t280-b3F2-slA,"Enfield",1,1010,40482_shp,0,0
+20,10,t2C1-b3F2-slA,"CU via Downtown",0,1010,40483_shp,0,0
+20,10,t3EF-b3F1-slA,"Enfield",1,1009,40482_shp,0,0
+20,10,t408-b3F1-slA,"Downtown",0,1009,40347_shp,0,0
+20,10,t664-b404-slA,"Enfield via Downtown",1,1028,40527_shp,0,0
+20,10,t6B3-b404-slA,"Downtown",0,1028,40347_shp,0,0
+20,11,t332-b7D5-slB,"Enfield",1,2005,40482_shp,0,0
+20,11,t352-b7D5-slB,"Downtown",0,2005,40347_shp,0,0
+20,11,t47E-b7D4-slB,"Enfield",1,2004,40482_shp,0,0
+20,11,t4BF-b7D4-slB,"Downtown",0,2004,40347_shp,0,0
+20,11,t735-b7DA-slB,"Enfield",1,2010,40482_shp,0,0
+20,11,t774-b7DA-slB,"Downtown",0,2010,40347_shp,0,0
+21,10,t26C-b3EC-slA,"Trumansburg",1,1004,40372_shp,0,0
+21,10,t28A-b3EC-slA,"CU via Downtown",0,1004,40401_shp,0,0
+21,10,t2E9-b3F1-slA,"Trumansburg",1,1009,40367_shp,0,0
+21,10,t32F-b3F1-slA,"CU via Downtown",0,1009,40401_shp,0,0
+21,10,t3F2-b3FF-slA,"Trumansburg",1,1023,40367_shp,0,0
+21,10,t413-b3FF-slA,"Downtown",0,1023,40530_shp,0,0
+21,10,t591-b403-slA,"Trumansburg",1,1027,40375_shp,0,0
+21,10,t5B1-b403-slA,"Downtown",0,1027,40484_shp,0,0
+21,10,t663-b3FF-slA,"Trumansburg via Downtown, P&R",1,1023,40385_shp,0,0
+21,10,t6BC-b3FF-slA,"Downtown",0,1023,40484_shp,0,0
+21,10,t6CA-b3F3-slA,"Trumansburg via Downtown, P&R",1,1011,40385_shp,0,0
+21,10,t720-b3F3-slA,"Downtown",0,1011,40484_shp,0,0
+21,11,t2CB-b7D5-slB,"Trumansburg",1,2005,40372_shp,0,0
+21,11,t2E9-b7D5-slB,"Downtown",0,2005,40448_shp,0,0
+21,11,t410-b7D4-slB,"Trumansburg",1,2004,40372_shp,0,0
+21,11,t458-b7D4-slB,"Downtown",0,2004,40448_shp,0,0
+21,11,t672-b7D4-slB,"Trumansburg",1,2004,40372_shp,0,0
+21,11,t6BD-b7D4-slB,"Downtown",0,2004,40484_shp,0,0
+21,11,t794-b7D4-slB,"Trumansburg",1,2004,40372_shp,0,0
+21,11,t7DA-b7D4-slB,"Downtown",0,2004,40484_shp,0,0
+21,12,t352-b3F1-slC,"Trumansburg",1,1009,40372_shp,0,0
+21,12,t39B-b3F1-slC,"Downtown",0,1009,40448_shp,0,0
+21,12,t54B-b3F1-slC,"Trumansburg",1,1009,40372_shp,0,0
+21,12,t591-b3F1-slC,"Downtown",0,1009,40448_shp,0,0
+21,12,t66D-b3F1-slC,"Trumansburg",1,1009,40372_shp,0,0
+21,12,t6B6-b3F1-slC,"Downtown",0,1009,40484_shp,0,0
+30,10,t258-b3EA-slA,"Mall via Central",1,1002,40535_shp,0,0
+30,10,t276-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t276-b3F0-slA,"Mall via Central",1,1008,40535_shp,0,0
+30,10,t28B-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t2BC-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t2D1-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t2DA-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t2EE-b3F5-slA,"Mall via Central",1,1013,40535_shp,0,0
+30,10,t2EF-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t325-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t32F-b3F4-slA,"Mall via Central",1,1012,40535_shp,0,0
+30,10,t334-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t33B-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t33E-b400-slA,"Mall via Central",1,1024,40535_shp,0,0
+30,10,t343-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t34A-b3F5-slA,"Mall via Central",1,1013,40443_shp,0,0
+30,10,t352-b3F4-slA,"Downtown via Central",0,1012,40416_shp,0,0
+30,10,t359-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t389-b400-slA,"Downtown via Central",0,1024,40416_shp,0,0
+30,10,t390-b3F4-slA,"Mall via Central",1,1012,40443_shp,0,0
+30,10,t398-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t39F-b400-slA,"Mall via Central",1,1024,40443_shp,0,0
+30,10,t3A7-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t3AE-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t3B6-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t3BD-b3F5-slA,"Mall via Central",1,1013,40443_shp,0,0
+30,10,t3ED-b3F4-slA,"Downtown via Central",0,1012,40416_shp,0,0
+30,10,t3F4-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t3FC-b400-slA,"Downtown via Central",0,1024,40416_shp,0,0
+30,10,t403-b3F4-slA,"Mall via Central",1,1012,40443_shp,0,0
+30,10,t40B-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t412-b400-slA,"Mall via Central",1,1024,40443_shp,0,0
+30,10,t41A-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t421-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t451-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t458-b3F5-slA,"Mall via Central",1,1013,40443_shp,0,0
+30,10,t460-b3F4-slA,"Downtown via Central",0,1012,40416_shp,0,0
+30,10,t467-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t46F-b400-slA,"Downtown via Central",0,1024,40416_shp,0,0
+30,10,t476-b3F4-slA,"Mall via Central",1,1012,40443_shp,0,0
+30,10,t47E-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t485-b400-slA,"Mall via Central",1,1024,40443_shp,0,0
+30,10,t4B5-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t4BC-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t4C4-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t4CB-b3F5-slA,"Mall via Central",1,1013,40443_shp,0,0
+30,10,t4D3-b3F4-slA,"Downtown via Central",0,1012,40416_shp,0,0
+30,10,t4DA-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t4E2-b400-slA,"Downtown via Central",0,1024,40416_shp,0,0
+30,10,t4E9-b3F4-slA,"Mall via Central",1,1012,40443_shp,0,0
+30,10,t519-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t520-b400-slA,"Mall via Central",1,1024,40443_shp,0,0
+30,10,t528-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t52F-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t537-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t53E-b3F5-slA,"Mall via Central",1,1013,40443_shp,0,0
+30,10,t546-b3F4-slA,"Downtown via Central",0,1012,40416_shp,0,0
+30,10,t54D-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t57D-b400-slA,"Downtown via Central",0,1024,40416_shp,0,0
+30,10,t584-b3F4-slA,"Mall via Central",1,1012,40443_shp,0,0
+30,10,t58C-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t594-b3F7-slA,"Mall via Central",1,1015,40443_shp,0,0
+30,10,t59B-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t5A2-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t5AA-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t5B1-b3F5-slA,"Mall via Central",1,1013,40443_shp,0,0
+30,10,t5E1-b3F4-slA,"Downtown via Central",0,1012,40416_shp,0,0
+30,10,t5E8-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t5F0-b3F7-slA,"Downtown via Central",0,1015,40416_shp,0,0
+30,10,t5F7-b3F4-slA,"Mall via Central",1,1012,40443_shp,0,0
+30,10,t5FF-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t606-b3F7-slA,"Mall via Central",1,1015,40443_shp,0,0
+30,10,t60E-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t615-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t645-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t64C-b3F5-slA,"Mall via Central",1,1013,40443_shp,0,0
+30,10,t654-b3F4-slA,"Downtown via Central",0,1012,40416_shp,0,0
+30,10,t65B-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t663-b3F7-slA,"Downtown via Central",0,1015,40416_shp,0,0
+30,10,t66A-b3F4-slA,"Mall via Central",1,1012,40443_shp,0,0
+30,10,t672-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t679-b3F7-slA,"Mall via Central",1,1015,40443_shp,0,0
+30,10,t6A9-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t6B0-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t6B8-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t6BF-b3F5-slA,"Mall via Central",1,1013,40443_shp,0,0
+30,10,t6C7-b3F4-slA,"Downtown via Central",0,1012,40416_shp,0,0
+30,10,t6CE-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t6D6-b3F7-slA,"Downtown via Central",0,1015,40416_shp,0,0
+30,10,t6DD-b3F4-slA,"Mall via Central",1,1012,40443_shp,0,0
+30,10,t70D-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t714-b3F7-slA,"Mall via Central",1,1015,40443_shp,0,0
+30,10,t71C-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t723-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t72B-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t732-b3F5-slA,"Mall via Central",1,1013,40443_shp,0,0
+30,10,t73A-b3F4-slA,"Downtown via Central",0,1012,40466_shp,0,0
+30,10,t771-b3F7-slA,"Downtown via Central",0,1015,40416_shp,0,0
+30,10,t777-b3EA-slA,"Mall via Central",1,1002,40443_shp,0,0
+30,10,t780-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t78F-b3F5-slA,"Downtown via Central",0,1013,40416_shp,0,0
+30,10,t795-b3F0-slA,"Mall via Central",1,1008,40443_shp,0,0
+30,10,t7A3-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t7E0-b3EA-slA,"Mall via Central",1,1002,40411_shp,0,0
+30,10,t7E9-b3F0-slA,"Downtown via Central",0,1008,40416_shp,0,0
+30,10,t834-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t849-b3EA-slA,"Mall via Central",1,1002,40411_shp,0,0
+30,10,t898-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t8AD-b3EA-slA,"Mall via Central",1,1002,40411_shp,0,0
+30,10,t8FC-b3EA-slA,"Downtown via Central",0,1002,40416_shp,0,0
+30,10,t911-b3EA-slA,"Mall via Central",1,1002,40411_shp,0,0
+30,11,t2BC-b7D1-slB,"Mall via West",1,2001,40457_shp,0,0
+30,11,t2DA-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t2DE-b7D6-slB,"Mall via West",1,2006,40447_shp,0,0
+30,11,t324-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t328-b7D1-slB,"Mall via West",1,2001,40447_shp,0,0
+30,11,t346-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t34A-b7D6-slB,"Mall via West",1,2006,40447_shp,0,0
+30,11,t390-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t394-b7D1-slB,"Mall via West",1,2001,40447_shp,0,0
+30,11,t3B2-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t3B6-b7D6-slB,"Mall via West",1,2006,40447_shp,0,0
+30,11,t3FC-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t400-b7D1-slB,"Mall via West",1,2001,40447_shp,0,0
+30,11,t41E-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t422-b7D6-slB,"Mall via West",1,2006,40447_shp,0,0
+30,11,t468-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t46A-b7D1-slB,"Mall via West",1,2001,40447_shp,0,0
+30,11,t479-b7DE-slB,"Mall via West",1,2014,40447_shp,0,0
+30,11,t4B0-b7D6-slB,"Mall via West",1,2006,40447_shp,0,0
+30,11,t4B5-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t4BF-b7DF-slB,"Mall via West",1,2015,40447_shp,0,0
+30,11,t4C4-b7DE-slB,"Downtown via West",0,2014,40421_shp,0,0
+30,11,t4CE-b7E0-slB,"Mall via West",1,2016,40447_shp,0,0
+30,11,t4D3-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t4DD-b7D1-slB,"Mall via West",1,2001,40447_shp,0,0
+30,11,t4E2-b7DF-slB,"Downtown via West",0,2015,40421_shp,0,0
+30,11,t514-b7DE-slB,"Mall via West",1,2014,40447_shp,0,0
+30,11,t519-b7E0-slB,"Downtown via West",0,2016,40421_shp,0,0
+30,11,t523-b7D6-slB,"Mall via West",1,2006,40447_shp,0,0
+30,11,t528-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t532-b7DF-slB,"Mall via West",1,2015,40447_shp,0,0
+30,11,t537-b7DE-slB,"Downtown via West",0,2014,40421_shp,0,0
+30,11,t541-b7E0-slB,"Mall via West",1,2016,40447_shp,0,0
+30,11,t546-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t578-b7D1-slB,"Mall via West",1,2001,40447_shp,0,0
+30,11,t57D-b7DF-slB,"Downtown via West",0,2015,40421_shp,0,0
+30,11,t587-b7DE-slB,"Mall via West",1,2014,40447_shp,0,0
+30,11,t58C-b7E0-slB,"Downtown via West",0,2016,40421_shp,0,0
+30,11,t596-b7D6-slB,"Mall via West",1,2006,40447_shp,0,0
+30,11,t59B-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t5A5-b7DF-slB,"Mall via West",1,2015,40447_shp,0,0
+30,11,t5AA-b7DE-slB,"Downtown via West",0,2014,40421_shp,0,0
+30,11,t5DC-b7E0-slB,"Mall via West",1,2016,40447_shp,0,0
+30,11,t5E1-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t5EB-b7D1-slB,"Mall via West",1,2001,40447_shp,0,0
+30,11,t5F0-b7DF-slB,"Downtown via West",0,2015,40421_shp,0,0
+30,11,t5FA-b7DE-slB,"Mall via West",1,2014,40447_shp,0,0
+30,11,t5FF-b7E0-slB,"Downtown via West",0,2016,40421_shp,0,0
+30,11,t609-b7D6-slB,"Mall via West",1,2006,40447_shp,0,0
+30,11,t60E-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t640-b7DF-slB,"Mall via West",1,2015,40447_shp,0,0
+30,11,t645-b7DE-slB,"Downtown via West",0,2014,40421_shp,0,0
+30,11,t64F-b7E0-slB,"Mall via West",1,2016,40447_shp,0,0
+30,11,t654-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t65E-b7D1-slB,"Mall via West",1,2001,40457_shp,0,0
+30,11,t663-b7DF-slB,"Downtown via West",0,2015,40421_shp,0,0
+30,11,t66D-b7DE-slB,"Mall via West",1,2014,40457_shp,0,0
+30,11,t672-b7E0-slB,"Downtown via West",0,2016,40421_shp,0,0
+30,11,t6A4-b7D6-slB,"Mall via West",1,2006,40457_shp,0,0
+30,11,t6A9-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t6B3-b7DF-slB,"Mall via West",1,2015,40457_shp,0,0
+30,11,t6B8-b7DE-slB,"Downtown via West",0,2014,40421_shp,0,0
+30,11,t6C2-b7E0-slB,"Mall via West",1,2016,40457_shp,0,0
+30,11,t6C7-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t6D1-b7D1-slB,"Mall via West",1,2001,40457_shp,0,0
+30,11,t6D6-b7DF-slB,"Downtown via West",0,2015,40405_shp,0,0
+30,11,t708-b7DE-slB,"Mall via West",1,2014,40457_shp,0,0
+30,11,t70D-b7E0-slB,"Downtown via West",0,2016,40405_shp,0,0
+30,11,t717-b7D6-slB,"Mall via West",1,2006,40457_shp,0,0
+30,11,t71C-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t72B-b7DE-slB,"Downtown via West",0,2014,40405_shp,0,0
+30,11,t73A-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t73E-b7D1-slB,"Mall via West",1,2001,40457_shp,0,0
+30,11,t784-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t788-b7D6-slB,"Mall via West",1,2006,40457_shp,0,0
+30,11,t7A6-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t7D2-b7D1-slB,"Mall via West",1,2001,40457_shp,0,0
+30,11,t7F0-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t7F4-b7D6-slB,"Mall via West",1,2006,40457_shp,0,0
+30,11,t83A-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t83E-b7D1-slB,"Mall via West",1,2001,40457_shp,0,0
+30,11,t85C-b7D1-slB,"Downtown via West",0,2001,40421_shp,0,0
+30,11,t860-b7D6-slB,"Mall via West",1,2006,40457_shp,0,0
+30,11,t8A6-b7D6-slB,"Downtown via West",0,2006,40421_shp,0,0
+30,11,t8AA-b7D1-slB,"Mall via West",1,2001,40457_shp,0,0
+30,11,t8CC-b7D6-slB,"Mall via West",1,2006,40457_shp,0,0
+30,12,t2BC-b3E9-slC,"Mall via West",1,1001,40457_shp,0,0
+30,12,t2DA-b3E9-slC,"Downtown via West",0,1001,40421_shp,0,0
+30,12,t2DE-b3ED-slC,"Mall via West",1,1005,40447_shp,0,0
+30,12,t324-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t328-b3E9-slC,"Mall via West",1,1001,40447_shp,0,0
+30,12,t346-b3E9-slC,"Downtown via West",0,1001,40421_shp,0,0
+30,12,t34A-b3ED-slC,"Mall via West",1,1005,40447_shp,0,0
+30,12,t390-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t394-b3E9-slC,"Mall via West",1,1001,40447_shp,0,0
+30,12,t3B2-b3E9-slC,"Downtown via West",0,1001,40421_shp,0,0
+30,12,t3B6-b3ED-slC,"Mall via West",1,1005,40447_shp,0,0
+30,12,t3FC-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t400-b3E9-slC,"Mall via West",1,1001,40447_shp,0,0
+30,12,t41E-b3E9-slC,"Downtown via West",0,1001,40421_shp,0,0
+30,12,t422-b3ED-slC,"Mall via West",1,1005,40447_shp,0,0
+30,12,t468-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t46A-b3E9-slC,"Mall via West",1,1001,40447_shp,0,0
+30,12,t479-b3F4-slC,"Mall via West",1,1012,40447_shp,0,0
+30,12,t4B0-b3ED-slC,"Mall via West",1,1005,40447_shp,0,0
+30,12,t4B5-b3E9-slC,"Downtown via West",0,1001,40421_shp,0,0
+30,12,t4BF-b3F5-slC,"Mall via West",1,1013,40447_shp,0,0
+30,12,t4C4-b3F4-slC,"Downtown via West",0,1012,40421_shp,0,0
+30,12,t4CE-b3F6-slC,"Mall via West",1,1014,40447_shp,0,0
+30,12,t4D3-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t4DD-b3F7-slC,"Mall via West",1,1015,40447_shp,0,0
+30,12,t4E2-b3F5-slC,"Downtown via West",0,1013,40421_shp,0,0
+30,12,t514-b3F4-slC,"Mall via West",1,1012,40447_shp,0,0
+30,12,t519-b3F6-slC,"Downtown via West",0,1014,40421_shp,0,0
+30,12,t523-b3ED-slC,"Mall via West",1,1005,40447_shp,0,0
+30,12,t528-b3F7-slC,"Downtown via West",0,1015,40421_shp,0,0
+30,12,t532-b3F5-slC,"Mall via West",1,1013,40447_shp,0,0
+30,12,t537-b3F4-slC,"Downtown via West",0,1012,40421_shp,0,0
+30,12,t541-b3F6-slC,"Mall via West",1,1014,40447_shp,0,0
+30,12,t546-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t578-b3F7-slC,"Mall via West",1,1015,40447_shp,0,0
+30,12,t57D-b3F5-slC,"Downtown via West",0,1013,40421_shp,0,0
+30,12,t587-b3F4-slC,"Mall via West",1,1012,40447_shp,0,0
+30,12,t58C-b3F6-slC,"Downtown via West",0,1014,40421_shp,0,0
+30,12,t596-b3ED-slC,"Mall via West",1,1005,40447_shp,0,0
+30,12,t59B-b3F7-slC,"Downtown via West",0,1015,40421_shp,0,0
+30,12,t5A5-b3F5-slC,"Mall via West",1,1013,40447_shp,0,0
+30,12,t5AA-b3F4-slC,"Downtown via West",0,1012,40421_shp,0,0
+30,12,t5DC-b3F6-slC,"Mall via West",1,1014,40447_shp,0,0
+30,12,t5E1-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t5EB-b3F7-slC,"Mall via West",1,1015,40447_shp,0,0
+30,12,t5F0-b3F5-slC,"Downtown via West",0,1013,40421_shp,0,0
+30,12,t5FA-b3F4-slC,"Mall via West",1,1012,40447_shp,0,0
+30,12,t5FF-b3F6-slC,"Downtown via West",0,1014,40421_shp,0,0
+30,12,t609-b3ED-slC,"Mall via West",1,1005,40447_shp,0,0
+30,12,t60E-b3F7-slC,"Downtown via West",0,1015,40421_shp,0,0
+30,12,t640-b3F5-slC,"Mall via West",1,1013,40447_shp,0,0
+30,12,t645-b3F4-slC,"Downtown via West",0,1012,40421_shp,0,0
+30,12,t64F-b3F6-slC,"Mall via West",1,1014,40447_shp,0,0
+30,12,t654-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t65E-b3F7-slC,"Mall via West",1,1015,40457_shp,0,0
+30,12,t663-b3F5-slC,"Downtown via West",0,1013,40421_shp,0,0
+30,12,t66D-b3F4-slC,"Mall via West",1,1012,40457_shp,0,0
+30,12,t672-b3F6-slC,"Downtown via West",0,1014,40421_shp,0,0
+30,12,t6A4-b3ED-slC,"Mall via West",1,1005,40457_shp,0,0
+30,12,t6A9-b3F7-slC,"Downtown via West",0,1015,40421_shp,0,0
+30,12,t6B3-b3F5-slC,"Mall via West",1,1013,40457_shp,0,0
+30,12,t6B8-b3F4-slC,"Downtown via West",0,1012,40421_shp,0,0
+30,12,t6C2-b3F6-slC,"Mall via West",1,1014,40457_shp,0,0
+30,12,t6C7-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t6D1-b3F7-slC,"Mall via West",1,1015,40457_shp,0,0
+30,12,t6D6-b3F5-slC,"Downtown via West",0,1013,40421_shp,0,0
+30,12,t708-b3F4-slC,"Mall via West",1,1012,40457_shp,0,0
+30,12,t708-b3F6-slC,"Downtown via West",0,1014,40421_shp,0,0
+30,12,t717-b3ED-slC,"Mall via West",1,1005,40457_shp,0,0
+30,12,t71C-b3F7-slC,"Downtown via West",0,1015,40421_shp,0,0
+30,12,t72B-b3F4-slC,"Downtown via West",0,1012,40405_shp,0,0
+30,12,t73A-b3ED-slC,"Downtown via West",0,1005,40421_shp,0,0
+30,12,t73E-b3F7-slC,"Mall via West",1,1015,40457_shp,0,0
+30,12,t784-b3F7-slC,"Downtown via West",0,1015,40421_shp,0,0
+30,12,t788-b3ED-slC,"Mall via West",1,1005,40457_shp,0,0
+30,12,t7A6-b3ED-slC,"Downtown via West",0,1005,40405_shp,0,0
+30,12,t7D2-b3F7-slC,"Mall via West",1,1015,40457_shp,0,0
+31,10,t2BC-b3F6-slA,"CU via Winston",0,1014,40528_shp,0,0
+31,10,t2E4-b3F6-slA,"Etna",1,1014,40518_shp,0,0
+31,10,t322-b3F6-slA,"CU via Winston",0,1014,40528_shp,0,0
+31,10,t352-b3F6-slA,"Etna",1,1014,40518_shp,0,0
+31,10,t390-b3F6-slA,"CU via Winston",0,1014,40528_shp,0,0
+31,10,t3E8-b3F6-slA,"Guthrie",1,1014,40392_shp,0,0
+31,10,t403-b3F6-slA,"CU via Winston",0,1014,40379_shp,0,0
+31,10,t44C-b3F6-slA,"Etna",1,1014,40518_shp,0,0
+31,10,t462-b3F6-slA,"CU via Winston",0,1014,40528_shp,0,0
+31,10,t4BA-b3F6-slA,"Guthrie",1,1014,40392_shp,0,0
+31,10,t4D5-b3F6-slA,"CU via Winston",0,1014,40379_shp,0,0
+31,10,t51E-b3F6-slA,"Etna via Winston",1,1014,40391_shp,0,0
+31,10,t539-b3F6-slA,"Cornell",0,1014,40495_shp,0,0
+31,10,t58C-b3F6-slA,"Guthrie via Winston",1,1014,40381_shp,0,0
+31,10,t5AC-b3F6-slA,"Cornell",0,1014,40384_shp,0,0
+31,10,t5F0-b3F6-slA,"Etna via Winston",1,1014,40391_shp,0,0
+31,10,t60B-b3F6-slA,"Cornell",0,1014,40495_shp,0,0
+31,10,t663-b3F6-slA,"Etna via Winston",1,1014,40391_shp,0,0
+31,10,t6A6-b3F6-slA,"Cornell",0,1014,40495_shp,0,0
+31,10,t6CC-b3F6-slA,"Etna via Winston",1,1014,40391_shp,0,0
+31,10,t70F-b3F6-slA,"Cornell",0,1014,40495_shp,0,0
+31,10,t735-b3F6-slA,"Etna via Winston",1,1014,40391_shp,0,0
+31,10,t778-b3F6-slA,"Cornell",0,1014,40495_shp,0,0
+31,10,t79E-b3F6-slA,"Lab of Ornith",1,1014,40513_shp,0,0
+32,10,t2BC-b3F8-slA,"Airport via Langmuir",1,1016,40377_shp,0,0
+32,10,t2CD-b3FC-slA,"Downtown",0,1020,40403_shp,0,0
+32,10,t2EA-b3F8-slA,"Downtown Cont as 15",0,1016,40511_shp,0,0
+32,10,t320-b3EF-slA,"Airport via Langmuir",1,1007,40377_shp,0,0
+32,10,t32D-b3FF-slA,"Downtown",0,1023,40403_shp,0,0
+32,10,t34E-b3EF-slA,"Downtown Cont as 15",0,1007,40511_shp,0,0
+32,10,t384-b3F8-slA,"Airport via Langmuir",1,1016,40377_shp,0,0
+32,10,t3B2-b3F8-slA,"Downtown Cont as 15",0,1016,40511_shp,0,0
+32,10,t3E8-b3EF-slA,"Airport via Langmuir",1,1007,40377_shp,0,0
+32,10,t412-b3EF-slA,"Downtown Cont as 15",0,1007,40451_shp,0,0
+32,10,t44C-b3F8-slA,"Airport via Langmuir",1,1016,40377_shp,0,0
+32,10,t476-b3F8-slA,"Downtown Cont as 15",0,1016,40451_shp,0,0
+32,10,t4B0-b3EF-slA,"Airport via None",1,1007,40424_shp,0,0
+32,10,t4D7-b3EF-slA,"Downtown Cont as 15",0,1007,40374_shp,0,0
+32,10,t514-b3F8-slA,"Airport via None",1,1016,40424_shp,0,0
+32,10,t53B-b3F8-slA,"Downtown Cont as 15",0,1016,40374_shp,0,0
+32,10,t578-b3EF-slA,"Airport via None",1,1007,40424_shp,0,0
+32,10,t59F-b3EF-slA,"Downtown Cont as 15",0,1007,40374_shp,0,0
+32,10,t5DC-b3F8-slA,"Airport via Northwoods",1,1016,40514_shp,0,0
+32,10,t603-b3F8-slA,"Downtown Cont as 15",0,1016,40374_shp,0,0
+32,10,t640-b3EF-slA,"Airport via Northwoods",1,1007,40514_shp,0,0
+32,10,t667-b3EF-slA,"Downtown Cont as 15",0,1007,40374_shp,0,0
+32,10,t6A4-b3F8-slA,"Airport via Northwoods",1,1016,40514_shp,0,0
+32,10,t6CB-b3F8-slA,"Downtown Cont as 15",0,1016,40374_shp,0,0
+32,10,t708-b3EF-slA,"Airport via Northwoods",1,1007,40514_shp,0,0
+32,10,t733-b3EF-slA,"Downtown Cont as 15",0,1007,40480_shp,0,0
+32,10,t76C-b3F8-slA,"Airport via Northwoods",1,1016,40514_shp,0,0
+32,10,t7D0-b3EF-slA,"Northwoods",1,1007,40359_shp,0,0
+32,10,t834-b3FA-slA,"Northwoods",1,1018,40359_shp,0,0
+32,10,t852-b3FA-slA,"Downtown",0,1018,40403_shp,0,0
+32,10,t8A2-b3FA-slA,"Northwoods",1,1018,40359_shp,0,0
+32,11,t320-b7D2-slB,"Village Solars",1,2002,40493_shp,0,0
+32,11,t343-b7D2-slB,"Downtown Cont as 15",0,2002,40499_shp,0,0
+32,11,t384-b7D3-slB,"Village Solars",1,2003,40493_shp,0,0
+32,11,t3A7-b7D3-slB,"Downtown Cont as 15",0,2003,40499_shp,0,0
+32,11,t3E8-b7D2-slB,"Village Solars",1,2002,40493_shp,0,0
+32,11,t40B-b7D2-slB,"Downtown Cont as 15",0,2002,40499_shp,0,0
+32,11,t44C-b7D3-slB,"Village Solars",1,2003,40493_shp,0,0
+32,11,t46F-b7D3-slB,"Downtown",0,2003,40378_shp,0,0
+32,11,t4B0-b7D2-slB,"Village Solars",1,2002,40493_shp,0,0
+32,11,t4D3-b7D2-slB,"Downtown Cont as 15",0,2002,40499_shp,0,0
+32,11,t514-b7D5-slB,"Village Solars",1,2005,40493_shp,0,0
+32,11,t537-b7D5-slB,"Downtown Cont as 15",0,2005,40499_shp,0,0
+32,11,t578-b7D2-slB,"Village Solars",1,2002,40493_shp,0,0
+32,11,t59B-b7D2-slB,"Downtown Cont as 15",0,2002,40499_shp,0,0
+32,11,t5DC-b7D5-slB,"Village Solars",1,2005,40493_shp,0,0
+32,11,t5FF-b7D5-slB,"Downtown Cont as 15",0,2005,40499_shp,0,0
+32,11,t640-b7D2-slB,"Village Solars",1,2002,40493_shp,0,0
+32,11,t663-b7D2-slB,"Downtown Cont as 15",0,2002,40499_shp,0,0
+32,11,t6A4-b7D5-slB,"Village Solars",1,2005,40493_shp,0,0
+32,11,t6C7-b7D5-slB,"Downtown Cont as 15",0,2005,40499_shp,0,0
+32,11,t708-b7D2-slB,"Village Solars",1,2002,40493_shp,0,0
+32,11,t72B-b7D2-slB,"Downtown Cont as 15",0,2002,40499_shp,0,0
+32,11,t76C-b7D5-slB,"Village Solars",1,2005,40493_shp,0,0
+32,11,t78F-b7D5-slB,"Downtown Cont as 15",0,2005,40499_shp,0,0
+32,11,t7D0-b7D2-slB,"Northwoods",1,2002,40359_shp,0,0
+32,11,t834-b7D5-slB,"Northwoods",1,2005,40359_shp,0,0
+32,12,t320-b3EB-slC,"Village Solars",1,1003,40493_shp,0,0
+32,12,t343-b3EB-slC,"Downtown Cont as 15",0,1003,40499_shp,0,0
+32,12,t384-b3EC-slC,"Village Solars",1,1004,40493_shp,0,0
+32,12,t3A7-b3EC-slC,"Downtown Cont as 15",0,1004,40499_shp,0,0
+32,12,t3E8-b3EB-slC,"Village Solars",1,1003,40493_shp,0,0
+32,12,t40B-b3EB-slC,"Downtown Cont as 15",0,1003,40499_shp,0,0
+32,12,t44C-b3EC-slC,"Village Solars",1,1004,40493_shp,0,0
+32,12,t46F-b3EC-slC,"Downtown Cont as 15",0,1004,40499_shp,0,0
+32,12,t4B0-b3EB-slC,"Village Solars",1,1003,40493_shp,0,0
+32,12,t4D3-b3EB-slC,"Downtown Cont as 15",0,1003,40499_shp,0,0
+32,12,t514-b3EC-slC,"Village Solars",1,1004,40493_shp,0,0
+32,12,t537-b3EC-slC,"Downtown Cont as 15",0,1004,40499_shp,0,0
+32,12,t578-b3EB-slC,"Village Solars",1,1003,40493_shp,0,0
+32,12,t59B-b3EB-slC,"Downtown Cont as 15",0,1003,40499_shp,0,0
+32,12,t5DC-b3EC-slC,"Village Solars",1,1004,40493_shp,0,0
+32,12,t5FF-b3EC-slC,"Downtown Cont as 15",0,1004,40499_shp,0,0
+32,12,t640-b3EB-slC,"Village Solars",1,1003,40493_shp,0,0
+32,12,t663-b3EB-slC,"Downtown Cont as 15",0,1003,40499_shp,0,0
+32,12,t6A4-b3EC-slC,"Village Solars",1,1004,40493_shp,0,0
+32,12,t6C7-b3EC-slC,"Downtown Cont as 15",0,1004,40499_shp,0,0
+32,12,t708-b3EB-slC,"Village Solars",1,1003,40493_shp,0,0
+32,12,t72B-b3EB-slC,"Downtown Cont as 15",0,1003,40499_shp,0,0
+32,12,t76C-b3EC-slC,"Northwoods",1,1004,40359_shp,0,0
+36,10,t271-b3EF-slA,"Lansing TH via East Shore",1,1007,40440_shp,0,0
+36,10,t292-b3F9-slA,"Lansing Schl via East Shore",1,1017,40410_shp,0,0
+36,10,t2C7-b3F9-slA,"Lansing TH Cont as 37",0,1017,40409_shp,0,0
+36,10,t320-b3F3-slA,"Lansing TH via CU, Triphammer",1,1011,40462_shp,0,0
+36,10,t33C-b3F3-slA,"Downtown via East Shore, CU",0,1011,40460_shp,0,0
+36,10,t384-b3ED-slA,"Cornell",0,1005,40505_shp,0,0
+36,10,t663-b402-slA,"Lansing Schl via CU, East Shore",1,1026,40418_shp,0,0
+36,10,t6A9-b402-slA,"Mall via Triphammer",0,1026,40534_shp,0,0
+36,10,t7F5-b404-slA,"Mall via Triphammer",0,1028,40512_shp,0,0
+37,10,t27E-b3EF-slA,"Downtown via CU",0,1007,40348_shp,0,0
+37,10,t2CE-b3F9-slA,"Downtown via CU",0,1017,40383_shp,0,0
+37,10,t384-b3F3-slA,"Springbrook via CU, VS",1,1011,40364_shp,0,0
+37,10,t3A4-b3F3-slA,"Downtown via CU",0,1011,40531_shp,0,0
+37,10,t463-b3FF-slA,"Lansing TH via CU, VS",1,1023,40515_shp,0,0
+37,10,t4B5-b3FF-slA,"Downtown via CU",0,1023,40502_shp,0,0
+37,10,t5FA-b3FF-slA,"Springbrook via CU, VS",1,1023,40523_shp,0,0
+37,10,t645-b3FF-slA,"Vet School Cont as 21",0,1023,40439_shp,0,0
+37,10,t663-b3EB-slA,"Springbrook via CU, VS",1,1003,40523_shp,0,0
+37,10,t6AE-b3EB-slA,"Downtown via CU",0,1003,40406_shp,0,0
+37,10,t7D0-b404-slA,"Lansing TH via CU, VS",1,1028,40515_shp,0,0
+40,10,t28C-b3F4-slA,"Groton (Etna Mills)",1,1012,40467_shp,0,0
+40,10,t2C6-b3F4-slA,"Downtown via CU",0,1012,40539_shp,0,0
+40,10,t352-b3FF-slA,"Groton",1,1023,40445_shp,0,0
+40,10,t39A-b3FF-slA,"Downtown via CU",0,1023,40427_shp,0,0
+40,10,t5FA-b403-slA,"Groton via CU",1,1027,40419_shp,0,0
+40,10,t64C-b403-slA,"Vet School Cont as 65",0,1027,40352_shp,0,0
+40,10,t668-b400-slA,"Groton via CU",1,1024,40419_shp,0,0
+40,10,t6BA-b400-slA,"Downtown",0,1024,40532_shp,0,0
+40,10,t799-b3F3-slA,"Downtown",0,1011,40532_shp,0,0
+40,11,t2C4-b7D3-slB,"Groton",1,2003,40445_shp,0,0
+40,11,t2E2-b7D3-slB,"Downtown",0,2003,40524_shp,0,0
+40,11,t4E2-b7D4-slB,"Groton via CU",1,2004,40419_shp,0,0
+40,11,t534-b7D4-slB,"Downtown",0,2004,40455_shp,0,0
+40,11,t73F-b7D4-slB,"Downtown",0,2004,40369_shp,0,0
+40,12,t2C4-b3EC-slC,"Groton",1,1004,40445_shp,0,0
+40,12,t2E2-b3EC-slC,"Downtown",0,1004,40524_shp,0,0
+40,12,t3E8-b3F1-slC,"Groton",1,1009,40445_shp,0,0
+40,12,t40B-b3F1-slC,"Downtown via CU",0,1009,40539_shp,0,0
+40,12,t73A-b3F1-slC,"Downtown",0,1009,40532_shp,0,0
+43,10,t291-b3F5-slA,"Dryden (Mineah)",1,1013,40434_shp,0,0
+43,10,t2C5-b3F5-slA,"Downtown via CU",0,1013,40453_shp,0,0
+43,10,t2D2-b3ED-slA,"Dryden via CU",1,1005,40473_shp,0,0
+43,10,t2F3-b3ED-slA,"Downtown via CU",0,1005,40407_shp,0,0
+43,10,t330-b3F9-slA,"Dryden via CU",1,1017,40473_shp,0,0
+43,10,t357-b3F9-slA,"Downtown via CU",0,1017,40429_shp,0,0
+43,10,t3ED-b3FC-slA,"Groton",1,1020,40516_shp,0,0
+43,10,t41A-b3FC-slA,"Downtown via Dryden, CU",0,1020,40456_shp,0,0
+43,10,t4B5-b3EB-slA,"Groton via CU",1,1003,40494_shp,0,0
+43,10,t51B-b3EB-slA,"Downtown via Dryden, CU",0,1003,40435_shp,0,0
+43,10,t591-b402-slA,"Groton via CU",1,1026,40494_shp,0,0
+43,10,t5E6-b3EB-slA,"Dryden via CU",1,1003,40473_shp,0,0
+43,10,t5F0-b402-slA,"Downtown via Dryden, CU",0,1026,40456_shp,0,0
+43,10,t613-b3EB-slA,"Downtown",0,1003,40390_shp,0,0
+43,10,t663-b3F3-slA,"Dryden via CU",1,1011,40473_shp,0,0
+43,10,t6B3-b3F3-slA,"Vet School Cont as 21",0,1011,40386_shp,0,0
+43,10,t6D1-b404-slA,"Dryden via CU",1,1028,40473_shp,0,0
+43,10,t72B-b404-slA,"Downtown",0,1028,40476_shp,0,0
+43,10,t73F-b3F3-slA,"Groton via CU",1,1011,40494_shp,0,0
+43,11,t2CC-b7D4-slB,"TC3 Dorms",1,2004,40529_shp,0,0
+43,11,t2F3-b7D4-slB,"Downtown",0,2004,40490_shp,0,0
+43,11,t44C-b7D5-slB,"TC3 Dorms",1,2005,40529_shp,0,0
+43,11,t474-b7D5-slB,"Downtown",0,2005,40490_shp,0,0
+43,11,t5E6-b7D4-slB,"TC3 Dorms via CU",1,2004,40465_shp,0,0
+43,11,t640-b7D4-slB,"Downtown",0,2004,40490_shp,0,0
+43,11,t6DB-b7D4-slB,"Groton via CU, Dorms",1,2004,40463_shp,0,0
+43,12,t2C4-b3EA-slC,"TC3 Dorms",1,1002,40529_shp,0,0
+43,12,t2E9-b3EA-slC,"Downtown via CU",0,1002,40426_shp,0,0
+43,12,t46A-b3F1-slC,"TC3 Dorms",1,1009,40529_shp,0,0
+43,12,t4BA-b3F1-slC,"Downtown",0,1009,40490_shp,0,0
+43,12,t5E1-b3F1-slC,"TC3 Dorms via CU",1,1009,40465_shp,0,0
+43,12,t611-b3F1-slC,"Downtown via CU",0,1009,40426_shp,0,0
+43,12,t6D6-b3F1-slC,"Groton via CU, Dorms",1,1009,40463_shp,0,0
+51,10,t276-b3EE-slA,"E Heights via None",1,1006,40408_shp,0,0
+51,10,t28E-b3EE-slA,"Downtown via EHP",0,1006,40417_shp,0,0
+51,10,t2DA-b3EE-slA,"E Heights via None",1,1006,40408_shp,0,0
+51,10,t2F2-b3EE-slA,"Downtown via EHP",0,1006,40417_shp,0,0
+51,10,t343-b3EE-slA,"E Heights via None",1,1006,40408_shp,0,0
+51,10,t35B-b3EE-slA,"Downtown via EHP",0,1006,40417_shp,0,0
+51,10,t3B1-b3EE-slA,"E Heights via None",1,1006,40408_shp,0,0
+51,10,t3F3-b3EE-slA,"Downtown via EHP",0,1006,40417_shp,0,0
+51,10,t41F-b3EE-slA,"E Heights via None",1,1006,40408_shp,0,0
+51,10,t461-b3EE-slA,"Downtown via EHP",0,1006,40417_shp,0,0
+51,10,t4B5-b3EE-slA,"E Heights via None",1,1006,40408_shp,0,0
+51,10,t4CF-b3EE-slA,"Downtown via EHP",0,1006,40417_shp,0,0
+51,10,t523-b3EE-slA,"E Heights via EHP",1,1006,40520_shp,0,0
+51,10,t53E-b3EE-slA,"Downtown via None",0,1006,40525_shp,0,0
+51,10,t591-b3EE-slA,"E Heights via EHP",1,1006,40520_shp,0,0
+51,10,t5AC-b3EE-slA,"Downtown via None",0,1006,40525_shp,0,0
+51,10,t5FF-b3EE-slA,"E Heights via EHP",1,1006,40520_shp,0,0
+51,10,t642-b3EE-slA,"Downtown via None",0,1006,40525_shp,0,0
+51,10,t66D-b3EE-slA,"E Heights via EHP",1,1006,40520_shp,0,0
+51,10,t6B0-b3EE-slA,"Downtown via None",0,1006,40525_shp,0,0
+51,10,t6DB-b3EE-slA,"E Heights via EHP",1,1006,40520_shp,0,0
+51,10,t71E-b3EE-slA,"Downtown via Maple",0,1006,40526_shp,0,0
+51,10,t776-b3EE-slA,"E Heights via Maple",1,1006,40540_shp,0,0
+51,10,t790-b3EE-slA,"Downtown via Maple",0,1006,40526_shp,0,0
+51,10,t7E4-b3EE-slA,"E Heights via Maple",1,1006,40540_shp,0,0
+51,10,t7FE-b3EE-slA,"Downtown via Maple",0,1006,40526_shp,0,0
+51,10,t852-b3EE-slA,"E Heights via Maple",1,1006,40540_shp,0,0
+51,10,t86C-b3EE-slA,"Downtown via Maple",0,1006,40526_shp,0,0
+51,10,t8C0-b3EE-slA,"E Heights via Maple",1,1006,40540_shp,0,0
+51,10,t902-b3EE-slA,"Downtown via Maple",0,1006,40526_shp,0,0
+51,10,t929-b3EE-slA,"E Heights via Maple",1,1006,40540_shp,0,0
+51,10,t9-b3EE-slA,"Downtown via Maple",0,1006,40470_shp,0,0
+51,11,t19-b7D8-slB,"E Heights via Maple",1,2008,40540_shp,0,0
+51,11,t30-b7D8-slB,"Downtown via Maple",0,2008,40521_shp,0,0
+51,11,t384-b7D8-slB,"E Heights via Maple",1,2008,40540_shp,0,0
+51,11,t39B-b7D8-slB,"Downtown via EHP",0,2008,40498_shp,0,0
+51,11,t44C-b7D8-slB,"E Heights via Maple",1,2008,40540_shp,0,0
+51,11,t463-b7D8-slB,"Downtown via EHP",0,2008,40498_shp,0,0
+51,11,t514-b7D8-slB,"E Heights via Maple, EHP",1,2008,40452_shp,0,0
+51,11,t52E-b7D8-slB,"Downtown via Maple",0,2008,40526_shp,0,0
+51,11,t5DC-b7D8-slB,"E Heights via Maple, EHP",1,2008,40452_shp,0,0
+51,11,t5F6-b7D8-slB,"Downtown via Maple",0,2008,40526_shp,0,0
+51,11,t6A4-b7D8-slB,"E Heights via Maple, EHP",1,2008,40452_shp,0,0
+51,11,t6BE-b7D8-slB,"Downtown via Maple",0,2008,40526_shp,0,0
+51,11,t76C-b7D8-slB,"E Heights via Maple",1,2008,40540_shp,0,0
+51,11,t783-b7D8-slB,"Downtown via Maple",0,2008,40526_shp,0,0
+51,11,t7D5-b7D8-slB,"E Heights via Maple",1,2008,40540_shp,0,0
+51,11,t7EC-b7D8-slB,"Downtown via Maple",0,2008,40526_shp,0,0
+51,11,t83E-b7D8-slB,"E Heights via Maple",1,2008,40540_shp,0,0
+51,11,t855-b7D8-slB,"Downtown via Maple",0,2008,40526_shp,0,0
+51,11,t8A7-b7D8-slB,"E Heights via Maple",1,2008,40540_shp,0,0
+51,11,t8BE-b7D8-slB,"Downtown via Maple",0,2008,40526_shp,0,0
+51,11,t910-b7D8-slB,"E Heights via Maple",1,2008,40540_shp,0,0
+51,11,t927-b7D8-slB,"Downtown via Maple",0,2008,40526_shp,0,0
+51,12,t384-b3EF-slC,"E Heights via Maple",1,1007,40540_shp,0,0
+51,12,t39B-b3EF-slC,"Downtown via EHP",0,1007,40498_shp,0,0
+51,12,t44C-b3EF-slC,"E Heights via Maple",1,1007,40540_shp,0,0
+51,12,t463-b3EF-slC,"Downtown via EHP",0,1007,40498_shp,0,0
+51,12,t514-b3EF-slC,"E Heights via Maple, EHP",1,1007,40452_shp,0,0
+51,12,t52E-b3EF-slC,"Downtown via Maple",0,1007,40526_shp,0,0
+51,12,t5DC-b3EF-slC,"E Heights via Maple, EHP",1,1007,40452_shp,0,0
+51,12,t5F6-b3EF-slC,"Downtown via Maple",0,1007,40526_shp,0,0
+51,12,t6A4-b3EF-slC,"E Heights via Maple, EHP",1,1007,40452_shp,0,0
+51,12,t6BE-b3EF-slC,"Downtown via Maple",0,1007,40526_shp,0,0
+51,12,t76C-b3EF-slC,"E Heights via Maple",1,1007,40540_shp,0,0
+51,12,t783-b3EF-slC,"Downtown via Maple",0,1007,40470_shp,0,0
+51,12,t834-b3EE-slC,"E Heights via Maple",1,1006,40540_shp,0,0
+51,12,t84B-b3EE-slC,"Downtown via Maple",0,1006,40470_shp,0,0
+52,10,t284-b3F3-slA,"Caroline",1,1011,40492_shp,0,0
+52,10,t2C1-b3F3-slA,"Downtown via B'Dale, CU",0,1011,40400_shp,0,0
+52,10,t2F3-b3FC-slA,"Caroline",1,1020,40492_shp,0,0
+52,10,t331-b3FC-slA,"Downtown via B'Dale, CU",0,1020,40400_shp,0,0
+52,10,t519-b3FF-slA,"Caroline",1,1023,40492_shp,0,0
+52,10,t535-b3FF-slA,"Downtown via B'Dale, CU",0,1023,40400_shp,0,0
+52,10,t660-b3FB-slA,"Caroline via CU, BDale",1,1019,40496_shp,0,0
+52,10,t6B3-b3FB-slA,"Downtown",0,1019,40430_shp,0,0
+52,10,t735-b403-slA,"Caroline via CU, BDale",1,1027,40496_shp,0,0
+52,10,t785-b403-slA,"Downtown",0,1027,40397_shp,0,0
+52,11,t343-b7D4-slB,"Caroline",1,2004,40492_shp,0,0
+52,11,t35A-b7D4-slB,"Downtown via B'Dale, CU",0,2004,40400_shp,0,0
+52,11,t4CE-b7D3-slB,"Caroline",1,2003,40492_shp,0,0
+52,11,t4E4-b7D3-slB,"Downtown via B'Dale, CU",0,2003,40396_shp,0,0
+52,11,t6D6-b7E3-slB,"Caroline via CU, BDale",1,2019,40496_shp,0,0
+52,11,t725-b7E3-slB,"Downtown",0,2019,40397_shp,0,0
+52,12,t33E-b3EA-slC,"Caroline",1,1002,40492_shp,0,0
+52,12,t357-b3EA-slC,"Downtown",0,1002,40438_shp,0,0
+52,12,t4D8-b3E9-slC,"Caroline",1,1001,40492_shp,0,0
+52,12,t517-b3E9-slC,"Downtown via B'Dale, CU",0,1001,40396_shp,0,0
+52,12,t71C-b3F5-slC,"Caroline via CU, BDale",1,1013,40496_shp,0,0
+52,12,t743-b3F5-slC,"Downtown",0,1013,40430_shp,0,0
+65,10,t27F-b3F1-slA,"Danby via IC",1,1009,40458_shp,0,0
+65,10,t2C1-b3F1-slA,"CU via IC, Downtown",0,1009,40425_shp,0,0
+65,10,t2EE-b401-slA,"Danby via IC",1,1025,40458_shp,0,0
+65,10,t332-b401-slA,"Downtown",0,1025,40353_shp,0,0
+65,10,t393-b3F1-slA,"Danby",1,1009,40468_shp,0,0
+65,10,t3A5-b3F1-slA,"Downtown via IC",0,1009,40536_shp,0,0
+65,10,t58C-b3FF-slA,"Danby via IC",1,1023,40458_shp,0,0
+65,10,t5A8-b3FF-slA,"Downtown via IC",0,1023,40491_shp,0,0
+65,10,t66A-b403-slA,"Danby via Downtown",1,1027,40413_shp,0,0
+65,10,t6B8-b403-slA,"Downtown",0,1027,40489_shp,0,0
+65,10,t6D6-b403-slA,"Danby via IC",1,1027,40458_shp,0,0
+65,10,t719-b403-slA,"Downtown",0,1027,40489_shp,0,0
+67,10,t276-b3ED-slA,"Newfield",1,1005,40478_shp,0,0
+67,10,t28F-b3ED-slA,"Downtown",0,1005,40472_shp,0,0
+67,10,t389-b3FC-slA,"Newfield",1,1020,40478_shp,0,0
+67,10,t3A2-b3FC-slA,"Downtown",0,1020,40472_shp,0,0
+67,10,t584-b3EB-slA,"Newfield",1,1003,40431_shp,0,0
+67,10,t59B-b3EB-slA,"Downtown",0,1003,40472_shp,0,0
+67,10,t663-b3ED-slA,"Newfield via Downtown",1,1005,40533_shp,0,0
+67,10,t6AE-b3ED-slA,"Downtown",0,1005,40472_shp,0,0
+67,10,t771-b404-slA,"Newfield",1,1028,40431_shp,0,0
+67,10,t788-b404-slA,"Downtown",0,1028,40472_shp,0,0
+67,11,t2C6-b7D2-slB,"Newfield",1,2002,40431_shp,0,0
+67,11,t2DC-b7D2-slB,"Downtown",0,2002,40472_shp,0,0
+67,11,t3B1-b7D4-slB,"Newfield",1,2004,40478_shp,0,0
+67,11,t3F2-b7D4-slB,"Downtown",0,2004,40472_shp,0,0
+67,11,t76C-b7DE-slB,"Newfield",1,2014,40478_shp,0,0
+67,11,t785-b7DE-slB,"Downtown",0,2014,40472_shp,0,0
+67,12,t2C6-b3EB-slC,"Newfield",1,1003,40431_shp,0,0
+67,12,t2DC-b3EB-slC,"Downtown",0,1003,40472_shp,0,0
+67,12,t4E7-b3F1-slC,"Newfield",1,1009,40478_shp,0,0
+67,12,t528-b3F1-slC,"Downtown",0,1009,40472_shp,0,0
+67,12,t726-b3F6-slC,"Newfield",1,1014,40478_shp,0,0
+67,12,t73F-b3F6-slC,"Downtown",0,1014,40472_shp,0,0
+77,11,t33E-b7D9-slB,"Ithaca Mall",0,2009,40365_shp,0,0
+77,11,t384-b7D9-slB,"Etna - Creekwood Apts",1,2009,40412_shp,0,0
+77,11,t3A2-b7D9-slB,"Ithaca Mall",0,2009,40414_shp,0,0
+77,11,t3ED-b7D9-slB,"Lansing Town Hall",1,2009,40446_shp,0,0
+77,11,t406-b7D9-slB,"Ithaca Mall",0,2009,40365_shp,0,0
+77,11,t44C-b7D9-slB,"Etna - Creekwood Apts",1,2009,40412_shp,0,0
+77,11,t46A-b7D9-slB,"Ithaca Mall",0,2009,40414_shp,0,0
+77,11,t519-b7D9-slB,"Lansing Town Hall",1,2009,40446_shp,0,0
+77,11,t532-b7D9-slB,"Ithaca Mall",0,2009,40365_shp,0,0
+77,11,t578-b7D9-slB,"Etna - Creekwood Apts",1,2009,40412_shp,0,0
+77,11,t596-b7D9-slB,"Ithaca Mall",0,2009,40414_shp,0,0
+77,11,t5E1-b7D9-slB,"Lansing Town Hall",1,2009,40446_shp,0,0
+77,11,t5FA-b7D9-slB,"Ithaca Mall",0,2009,40365_shp,0,0
+77,11,t640-b7D9-slB,"Etna - Creekwood Apts",1,2009,40412_shp,0,0
+77,11,t65E-b7D9-slB,"Ithaca Mall",0,2009,40414_shp,0,0
+77,11,t6A9-b7D9-slB,"Lansing Town Hall",1,2009,40446_shp,0,0
+77,11,t6C2-b7D9-slB,"Ithaca Mall",0,2009,40365_shp,0,0
+77,11,t6DB-b7D9-slB,"Etna - Creekwood Apts",1,2009,40412_shp,0,0
+77,12,t33E-b3F0-slC,"Ithaca Mall",0,1008,40365_shp,0,0
+77,12,t384-b3F0-slC,"Etna - Creekwood Apts",1,1008,40412_shp,0,0
+77,12,t3A2-b3F0-slC,"Ithaca Mall",0,1008,40414_shp,0,0
+77,12,t3ED-b3F0-slC,"Lansing Town Hall",1,1008,40446_shp,0,0
+77,12,t406-b3F0-slC,"Ithaca Mall",0,1008,40365_shp,0,0
+77,12,t44C-b3F0-slC,"Etna - Creekwood Apts",1,1008,40412_shp,0,0
+77,12,t46A-b3F0-slC,"Ithaca Mall",0,1008,40414_shp,0,0
+77,12,t519-b3F0-slC,"Lansing Town Hall",1,1008,40446_shp,0,0
+77,12,t532-b3F0-slC,"Ithaca Mall",0,1008,40365_shp,0,0
+77,12,t578-b3F0-slC,"Etna - Creekwood Apts",1,1008,40412_shp,0,0
+77,12,t596-b3F0-slC,"Ithaca Mall",0,1008,40414_shp,0,0
+77,12,t5E1-b3F0-slC,"Lansing Town Hall",1,1008,40446_shp,0,0
+77,12,t5FA-b3F0-slC,"Ithaca Mall",0,1008,40365_shp,0,0
+77,12,t640-b3F0-slC,"Etna - Creekwood Apts",1,1008,40412_shp,0,0
+77,12,t65E-b3F0-slC,"Ithaca Mall",0,1008,40414_shp,0,0
+77,12,t6A9-b3F0-slC,"Lansing Town Hall",1,1008,40446_shp,0,0
+77,12,t6C2-b3F0-slC,"Ithaca Mall",0,1008,40365_shp,0,0
+77,12,t6DB-b3F0-slC,"Etna - Creekwood Apts",1,1008,40412_shp,0,0
+81,10,t1B8-b3E9-slA,"Central Campus BTI",1,1001,40537_shp,0,0
+81,10,t1C7-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t203-b3E9-slA,"Central Campus BTI",1,1001,40437_shp,0,0
+81,10,t212-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t221-b3E9-slA,"Central Campus BTI",1,1001,40437_shp,0,0
+81,10,t258-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t267-b3E9-slA,"Central Campus BTI",1,1001,40437_shp,0,0
+81,10,t276-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t285-b3E9-slA,"Central Campus BTI",1,1001,40437_shp,0,0
+81,10,t2BC-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t2CB-b3E9-slA,"Central Campus BTI",1,1001,40437_shp,0,0
+81,10,t2DA-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t2E3-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t2EE-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t2EF-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t322-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t323-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t32E-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t32F-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t33A-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t33B-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t346-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t347-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t352-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t353-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t386-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t387-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t392-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t393-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t39E-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t39F-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t3AA-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t3AB-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t3B6-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t3B7-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t3EA-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t3EB-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t3F6-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t3F7-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t402-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t403-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t40E-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t40F-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t41A-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t41B-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t44E-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t44F-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t45A-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t45B-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t466-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t467-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t472-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t473-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t47E-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t47F-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t4B2-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t4B3-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t4BE-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t4BF-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t4CA-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t4CB-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t4D6-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t4D7-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t4E2-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t4E3-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t516-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t517-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t522-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t523-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t52E-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t52F-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t53A-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t53B-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t546-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t547-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t57A-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t57B-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t586-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t587-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t592-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t593-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t59E-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t59F-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t5AA-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t5AB-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t5DE-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t5DF-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t5EA-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t5EB-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t5F6-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t5F7-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t602-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t603-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t60E-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t60F-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t642-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t643-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t64E-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t64F-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t65A-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t65B-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t666-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t667-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t672-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t673-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t6A6-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t6A7-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t6B2-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t6B3-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t6BE-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t6BF-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t6CA-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t6CB-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t6D6-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t6D7-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t70A-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t70B-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t716-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t717-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t722-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t723-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t72E-b3F2-slA,"North Campus A-Lot",0,1010,40449_shp,0,0
+81,10,t72F-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t73A-b3FE-slA,"North Campus A-Lot",0,1022,40449_shp,0,0
+81,10,t73B-b3F2-slA,"Central Campus BTI",1,1010,40464_shp,0,0
+81,10,t76E-b3E9-slA,"North Campus A-Lot",0,1001,40449_shp,0,0
+81,10,t76F-b3FE-slA,"Central Campus BTI",1,1022,40464_shp,0,0
+81,10,t77A-b3F2-slA,"North Campus A-Lot",0,1010,40360_shp,0,0
+81,10,t77B-b3E9-slA,"Central Campus BTI",1,1001,40464_shp,0,0
+81,10,t786-b3FE-slA,"North Campus A-Lot",0,1022,40360_shp,0,0
+81,10,t792-b3E9-slA,"North Campus A-Lot",0,1001,40360_shp,0,0
+82,10,t2E9-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t32F-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t34D-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t393-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t393-b3ED-slA,"CU-EHP Loop",1,1005,40393_shp,0,0
+82,10,t3A2-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t3B1-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t3E8-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t3F7-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t406-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t415-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t44C-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t45B-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t46A-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t479-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t4B0-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t4BF-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t4CE-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t4DD-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t514-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t523-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t532-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t541-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t578-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t587-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t596-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t5A5-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t5DC-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t5EB-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t5FA-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t609-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t640-b3ED-slA,"CU-EHP Loop",1,1005,40541_shp,0,0
+82,10,t64F-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t66D-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t6B3-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t6D1-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t717-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t735-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t77B-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t799-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t7DF-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+82,10,t7FD-b3EC-slA,"CU-EHP Loop",1,1004,40541_shp,0,0
+90,10,t1B-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t23-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,t2F-b403-slA,"Downtown",0,1027,40387_shp,0,0
+90,10,t37-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,t6B-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t73-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,t78F-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,t79B-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t7A3-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,t7-b403-slA,"Downtown",0,1027,40387_shp,0,0
+90,10,t7D7-b403-slA,"Downtown",0,1027,40387_shp,0,0
+90,10,t7DF-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,t7EB-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t7F3-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,t7F-b403-slA,"Downtown",0,1027,40387_shp,0,0
+90,10,t7FF-b403-slA,"Downtown",0,1027,40387_shp,0,0
+90,10,t807-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,t83B-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t843-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,t84F-b403-slA,"Downtown",0,1027,40387_shp,0,0
+90,10,t857-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,t863-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t86B-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,t87-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,t89F-b403-slA,"Downtown",0,1027,40387_shp,0,0
+90,10,t8A7-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,t8B3-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t8BB-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,t8C7-b403-slA,"Downtown",0,1027,40387_shp,0,0
+90,10,t8CF-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,t903-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t90B-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,t917-b403-slA,"Downtown",0,1027,40387_shp,0,0
+90,10,t91F-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,t92B-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t933-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,t93-b3F4-slA,"Downtown",0,1012,40387_shp,0,0
+90,10,t9B-b403-slA,"Cornell",1,1027,40481_shp,0,0
+90,10,tCF-b403-slA,"Downtown",0,1027,40488_shp,0,0
+90,10,tD7-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,10,tE3-b3F4-slA,"Downtown",0,1012,40488_shp,0,0
+90,10,tF-b3F4-slA,"Cornell",1,1012,40481_shp,0,0
+90,11,t1B-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t23-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,t2F-b7DD-slB,"Downtown",0,2013,40387_shp,0,0
+90,11,t37-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,t6B-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t73-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,t76C-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,t778-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t78F-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,t79B-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t7A3-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,t7-b7DD-slB,"Downtown",0,2013,40387_shp,0,0
+90,11,t7D7-b7DD-slB,"Downtown",0,2013,40387_shp,0,0
+90,11,t7DF-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,t7EB-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t7F3-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,t7F-b7DD-slB,"Downtown",0,2013,40387_shp,0,0
+90,11,t7FF-b7DD-slB,"Downtown",0,2013,40387_shp,0,0
+90,11,t807-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,t83B-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t843-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,t84F-b7DD-slB,"Downtown",0,2013,40387_shp,0,0
+90,11,t857-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,t863-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t86B-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,t87-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,t89F-b7DD-slB,"Downtown",0,2013,40387_shp,0,0
+90,11,t8BB-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,t8C7-b7DD-slB,"Downtown",0,2013,40387_shp,0,0
+90,11,t8CF-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,t903-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t90B-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,t917-b7DD-slB,"Downtown",0,2013,40387_shp,0,0
+90,11,t91F-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,t92B-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t933-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,t93-b7E3-slB,"Downtown",0,2019,40387_shp,0,0
+90,11,t9B-b7DD-slB,"Cornell",1,2013,40481_shp,0,0
+90,11,tCF-b7DD-slB,"Downtown",0,2013,40488_shp,0,0
+90,11,tD7-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+90,11,tE3-b7E3-slB,"Downtown",0,2019,40488_shp,0,0
+90,11,tF-b7E3-slB,"Cornell",1,2019,40481_shp,0,0
+92,10,t10-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t1E-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t2E-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t64-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t74-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t78A-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t79A-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t7D0-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t7E0-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t7EE-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t7FE-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t82-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t834-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t844-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t852-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t862-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t898-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t8A8-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t8B6-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t8C6-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t8FC-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t90C-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t91A-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,t92A-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t92-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,10,t960-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,tC8-b3F2-slA,"Collegetown",1,1010,40358_shp,0,0
+92,10,tD8-b3F2-slA,"North Campus",0,1010,40423_shp,0,0
+92,11,t10-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t1E-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t2E-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t542-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t578-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t588-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t596-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t5A6-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t5DC-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t5EC-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t5FA-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t60A-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t640-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t64-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t650-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t65E-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t66E-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t6A4-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t6B4-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t6C2-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t6D2-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t708-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t718-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t726-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t736-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t74-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t76C-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t77C-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t78A-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t79A-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t7D0-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t7E0-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t7EE-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t7FE-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t82-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t834-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t844-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t852-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t862-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t898-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t8A8-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t8B6-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t8C6-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t8FC-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t90C-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t91A-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,t92A-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t92-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,11,t960-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,tC8-b7D3-slB,"Collegetown",1,2003,40358_shp,0,0
+92,11,tD8-b7D3-slB,"North Campus",0,2003,40423_shp,0,0
+92,12,t542-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t578-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t588-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t596-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t5A6-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t5DC-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t5EC-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t5FA-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t60A-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t640-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t650-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t65E-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t66E-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t6A4-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t6B4-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t6C2-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t6D2-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t708-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t718-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+92,12,t726-b3E9-slC,"Collegetown",1,1001,40358_shp,0,0
+92,12,t736-b3E9-slC,"North Campus",0,1001,40423_shp,0,0
+145,10,t3FB-b3F3-slA,"West Hill",1,1011,40501_shp,0,0
+145,10,t417-b3F3-slA,"SW Shopping",0,1011,40441_shp,0,0
+145,10,t454-b3F3-slA,"West Hill",1,1011,40506_shp,0,0
+145,10,t476-b3F3-slA,"SW Shopping",0,1011,40441_shp,0,0
+145,10,t4B3-b3F3-slA,"West Hill",1,1011,40506_shp,0,0
+145,10,t4D5-b3F3-slA,"SW Shopping",0,1011,40441_shp,0,0
+145,10,t4EA-b3F3-slA,"West Hill",1,1011,40506_shp,0,0
+145,10,t534-b3F3-slA,"SW Shopping",0,1011,40441_shp,0,0
+145,10,t549-b3F3-slA,"West Hill",1,1011,40506_shp,0,0
+145,10,t593-b3F3-slA,"SW Shopping",0,1011,40441_shp,0,0
+145,10,t5A8-b3F3-slA,"West Hill",1,1011,40506_shp,0,0
+145,10,t5F2-b3F3-slA,"SW Shopping",0,1011,40441_shp,0,0
+145,10,t607-b3F3-slA,"West Hill",1,1011,40506_shp,0,0
+145,11,t3FB-b7DC-slB,"West Hill",1,2012,40501_shp,0,0
+145,11,t417-b7DC-slB,"SW Shopping",0,2012,40441_shp,0,0
+145,11,t454-b7DC-slB,"West Hill",1,2012,40506_shp,0,0
+145,11,t476-b7DC-slB,"SW Shopping",0,2012,40441_shp,0,0
+145,11,t4B3-b7DC-slB,"West Hill",1,2012,40506_shp,0,0
+145,11,t4D5-b7DC-slB,"SW Shopping",0,2012,40441_shp,0,0
+145,11,t4EA-b7DC-slB,"West Hill",1,2012,40506_shp,0,0
+145,11,t534-b7DC-slB,"SW Shopping",0,2012,40441_shp,0,0
+145,11,t549-b7DC-slB,"West Hill",1,2012,40506_shp,0,0
+145,11,t593-b7DC-slB,"SW Shopping",0,2012,40441_shp,0,0
+145,11,t5A8-b7DC-slB,"West Hill",1,2012,40506_shp,0,0
+10,10,t2BC-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t2C8-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t2D4-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t2E0-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t2EC-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t320-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t32C-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t338-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t344-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t34A-b401-slA,"Loop via Stewart",1,1025,40388_shp,0,0
+10,10,t350-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t384-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t38A-b401-slA,"Loop via Stewart",1,1025,40388_shp,0,0
+10,10,t390-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t39C-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t3A2-b401-slA,"Loop via Stewart",1,1025,40388_shp,0,0
+10,10,t3A8-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t3AE-b3F9-slA,"Loop via Stewart",1,1017,40388_shp,0,0
+10,10,t3B4-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t3BA-b401-slA,"Loop via Stewart",1,1025,40388_shp,0,0
+10,10,t3E8-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t3EE-b3F9-slA,"Loop via Stewart",1,1017,40388_shp,0,0
+10,10,t3F4-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t3FA-b401-slA,"Loop via Stewart",1,1025,40388_shp,0,0
+10,10,t400-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t406-b3F9-slA,"Loop via Stewart",1,1017,40388_shp,0,0
+10,10,t40C-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t412-b401-slA,"Loop via Stewart",1,1025,40388_shp,0,0
+10,10,t418-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t41E-b3F9-slA,"Loop via Stewart",1,1017,40388_shp,0,0
+10,10,t44C-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t452-b401-slA,"Loop via Stewart",1,1025,40388_shp,0,0
+10,10,t458-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t45E-b3F9-slA,"Loop via Stewart",1,1017,40388_shp,0,0
+10,10,t464-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t46A-b401-slA,"Loop via Stewart",1,1025,40388_shp,0,0
+10,10,t470-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t476-b3F9-slA,"Loop via Stewart",1,1017,40388_shp,0,0
+10,10,t47C-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t4B0-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t4BC-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t4C8-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t4D4-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t4E0-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t514-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t520-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t52C-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t538-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t544-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t578-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t584-b3F7-slA,"Loop via Stewart",1,1015,40388_shp,0,0
+10,10,t590-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t59C-b400-slA,"Loop via Stewart",1,1024,40388_shp,0,0
+10,10,t5A8-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t5DC-b400-slA,"Loop via Stewart",1,1024,40388_shp,0,0
+10,10,t5E8-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t5F4-b400-slA,"Loop via Stewart",1,1024,40388_shp,0,0
+10,10,t600-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t60C-b400-slA,"Loop via Stewart",1,1024,40388_shp,0,0
+10,10,t640-b3FB-slA,"Loop via Stewart",1,1019,40388_shp,0,0
+10,10,t64C-b400-slA,"Loop via Stewart",1,1024,40388_shp,0,0
+11,10,t23-b3F9-slA,"IC via None",1,1017,40461_shp,0,0
+11,10,t2C4-b3FA-slA,"IC via SHBP",1,1018,40469_shp,0,0
+11,10,t2DA-b3FA-slA,"Downtown",0,1018,40366_shp,0,0
+11,10,t328-b3EB-slA,"IC via SHBP",1,1003,40469_shp,0,0
+11,10,t32-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t33E-b3EB-slA,"Downtown",0,1003,40366_shp,0,0
+11,10,t38C-b3FA-slA,"IC via SHBP",1,1018,40469_shp,0,0
+11,10,t3A2-b3FA-slA,"Downtown",0,1018,40366_shp,0,0
+11,10,t3F0-b3EB-slA,"IC via SHBP",1,1003,40469_shp,0,0
+11,10,t406-b3EB-slA,"Downtown",0,1003,40366_shp,0,0
+11,10,t454-b3FA-slA,"IC via SHBP",1,1018,40469_shp,0,0
+11,10,t46A-b3FA-slA,"Downtown",0,1018,40366_shp,0,0
+11,10,t4B8-b3F9-slA,"IC via SHBP, Longview",1,1017,40356_shp,0,0
+11,10,t4CE-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t51C-b3FA-slA,"IC via SHBP, Longview",1,1018,40356_shp,0,0
+11,10,t532-b3FA-slA,"Downtown",0,1018,40366_shp,0,0
+11,10,t580-b3F9-slA,"IC via SHBP, Longview",1,1017,40356_shp,0,0
+11,10,t596-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t5-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t5E4-b3FA-slA,"IC via SHBP, Longview",1,1018,40356_shp,0,0
+11,10,t5FA-b3FA-slA,"Downtown",0,1018,40366_shp,0,0
+11,10,t648-b3F9-slA,"IC via SHBP, Longview",1,1017,40356_shp,0,0
+11,10,t65E-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t6AC-b3FA-slA,"IC via SHBP, Longview",1,1018,40356_shp,0,0
+11,10,t6C2-b3FA-slA,"Downtown",0,1018,40366_shp,0,0
+11,10,t710-b3F9-slA,"IC via SHBP, Longview",1,1017,40356_shp,0,0
+11,10,t726-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t774-b3FA-slA,"IC via SHBP, Longview",1,1018,40356_shp,0,0
+11,10,t78A-b3FA-slA,"Downtown",0,1018,40366_shp,0,0
+11,10,t78-b3F9-slA,"IC via None",1,1017,40461_shp,0,0
+11,10,t7D8-b3F9-slA,"IC via None",1,1017,40461_shp,0,0
+11,10,t7E8-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t802-b3F9-slA,"IC via None",1,1017,40461_shp,0,0
+11,10,t839-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t857-b3F9-slA,"IC via None",1,1017,40461_shp,0,0
+11,10,t866-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t87-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t8AC-b3F9-slA,"IC via None",1,1017,40461_shp,0,0
+11,10,t8BB-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
+11,10,t901-b3F9-slA,"IC via None",1,1017,40461_shp,0,0
+11,10,t910-b3F9-slA,"Downtown",0,1017,40366_shp,0,0
