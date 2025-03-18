@@ -34,21 +34,5 @@ Environment variable values can be found by asking a member of Cornell AppDev.
 To run ithaca-transit-backend locally, run the following:
 
 ```bash
-npm run build:dev
-npm run start:microservices
-npm run start:node
-```
-
-- `build:dev` builds node and `start:microservices` starts up its microservices.
-
-- `start:node` runs node inside a docker image; substitute `start:dev` to run on your local computer.
-
-  - You can see in package.json that when you run `npm run start:node`, it actually runs `docker-compose up node`. On the other hand, the command for starting development is `npm run start:dev`; in package.json, its value tells us to actually execute some magic (./node_modules/.bin/webpack…).
-
-You only need to run `npm run build:dev` and `npm run start:microservices` once - the "volumes" part of docker-compose.yml allows for hot reloading. However, if you are building an image for production, make sure to do `npm run build:dev` right before doing that. And you will always need to run `start` to run node.
-
-To stop running the microservices:
-
-```
-docker-compose down
+npm run start:dev
 ```

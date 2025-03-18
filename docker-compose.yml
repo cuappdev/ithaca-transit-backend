@@ -6,8 +6,4 @@ services:
       - ./service-account-credentials.json:/app/service-account-credentials.json:ro
     ports:
       - "8080:3000"
-
-  python-app:
-    image: cornellappdev/transit-python:latest
-    ports:
-      - "5000:5000"
+      
