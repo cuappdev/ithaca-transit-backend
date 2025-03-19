@@ -19,6 +19,24 @@ router.get('/closestBus', async (req, res) => {
   }
 });
 
+router.post('/reports', async (req, res) => {
+  try {
+    const {
+      vehicleId,
+      routeId,
+      reportText,
+      deviceToken,
+      timestamp
+    } = req.body;
+
+    const report = await RouteReportingUtils.insertReport(vehicleId, routeId, reportText, deviceToken, timestamp);
+    res.status(200).json(report);
+  } catch (error) {
+    LogUtils.logErr(error, req.body, 'Error inserting report');
+    res.status(500).json({ error: 'Failed to insert report' });
+  }
+});
+
 router.get('/reports/:vehicleId', async (req, res) => {
   try {
     const { vehicleId } = req.params;
