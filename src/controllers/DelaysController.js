@@ -1,25 +1,29 @@
-import express from 'express';
-import RealtimeFeedUtilsV3 from '../utils/RealtimeFeedUtilsV3.js';
-import AlertsUtils from '../utils/AlertsUtils.js';
+import express from "express";
+import RealtimeFeedUtilsV3 from "../utils/RealtimeFeedUtilsV3.js";
+import AlertsUtils from "../utils/AlertsUtils.js";
 
 const router = express.Router();
-router.get('/alerts', async (req, res) => {
+router.get("/alerts", async (req, res) => {
   try {
-    const alerts = await AlertsUtils.fetchAlerts();
+    const alerts = await AlertsUtils.getAlertsData();
     res.status(200).json(alerts);
   } catch (error) {
-    console.error('Error fetching alerts:', error.message);
-    res.status(500).json({ error: 'Failed to fetch alerts' });
+    console.error("Error fetching alerts:", error.message);
+    res.status(500).json({ error: "Failed to fetch alerts" });
   }
 });
 
-router.post('/delays', async (req, res) => {
+router.post("/delays", async (req, res) => {
   try {
-    const rtf = await RealtimeFeedUtilsV3.fetchRTF();
+    const rtf = await RealtimeFeedUtilsV3.getRTFData();
 
     const delays = await Promise.all(
       req.body.data.map(async ({ stopId, tripId }) => {
-        const res = await RealtimeFeedUtilsV3.getDelayInformation(stopId, tripId, rtf);
+        const res = await RealtimeFeedUtilsV3.getDelayInformation(
+          stopId,
+          tripId,
+          rtf
+        );
         return {
           stopId,
           tripId,

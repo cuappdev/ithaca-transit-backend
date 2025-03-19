@@ -40,7 +40,41 @@
         }
       }
     },
-    "/api/v1/delays": {
+    "/libraries": {
+      "get": {
+        "summary": "Returns a list of all libraries on campus.",
+        "description": "A list of all libraries.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true, \"data\": [\"id\": 1, \"location\": \"Africana Studies and Research Center\", \"address\": \"310 Triphammer Rd, Ithaca, NY 14850\", \"latitude\": 42.4574, \"longitude\": -76.4823]}",
+            "schema": {
+              "$ref": "#/definitions/BusStop"
+            }
+          }
+        }
+      }
+    },
+    "/printers": {
+      "get": {
+        "summary": "Returns a list of all printers on campus.",
+        "description": "A list of all printers.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true, \"data\": [{\"id\": 1, \"location\": \"Akwe:kon\", \"description\": \"Color - Room 115\", \"latitude\": 42.4563, \"longitude\": -76.4806}]}",
+            "schema": {
+              "$ref": "#/definitions/BusStop"
+            }
+          }
+        }
+      }
+    },
+    "/delays": {
       "post": {
         "summary": "Returns a list of bus delays for buses at a specific stop. **Recommended and most up-to-date.",
         "description": "Takes in a list of objects with fields routeId and tripId and returns a list of objects with fields routeId, tripId, and delay.",
@@ -403,6 +437,47 @@
         "responses": {
           "200": {
             "description": "{\"success\": true}"
+          }
+        }
+      }
+    },
+    "/closestBus": {
+      "get": {
+        "summary": "Returns the closest bus to a given location on a route.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The routeID and user's starting location for a given route request",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "routeId",
+                "start"
+              ],
+              "properties": {
+                "routeId": {
+                  "type": "string",
+                  "example": "10"
+                },
+                "start": {
+                  "type": "string",
+                  "example": "42.45070406588394,-76.49342862932777"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true, \"data\": [BusLocationV3]}",
+            "schema": {
+              "$ref": "#/definitions/BusLocationV3"
+            }
           }
         }
       }

@@ -6,7 +6,8 @@ node_modules/
 # Specific Files
 config.json
 service-account-credentials.json
+*.pem
 
 # File Types
-*.envrc
+*.env
 *.zip
