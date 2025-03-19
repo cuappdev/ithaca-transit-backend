@@ -1,9 +1,6 @@
-
 function createGpx(waypoints, options = {}) {
-  const {
-    activityName = 'GPX Route',
-    startTime = new Date().toISOString(),
-  } = options;
+  const { activityName = "GPX Route", startTime = new Date().toISOString() } =
+    options;
 
   const gpxHeader = `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="gps-to-gpx">
@@ -19,11 +16,11 @@ function createGpx(waypoints, options = {}) {
     .map(
       (wp) => `
       <trkpt lat="${wp.latitude}" lon="${wp.longitude}">
-        ${wp.elevation ? `<ele>${wp.elevation}</ele>` : ''}
-        ${wp.time ? `<time>${wp.time}</time>` : ''}
+        ${wp.elevation ? `<ele>${wp.elevation}</ele>` : ""}
+        ${wp.time ? `<time>${wp.time}</time>` : ""}
       </trkpt>`
     )
-    .join('');
+    .join("");
 
   const gpxFooter = `
     </trkseg>
@@ -33,18 +30,17 @@ function createGpx(waypoints, options = {}) {
   return `${gpxHeader}${gpxWaypoints}${gpxFooter}`;
 }
 
-
-import { isNullOrUndefined } from 'util';
-import { MAP_MATCHING } from './EnvUtils.js';
-import AllStopUtils from './AllStopUtils.js';
-import GTFSUtils from './GTFSUtils.js';
-import LogUtils from './LogUtils.js';
-import RealtimeFeedUtils from './RealtimeFeedUtilsV3.js';
-import RequestUtils from './RequestUtils.js';
+import { isNullOrUndefined } from "util";
+import { GHOPPER } from "./EnvUtils.js";
+import AllStopUtils from "./AllStopUtils.js";
+import GTFSUtils from "./GTFSUtils.js";
+import LogUtils from "./LogUtils.js";
+import RealtimeFeedUtils from "./RealtimeFeedUtilsV3.js";
+import RequestUtils from "./RequestUtils.js";
 
 const DIRECTION_TYPE = {
-  DEPART: 'depart',
-  WALK: 'walk',
+  DEPART: "depart",
+  WALK: "walk",
 };
 const ONE_DAY_IN_MS = 86400000;
 const ONE_HOUR_IN_MS = 3600000;
@@ -55,26 +51,28 @@ const ONE_MIN_IN_MS = 60000;
  * using the Haversine formula
  */
 function distanceBetweenPointsMiles(point1, point2) {
-  const radlat1 = Math.PI * point1.lat / 180;
-  const radlat2 = Math.PI * point2.lat / 180;
+  const radlat1 = (Math.PI * point1.lat) / 180;
+  const radlat2 = (Math.PI * point2.lat) / 180;
   const theta = point1.long - point2.long;
-  const radtheta = Math.PI * theta / 180;
-  let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+  const radtheta = (Math.PI * theta) / 180;
+  let dist =
+    Math.sin(radlat1) * Math.sin(radlat2) +
+    Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
   dist = Math.acos(dist);
-  dist = dist * 180 / Math.PI;
+  dist = (dist * 180) / Math.PI;
   dist = dist * 60 * 1.1515;
   return dist;
 }
 
 function createGpxJson(stops, startTime) {
-  const waypoints = stops.map(stop => ({
+  const waypoints = stops.map((stop) => ({
     latitude: stop.lat,
     longitude: stop.long,
     elevation: 0,
     time: startTime,
   }));
   return {
-    activityType: 'GraphHopper Track',
+    activityType: "GraphHopper Track",
     startTime,
     waypoints,
   };
@@ -108,13 +106,17 @@ function mergeDirections(first, second) {
   // transfer, then the passenger has to get off the bus at some point, so
   // stayOnBusForTransfer is false if either route's stayOnBusForTransfer is false.
   const firstStayOnBusForTransfer = isNullOrUndefined(
-    first.stayOnBusForTransfer,
-  ) ? false : first.stayOnBusForTransfer;
+    first.stayOnBusForTransfer
+  )
+    ? false
+    : first.stayOnBusForTransfer;
   const secondStayOnBusForTransfer = isNullOrUndefined(
-    second.stayOnBusForTransfer,
-  ) ? false : second.stayOnBusForTransfer;
-  const stayOnBusForTransfer = firstStayOnBusForTransfer
-    && secondStayOnBusForTransfer;
+    second.stayOnBusForTransfer
+  )
+    ? false
+    : second.stayOnBusForTransfer;
+  const stayOnBusForTransfer =
+    firstStayOnBusForTransfer && secondStayOnBusForTransfer;
 
   return {
     delay,
@@ -147,7 +149,7 @@ async function trimFirstLastDirections(route, startCoords, endCoords) {
   if (route.directions[0].distance < minWalkingDirDistanceMeters) {
     const startLocIsStop = await AllStopUtils.isStopsWithinPrecision(
       startCoords,
-      AllStopUtils.DEG_WALK_PRECISION,
+      AllStopUtils.DEG_WALK_PRECISION
     );
 
     if (startLocIsStop) {
@@ -155,10 +157,13 @@ async function trimFirstLastDirections(route, startCoords, endCoords) {
     }
   }
 
-  if (route.directions[route.directions.length - 1].distance < minWalkingDirDistanceMeters) {
+  if (
+    route.directions[route.directions.length - 1].distance <
+    minWalkingDirDistanceMeters
+  ) {
     const endLocIsStop = await AllStopUtils.isStopsWithinPrecision(
       endCoords,
-      AllStopUtils.DEG_WALK_PRECISION,
+      AllStopUtils.DEG_WALK_PRECISION
     );
 
     if (endLocIsStop) {
@@ -187,7 +192,7 @@ async function condenseRoute(
   endCoords,
   maxWalkingDistance,
   departureDelayBuffer,
-  departureTimeNowMs,
+  departureTimeNowMs
 ) {
   await trimFirstLastDirections(route, startCoords, endCoords);
 
@@ -200,7 +205,7 @@ async function condenseRoute(
     const endTime = Date.parse(direction.endTime);
 
     // Discard routes with directions that take over 2 hours time
-    if (startTime + (ONE_HOUR_IN_MS * 2) <= endTime) {
+    if (startTime + ONE_HOUR_IN_MS * 2 <= endTime) {
       return null;
     }
 
@@ -219,16 +224,20 @@ async function condenseRoute(
       }
     }
 
-    if (previousDirection
-      && previousDirection.type === DIRECTION_TYPE.DEPART
-      && direction.type === DIRECTION_TYPE.DEPART) {
+    if (
+      previousDirection &&
+      previousDirection.type === DIRECTION_TYPE.DEPART &&
+      direction.type === DIRECTION_TYPE.DEPART
+    ) {
       /*
        * Discard route if a depart direction's last stopId is not equal to the next direction's first stopId,
        * Fixes bug where graphhopper directions are to get off at a stop and get on another stop
        * far away with no walking direction in between, EG: 1. get off at Statler 2. board at RPCC
        */
-      if (previousDirection.stops[previousDirection.stops.length - 1].stopId
-        !== direction.stops[0].stopId) {
+      if (
+        previousDirection.stops[previousDirection.stops.length - 1].stopId !==
+        direction.stops[0].stopId
+      ) {
         return null;
       }
 
@@ -238,7 +247,11 @@ async function condenseRoute(
        * No real transfer, probably just change in trip_ids.
        */
       if (previousDirection.routeId === direction.routeId) {
-        route.directions.splice(index - 1, 2, mergeDirections(previousDirection, direction));
+        route.directions.splice(
+          index - 1,
+          2,
+          mergeDirections(previousDirection, direction)
+        );
         index -= 1; // since we removed an element from the array
       }
 
@@ -258,7 +271,10 @@ async function condenseRoute(
 
   // if a bus route has more walking distance than the walking route, discard route
   // or route has 0 directions
-  if (totalDistanceWalking > maxWalkingDistance || route.directions.length === 0) {
+  if (
+    totalDistanceWalking > maxWalkingDistance ||
+    route.directions.length === 0
+  ) {
     return null;
   }
 
@@ -275,11 +291,14 @@ function adjustRouteTimesIfNecessary(route) {
   const departureDate = new Date(route.departureTime);
   const arrivalDate = new Date(route.arrivalTime);
 
-  const isWithinMinute = departureDate.getTime() + ONE_MIN_IN_MS > arrivalDate.getTime();
+  const isWithinMinute =
+    departureDate.getTime() + ONE_MIN_IN_MS > arrivalDate.getTime();
   const isSameMinute = departureDate.getMinutes() === arrivalDate.getMinutes();
 
   if (isWithinMinute && isSameMinute) {
-    route.arrivalTime = convertMillisecondsToISOString(arrivalDate.getTime() + ONE_MIN_IN_MS);
+    route.arrivalTime = convertMillisecondsToISOString(
+      arrivalDate.getTime() + ONE_MIN_IN_MS
+    );
   }
   return route;
 }
@@ -336,15 +355,18 @@ function getDistanceInMiles(startCoords, endCoords) {
   }
 
   // Convert start and end latitude to radians
-  const startLatRadians = Math.PI * startLat / 180;
-  const endLatRadians = Math.PI * endLat / 180;
+  const startLatRadians = (Math.PI * startLat) / 180;
+  const endLatRadians = (Math.PI * endLat) / 180;
   // Get difference of longitudes and convert to radians
   const theta = startLong - endLong;
-  const thetaRadians = Math.PI * theta / 180;
-  let dist = Math.sin(startLatRadians) * Math.sin(endLatRadians)
-    + Math.cos(startLatRadians) * Math.cos(endLatRadians) * Math.cos(thetaRadians);
+  const thetaRadians = (Math.PI * theta) / 180;
+  let dist =
+    Math.sin(startLatRadians) * Math.sin(endLatRadians) +
+    Math.cos(startLatRadians) *
+      Math.cos(endLatRadians) *
+      Math.cos(thetaRadians);
   dist = Math.min(dist, 1);
-  dist = Math.acos(dist) * 180 * 60 * 1.1515 / Math.PI;
+  dist = (Math.acos(dist) * 180 * 60 * 1.1515) / Math.PI;
   return dist;
 }
 
@@ -359,7 +381,9 @@ function getDifferenceInMinutes(departureTime, arrivalTime) {
   const arrivalDate = new Date(arrivalTime);
   const diffInMs = arrivalDate - departureDate;
   // Need to take % of ONE_DAY_IN_MS and ONE_HOUR_IN_MS to get the current hour and minute respectively
-  const diffInMins = Math.round(((diffInMs % ONE_DAY_IN_MS) % ONE_HOUR_IN_MS) / ONE_MIN_IN_MS);
+  const diffInMins = Math.round(
+    ((diffInMs % ONE_DAY_IN_MS) % ONE_HOUR_IN_MS) / ONE_MIN_IN_MS
+  );
   return diffInMins;
 }
 
@@ -370,7 +394,7 @@ function getDifferenceInMinutes(departureTime, arrivalTime) {
  * @returns {string}
  */
 function convertMillisecondsToISOString(dateInMs) {
-  return `${new Date(dateInMs).toISOString().split('.')[0]}Z`;
+  return `${new Date(dateInMs).toISOString().split(".")[0]}Z`;
 }
 
 /**
@@ -388,7 +412,7 @@ function parseWalkingRoute(
   dateMs,
   originName,
   destinationName,
-  isArriveBy,
+  isArriveBy
 ) {
   try {
     const path = data.paths[0];
@@ -403,11 +427,14 @@ function parseWalkingRoute(
     const arrivalTime = convertMillisecondsToISOString(endTimeMs);
     const totalDuration = getDifferenceInMinutes(departureTime, arrivalTime);
 
-    const { startCoords, endCoords } = getStartEndCoords(path.points, path.points);
+    const { startCoords, endCoords } = getStartEndCoords(
+      path.points,
+      path.points
+    );
     const travelDistance = getDistanceInMiles(startCoords, endCoords);
     const boundingBox = generateBoundingBox(path);
 
-    const walkingPath = path.points.coordinates.map(point => ({
+    const walkingPath = path.points.coordinates.map((point) => ({
       lat: point[1],
       long: point[0],
     }));
@@ -442,7 +469,11 @@ function parseWalkingRoute(
     });
   } catch (e) {
     throw new Error(
-      LogUtils.logErr(e, { data, dateMs, destinationName }, 'Parse walking route failed'),
+      LogUtils.logErr(
+        e,
+        { data, dateMs, destinationName },
+        "Parse walking route failed"
+      )
     );
   }
 }
@@ -457,7 +488,7 @@ function parseWalkingRoute(
  */
 function formatDate(date) {
   if (date) {
-    const dateBeforeMs = date.split('.')[0];
+    const dateBeforeMs = date.split(".")[0];
     if (date === dateBeforeMs) {
       // date already does not have milliseconds
       return date;
@@ -497,210 +528,236 @@ function parseRoutes(
   originName,
   destinationName,
   originalDepartureTimeMs,
-  isArriveByQuery,
-){
+  isArriveByQuery
+) {
   try {
-    return Promise.all(busRoutes.map(async (busRoute) => {
-      // array containing legs of journey. e.g. walk, bus ride, walk
-      const { legs } = busRoute;
-      const numberOfLegs = legs.length;
+    return Promise.all(
+      busRoutes.map(async (busRoute) => {
+        // array containing legs of journey. e.g. walk, bus ride, walk
+        const { legs } = busRoute;
+        const numberOfLegs = legs.length;
 
-      // string 2018-02-21T17:27:00Z
-      let { departureTime } = legs[0];
-      departureTime = formatDate(departureTime);
-      let arriveTime = formatDate(legs[numberOfLegs - 1].arrivalTime);
+        // string 2018-02-21T17:27:00Z
+        let { departureTime } = legs[0];
+        departureTime = formatDate(departureTime);
+        let arriveTime = formatDate(legs[numberOfLegs - 1].arrivalTime);
 
-      // Readjust the walking start and end times by accounting for the buffer
-      // times that were initially passed into Graphhopper to get routes
-      if (busRoute.transfers === -1) {
-        let startTimeMs = originalDepartureTimeMs;
-        let endTimeMs = originalDepartureTimeMs + busRoute.time;
-        if (isArriveByQuery) {
-          startTimeMs = originalDepartureTimeMs - busRoute.time;
-          endTimeMs = originalDepartureTimeMs;
-        }
-        departureTime = convertMillisecondsToISOString(startTimeMs);
-        arriveTime = convertMillisecondsToISOString(endTimeMs);
-      }
-      const totalDuration = getDifferenceInMinutes(departureTime, arriveTime);
-
-      const startingLocationGeometry = legs[0].geometry;
-      const endingLocationGeometry = legs[numberOfLegs - 1].geometry;
-
-      const {
-        startCoords,
-        endCoords,
-      } = getStartEndCoords(startingLocationGeometry, endingLocationGeometry);
-      const travelDistance = getDistanceInMiles(startCoords, endCoords);
-      const boundingBox = generateBoundingBox(busRoute);
-
-      const directions = await Promise.all(legs.map(async (currLeg, j, legsArray) => {
-        let { type } = currLeg;
-        let startTime = formatDate(currLeg.departureTime);
-        let endTime = formatDate(currLeg.arrivalTime);
-
+        // Readjust the walking start and end times by accounting for the buffer
+        // times that were initially passed into Graphhopper to get routes
         if (busRoute.transfers === -1) {
-          startTime = departureTime;
-          endTime = arriveTime;
-        }
-
-        if (type === 'pt') {
-          type = DIRECTION_TYPE.DEPART;
-        }
-
-        let name = '';
-        if (type === DIRECTION_TYPE.WALK) {
-          // means we are at the last direction aka a walk. name needs to equal final destination
-          if (j === numberOfLegs - 1) {
-            name = destinationName;
-          } else {
-            name = legsArray[j + 1].departureLocation;
+          let startTimeMs = originalDepartureTimeMs;
+          let endTimeMs = originalDepartureTimeMs + busRoute.time;
+          if (isArriveByQuery) {
+            startTimeMs = originalDepartureTimeMs - busRoute.time;
+            endTimeMs = originalDepartureTimeMs;
           }
-        } else if (type === DIRECTION_TYPE.DEPART) {
-          name = currLeg.departureLocation;
+          departureTime = convertMillisecondsToISOString(startTimeMs);
+          arriveTime = convertMillisecondsToISOString(endTimeMs);
         }
+        const totalDuration = getDifferenceInMinutes(departureTime, arriveTime);
 
-        const currCoordinates = currLeg.geometry.coordinates;
-        let path = currCoordinates.map(point => ({
-          lat: point[1],
-          long: point[0],
-        }));
+        const startingLocationGeometry = legs[0].geometry;
+        const endingLocationGeometry = legs[numberOfLegs - 1].geometry;
 
-        const startLocation = path[0];
-        const endLocation = path[path.length - 1];
-        let routeId = null;
-        let tripId = null;
-        let delay = null;
-        let stops = [];
-        let stayOnBusForTransfer = false;
+        const { startCoords, endCoords } = getStartEndCoords(
+          startingLocationGeometry,
+          endingLocationGeometry
+        );
+        const travelDistance = getDistanceInMiles(startCoords, endCoords);
+        const boundingBox = generateBoundingBox(busRoute);
 
-        const { distance } = currLeg;
-        if (type === DIRECTION_TYPE.DEPART) {
-          if (currLeg.isInSameVehicleAsPrevious) { // last depart was a transfer
-            stayOnBusForTransfer = true;
-          }
+        const directions = await Promise.all(
+          legs.map(async (currLeg, j, legsArray) => {
+            let { type } = currLeg;
+            let startTime = formatDate(currLeg.departureTime);
+            let endTime = formatDate(currLeg.arrivalTime);
 
-          tripId = [currLeg.trip_id];
-
-          const routeJson = await GTFSUtils.fetchRoutes();
-          const route = routeJson.filter(
-            routeObj => routeObj.route_id.toString() === currLeg.route_id.toString(),
-          );
-
-          path = currLeg.stops.map(stop => ({
-            lat: stop.geometry.coordinates[1],
-            long: stop.geometry.coordinates[0],
-          }));
-
-          if (route.length === 1) {
-            // this gets the correct route number for the gtfs data
-            routeId = route[0].route_short_name.match(/\d+/g).map(Number)[0];
-          }
-
-          if (path.length >= 2) {
-            // Map Matching
-            const firstStopCoords = path[0];
-            const lastStopCoords = path[path.length - 1];
-            const gpxJson = createGpxJson(path, startTime);
-            const gpx = createGpx(gpxJson.waypoints, {
-              activityName: gpxJson.activityType,
-              startTime: gpxJson.startTime,
-            });
-
-            try {
-              const options = {
-                method: 'POST',
-                url: `http://${MAP_MATCHING || 'ERROR'}:8989/match`,
-                body: gpx,
-                headers: { 'Content-Type': 'application/xml' },
-                qs: { points_encoded: false, vehicle: 'car' },
-              };
-
-              const snappingResponseRequest = await RequestUtils.createRequest(
-                options,
-                'snappingResponse request failed',
-              );
-
-              let snappingResponse = null;
-
-              if (snappingResponseRequest) {
-                snappingResponse = JSON.parse(snappingResponseRequest);
-
-                // need to handle errors more gracefully
-                path = snappingResponse.paths[0].points.coordinates.map(point => ({
-                  lat: point[1],
-                  long: point[0],
-                }));
-              }
-            } catch (error) {
-              const undefinedGraphHopperMessage = 'undefined graphhopper mapmatching env';
-              LogUtils.log({
-                destinationName,
-                error,
-                message: `Snap response failed: ${MAP_MATCHING || undefinedGraphHopperMessage}`,
-              });
+            if (busRoute.transfers === -1) {
+              startTime = departureTime;
+              endTime = arriveTime;
             }
 
-            // Trim Coordinates so they start/end at bus stops
-            const startDistanceArray = path.map(p2 => distanceBetweenPointsMiles(firstStopCoords, p2));
-            const endDistanceArray = path.map(p2 => distanceBetweenPointsMiles(lastStopCoords, p2));
+            if (type === "pt") {
+              type = DIRECTION_TYPE.DEPART;
+            }
 
-            const startIndex = startDistanceArray.indexOf(Math.min(...startDistanceArray));
-            const endIndex = endDistanceArray.indexOf(Math.min(...endDistanceArray));
+            let name = "";
+            if (type === DIRECTION_TYPE.WALK) {
+              // means we are at the last direction aka a walk. name needs to equal final destination
+              if (j === numberOfLegs - 1) {
+                name = destinationName;
+              } else {
+                name = legsArray[j + 1].departureLocation;
+              }
+            } else if (type === DIRECTION_TYPE.DEPART) {
+              name = currLeg.departureLocation;
+            }
 
-            path = path.slice(startIndex, endIndex);
-            path.unshift(firstStopCoords);
-            path.push(lastStopCoords);
-          }
+            const currCoordinates = currLeg.geometry.coordinates;
+            let path = currCoordinates.map((point) => ({
+              lat: point[1],
+              long: point[0],
+            }));
 
-          // create all stops array
-          stops = currLeg.stops.map(stop => ({
-            lat: stop.geometry.coordinates[1],
-            long: stop.geometry.coordinates[0],
-            name: stop.stop_name,
-            stopId: stop.stop_id,
-          }));
+            const startLocation = path[0];
+            const endLocation = path[path.length - 1];
+            let routeId = null;
+            let tripId = null;
+            let delay = null;
+            let stops = [];
+            let stayOnBusForTransfer = false;
 
-          const rtf = await RealtimeFeedUtils.fetchRTF();
-          const realtimeData = RealtimeFeedUtils.getDelayInformation(stops[0].stopId, tripId[0], rtf);
+            const { distance } = currLeg;
+            if (type === DIRECTION_TYPE.DEPART) {
+              if (currLeg.isInSameVehicleAsPrevious) {
+                // last depart was a transfer
+                stayOnBusForTransfer = true;
+              }
 
-          delay = (realtimeData && realtimeData.delay);
-        }
+              tripId = [currLeg.trip_id];
+
+              const routeJson = await GTFSUtils.getGTFSData();
+              const route = routeJson.filter(
+                (routeObj) =>
+                  routeObj.route_id.toString() === currLeg.route_id.toString()
+              );
+
+              path = currLeg.stops.map((stop) => ({
+                lat: stop.geometry.coordinates[1],
+                long: stop.geometry.coordinates[0],
+              }));
+
+              if (route.length === 1) {
+                // this gets the correct route number for the gtfs data
+                routeId = route[0].route_short_name
+                  .match(/\d+/g)
+                  .map(Number)[0];
+              }
+
+              if (path.length >= 2) {
+                // Map Matching
+                const firstStopCoords = path[0];
+                const lastStopCoords = path[path.length - 1];
+                const gpxJson = createGpxJson(path, startTime);
+                const gpx = createGpx(gpxJson.waypoints, {
+                  activityName: gpxJson.activityType,
+                  startTime: gpxJson.startTime,
+                });
+
+                try {
+                  const options = {
+                    method: "POST",
+                    url: `http://${GHOPPER || "ERROR"}:8989/match`,
+                    body: gpx,
+                    headers: { "Content-Type": "application/xml" },
+                    qs: { points_encoded: false, vehicle: "car" },
+                  };
+
+                  const snappingResponseRequest =
+                    await RequestUtils.createRequest(
+                      options,
+                      "snappingResponse request failed"
+                    );
+
+                  let snappingResponse = null;
+
+                  if (snappingResponseRequest) {
+                    snappingResponse = JSON.parse(snappingResponseRequest);
+
+                    // need to handle errors more gracefully
+                    path = snappingResponse.paths[0].points.coordinates.map(
+                      (point) => ({
+                        lat: point[1],
+                        long: point[0],
+                      })
+                    );
+                  }
+                } catch (error) {
+                  const undefinedGraphHopperMessage =
+                    "undefined graphhopper mapmatching env";
+                  LogUtils.log({
+                    destinationName,
+                    error,
+                    message: `Snap response failed: ${
+                      GHOPPER || undefinedGraphHopperMessage
+                    }`,
+                  });
+                }
+
+                // Trim Coordinates so they start/end at bus stops
+                const startDistanceArray = path.map((p2) =>
+                  distanceBetweenPointsMiles(firstStopCoords, p2)
+                );
+                const endDistanceArray = path.map((p2) =>
+                  distanceBetweenPointsMiles(lastStopCoords, p2)
+                );
+
+                const startIndex = startDistanceArray.indexOf(
+                  Math.min(...startDistanceArray)
+                );
+                const endIndex = endDistanceArray.indexOf(
+                  Math.min(...endDistanceArray)
+                );
+
+                path = path.slice(startIndex, endIndex);
+                path.unshift(firstStopCoords);
+                path.push(lastStopCoords);
+              }
+
+              // create all stops array
+              stops = currLeg.stops.map((stop) => ({
+                lat: stop.geometry.coordinates[1],
+                long: stop.geometry.coordinates[0],
+                name: stop.stop_name,
+                stopId: stop.stop_id,
+              }));
+
+              const rtf = await RealtimeFeedUtils.getRTFData();
+              const realtimeData = RealtimeFeedUtils.getDelayInformation(
+                stops[0].stopId,
+                tripId[0],
+                rtf
+              );
+
+              delay = realtimeData && realtimeData.delay;
+            }
+
+            return {
+              delay,
+              distance,
+              endLocation,
+              endTime,
+              name,
+              path,
+              routeId,
+              startLocation,
+              startTime,
+              stayOnBusForTransfer,
+              stops,
+              tripIds: tripId || [],
+              type,
+            };
+          })
+        );
 
         return {
-          delay,
-          distance,
-          endLocation,
-          endTime,
-          name,
-          path,
-          routeId,
-          startLocation,
-          startTime,
-          stayOnBusForTransfer,
-          stops,
-          tripIds: tripId || [],
-          type,
+          arrivalTime: arriveTime,
+          boundingBox,
+          departureTime,
+          directions,
+          endCoords,
+          endName: destinationName,
+          numberOfTransfers: busRoute.transfers,
+          startCoords,
+          startName: originName,
+          totalDuration,
+          travelDistance,
         };
-      }));
-
-      return {
-        arrivalTime: arriveTime,
-        boundingBox,
-        departureTime,
-        directions,
-        endCoords,
-        endName: destinationName,
-        numberOfTransfers: busRoute.transfers,
-        startCoords,
-        startName: originName,
-        totalDuration,
-        travelDistance,
-      };
-    }));
+      })
+    );
   } catch (error) {
     throw new Error(
-      LogUtils.logErr(error, busRoutes.length, 'Parse final route failed'),
+      LogUtils.logErr(error, busRoutes.length, "Parse final route failed")
     );
   }
 }

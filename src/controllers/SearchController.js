@@ -1,23 +1,22 @@
-import express from 'express';
-import SearchUtils from '../utils/SearchUtils.js';
-import RequestUtils from '../utils/RequestUtils.js';
-import Constants from '../utils/Constants.js';
+import express from "express";
+import SearchUtils from "../utils/SearchUtils.js";
 
 const router = express.Router();
 
-router.post('/applePlaces/', async (req, res) => {
+router.post("/applePlaces/", async (req, res) => {
   try {
     const { query, places } = req.body;
 
     if (
       !query ||
-      typeof query !== 'string' ||
+      typeof query !== "string" ||
       !places ||
       !Array.isArray(places)
     ) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid request body. "query" must be a string and "places" must be an array.',
+        message:
+          'Invalid request body. "query" must be a string and "places" must be an array.',
       });
     }
 
@@ -29,12 +28,11 @@ router.post('/applePlaces/', async (req, res) => {
   }
 });
 
-
-router.post('/appleSearch/', async (req, res) => {
+router.post("/appleSearch/", async (req, res) => {
   try {
     const { query } = req.body;
 
-    if (!query || typeof query !== 'string') {
+    if (!query || typeof query !== "string") {
       return res.status(400).json({
         success: false,
         message: 'Invalid request body. "query" must be a string.',
@@ -42,8 +40,11 @@ router.post('/appleSearch/', async (req, res) => {
     }
 
     const lowercaseQuery = query.toLowerCase();
-    const cachedValue = SearchUtils.getCachedPredictionsForQuery(lowercaseQuery);
-    const formattedStops = await SearchUtils.getFormattedStopsForQuery(lowercaseQuery);
+    const cachedValue =
+      SearchUtils.getCachedPredictionsForQuery(lowercaseQuery);
+    const formattedStops = await SearchUtils.getFormattedStopsForQuery(
+      lowercaseQuery
+    );
 
     return res.status(200).json({
       success: true,
@@ -57,12 +58,9 @@ router.post('/appleSearch/', async (req, res) => {
   }
 });
 
-
-
 // //I'm unsure if this route is used
 // const GOOGLE_PLACE = 'googlePlace';
 // const GOOGLE_PLACE_LOCATION = '42.4440,-76.5019';
-
 
 // router.post('/search/', async (req, res) => {
 //   try {

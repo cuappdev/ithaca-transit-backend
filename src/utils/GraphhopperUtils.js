@@ -1,9 +1,6 @@
-import {
-  GHOPPER_BUS,
-  GHOPPER_WALKING,
-} from './EnvUtils.js';
-import LogUtils from './LogUtils.js';
-import RequestUtils from './RequestUtils.js';
+import { GHOPPER } from "./EnvUtils.js";
+import LogUtils from "./LogUtils.js";
+import RequestUtils from "./RequestUtils.js";
 
 // buffer to account for routes in past 20 minutes with delays
 const FIRST_DELAY_BUFFER_IN_MINUTES = 20;
@@ -23,19 +20,23 @@ const getGraphhopperBusParams = (
   start,
   departureTimeQuery,
   arriveBy,
-  delayBufferMinutes,
+  delayBufferMinutes
 ) => ({
-  'ch.disable': true,
-  'pt.arrive_by': arriveBy,
-  'pt.earliest_departure_time': getDepartureTimeDate(departureTimeQuery, arriveBy, delayBufferMinutes),
-  'pt.max_walk_distance_per_leg': 2000,
-  'pt.profile': true,
-  'pt.walk_speed': 3.0, // > 3.0 suggests getting off bus earlier and walk half a mile instead of waiting longer
+  "ch.disable": true,
+  "pt.arrive_by": arriveBy,
+  "pt.earliest_departure_time": getDepartureTimeDate(
+    departureTimeQuery,
+    arriveBy,
+    delayBufferMinutes
+  ),
+  "pt.max_walk_distance_per_leg": 2000,
+  "pt.profile": true,
+  "pt.walk_speed": 3.0, // > 3.0 suggests getting off bus earlier and walk half a mile instead of waiting longer
   elevation: false,
   point: [start, end],
   points_encoded: false,
-  vehicle: 'pt',
-  weighting: 'short_fastest',
+  vehicle: "pt",
+  weighting: "short_fastest",
 });
 
 /**
@@ -47,7 +48,7 @@ const getGraphhopperBusParams = (
 const getGraphhopperWalkingParams = (end, start) => ({
   point: [start, end],
   points_encoded: false,
-  vehicle: 'foot',
+  vehicle: "foot",
 });
 
 /*
@@ -55,7 +56,11 @@ const getGraphhopperWalkingParams = (end, start) => ({
  *
  * @param departureTimeQuery
  */
-function getDepartureTime(departureTimeQuery, isArriveByQuery, delayBufferMinutes) {
+function getDepartureTime(
+  departureTimeQuery,
+  isArriveByQuery,
+  delayBufferMinutes
+) {
   let departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
   departureTimeNowMs -= delayBufferMinutes * 60 * 1000;
   // if (!isArriveByQuery) { // 'leave at' query
@@ -66,8 +71,16 @@ function getDepartureTime(departureTimeQuery, isArriveByQuery, delayBufferMinute
   return departureTimeNowMs;
 }
 
-function getDepartureTimeDate(departureTimeQuery, isArriveByQuery, delayBufferMinutes) {
-  const departureTimeMs = getDepartureTime(departureTimeQuery, isArriveByQuery, delayBufferMinutes);
+function getDepartureTimeDate(
+  departureTimeQuery,
+  isArriveByQuery,
+  delayBufferMinutes
+) {
+  const departureTimeMs = getDepartureTime(
+    departureTimeQuery,
+    isArriveByQuery,
+    delayBufferMinutes
+  );
   return new Date(departureTimeMs).toISOString();
 }
 
@@ -88,11 +101,17 @@ function getBusRequestOptions(
   departureTimeDateNow,
   isArriveByQuery,
   delayBufferMinutes,
-  sharedOptions,
+  sharedOptions
 ) {
   return {
-    qs: getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, delayBufferMinutes),
-    url: `http://${GHOPPER_BUS || 'ERROR'}:8988/route`,
+    qs: getGraphhopperBusParams(
+      end,
+      start,
+      departureTimeDateNow,
+      isArriveByQuery,
+      delayBufferMinutes
+    ),
+    url: `http://${GHOPPER || "ERROR"}:8988/route`,
     ...sharedOptions,
   };
 }
@@ -121,8 +140,8 @@ function busRoutesAreEqual(busRouteA, busRouteB) {
   }
 
   // Compare route ids
-  const departLegA = legsA.find(leg => leg.type === 'pt');
-  const departLegB = legsB.find(leg => leg.type === 'pt');
+  const departLegA = legsA.find((leg) => leg.type === "pt");
+  const departLegB = legsB.find((leg) => leg.type === "pt");
 
   const isEqualLength = legsA.length === legsB.length;
 
@@ -132,7 +151,7 @@ function busRoutesAreEqual(busRouteA, busRouteB) {
     return isEqualLength;
   }
 
-  return (departLegA.route_id === departLegB.route_id) && isEqualLength;
+  return departLegA.route_id === departLegB.route_id && isEqualLength;
 }
 
 /**
@@ -145,7 +164,10 @@ function busRoutesAreEqual(busRouteA, busRouteB) {
  */
 function getValidBusRoutes(busRoutes, busRoutesToCheck) {
   return busRoutesToCheck.filter((busRouteToCheck) => {
-    const isDuplicateRoute = busRoutes.find(busRoute => busRoutesAreEqual(busRouteToCheck, busRoute)) !== undefined;
+    const isDuplicateRoute =
+      busRoutes.find((busRoute) =>
+        busRoutesAreEqual(busRouteToCheck, busRoute)
+      ) !== undefined;
     return !isDuplicateRoute && busRouteToCheck.constructor.transfers !== -1;
   });
 }
@@ -207,13 +229,22 @@ function getValidBusRoutes(busRoutes, busRoutesToCheck) {
  * @param isArriveByQuery
  * @returns {Array<Object>}
  */
-async function fetchRoutes(end, start, departureTimeDateNow,
-  isArriveByQuery) {
+async function fetchRoutes(end, start, departureTimeDateNow, isArriveByQuery) {
   let routes;
 
-  const sharedOptions = { method: 'GET', qsStringifyOptions: { arrayFormat: 'repeat' } };
+  const sharedOptions = {
+    method: "GET",
+    qsStringifyOptions: { arrayFormat: "repeat" },
+  };
   // Fetch bus routes using the current start time
-  const busOptionsNow = getBusRequestOptions(end, start, departureTimeDateNow, isArriveByQuery, 0, sharedOptions);
+  const busOptionsNow = getBusRequestOptions(
+    end,
+    start,
+    departureTimeDateNow,
+    isArriveByQuery,
+    0,
+    sharedOptions
+  );
 
   // Fetch bus routes using a delay buffer of FIRST_DELAY_BUFFER_IN_MINUTES.
   // This means that we are fetching routes with (startTime - FIRST_DELAY_BUFFER_IN_MINUTES).
@@ -224,7 +255,7 @@ async function fetchRoutes(end, start, departureTimeDateNow,
     departureTimeDateNow,
     isArriveByQuery,
     FIRST_DELAY_BUFFER_IN_MINUTES,
-    sharedOptions,
+    sharedOptions
   );
 
   // Fetch bus routes using a delay buffer of SECOND_DELAY_BUFFER_IN_MINUTES.
@@ -234,7 +265,7 @@ async function fetchRoutes(end, start, departureTimeDateNow,
     departureTimeDateNow,
     isArriveByQuery,
     SECOND_DELAY_BUFFER_IN_MINUTES,
-    sharedOptions,
+    sharedOptions
   );
 
   const [
@@ -244,21 +275,21 @@ async function fetchRoutes(end, start, departureTimeDateNow,
   ] = await Promise.all([
     RequestUtils.createRequest(
       busOptionsNow,
-      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+      `Routing failed: ${GHOPPER || "undefined graphhopper bus env"}`,
       false,
-      true,
+      true
     ),
     RequestUtils.createRequest(
       busOptionsBufferedFirst,
-      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+      `Routing failed: ${GHOPPER || "undefined graphhopper bus env"}`,
       false,
-      true,
+      true
     ),
     RequestUtils.createRequest(
       busOptionsBufferedSecond,
-      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+      `Routing failed: ${GHOPPER || "undefined graphhopper bus env"}`,
       false,
-      true,
+      true
     ),
   ]);
 
@@ -267,30 +298,58 @@ async function fetchRoutes(end, start, departureTimeDateNow,
   } else {
     LogUtils.log(
       busRouteNowRequest && busRouteNowRequest.body,
-      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, 0),
-      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+      getGraphhopperBusParams(
+        end,
+        start,
+        departureTimeDateNow,
+        isArriveByQuery,
+        0
+      ),
+      `Routing failed: ${GHOPPER || "undefined graphhopper bus env"}`
     );
   }
 
-  if (busRouteBufferedFirstRequest && busRouteBufferedFirstRequest.statusCode < 300) {
-    const bufferedBusRoutes = JSON.parse(busRouteBufferedFirstRequest.body).paths;
+  if (
+    busRouteBufferedFirstRequest &&
+    busRouteBufferedFirstRequest.statusCode < 300
+  ) {
+    const bufferedBusRoutes = JSON.parse(
+      busRouteBufferedFirstRequest.body
+    ).paths;
     routes = getValidBusRoutes(routes, bufferedBusRoutes).concat(routes);
   } else {
     LogUtils.log(
       busRouteBufferedFirstRequest && busRouteBufferedFirstRequest.body,
-      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, FIRST_DELAY_BUFFER_IN_MINUTES),
-      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+      getGraphhopperBusParams(
+        end,
+        start,
+        departureTimeDateNow,
+        isArriveByQuery,
+        FIRST_DELAY_BUFFER_IN_MINUTES
+      ),
+      `Routing failed: ${GHOPPER || "undefined graphhopper bus env"}`
     );
   }
 
-  if (busRouteBufferedSecondRequest && busRouteBufferedSecondRequest.statusCode < 300) {
-    const bufferedBusRoutes = JSON.parse(busRouteBufferedSecondRequest.body).paths;
+  if (
+    busRouteBufferedSecondRequest &&
+    busRouteBufferedSecondRequest.statusCode < 300
+  ) {
+    const bufferedBusRoutes = JSON.parse(
+      busRouteBufferedSecondRequest.body
+    ).paths;
     routes = getValidBusRoutes(routes, bufferedBusRoutes).concat(routes);
   } else {
     LogUtils.log(
       busRouteBufferedSecondRequest && busRouteBufferedSecondRequest.body,
-      getGraphhopperBusParams(end, start, departureTimeDateNow, isArriveByQuery, SECOND_DELAY_BUFFER_IN_MINUTES),
-      `Routing failed: ${GHOPPER_BUS || 'undefined graphhopper bus env'}`,
+      getGraphhopperBusParams(
+        end,
+        start,
+        departureTimeDateNow,
+        isArriveByQuery,
+        SECOND_DELAY_BUFFER_IN_MINUTES
+      ),
+      `Routing failed: ${GHOPPER || "undefined graphhopper bus env"}`
     );
   }
 
@@ -298,27 +357,27 @@ async function fetchRoutes(end, start, departureTimeDateNow,
 }
 
 /*
-* Return walkingRoute from the Graphhopper walking service given the parameters
-* walkingRoute contains the shortest possible walking path
-* @param end
-* @param start
-* @returns Object
-*/
+ * Return walkingRoute from the Graphhopper walking service given the parameters
+ * walkingRoute contains the shortest possible walking path
+ * @param end
+ * @param start
+ * @returns Object
+ */
 async function fetchWalkingRoute(end, start) {
   let walkingRoute;
 
   const walkingOptions = {
     qs: getGraphhopperWalkingParams(end, start),
-    url: `http://${GHOPPER_WALKING || 'ERROR'}:8987/route`,
-    method: 'GET',
-    qsStringifyOptions: { arrayFormat: 'repeat' },
+    url: `http://${GHOPPER || "ERROR"}:8987/route`,
+    method: "GET",
+    qsStringifyOptions: { arrayFormat: "repeat" },
   };
 
   const walkingRouteRequest = await RequestUtils.createRequest(
     walkingOptions,
-    `Walking failed: ${GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+    `Walking failed: ${GHOPPER || "undefined graphhopper walking env"}`,
     false,
-    true,
+    true
   );
 
   if (walkingRouteRequest && walkingRouteRequest.statusCode < 300) {
@@ -327,7 +386,7 @@ async function fetchWalkingRoute(end, start) {
     LogUtils.log(
       walkingRouteRequest && walkingRouteRequest.body,
       getGraphhopperWalkingParams(end, start),
-      `Walking failed: ${GHOPPER_WALKING || 'undefined graphhopper walking env'}`,
+      `Walking failed: ${GHOPPER || "undefined graphhopper walking env"}`
     );
   }
 
