@@ -30,6 +30,19 @@ def create_tables():
         )
     ''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS restaurants (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE,
+            category TEXT,
+            address TEXT,
+            latitude REAL,
+            longitude REAL,
+            image_url TEXT,
+            web_url TEXT
+        )
+    ''')
+
     conn.commit()
     conn.close()
 
