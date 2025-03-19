@@ -1,16 +1,15 @@
+import AllStopUtils from "./AllStopUtils.js";
+import GraphhopperUtils from "./GraphhopperUtils.js";
+import LogUtils from "./LogUtils.js";
+import ParseRouteUtils from "./ParseRouteUtilsV3.js";
 
-import AllStopUtils from './AllStopUtils.js';
-import GraphhopperUtils from './GraphhopperUtils.js';
-import LogUtils from './LogUtils.js';
-import ParseRouteUtils from './ParseRouteUtilsV3.js';
-import createGpx  from 'gps-to-gpx';
 /**
  * Returns the flattened version of arr.
  *
  * @param arr
  * @returns {Array<Object>}
  */
-function flatten(arr){
+function flatten(arr) {
   return [].concat(...arr);
 }
 
@@ -20,9 +19,9 @@ function flatten(arr){
  * @param location
  * @returns {Promise<boolean>}
  */
-async function isBusStop(location){
-  const stops = await AllStopUtils.fetchAllStops();
-  return stops.filter(s => s.name === location).length > 0;
+async function isBusStop(location) {
+  const stops = await AllStopUtils.getAllStops();
+  return stops.filter((s) => s.name === location).length > 0;
 }
 
 /**
@@ -81,37 +80,43 @@ async function createFinalBusRoutes(
   end,
   departureTimeQuery,
   isArriveBy,
-  originBusStopName,
+  originBusStopName
 ) {
   const departureTimeNowMs = parseFloat(departureTimeQuery) * 1000;
   const departureDelayBuffer = !isArriveBy;
 
-  const startPointList = start.split(',');
-  const endPointList = end.split(',');
+  const startPointList = start.split(",");
+  const endPointList = end.split(",");
 
   const startPoint = { lat: startPointList[0], long: startPointList[1] };
   const endPoint = { lat: endPointList[0], long: endPointList[1] };
 
-  const finalRoutes = (await Promise.all(
-    parsedBusRoutes.map(currPath => ParseRouteUtils.condenseRoute(
-      currPath,
-      startPoint,
-      endPoint,
-      parsedWalkingRoute.directions[0].distance,
-      departureDelayBuffer,
-      departureTimeNowMs,
-    )),
-  )).filter(route => route !== null).sort((routeA, routeB) => {
-    // For routes that have the same start and end bus stops, the route with
-    // the earlier departure time should be shown first.
-    if (routesHaveSameStartEndStops(routeA, routeB)) {
-      const routeADepartureTime = new Date(routeA.departureTime);
-      const routeBDepartureTime = new Date(routeB.departureTime);
-      return routeADepartureTime < routeBDepartureTime ? -1 : 1;
-    }
-    // Otherwise, just use the current order.
-    return 0;
-  });
+  const finalRoutes = (
+    await Promise.all(
+      parsedBusRoutes.map((currPath) =>
+        ParseRouteUtils.condenseRoute(
+          currPath,
+          startPoint,
+          endPoint,
+          parsedWalkingRoute.directions[0].distance,
+          departureDelayBuffer,
+          departureTimeNowMs
+        )
+      )
+    )
+  )
+    .filter((route) => route !== null)
+    .sort((routeA, routeB) => {
+      // For routes that have the same start and end bus stops, the route with
+      // the earlier departure time should be shown first.
+      if (routesHaveSameStartEndStops(routeA, routeB)) {
+        const routeADepartureTime = new Date(routeA.departureTime);
+        const routeBDepartureTime = new Date(routeB.departureTime);
+        return routeADepartureTime < routeBDepartureTime ? -1 : 1;
+      }
+      // Otherwise, just use the current order.
+      return 0;
+    });
 
   return finalRoutes;
 }
@@ -135,9 +140,14 @@ async function getParsedWalkingAndBusRoutes(
   end,
   start,
   departureTimeQuery,
-  isArriveBy,
+  isArriveBy
 ) {
-  const routes = await GraphhopperUtils.fetchRoutes(end, start, departureTimeQuery, isArriveBy);
+  const routes = await GraphhopperUtils.fetchRoutes(
+    end,
+    start,
+    departureTimeQuery,
+    isArriveBy
+  );
 
   if (!routes) {
     return {
@@ -147,17 +157,27 @@ async function getParsedWalkingAndBusRoutes(
         end,
         start,
         departureTimeQuery,
-        isArriveBy,
+        isArriveBy
       ),
       parsedBusRoutes: null,
     };
   }
 
-  const departureTimeMs = GraphhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0);
-  const parsedRoutes = await ParseRouteUtils.parseRoutes(
-    routes, originName, destinationName, departureTimeMs, isArriveBy,
+  const departureTimeMs = GraphhopperUtils.getDepartureTime(
+    departureTimeQuery,
+    isArriveBy,
+    0
   );
-  let parsedWalkingRoute = parsedRoutes.find(route => route.numberOfTransfers === -1);
+  const parsedRoutes = await ParseRouteUtils.parseRoutes(
+    routes,
+    originName,
+    destinationName,
+    departureTimeMs,
+    isArriveBy
+  );
+  let parsedWalkingRoute = parsedRoutes.find(
+    (route) => route.numberOfTransfers === -1
+  );
 
   // Make request to Ghopper walking service if the bus service doesn't provide walking directions
   if (!parsedWalkingRoute) {
@@ -167,13 +187,15 @@ async function getParsedWalkingAndBusRoutes(
       end,
       start,
       departureTimeQuery,
-      isArriveBy,
+      isArriveBy
     );
   }
 
   return {
     parsedWalkingRoute,
-    parsedBusRoutes: parsedRoutes.filter(route => route.numberOfTransfers !== -1),
+    parsedBusRoutes: parsedRoutes.filter(
+      (route) => route.numberOfTransfers !== -1
+    ),
   };
 }
 
@@ -197,15 +219,15 @@ async function getParsedWalkingRoute(
   end,
   start,
   departureTimeQuery,
-  isArriveBy,
-){
+  isArriveBy
+) {
   const walkingRoute = await GraphhopperUtils.fetchWalkingRoute(end, start);
   return ParseRouteUtils.parseWalkingRoute(
     walkingRoute,
     GraphhopperUtils.getDepartureTime(departureTimeQuery, isArriveBy, 0),
     originName,
     destinationName,
-    isArriveBy,
+    isArriveBy
   );
 }
 
@@ -228,12 +250,17 @@ async function getSectionedRoutes(
   start,
   departureTimeQuery,
   isArriveBy,
-  originBusStopName,
+  originBusStopName
 ) {
-  const {
-    parsedBusRoutes,
-    parsedWalkingRoute,
-  } = await getParsedWalkingAndBusRoutes(originName, destinationName, end, start, departureTimeQuery, isArriveBy);
+  const { parsedBusRoutes, parsedWalkingRoute } =
+    await getParsedWalkingAndBusRoutes(
+      originName,
+      destinationName,
+      end,
+      start,
+      departureTimeQuery,
+      isArriveBy
+    );
   const sectionedRoutes = {
     boardingSoon: [],
     fromStop: [],
@@ -241,7 +268,10 @@ async function getSectionedRoutes(
   };
 
   if (!parsedBusRoutes) {
-    LogUtils.log({ message: 'RouteUtils.js: Graphhopper route error : could not fetch bus routes' });
+    LogUtils.log({
+      message:
+        "RouteUtils.js: Graphhopper route error : could not fetch bus routes",
+    });
     return sectionedRoutes;
   }
 
@@ -251,15 +281,16 @@ async function getSectionedRoutes(
     start,
     end,
     departureTimeQuery,
-    isArriveBy,
+    isArriveBy
   );
 
   finalBusRoutes.forEach((route) => {
-    if (originBusStopName !== null
-      && route.directions
-      && route.directions.length > 0
-      && route.directions[0].stops.length > 0
-      && route.directions[0].stops[0].name === originBusStopName
+    if (
+      originBusStopName !== null &&
+      route.directions &&
+      route.directions.length > 0 &&
+      route.directions[0].stops.length > 0 &&
+      route.directions[0].stops[0].name === originBusStopName
     ) {
       sectionedRoutes.fromStop.push(route);
     } else {
@@ -276,15 +307,23 @@ async function getRoutes(
   end,
   start,
   departureTimeQuery,
-  isArriveBy,
-){
-  const {
-    parsedBusRoutes,
-    parsedWalkingRoute,
-  } = await getParsedWalkingAndBusRoutes(originName, destinationName, end, start, departureTimeQuery, isArriveBy);
+  isArriveBy
+) {
+  const { parsedBusRoutes, parsedWalkingRoute } =
+    await getParsedWalkingAndBusRoutes(
+      originName,
+      destinationName,
+      end,
+      start,
+      departureTimeQuery,
+      isArriveBy
+    );
 
   if (!parsedBusRoutes) {
-    LogUtils.log({ message: 'RouteUtils.js: Graphhopper route error : could not fetch bus routes' });
+    LogUtils.log({
+      message:
+        "RouteUtils.js: Graphhopper route error : could not fetch bus routes",
+    });
     return [parsedWalkingRoute];
   }
 
@@ -295,7 +334,7 @@ async function getRoutes(
     start,
     end,
     departureTimeQuery,
-    isArriveBy,
+    isArriveBy
   );
   finalRoutes.push(parsedWalkingRoute);
   return finalRoutes;

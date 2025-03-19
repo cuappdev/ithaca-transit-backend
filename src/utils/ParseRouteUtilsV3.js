@@ -616,7 +616,7 @@ function parseRoutes(
 
               tripId = [currLeg.trip_id];
 
-              const routeJson = await GTFSUtils.fetchRoutes();
+              const routeJson = await GTFSUtils.getGTFSData();
               const route = routeJson.filter(
                 (routeObj) =>
                   routeObj.route_id.toString() === currLeg.route_id.toString()
@@ -712,7 +712,7 @@ function parseRoutes(
                 stopId: stop.stop_id,
               }));
 
-              const rtf = await RealtimeFeedUtils.fetchRTF();
+              const rtf = await RealtimeFeedUtils.getRTFData();
               const realtimeData = RealtimeFeedUtils.getDelayInformation(
                 stops[0].stopId,
                 tripId[0],

@@ -1,15 +1,18 @@
 services:
   ghopper-bus:
+    # Needs to be updated ~semesterly, handled by autodeploy
     image: cornellappdev/transit-ghopper:${IMAGE_TAG}
     ports:
       - "8988:8988"
 
   ghopper-map:
+    # Does not need to be updated
     image: cornellappdev/transit-map:latest
     ports:
       - "8989:8989"
 
   ghopper-walking:
+    # Does not need to be updated
     image: cornellappdev/transit-ghopper-walking:latest
     ports:
       - "8987:8987"

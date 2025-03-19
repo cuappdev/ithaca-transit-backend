@@ -1,17 +1,34 @@
+import { fileURLToPath } from "url";
+import fs from "fs";
+import path from "path";
 
-import { PYTHON_APP } from './EnvUtils.js';
-import RequestUtils from './RequestUtils.js';
+const TCAT_NY_US = "tcat-ny-us";
+let gtfsData = [];
 
-async function fetchRoutes(){
-  const options = {
-    method: 'GET',
-    url: `http://${PYTHON_APP || 'localhost'}:5000/gtfs`,
-    headers: { 'Cache-Control': 'no-cache' },
-  };
-  const data = await RequestUtils.createRequest(options, 'Fetch routes request failed');
-  return JSON.parse(data);
+function getGTFSData() {
+  return gtfsData;
+}
+
+function fetchGTFS() {
+  gtfsData = []; // Reset the data
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const filePath = path.join(__dirname, "..", "..", `${TCAT_NY_US}/routes.txt`);
+  const csvFile = fs.readFileSync(filePath, "utf8");
+  const lines = csvFile.split("\n").filter((line) => line.trim() !== "");
+  const columnNames = lines[0].split(",");
+
+  for (let i = 1; i < lines.length; i++) {
+    const row = lines[i].split(",");
+    const route = {};
+    columnNames.forEach((column, index) => {
+      route[column] = row[index];
+    });
+    gtfsData.push(route);
+  }
 }
 
 export default {
-  fetchRoutes,
+  fetchGTFS,
+  getGTFSData,
 };
