@@ -39,7 +39,9 @@ app.use('/api/v1/', stopsRoutes);
 
 app.use('/api/v1/', notifRoutes);
 
-TokenUtils.fetchAuthHeader();
+app.use('/api/v1/', reportingRoutes);
+
+app.use('/api/v1/', ecosystemRoutes);
 
 // Setup Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));

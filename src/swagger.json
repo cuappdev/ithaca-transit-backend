@@ -40,7 +40,7 @@
         }
       }
     },
-    "/libraries": {
+    "/api/v1/libraries": {
       "get": {
         "summary": "Returns a list of all libraries on campus.",
         "description": "A list of all libraries.",
@@ -57,7 +57,7 @@
         }
       }
     },
-    "/printers": {
+    "/api/v1/printers": {
       "get": {
         "summary": "Returns a list of all printers on campus.",
         "description": "A list of all printers.",
@@ -74,7 +74,7 @@
         }
       }
     },
-    "/delays": {
+    "/api/v1/delays": {
       "post": {
         "summary": "Returns a list of bus delays for buses at a specific stop. **Recommended and most up-to-date.",
         "description": "Takes in a list of objects with fields routeId and tripId and returns a list of objects with fields routeId, tripId, and delay.",
@@ -441,7 +441,7 @@
         }
       }
     },
-    "/closestBus": {
+    "/api/v1/closestBus": {
       "get": {
         "summary": "Returns the closest bus to a given location on a route.",
         "produces": [
