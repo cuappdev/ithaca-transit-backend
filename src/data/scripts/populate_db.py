@@ -24,7 +24,7 @@ def populate_db():
     # Insert restaurants
     restaurants = scrape_restaurants()
     for restaurant in restaurants:
-        insert_restaurant(restaurant['Name'], restaurant['Category'], restaurant['Address'], restaurant['Coordinates'][0], printer['Coordinates'][1], restaurant['Image URL'], restaurant['Web URL'])
+        insert_restaurant(restaurant['Name'], restaurant['Category'], restaurant['Address'], restaurant['Coordinates'][0], restaurant['Coordinates'][1], restaurant['Image URL'], restaurant['Web URL'])
 
 if __name__ == "__main__":
     populate_db()

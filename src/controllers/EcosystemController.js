@@ -25,4 +25,15 @@ router.get("/printers", async (req, res) => {
   }
 });
 
+// Fetch all restaurants
+router.get("/restaurants", async (req, res) => {
+  try {
+    const restaurants = await EcosystemUtils.fetchAllRestaurants();
+    res.status(200).json({ success: true, data: restaurants });
+  } catch (error) {
+    console.error("Error fetching restaurants:", error.message);
+    res.status(500).json({ error: "Failed to fetch restaurants" });
+  }
+});
+
 export default router;

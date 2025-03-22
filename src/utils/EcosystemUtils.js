@@ -60,4 +60,31 @@ function fetchAllPrinters() {
   });
 }
 
-export default { fetchAllLibraries, fetchAllPrinters };
+function fetchAllRestaurants() {
+  return new Promise((resolve, reject) => {
+    // Open the database
+    const db = new sqlite3.Database(dbPath, (err) => {
+      if (err) {
+        console.error(err.message);
+        return reject(err);
+      }
+      console.log("Connected to the SQLite database.");
+    });
+
+    // Fetch printers
+    db.all("SELECT * FROM restaurants", (err, rows) => {
+      if (err) {
+        console.error(err.message);
+        return reject(err);
+      }
+      db.close((err) => {
+        if (err) console.error(err.message);
+        console.log("Closed the database connection.");
+      });
+
+      resolve(rows);
+    });
+  });
+}
+
+export default { fetchAllLibraries, fetchAllPrinters, fetchAllRestaurants };
