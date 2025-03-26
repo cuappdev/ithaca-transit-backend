@@ -47,29 +47,3 @@ def insert_printer(location, description, latitude, longitude):
 
     conn.commit()
     conn.close()
-
-
-def insert_report(vehicle_id, congestion_level, device_token, timestamp=None):
-    """Insert a report into the database."""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    if timestamp:
-        cursor.execute(
-            """
-            INSERT INTO reports (timestamp, vehicleID, congestionLevel, deviceToken)
-            VALUES (?, ?, ?, ?, ?)
-        """,
-            (timestamp, vehicle_id, congestion_level, device_token),
-        )
-    else:
-        cursor.execute(
-            """
-            INSERT INTO reports (vehicleID, congestionLevel, deviceToken)
-            VALUES (?, ?, ?, ?)
-        """,
-            (vehicle_id, congestion_level, device_token),
-        )
-
-    conn.commit()
-    conn.close()
