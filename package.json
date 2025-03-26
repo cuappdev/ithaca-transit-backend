@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start:dev": "nodemon src/index.js",
+    "start:dev": "nodemon --ignore src/data/notifRequests.json src/index.js",
     "start": "node src/index.js"
   },
   "keywords": [],

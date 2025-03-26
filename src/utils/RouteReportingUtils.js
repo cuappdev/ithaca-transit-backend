@@ -18,7 +18,7 @@ const dbPath = path.join(__dirname, '..', 'data', 'transit.db');
  */
 async function getClosestBus(routeId, start) {
   LogUtils.log({ message: 'getClosestBus: entering function', routeId });
-  const vehicles = await RealtimeFeedUtilsV3.fetchVehicles();
+  const vehicles = await RealtimeFeedUtilsV3.getVehicleData();
 
   if (!vehicles) {
     LogUtils.log({ message: 'No vehicle data available' });
@@ -26,7 +26,7 @@ async function getClosestBus(routeId, start) {
   }
   
   const routeVehicles = Object.values(vehicles).filter(
-    v => v.routeID === routeId );
+    v => v.routeId === routeId );
   
   if (routeVehicles.length === 0) {
     LogUtils.log({ message: 'No vehicles found for given route', routeId });
