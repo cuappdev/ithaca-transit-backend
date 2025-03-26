@@ -120,19 +120,16 @@ async function parseProtobufVehicles(buffer) {
 }
 
 async function fetchVehicles() {
-  console.log("fetching vehicles");
   try {
     const response = await fetch(VEHICLES_URL);
     const buffer = await response.buffer();
     vehicleData = await parseProtobufVehicles(buffer);
-    console.log("Done fetching")
   } catch (error) {
     console.error(error);
   }
 }
 
 function getVehicleData() {
-  console.log("vehicleData", vehicleData);
   return vehicleData;
 }
 
