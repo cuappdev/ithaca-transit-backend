@@ -122,15 +122,15 @@ function insertReport(vehicleId, congestionLevel, deviceToken, timestamp = null)
     if (timestamp) {
       query = `
         INSERT INTO reports (timestamp, vehicleID, congestionLevel, deviceToken)
-        VALUES (?, ?, ?, ?, ?)
-      `;
-      values = [timestamp, vehicleId, routeId, reportText, deviceToken];
-    } else {
-      query = `
-        INSERT INTO reports (vehicleId, routeId, report_text, deviceToken)
         VALUES (?, ?, ?, ?)
       `;
       values = [timestamp, vehicleId, congestionLevel, deviceToken];
+    } else {
+      query = `
+        INSERT INTO reports (vehicleId, congestionLevel, deviceToken)
+        VALUES (?, ?, ?)
+      `;
+      values = [vehicleId, congestionLevel, deviceToken];
     }
 
     db.run(query, values, async function (err) {
@@ -170,7 +170,6 @@ function fetchReportsByBus(vehicleId) {
         console.error(err.message);
         return reject(err);
       }
-      console.log('Connected to the SQLite database.');
     });
 
     db.all('SELECT * FROM reports WHERE vehicleID = ?', [vehicleId], (err, rows) => {
@@ -181,7 +180,6 @@ function fetchReportsByBus(vehicleId) {
 
       db.close((err) => {
         if (err) console.error(err.message);
-        console.log('Closed the database connection.');
       });
 
       resolve(rows);
