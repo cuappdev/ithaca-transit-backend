@@ -6,7 +6,7 @@
     "description": "This is documentation for the ithaca-transit-backend API."
   },
   "paths": {
-    "/alerts": {
+    "/api/v1/alerts": {
       "get": {
         "summary": "Returns a list of official TCAT alerts and messages.",
         "description": "All response fields are optional. A list should be included in the app, and periodically updated.",
@@ -23,7 +23,7 @@
         }
       }
     },
-    "/allStops": {
+    "/api/v1/allStops": {
       "get": {
         "summary": "Returns a list of TCAT bus stops to show as a possible start or end location.",
         "description": "A list of all 'BusStop's.",
@@ -40,7 +40,7 @@
         }
       }
     },
-    "/libraries": {
+    "/api/v1/libraries": {
       "get": {
         "summary": "Returns a list of all libraries on campus.",
         "description": "A list of all libraries.",
@@ -57,7 +57,7 @@
         }
       }
     },
-    "/printers": {
+    "/api/v1/printers": {
       "get": {
         "summary": "Returns a list of all printers on campus.",
         "description": "A list of all printers.",
@@ -74,7 +74,7 @@
         }
       }
     },
-    "/delays": {
+    "/api/v1/delays": {
       "post": {
         "summary": "Returns a list of bus delays for buses at a specific stop. **Recommended and most up-to-date.",
         "description": "Takes in a list of objects with fields routeId and tripId and returns a list of objects with fields routeId, tripId, and delay.",
@@ -121,7 +121,7 @@
         }
       }
     },
-    "/route": {
+    "/api/v3/route": {
       "post": {
         "summary": "Returns a list of the best available routes based on the passed-in parameters. **Recommended and most up-to-date.",
         "produces": [
@@ -185,7 +185,7 @@
         }
       }
     },
-    "/appleSearch": {
+    "/api/v2/appleSearch": {
       "post": {
         "summary": "Returns a list of bus stops and ApplePlaces autocomplete search results given a query string.",
         "consumes": [
@@ -230,7 +230,7 @@
         }
       }
     },
-    "/tracking": {
+    "/api/v3/tracking": {
       "post": {
         "summary": "Returns a list information about live bus information (to help draw buses on the map). **Recommended and most up-to-date.",
         "produces": [
@@ -279,7 +279,7 @@
         }
       }
     },
-    "/departureNotification": {
+    "/api/v1/departureNotification": {
       "post": {
         "summary": "Sends a request to get departure notifications for a given deviceToken and time stamp ",
         "produces": [
@@ -317,7 +317,7 @@
         }
       }
     },
-    "/cancelDepartureNotification": {
+    "/api/v1/cancelDepartureNotification": {
       "post": {
         "summary": "Sends a request to get cancel a departure notifications for a given deviceToken and time stamp ",
         "produces": [
@@ -355,7 +355,7 @@
         }
       }
     },
-    "/delayNotification": {
+    "/api/v1/delayNotification": {
       "post": {
         "summary": "Sends a request to get delay notifications for a given deviceToken, stopID, and tripID ",
         "produces": [
@@ -398,7 +398,7 @@
         }
       }
     },
-    "/cancelDelayNotification": {
+    "/api/v1/cancelDelayNotification": {
       "post": {
         "summary": "Sends a request to cancel delay notifications for a given deviceToken, stopID, and tripID ",
         "produces": [
@@ -441,7 +441,7 @@
         }
       }
     },
-    "/closestBus": {
+    "/api/v1/closestBus": {
       "get": {
         "summary": "Returns the closest bus to a given location on a route.",
         "produces": [

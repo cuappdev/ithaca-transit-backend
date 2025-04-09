@@ -14,7 +14,7 @@ function fetchAllLibraries() {
         console.error(err.message);
         return reject(err);
       }
-      console.log("Connected to the SQLite database.");
+      // console.log("Connected to the SQLite database.");
     });
 
     // Fetch libraries
@@ -25,7 +25,7 @@ function fetchAllLibraries() {
       }
       db.close((err) => {
         if (err) console.error(err.message);
-        console.log("Closed the database connection.");
+        // console.log("Closed the database connection.");
       });
 
       resolve(rows);
@@ -41,7 +41,7 @@ function fetchAllPrinters() {
         console.error(err.message);
         return reject(err);
       }
-      console.log("Connected to the SQLite database.");
+      // console.log("Connected to the SQLite database.");
     });
 
     // Fetch printers
@@ -52,7 +52,7 @@ function fetchAllPrinters() {
       }
       db.close((err) => {
         if (err) console.error(err.message);
-        console.log("Closed the database connection.");
+        // console.log("Closed the database connection.");
       });
 
       resolve(rows);
