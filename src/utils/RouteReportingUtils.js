@@ -9,6 +9,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dbPath = path.join(__dirname, '..', 'data', 'transit.db');
 
+const nullBus = {
+  bearing: 0,
+  congestionLevel: 0,
+  currentStatus: 0,
+  currentStopSequence: 0,
+  latitude: 0,
+  longitude: 0,
+  occupancyStatus: 0,
+  routeId: "",
+  speed: 0,
+  stopId: "",
+  timestamp: {},
+  tripId: "",
+  vehicleId: "",
+}
+
 /**
  * Returns the closest bus on a given routeId and start position.
  * 
@@ -22,7 +38,7 @@ async function getClosestBus(routeId, start) {
 
   if (!vehicles) {
     LogUtils.log({ message: 'No vehicle data available' });
-    return null;
+    return nullBus;
   }
   
   const routeVehicles = Object.values(vehicles).filter(
@@ -30,13 +46,13 @@ async function getClosestBus(routeId, start) {
   
   if (routeVehicles.length === 0) {
     LogUtils.log({ message: 'No vehicles found for given route', routeId });
-    return null;
+    return nullBus;
   }
 
   const startPointList = start.split(',');
   const startPoint = { lat: startPointList[0], long: startPointList[1] };
   
-  let closestVehicle = null;
+  let closestVehicle = nullBus;
   let minDistance = Infinity;
   
   for (const vehicle of routeVehicles) {
@@ -54,11 +70,6 @@ async function getClosestBus(routeId, start) {
       minDistance = distance;
       closestVehicle = vehicle;
     }
-  }
-  
-  if (!closestVehicle) {
-    LogUtils.log({ message: 'No closest vehicle found', routeId });
-    return null;
   }
   
   return closestVehicle;
