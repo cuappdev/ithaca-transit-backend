@@ -2,15 +2,21 @@ import sqlite3
 import os
 
 # Get the absolute path of transit.db
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Gets the directory of the script
-DB_PATH = os.path.join(BASE_DIR, '..', 'transit.db')  # Moves up one level to store db in /data/
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)  # Gets the directory of the script
+DB_PATH = os.path.join(
+    BASE_DIR, "..", "transit.db"
+)  # Moves up one level to store db in /data/
+
 
 def create_tables():
     """Creates tables for storing locations in SQLite."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute('''
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS libraries (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             location TEXT UNIQUE,
@@ -18,9 +24,11 @@ def create_tables():
             latitude REAL,
             longitude REAL
         )
-    ''')
+    """
+    )
 
-    cursor.execute('''
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS printers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             location TEXT UNIQUE,
@@ -28,10 +36,24 @@ def create_tables():
             latitude REAL,
             longitude REAL
         )
-    ''')
+    """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS reports (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            vehicleID TEXT,
+            congestionLevel TEXT,
+            deviceToken TEXT
+        )
+    """
+    )
 
     conn.commit()
     conn.close()
+
 
 if __name__ == "__main__":
     create_tables()
