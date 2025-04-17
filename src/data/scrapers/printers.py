@@ -1,37 +1,33 @@
-import requests
-from bs4 import BeautifulSoup
-
-# URL of the CU Print directory page
-URL = "https://www.cornell.edu/about/maps/directory/?layer=CUPrint&caption=%20CU%20Print%20Printers"  # Replace with the actual URL
+from playwright.sync_api import sync_playwright
 
 def scrape_printers():
-    # Send a GET request to fetch the HTML content
-    response = requests.get(URL)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto("https://www.cornell.edu/about/maps/directory/?layer=CUPrint")
 
-    # Locate the table
-    table = soup.find("table", {"id": "directoryTable"})
-    rows = table.find("tbody").find_all("tr")
+        # Wait for the dynamic table to load
+        page.wait_for_selector("table#directoryTable")
 
-    # Extract data
-    data = []
-    for row in rows:
-        cols = row.find_all("td")
-        if len(cols) < 3:  # Ensure row has enough columns
-            continue
-        
-        location_name = cols[0].text.strip()
-        description = cols[1].text.strip()
-        
-        # Extract coordinates from the hyperlink <a> tag inside <td>
-        coordinates_link = cols[2].find("a")
-        coordinates_string = coordinates_link.text.strip() if coordinates_link else ""
-        coordinates = [float(x) for x in coordinates_string.split(', ')]
+        rows = page.query_selector_all("table#directoryTable > tbody > tr")
+        data = []
 
+        for row in rows:
+            cols = row.query_selector_all("td")
+            if len(cols) < 3:
+                continue
+            location = cols[0].inner_text().strip()
+            description = cols[1].inner_text().strip()
+            coordinates = [float(x.strip()) for x in cols[2].inner_text().split(",")]
 
-        data.append({
-            "Location": location_name,
-            "Description": description,
-            "Coordinates": coordinates
-        })
-    return data 
+            data.append({
+                "Location": location,
+                "Description": description,
+                "Coordinates": coordinates
+            })
+
+        browser.close()
+        return data
+
+if __name__ == "__main__":
+    scrape_printers()

@@ -3,7 +3,26 @@ services:
     image: cornellappdev/transit-dev:${IMAGE_TAG}
     env_file: .env
     volumes:
-      - ./service-account-credentials.json:/app/service-account-credentials.json:ro
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+  ghopper:
+    image: cornellappdev/transit-ghopper:03_01_25
     ports:
-      - "8080:3000"
-      
+      - "8988:8988"
+
+  map:
+    image: cornellappdev/transit-map
+    ports:
+      - "8989:8989"
+
+  ghopper-walking:
+    image: cornellappdev/transit-ghopper-walking:latest
+    ports:
+      - "8987:8987"
+
+  live-tracking:
+    image: cornellappdev/transit-python:03_01_25
+    env_file: python.envrc
+    ports:
+      - "5000:5000"

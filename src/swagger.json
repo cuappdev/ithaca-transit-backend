@@ -49,10 +49,7 @@
         ],
         "responses": {
           "200": {
-            "description": "{\"success\": true, \"data\": [\"id\": 1, \"location\": \"Africana Studies and Research Center\", \"address\": \"310 Triphammer Rd, Ithaca, NY 14850\", \"latitude\": 42.4574, \"longitude\": -76.4823]}",
-            "schema": {
-              "$ref": "#/components/schemas/BusStop"
-            }
+            "description": "{\"success\": true, \"data\": [\"id\": 1, \"location\": \"Africana Studies and Research Center\", \"address\": \"310 Triphammer Rd, Ithaca, NY 14850\", \"latitude\": 42.4574, \"longitude\": -76.4823]}"
           }
         }
       }
@@ -66,10 +63,21 @@
         ],
         "responses": {
           "200": {
-            "description": "{\"success\": true, \"data\": [{\"id\": 1, \"location\": \"Akwe:kon\", \"description\": \"Color - Room 115\", \"latitude\": 42.4563, \"longitude\": -76.4806}]}",
-            "schema": {
-              "$ref": "#/components/schemas/BusStop"
-            }
+            "description": "{\"success\": true, \"data\": [{\"id\": 1, \"location\": \"Akwe:kon\", \"description\": \"Color - Room 115\", \"latitude\": 42.4563, \"longitude\": -76.4806}]}"
+          }
+        }
+      }
+    },
+    "/api/v1/restaurants": {
+      "get": {
+        "summary": "Returns a list of all restaurants in Ithaca.",
+        "description": "A list of all restaurants.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"success\": true, \"data\": [{\"id\": 1, \"name\": \"Alley Cat Cafe\", \"category\": \"Coffee\", \"address\": \"112 N Cayuga St.\", \"latitude\": 42.4407309, \"longitude\": -76.4950526, \"image_url\": \"https://assets.simpleviewinc.com/simpleview/image/upload/crm/ithacany/Alley-Cat-Logo_1872F7A2-5056-A36A-09631186ACCA298F-1872f6fe5056a36_1872f7f6-5056-a36a-098fa97e4ad0cd49.jpg\", \"web_url\": \"https://www.alleycatithaca.com\"}]}"
           }
         }
       }

@@ -34,3 +34,16 @@ def insert_printer(location, description, latitude, longitude):
 
     conn.commit()
     conn.close()
+
+def insert_restaurant(name, category, address, latitude, longitude, image_url, web_url):
+    """Insert a restaurant into the database."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        INSERT OR IGNORE INTO restaurants (name, category, address, latitude, longitude, image_url, web_url)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', (name, category, address, latitude, longitude, image_url, web_url))
+
+    conn.commit()
+    conn.close()
