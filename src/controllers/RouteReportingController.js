@@ -19,4 +19,32 @@ router.get('/closestBus', async (req, res) => {
   }
 });
 
+router.post('/reports', async (req, res) => {
+  try {
+    const {
+      vehicleId,
+      congestionLevel,
+      deviceToken,
+      timestamp
+    } = req.body;
+
+    const report = await RouteReportingUtils.insertReport(vehicleId, congestionLevel, deviceToken, timestamp);
+    res.status(200).json(report);
+  } catch (error) {
+    LogUtils.logErr(error, req.body, 'Error inserting report');
+    res.status(500).json({ error: 'Failed to insert report' });
+  }
+});
+
+router.get('/reports/:vehicleId', async (req, res) => {
+  try {
+    const { vehicleId } = req.params;
+    const reports = await RouteReportingUtils.fetchReportsByBus(vehicleId);
+    res.status(200).json(reports);
+  } catch (error) {
+    LogUtils.logErr(error, req.params, 'Error fetching reports by vehicleId');
+    res.status(500).json({ error: 'Failed to fetch reports by vehicleId' });
+  }
+});
+
 export default router;
