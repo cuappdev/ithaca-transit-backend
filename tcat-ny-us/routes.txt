@@ -22,5 +22,5 @@ route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_
 81,0,"81","81","Cornell Daytime Campus Service",3,,f24040,ffffff,74
 82,0,"82","82","Cornell Campus Service - East Hill Offic",3,,00A99E,FFFFFF,75
 90,0,"90","90","Ithaca Commons - Cornell University",3,,400080,ffffff,90
-92,0,"92","92","Cornell Campus Service-Nights",3,,789795,ffffff,92
-145,0,"145","14S","West Hill - Shopping",3,,881407,ffffff,2
+92,0,"92","92",,3,,4e048b,ffffff,92
+145,0,"145","14S","West Hill - Shopping",3,,881407,ffffff,21
