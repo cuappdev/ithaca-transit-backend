@@ -14,15 +14,24 @@ router.post("/delayNotification", async (req, res) => {
     !tripID ||
     typeof tripID !== "string"
   ) {
-    return res.status(400).json({ error: "Invalid input parameters" });
+    return res.status(400).json({ 
+      success: false, 
+      data: "Invalid input parameters" 
+    });
   }
 
   try {
     NotificationUtils.addDelayNotification(tripID, stopID, deviceToken);
-    res.status(200).json({ success: "successfully sent delay notification" });
+    res.status(200).json({ 
+      success: true, 
+      data: "successfully registered delay notification" 
+    });
   } catch (error) {
     console.error("Error setting up delay notification:", error.message);
-    res.status(500).json({ error: "Failed to set up delay notification" });
+    res.status(500).json({ 
+      success: false, 
+      data: "Failed to set up delay notification" 
+    });
   }
 });
 
@@ -37,17 +46,24 @@ router.post("/cancelDelayNotification", async (req, res) => {
     !stopID ||
     typeof stopID !== "string"
   ) {
-    return res.status(400).json({ error: "Invalid input parameters" });
+    return res.status(400).json({ 
+      success: false, 
+      data: "Invalid input parameters" 
+    });
   }
 
   try {
     NotificationUtils.deleteDelayNotification(tripID, stopID, deviceToken);
-    res
-      .status(200)
-      .json({ success: "successfully cancelled delay notification" });
+    res.status(200).json({ 
+      success: true, 
+      data: "successfully cancelled delay notification" 
+    });
   } catch (error) {
     console.error("Error canceling delay notification:", error.message);
-    res.status(500).json({ error: "Failed to cancel delay notification" });
+    res.status(500).json({ 
+      success: false, 
+      data: "Failed to cancel delay notification" 
+    });
   }
 });
 
@@ -63,7 +79,10 @@ router.post("/departureNotification", async (req, res) => {
       !startTime ||
       typeof startTime !== "string"
     ) {
-      return res.status(400).json({ error: "Invalid input parameters" });
+      return res.status(400).json({ 
+        success: false, 
+        data: "Invalid input parameters" 
+      });
     }
 
     // Call the utility function to set up the departure notification
@@ -73,12 +92,16 @@ router.post("/departureNotification", async (req, res) => {
     );
 
     // Respond with the result
-    res
-      .status(200)
-      .json({ sucess: "successfully sent departure notification" });
+    res.status(200).json({ 
+      success: true, 
+      data: "successfully scheduled departure notification" 
+    });
   } catch (error) {
     console.error("Error setting up departure notification:", error.message);
-    res.status(500).json({ error: "Failed to set up departure notification" });
+    res.status(500).json({ 
+      success: false, 
+      data: "Failed to set up departure notification" 
+    });
   }
 });
 
@@ -94,7 +117,10 @@ router.post("/cancelDepartureNotification", async (req, res) => {
       !startTime ||
       typeof startTime !== "string"
     ) {
-      return res.status(400).json({ error: "Invalid input parameters" });
+      return res.status(400).json({ 
+        success: false, 
+        data: "Invalid input parameters" 
+      });
     }
 
     // Call the utility function to cancel the departure notification
@@ -104,12 +130,16 @@ router.post("/cancelDepartureNotification", async (req, res) => {
     );
 
     // Respond with the result
-    res
-      .status(200)
-      .json({ sucess: "successfully canceled departure notification" });
+    res.status(200).json({ 
+      success: true, 
+      data: "successfully canceled departure notification" 
+    });
   } catch (error) {
     console.error("Error canceling departure notification:", error.message);
-    res.status(500).json({ error: "Failed to cancel departure notification" });
+    res.status(500).json({ 
+      success: false, 
+      data: "Failed to cancel departure notification" 
+    });
   }
 });
 
@@ -124,7 +154,10 @@ router.post("/microserviceNotif", async (req, res) => {
       !routeID ||
       typeof routeID !== "string"
     ) {
-      return res.status(400).json({ error: "Invalid input parameters" });
+      return res.status(400).json({ 
+        success: false, 
+        data: "Invalid input parameters" 
+      });
     }
 
     // Send the notification
@@ -133,12 +166,16 @@ router.post("/microserviceNotif", async (req, res) => {
       `The bus on ${routeID} is delayed`,
       "testBody"
     );
-    return res
-      .status(200)
-      .json({ success: "successfully sent microservice notification" });
+    return res.status(200).json({ 
+      success: true, 
+      data: "successfully sent microservice notification" 
+    });
   } catch (error) {
     console.error("Error sending notification:", error.message);
-    res.status(500).json({ error: "Failed to send notification" });
+    res.status(500).json({ 
+      success: false, 
+      data: "Failed to send notification" 
+    });
   }
 });
 
