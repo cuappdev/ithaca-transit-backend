@@ -47,9 +47,9 @@ app.use('/api/v1/', ecosystemRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 // Setup recurring events (every 30 seconds)
-schedule.scheduleJob("*/30 * * * * *", () => {
+schedule.scheduleJob("*/30 * * * * *", async () => {
   AlertsUtils.fetchAlerts();
-  RealtimeFeedUtilsV3.fetchRTF();
+  await RealtimeFeedUtilsV3.fetchRTF();
   AllStopUtils.fetchAllStops();
   RealtimeFeedUtilsV3.fetchVehicles();
   NotificationUtils.sendNotifications();

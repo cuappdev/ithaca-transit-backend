@@ -3,13 +3,13 @@ import schedule from "node-schedule";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
+import RealtimeFeedUtilsV3 from "./RealtimeFeedUtilsV3.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const notifPath = path.join(__dirname, "..", "data", "notifRequests.json");
 
 let notifRequests;
-let rtfData;
 
 try {
   const data = fs.readFileSync(notifPath, "utf8");
@@ -58,6 +58,13 @@ function deleteDelayNotification(tripID, stopID, deviceToken) {
 }
 
 function sendNotifications() {
+  const rtfData = RealtimeFeedUtilsV3.getRTFData();
+  
+  if (!rtfData) {
+    // no real-time data available yet
+    return;
+  }
+  
   for (const id in rtfData) {
     if (id in notifRequests) {
       for (const stopID in notifRequests[id]) {
