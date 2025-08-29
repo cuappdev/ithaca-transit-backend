@@ -23,6 +23,7 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 1138,1138,"East Shore @ James L. Gibbs",,42.464016,-76.499168,,,0,,0
 1143,1143,"Stewart Park Entrance",,42.462711,-76.500808,,,0,,0
 115,115,"State/MLK @ Albany",,42.4394,-76.501868,,,0,,0
+117,117,"Seneca @ Corn",,42.440254,-76.506041,,,0,,0
 127,127,"State/MLK @ Plain",,42.439345,-76.504134,,,0,,0
 128,128,"State/MLK @ Plain",,42.439434,-76.503761,,,0,,0
 1301,1301,"Thurston @ Stewart",,42.454577,-76.490483,,,0,,0
@@ -85,7 +86,6 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 1533,1533,"Statler Hall",,42.446033,-76.482589,,,0,,0
 1534,1534,"Sage Hall",,42.445351,-76.482689,,,0,,0
 1535,1535,"Campus @ Gates Hall",,42.445185,-76.480429,,,0,,0
-1536,1536,"Hoy @ Hoy Field",,42.4445,-76.481597,,,0,,0
 1540,1540,"Uris Hall Across Street",,42.44759,-76.482399,,,0,,0
 1541,1541,"Uris Hall",,42.447525,-76.482079,,,0,,0
 1542,1542,"Kennedy Hall",,42.447623,-76.479438,,,0,,0
@@ -116,7 +116,8 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 1714,1714,"Catherine Commons",,42.439773,-76.485231,,,0,,0
 1715,1715,"Collegetown Crossing",,42.440639,-76.485152,,,0,,0
 1716,1716,"Schwartz Performing Arts Center",,42.442557,-76.485336,,,0,,0
-1719,1719,"College @ Oak",,42.44237,-76.485214,,,0,,0
+1717,1717,"Oak @ College",,42.442707,-76.484951,,,0,,0
+1719,1719,"College @ Oak",,42.442598,-76.485191,,,0,,0
 172,172,"Ithaca Commons - Aurora St",,42.439243,-76.495517,,,0,,0
 1721,1721,"Stewart @ Seneca",,42.440589,-76.489722,,,0,,0
 1722,1722,"Stewart @ Seneca",,42.440757,-76.489804,,,0,,0
@@ -130,6 +131,8 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 1754,1754,"Maple @ Veterans - Maplewood Apts",,42.441321,-76.474981,,,0,,0
 1755,1755,"Dryden @ Pine Tree Rd",,42.443626,-76.470572,,,0,,0
 1756,1756,"Dryden @ Synchrotron Dr",,42.443834,-76.470211,,,0,,0
+1757,1757,"Pine Tree Rd @ Dryden Rd",,42.443277,-76.470329,,,0,,0
+1758,1758,"Pine Tree Rd @ Dryden Rd",,42.443577,-76.470248,,,0,,0
 1767,1767,"Pine Tree at East Hill Plaza",,42.437576,-76.46508,,,0,,0
 1768,1768,"Pine Tree at East Hill Plaza",,42.437606,-76.465247,,,0,,0
 1769,1769,"CISER",,42.438489,-76.465182,,,0,,0
@@ -161,12 +164,12 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 2542,2542,"Overlook Apts",,42.465775,-76.540717,,,0,,0
 2543,2543,"Cayuga Meadows",,42.464471,-76.54106,,,0,,0
 2545,2545,"Cayuga Medical ER",,42.469111,-76.53834,,,0,,0
-2546,2546,"Cayuga Medical Center",,42.468319,-76.537128,,,0,,0
-2547,2547,"Museum of the Earth",,42.467204,-76.536995,,,0,,0
+2547,2547,"Museum of the Earth",,42.465887,-76.538238,,,0,,0
+2549,2549,"Biggs Memorial Building",,42.471034,-76.539449,,,0,,0
 2550,2550,"Trumansburg Rd at CMC",,42.466614,-76.539749,,,0,,0
 2555,2555,"Trumansburg Rd at Professional Building",,42.467991,-76.541824,,,0,,0
 2556,2556,"Trumansburg Rd at Professional Building",,42.46786,-76.541779,,,0,,0
-2557,2557,"Professional Building",,42.468006,-76.541252,,,0,,0
+2557,2557,"Professional Building",,42.468488,-76.539228,,,0,,0
 2559,2559,"Trumansburg Rd @ Dubois",,42.471375,-76.547049,,,0,,0
 2560,2560,"Trumansburg Rd @ Dubois",,42.471432,-76.547416,,,0,,0
 2563,2563,"Trumansburg Rd @ Woolf",,42.477474,-76.557503,,,0,,0
@@ -245,9 +248,7 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 3512,3512,"Triphammer @ Hanshaw",,42.469814,-76.480643,,,0,,0
 3515,3515,"Triphammer @ Texas",,42.472656,-76.481323,,,0,,0
 3516,3516,"Triphammer @ Spruce",,42.472545,-76.481438,,,0,,0
-3519,3519,"Triphammer @ Winthrop",,42.475204,-76.481627,,,0,,0
 352,352,"Ithaca College - Terrace Apts",,42.419699,-76.49659,,,0,,0
-3520,3520,"Triphammer @ Winthrop",,42.475215,-76.481857,,,0,,0
 3521,3521,"Triphammer at Kendal",,42.476626,-76.48175,,,0,,0
 3522,3522,"Triphammer at Kendal",,42.476657,-76.481978,,,0,,0
 3523,3523,"Sheraton @ Triphammer",,42.47816,-76.481316,,,0,,0
@@ -257,6 +258,7 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 3547,3547,"Cinema @ Sheraton",,42.478606,-76.478294,,,0,,0
 3548,3548,"Cinema @ Sheraton",,42.478652,-76.478393,,,0,,0
 3549,3549,"Cinema @ Uptown",,42.480975,-76.478438,,,0,,0
+355,355,"Aurora @ Hillview",,42.433871,-76.494714,,,0,,0
 3550,3550,"Uptown @ Cinema",,42.48116,-76.478339,,,0,,0
 3553,3553,"Uptown Village Apts",,42.478473,-76.472534,,,0,,0
 3554,3554,"Uptown Village Apts",,42.478493,-76.472696,,,0,,0
@@ -265,10 +267,10 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 3557,3557,"University Park Apts",,42.48074,-76.472783,,,0,,0
 3558,3558,"University Park Apts",,42.480553,-76.472883,,,0,,0
 3559,3559,"Warrenwood Apts",,42.478523,-76.468956,,,0,,0
+356,356,"Aurora @ Hillview",,42.43477,-76.494491,,,0,,0
 3560,3560,"Warrenwood Apts",,42.478623,-76.46883,,,0,,0
 3579,3579,"Cayuga Mall",,42.483672,-76.485534,,,0,,0
-3584,3584,"YMCA",,42.486358,-76.489921,,,0,,0
-3586,3586,"Butler@Graham",,42.486073,-76.488791,,,0,,0
+358,358,"Aurora @ Outlook Apts",,42.430766,-76.496406,,,0,,0
 3587,3587,"Graham@Butler",,42.486082,-76.488363,,,0,,0
 3588,3588,"The Shops at Ithaca Mall",,42.482619,-76.489914,,,0,,0
 3593,3593,"Tops Supermarket (Lansing)",,42.482421,-76.486397,,,0,,0
@@ -294,14 +296,13 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 3726,3726,"Dewitt Middle School",,42.474888,-76.466103,,,0,,0
 3727,3727,"Warren at Warrenwood Apts",,42.477661,-76.466887,,,0,,0
 3728,3728,"Warren at Warrenwood Apts",,42.477055,-76.467026,,,0,,0
-373,373,"College Circle Apts - Community Building",,42.411591,-76.500485,,,0,,0
 3733,3733,"22 Arrowwood Drive",,42.47986,-76.465119,,,0,,0
 3735,3735,"10 Brentwood Drive",,42.480506,-76.46402,,,0,,0
+374,374,"College Circle Apts South",,42.410785,-76.4998,,,0,,0
 3740,3740,"Warren @ Dart",,42.483478,-76.467404,,,0,,0
 3741,3741,"Warren @ Dart",,42.483356,-76.467246,,,0,,0
 3743,3743,"Warren @ Northwoods",,42.486023,-76.467331,,,0,,0
 3744,3744,"Warren @ Northwoods",,42.486297,-76.467536,,,0,,0
-3745,3745,"Northwoods Apts",,42.486335,-76.470435,,,0,,0
 3747,3747,"Warren Rd Post Office",,42.489956,-76.467559,,,0,,0
 3748,3748,"Warren @ Bomax",,42.490176,-76.467796,,,0,,0
 3749,3749,"Tompkins County Jail",,42.493011,-76.467758,,,0,,0
@@ -330,7 +331,6 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 3904,3904,"Muriel @ Hanshaw",,42.467307,-76.461678,,,0,,0
 3905,3905,"Hanshaw @ Salem",,42.467262,-76.458817,,,0,,0
 3906,3906,"Hanshaw @ Salem",,42.467339,-76.458504,,,0,,0
-3908,3908,"Hanshaw @ Muriel",,42.46728,-76.461485,,,0,,0
 3909,3909,"Salem @ Maplewood",,42.469333,-76.45871,,,0,,0
 3911,3911,"Salem @ Birchwood",,42.471275,-76.457008,,,0,,0
 3915,3915,"Winston Court Apts",,42.475566,-76.457382,,,0,,0
@@ -342,18 +342,18 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 3932,3932,"Sapsucker Woods @ Hanshaw",,42.467547,-76.45037,,,0,,0
 3936,3936,"Lab of Ornithology",,42.479395,-76.450333,,,0,,0
 3937,3937,"Lab of Ornithology",,42.479298,-76.450334,,,0,,0
-3947,3947,"Guthrie Ithaca",,42.476493,-76.432449,,,0,,0
-3951,3951,"Hanshaw Village",,42.483364,-76.429214,,,0,,0
+3951,3951,"Hanshaw Village",,42.483454,-76.429203,,,0,,0
+3954,3954,"Hanshaw Road @ Guthrie",,42.476054,-76.430615,,,0,,0
 4311,4311,"Freeville Rd at William George Academy",,42.505309,-76.334885,,,0,,0
 4312,4312,"Freeville Rd at William George Academy",,42.505275,-76.335044,,,0,,0
 4315,4315,"Railroad @ Cook (Freeville)",,42.512422,-76.342657,,,0,,0
 4316,4316,"Railroad @ Cook (Freeville)",,42.512405,-76.343047,,,0,,0
-4318,4318,"Station Park - Freeville",,42.513123,-76.345047,,,0,,0
+4318,4318,"Freeville Station Park",,42.513072,-76.345104,,,0,,0
 4321,4321,"Freeville Park and Ride",,42.511939,-76.350422,,,0,,0
 4322,4322,"Freeville Park and Ride",,42.512015,-76.350532,,,0,,0
 4325,4325,"Rte 38 @ Fall Creek Rd",,42.513823,-76.346795,,,0,,0
 4326,4326,"Rte38 @ Main (Freeville)",,42.513981,-76.346892,,,0,,0
-4328,4328,"Railroad @ Main (Freeville)",,42.513874,-76.346473,,,0,,0
+4328,4328,"Railroad @ Main (Freeville)",,42.513857,-76.346351,,,0,,0
 4335,4335,"Groton Rd @ Peruville",,42.54808,-76.361519,,,0,,0
 4336,4336,"Groton Rd @ Peruville",,42.548393,-76.36177,,,0,,0
 4351,4351,"Groton High School",,42.580489,-76.36912,,,0,,0
@@ -362,7 +362,7 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 4356,4356,"Peru Rd @ Hamilton Square",,42.583527,-76.368505,,,0,,0
 4359,4359,"South @ Main (Groton)",,42.584913,-76.365758,,,0,,0
 4360,4360,"Main @ South (Groton)",,42.585087,-76.36573,,,0,,0
-4361,4361,"Main @ Railroad (Groton)",,42.586338,-76.366043,,,0,,0
+4361,4361,"Main @ Lincoln",,42.586338,-76.366043,,,0,,0
 4362,4362,"Main @ Railroad (Groton)",,42.586483,-76.36624,,,0,,0
 4365,4365,"Groton Speedway",,42.58755,-76.366864,,,0,,0
 4375,4375,"Groton Town Hall",,42.58995,-76.369117,,,0,,0
@@ -376,7 +376,7 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 4512,4512,"Varna",,42.454291,-76.440673,,,0,,0
 4515,4515,"Dryden Rd @ Mt Pleasant",,42.455817,-76.436302,,,0,,0
 4516,4516,"Dryden Rd @ Freese",,42.455952,-76.436255,,,0,,0
-4517,4517,"1062 Dryden Rd - Pineridge Apts",,42.459277,-76.430198,,,0,,0
+4517,4517,"1061 Dryden Road  - Evergreen Townhouses",,42.459277,-76.430198,,,0,,0
 4518,4518,"1062 Dryden Rd - Pineridge Apts",,42.459366,-76.430249,,,0,,0
 4521,4521,"Dryden Rd @ Turkey Hill",,42.46025,-76.427536,,,0,,0
 4522,4522,"Dryden Rd @ Turkey Hill",,42.460445,-76.427257,,,0,,0
@@ -388,16 +388,11 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 4540,4540,"Dryden Rd @ Main St (Etna)",,42.476466,-76.386917,,,0,,0
 4543,4543,"Dryden Rd @ Mineah",,42.480636,-76.373871,,,0,,0
 4544,4544,"Dryden Rd @ Kirk",,42.480834,-76.373444,,,0,,0
-4549,4549,"Lower Creek @ Pickney",,42.476921,-76.4064,,,0,,0
 4550,4550,"Lower Creek @ Pinckney",,42.477118,-76.406096,,,0,,0
-4553,4553,"Creekwood Apts",,42.479538,-76.399702,,,0,,0
 4554,4554,"Creekwood Apts",,42.479595,-76.399764,,,0,,0
 4561,4561,"Etna Rd @ Pinckney",,42.487167,-76.40972,,,0,,0
-4562,4562,"Etna @ Pinckney",,42.487276,-76.409452,,,0,,0
-4563,4563,"Pinckney @ Etna Rd",,42.487143,-76.409523,,,0,,0
 4565,4565,"Etna Rd @ Wood",,42.487743,-76.392734,,,0,,0
 4567,4567,"Upper Creek @ Etna Ln",,42.485561,-76.38524,,,0,,0
-4568,4568,"Lower Creek @ Etna Ln",,42.485372,-76.385101,,,0,,0
 4569,4569,"Main @ Etna Ln - Etna Mills Apts",,42.485331,-76.383629,,,0,,0
 4570,4570,"Main @ Etna Ln - Etna Mills Apts",,42.485316,-76.383758,,,0,,0
 4572,4572,"Lower Creek @ Creek Rd",,42.483044,-76.388299,,,0,,0
@@ -459,19 +454,19 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 5530,5530,"Honness @ Pine Tree",,42.429735,-76.462929,,,0,,0
 5531,5531,"Pine Tree @ Honness",,42.429882,-76.462433,,,0,,0
 5532,5532,"Pine Tree @ Honness",,42.42984,-76.462562,,,0,,0
+5534,5534,"Grandview Park",,42.427867,-76.467599,,,0,,0
 5536,5536,"Honness at Ithaca Recreation Way",,42.429628,-76.467055,,,0,,0
 5538,5538,"Snyder Hill @ Pew Trail",,42.430658,-76.461309,,,0,,0
-5539,5539,"Snyder Hill @ Pew Trail",,42.430591,-76.461382,,,0,,0
-5541,5541,"Snyder Hill @ Sugarbush",,42.429371,-76.45967,,,0,,0
+5540,5540,"Tower View @ Slaterville Rd",,42.426328,-76.467208,,,0,,0
 5542,5542,"Snyder Hill @ Sugarbush",,42.429325,-76.459395,,,0,,0
-5545,5545,"Regency @ Snyder Hill",,42.426128,-76.455275,,,0,,0
-5546,5546,"Snyder Hill @ Regency",,42.426267,-76.455364,,,0,,0
-5548,5548,"Snyder Hill @ Hungerford Hill",,42.42509,-76.453789,,,0,,0
-5549,5549,"Snyder Hill @ Dove",,42.423891,-76.451059,,,0,,0
-5552,5552,"Skyvue @ Snyder Hill",,42.4229,-76.448456,,,0,,0
-5559,5559,"Eastern Heights @ Sharlene",,42.423297,-76.45262,,,0,,0
-5560,5560,"Eastern Heights @ Landmark",,42.42437,-76.454544,,,0,,0
-5561,5561,"Eastern Heights @ Joanne",,42.424991,-76.456481,,,0,,0
+5543,5543,"Park Ln @ Tudor",,42.421735,-76.455131,,,0,,0
+5546,5546,"Snyder Hill @ Regency",,42.426232,-76.455108,,,0,,0
+5547,5547,"Joanne @ Eastern Heights",,42.424855,-76.456436,,,0,,0
+5548,5548,"Snyder Hill @ Hungerford Hill",,42.425111,-76.453531,,,0,,0
+5549,5549,"Snyder Hill @ Dove",,42.423951,-76.450814,,,0,,0
+5552,5552,"Skyvue @ Snyder Hill",,42.423043,-76.448199,,,0,,0
+5559,5559,"Eastern Heights @ Sharlene",,42.423259,-76.452848,,,0,,0
+5560,5560,"Eastern Heights @ Landmark",,42.424413,-76.454862,,,0,,0
 559,559,"Meadow at Ithaca Shopping Plaza",,42.429435,-76.507766,,,0,,0
 561,561,"Elmira @ Meadow",,42.427566,-76.508826,,,0,,0
 562,562,"Meadow @ Elmira",,42.428619,-76.508163,,,0,,0
@@ -484,7 +479,6 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 5707,5707,"Slaterville Rd @ Honness",,42.429516,-76.472298,,,0,,0
 5708,5708,"Slaterville Rd @ Honness",,42.429366,-76.472243,,,0,,0
 571,571,"Elmira @ Buttermilk",,42.417809,-76.522887,,,0,,0
-5710,5710,"Honness @ Slaterville Rd",,42.429416,-76.471938,,,0,,0
 5711,5711,"Rt79 @ Tower View",,42.426198,-76.467131,,,0,,0
 5712,5712,"Slaterville Rd @ Tower View",,42.426205,-76.467339,,,0,,0
 5715,5715,"Slaterville Rd @ Lois - Commonland",,42.424262,-76.464146,,,0,,0
@@ -493,7 +487,7 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 572,572,"Elmira @ Buttermilk",,42.417769,-76.523398,,,0,,0
 5720,5720,"Pine Tree @ Slaterville Rd",,42.422577,-76.461584,,,0,,0
 5721,5721,"Slaterville Rd @ Park Ln WB",,42.417699,-76.453928,,,0,,0
-5722,5722,"Slaterville Rd @ Park Ln EB",,42.417631,-76.454134,,,0,,0
+5722,5722,"Slaterville Rd @ Park Ln EB",,42.417829,-76.454518,,,0,,0
 5729,5729,"Slaterville Rd @ German Cross",,42.405312,-76.429244,,,0,,0
 5730,5730,"Slaterville Rd @ German Cross",,42.405417,-76.429625,,,0,,0
 5733,5733,"Slaterville Rd @ Brooktondale Rd",,42.40277,-76.423897,,,0,,0
@@ -559,8 +553,8 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 669,669,"State/MLK @ Inlet Island",,42.440442,-76.514183,,,0,,0
 6711,6711,"Elmira Rd @ Five Mile",,42.413532,-76.533423,,,0,,0
 6712,6712,"Elmira Rd @ Five Mile",,42.413753,-76.533294,,,0,,0
-6713,6713,"Elmira Rd @ 7 Mile",,42.408623,-76.541236,,,0,,0
-6714,6714,"Elmira Rd @ 7 Mile",,42.408623,-76.541495,,,0,,0
+6713,6713,"Elmira Rd @ 7 Mile",,42.409505,-76.539937,,,0,,0
+6714,6714,"Elmira Rd @ 7 Mile",,42.409292,-76.540574,,,0,,0
 6717,6717,"Elmira Rd @ Enfield Falls",,42.403481,-76.546152,,,0,,0
 6718,6718,"Elmira Rd @ Enfield Falls",,42.403728,-76.546303,,,0,,0
 672,672,"Seneca @ Fulton",,42.440077,-76.511172,,,0,,0
@@ -582,35 +576,33 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 706,706,"Chestnut Hill Apts",,42.441715,-76.518113,,,0,,0
 709,709,"Chestnut @ Elm - LACS",,42.438633,-76.519085,,,0,,0
 710,710,"Chestnut @ Hook - LACS",,42.43891,-76.519118,,,0,,0
-713,713,"Elm @ West Village Pl",,42.436691,-76.522141,,,0,,0
+713,713,"Elm @ W Village",,42.436691,-76.522141,,,0,,0
 715,715,"West Village Parking Lot",,42.435424,-76.523016,,,0,,0
-717,717,"Haller @ Elm",,42.436465,-76.52599,,,0,,0
-718,718,"Haller @ Elm",,42.43635,-76.52608,,,0,,0
-719,719,"Haller @ Hook",,42.439304,-76.526092,,,0,,0
-720,720,"Hook @ Haller",,42.439479,-76.526061,,,0,,0
-721,721,"Warren Pl @ Hook",,42.439679,-76.523813,,,0,,0
-722,722,"Warren Pl @ Hook",,42.439597,-76.523986,,,0,,0
-725,725,"Warren Pl @ Sunrise",,42.443809,-76.524385,,,0,,0
-726,726,"Warren Pl @ Sunrise",,42.443946,-76.524521,,,0,,0
-729,729,"Warren Pl @ Hector",,42.44871,-76.526359,,,0,,0
-730,730,"Warren Pl @ Hector",,42.448222,-76.526154,,,0,,0
 731,731,"Hector @ Warren Pl",,42.448673,-76.526626,,,0,,0
 732,732,"Mecklenburg Rd @ Conifer Dr",,42.448513,-76.530502,,,0,,0
 733,733,"Mecklenburg Rd @ Conifer Dr",,42.44841,-76.53067,,,0,,0
+734,734,"Hector @ Warren Place",,42.450021,-76.52601,,,0,,0
 736,736,"Linderman Creek Apts",,42.449429,-76.530539,,,0,,0
 737,737,"Linderman Creek Apts",,42.449702,-76.530849,,,0,,0
 738,738,"Conifer Village",,42.451122,-76.532226,,,0,,0
 744,744,"Hector @ N Taylor",,42.450923,-76.520851,,,0,,0
-745,745,"Hector @ Fairview Terrace",,42.451903,-76.521545,,,0,,0
+745,745,"Hector @ Fallview Terrace",,42.451903,-76.521545,,,0,,0
 747,747,"413 Hector St",,42.446095,-76.517021,,,0,,0
 748,748,"412 Hector St",,42.446086,-76.51715,,,0,,0
+750,750,"Elm Street @ Haller",,42.43632,-76.52589,,,0,,0
+751,751,"Elm Street @ Elmcrest",,42.43617,-76.525347,,,0,,0
+752,752,"Westhaven Road @ Elm",,42.436272,-76.533679,,,0,,0
+753,753,"Westhaven Road @ Elm",,42.436149,-76.5339,,,0,,0
+754,754,"Westhaven Road @ Helens",,42.44178,-76.533877,,,0,,0
+755,755,"Westhaven Road @ Helens",,42.441752,-76.53407,,,0,,0
+756,756,"Westhaven Road @ Mecklenburg",,42.44828,-76.53417,,,0,,0
+757,757,"Westhaven Road @ Mecklenburg",,42.44818,-76.534408,,,0,,0
 767,767,"Campbell @ Hector",,42.45256,-76.523337,,,0,,0
 768,768,"Campbell @ Hector",,42.452522,-76.523407,,,0,,0
 773,773,"Campbell @ Hopkins",,42.456565,-76.524525,,,0,,0
 774,774,"Campbell @ Hopkins",,42.456421,-76.52455,,,0,,0
 779,779,"Cliff @ Vinegar Hill",,42.449738,-76.517723,,,0,,0
 780,780,"Cliff @ Vinegar Hill",,42.449829,-76.517882,,,0,,0
-785,785,"Trumansburg Rd @ Hopkins",,42.456969,-76.524239,,,0,,0
 786,786,"Trumansburg Rd @ Hopkins",,42.456894,-76.524384,,,0,,0
 900,900,"Cayuga @ Cascadilla",,42.444801,-76.499306,,,0,,0
 901,901,"Cayuga @ Cascadilla",,42.444496,-76.499206,,,0,,0
