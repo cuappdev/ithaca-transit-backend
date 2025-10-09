@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import RealtimeFeedUtilsV3 from "./RealtimeFeedUtilsV3.js";
 import LogUtils from "./LogUtils.js";
+import LogUtils from "./LogUtils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -61,9 +62,13 @@ function deleteDelayNotification(tripID, stopID, deviceToken) {
 function sendNotifications() {
   const rtfData = RealtimeFeedUtilsV3.getRTFData();
 
+
   if (!rtfData) {
     return;
   }
+
+  const tokensToDelete = [];
+
 
   const tokensToDelete = [];
 
@@ -71,6 +76,18 @@ function sendNotifications() {
     if (id in notifRequests) {
       for (const stopID in notifRequests[id]) {
         if (stopID in rtfData[id]["stopUpdates"]) {
+          //only send a notification if there is a delay
+          if (rtfData[id]["stopUpdates"][stopID] > 0) {
+            for (const deviceToken of notifRequests[id][stopID]) {
+              const notifData = {
+                title: "Delay Notification",
+                body: `The bus on ${rtfData[id]["routeId"]} is delayed`,
+              };
+
+              sendNotification(deviceToken, notifData);
+
+              tokensToDelete.push({ id, stopID, deviceToken });
+            }
           //only send a notification if there is a delay
           if (rtfData[id]["stopUpdates"][stopID] > 0) {
             for (const deviceToken of notifRequests[id][stopID]) {
@@ -104,9 +121,26 @@ function sendNotifications() {
     }
   }
 
+
+  for (const { id, stopID, deviceToken } of tokensToDelete) {
+    if (
+      notifRequests[id] &&
+      notifRequests[id][stopID] &&
+      Array.isArray(notifRequests[id][stopID])
+    ) {
+      notifRequests[id][stopID] = notifRequests[id][stopID].filter(
+        (token) => token !== deviceToken
+      );
+      if (notifRequests[id][stopID].length === 0) {
+        delete notifRequests[id][stopID];
+      }
+    }
+  }
+
   saveNotifs();
 }
 
+async function sendNotification(deviceToken, notif) {
 async function sendNotification(deviceToken, notif) {
   const message = {
     token: deviceToken,
@@ -114,10 +148,28 @@ async function sendNotification(deviceToken, notif) {
       title: notif.title,
       body: notif.body,
     },
+    notification: {
+      title: notif.title,
+      body: notif.body,
+    },
   };
 
+  console.log(message);
   if (!message.token) {
     throw new Error("Invalid device token");
+  }
+
+  try {
+    const response = await getMessaging()
+      .send(message)
+      .then((response) => {
+        LogUtils.log({ message: response });
+        console.log(response);
+      });
+
+    console.log("Notification sent successfully:", response);
+  } catch (error) {
+    console.error("Error sending notification:", error.code, error.message);
   }
 
   try {
@@ -140,6 +192,8 @@ function waitForDeparture(deviceToken, startTime) {
   const notifData = {
     body: "You should board your bus in 10 minutes",
     title: "Bording Reminder",
+    body: "You should board your bus in 10 minutes",
+    title: "Bording Reminder",
   };
 
   const job = schedule.scheduleJob(startDate, () => {
@@ -151,9 +205,12 @@ function waitForDeparture(deviceToken, startTime) {
     departures[deviceToken] = {};
     departures[deviceToken][startDate] = job;
   }
+  console.log(departures);
 }
 
 function cancelDeparture(deviceToken, startTime) {
+  let startDate = new Date(parseInt(startTime) * 1000 - 60000 * 10);
+  startDate = startDate.toString();
   let startDate = new Date(parseInt(startTime) * 1000 - 60000 * 10);
   startDate = startDate.toString();
 
@@ -161,6 +218,7 @@ function cancelDeparture(deviceToken, startTime) {
     if (startDate in departures[deviceToken]) {
       if (departures[deviceToken][startDate]) {
         departures[deviceToken][startDate].cancel();
+        LogUtils.log({ message: "job canceled" });
         LogUtils.log({ message: "job canceled" });
       }
     }

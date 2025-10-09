@@ -17,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const root = protobuf.loadSync(
-  path.join(__dirname, "..", "..", "gtfs", "gtfs-realtime.proto")
+  path.join(__dirname, "..", "..", "gtfs", "gtfs-realtime.proto"),
 );
 const FeedMessage = root.lookupType("transit_realtime.FeedMessage");
 
@@ -201,12 +201,22 @@ function getVehicleInformation(routeId, tripId, vehicles) {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
   if (!routeId || !tripId || !vehicles) {
+    // LogUtils.log({
+    //   category: "getVehicleInformation NULL",
+    //   routeId,
+    //   tripId,
+    // });
     return null;
   }
   const vehicleData = Object.values(vehicles).find(
-    (v) => v.routeId === routeId && v.tripId === tripId
+    (v) => v.routeId === routeId && v.tripId === tripId,
   );
   if (!vehicleData) {
+    // LogUtils.log({
+    //   category: "getVehicleInformation no data",
+    //   routeId,
+    //   tripId,
+    // });
     return {
       case: "noData",
       latitude: 0,
