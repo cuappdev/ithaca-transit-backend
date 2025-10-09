@@ -12,7 +12,10 @@ router.get('/closestBus', async (req, res) => {
     } = req.body;
 
     const closestBus = await RouteReportingUtils.getClosestBus(routeId, start);
-    res.status(200).json(closestBus);
+     res.status(200).json({
+      success: true,
+      data: closestBus,
+    });
   } catch (error) {
     LogUtils.logErr(error, req.body, 'Error fetching closest bus');
     res.status(500).json({ error: 'Failed to fetch closest bus' });
@@ -29,7 +32,10 @@ router.post('/reports', async (req, res) => {
     } = req.body;
 
     const report = await RouteReportingUtils.insertReport(vehicleId, congestionLevel, deviceToken, timestamp);
-    res.status(200).json(report);
+     res.status(200).json({
+      success: true,
+      data: report,
+    });
   } catch (error) {
     LogUtils.logErr(error, req.body, 'Error inserting report');
     res.status(500).json({ error: 'Failed to insert report' });
@@ -40,7 +46,10 @@ router.get('/reports/:vehicleId', async (req, res) => {
   try {
     const { vehicleId } = req.params;
     const reports = await RouteReportingUtils.fetchReportsByBus(vehicleId);
-    res.status(200).json(reports);
+     res.status(200).json({
+      success: true,
+      data: reports,
+    });
   } catch (error) {
     LogUtils.logErr(error, req.params, 'Error fetching reports by vehicleId');
     res.status(500).json({ error: 'Failed to fetch reports by vehicleId' });

@@ -7,7 +7,10 @@ const router = express.Router();
 router.get("/allStops", async (req, res) => {
   try {
     const allStops = await AllStopUtils.getAllStops();
-    res.status(200).json(allStops);
+    res.status(200).json({
+      success: true,
+      data: allStops,
+    });
   } catch (error) {
     console.error("Error fetching all stops:", error.message);
     res.status(500).json({ error: "Failed to fetch all stops" });

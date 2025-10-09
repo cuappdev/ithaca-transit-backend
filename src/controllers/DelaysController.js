@@ -6,7 +6,10 @@ const router = express.Router();
 router.get("/alerts", async (req, res) => {
   try {
     const alerts = await AlertsUtils.getAlertsData();
-    res.status(200).json(alerts);
+    res.status(200).json({
+      success: true,
+      data: alerts,
+    });
   } catch (error) {
     console.error("Error fetching alerts:", error.message);
     res.status(500).json({ error: "Failed to fetch alerts" });
@@ -32,7 +35,11 @@ router.post("/delays", async (req, res) => {
       })
     );
 
-    res.status(200).json(delays);
+    res.status(200).json({
+      success: true,
+      data: allStops,
+    });
+    
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
