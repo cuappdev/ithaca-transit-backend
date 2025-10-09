@@ -54,7 +54,10 @@ router.post('/route', async (req, res) => {
     AnalyticsUtils.assignRouteIdsAndCache(routes);
 
     // Send the sectioned routes as the response
-    res.json(sectionedRoutes);
+    res.status(200).json({
+      success: true,
+      data: sectionedRoutes,
+    });
   } catch (error) {
     LogUtils.logErr(error, req.body, 'Error processing route request');
     res.status(500).json({ error: 'Failed to process the route request' });
