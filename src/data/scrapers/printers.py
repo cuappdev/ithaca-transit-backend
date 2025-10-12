@@ -89,6 +89,8 @@ DELIMS_RE = re.compile(r"\s*[-–—:/|]\s*")
 COORD_SPLIT_RE = re.compile(r"\s*,\s*")
 ALL_CAPS_PHRASE_RE = re.compile(r"\b[A-Z]{2,}(?:\s+[A-Z]{2,})*\b")
 TRAILING_CAPS_RE = re.compile(r"\b[A-Z]{2,}(?:\s+[A-Z]{2,})*\s*$")
+
+# Used for stripping common label phrases from building names
 LABEL_PHRASES_RE = re.compile(
     r"""
     \bresidents?\s*only\b |
@@ -97,6 +99,25 @@ LABEL_PHRASES_RE = re.compile(
     \baap\b
     """, re.IGNORECASE | re.VERBOSE
 )
+
+# Used to identify common variants of labels
+LABEL_PATTERNS = {
+    # Residents Only (singular/plural + optional hyphen + any case)
+    "Residents Only": re.compile(r"\bresident[s]?[-\s]*only\b", re.IGNORECASE),
+
+    # AA&P Students Only (accept AA&P or AAP; allow any junk in-between; optional hyphen)
+    "AA&P Students Only": re.compile(
+        r"\b(?:aa\s*&\s*p|aap)\b.*\bstudent[s]?[-\s]*only\b",
+        re.IGNORECASE
+    ),
+
+    # Landscape Architecture Students Only (allow arbitrary whitespace; optional hyphen)
+    "Landscape Architecture Students Only": re.compile(
+        r"\blandscape\s+architecture\b.*\bstudent[s]?[-\s]*only\b",
+        re.IGNORECASE
+    ),
+}
+
 RESIDUAL_TRAILING_LABEL_RE = re.compile(
     r"\b(?:resident|residents|student|students|staff|public)\b\s*$",
     re.IGNORECASE
@@ -120,14 +141,6 @@ def _strip_trailing_allcaps(s):
     Remove trailing ALL-CAPS qualifiers (e.g., RESIDENTS ONLY).
     """
     return TRAILING_CAPS_RE.sub("", s).strip()
-
-# def _title_clean(s: str) -> str:
-#     """
-#     Nice display casing: keep acronyms as-is, titlecase other words.
-#     """
-#     words = s.split()
-#     fixed = [w if w.isupper() else w.title() for w in words]
-#     return " ".join(fixed)
 
 def _pre_clean_for_match(s: str) -> str:
     s = _norm(s)
@@ -168,20 +181,25 @@ def map_building(name, threshold=87):
     # If the score is below the threshold, return the original name instead of the canonical name
     return (canon_raw, score) if score >= threshold else (name, score)
 
-def map_labels(description):
+def map_labels(text):
     """
     Extract label tokens from the description.
     """
-    if not description:
-        return [], description
+    if not text:
+        return []
+    
+    cleaned = _norm(text)
+    found_labels = []
 
-    labels = LABEL_PHRASES_RE.findall(description)
-    labels = [label.title().replace("Aa&P", "AA&P").replace("Aap", "AA&P") for label in labels]
-    description = LABEL_PHRASES_RE.sub("", description).strip()
-    description = RESIDUAL_TRAILING_LABEL_RE.sub("", description).strip()
-    description = MULTI_SPACE_RE.sub(" ", description)
+    for canon, pattern in LABEL_PATTERNS.items():
+        # Search for the pattern in the cleaned text
+        if pattern.search(cleaned):
+            found_labels.append(canon)
 
-    return labels, description
+            # Remove the found label from the text to avoid duplicates
+            cleaned = pattern.sub("", cleaned).strip()
+        
+    return sorted(set(found_labels))
 
 def fetch_printers_json():
     """
@@ -210,6 +228,14 @@ def scrape_printers():
         building, score = map_building(raw_building)
 
         # Map labels from description to canonical labels
+        labels = []
+        
+        labels.extend(map_labels(raw_building)) # Get labels from the building name (e.g., "Residents Only")
+        labels.extend(map_labels(raw_location)) # Get labels from the location description (e.g., "Landscape Architecture Student ONLY")
+        
+        # Deduplicate and sort labels
+        labels = sorted(set(labels)) 
+
         # TODO: Handle description (parse for room number, etc.)
         description = raw_location
 
@@ -219,7 +245,8 @@ def scrape_printers():
         data.append({
             "Location": building,
             "Description": description,
-            "Coordinates": coordinates
+            "Coordinates": coordinates,
+            "Labels": labels
         })
     
     return data
