@@ -10,6 +10,7 @@ import unicodedata # Handles text encoding at Unicode level
 
 URL = 'https://www.cornell.edu/about/maps/directory/text-data.cfm?layer=CUPrint&caption=%20CU%20Print%20Printers'
 
+# HTTP headers to mimic a real browser request
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
     "Referer": 'https://www.cornell.edu/about/maps/directory/',
@@ -17,7 +18,8 @@ HEADERS = {
     "Accept": 'application/json, text/javascript, */*',
 }
 
-# Canonical list of Cornell buildings; NOTE: This list is not exhaustive.
+# Canonical list of Cornell buildings
+# NOTE: This list is not exhaustive. Add more buildings as needed...
 CANONICAL_BUILDINGS = [
     "Akwe:kon",
     "Alice Cook House",
@@ -74,15 +76,11 @@ CANONICAL_BUILDINGS = [
     "White Hall",
     "Willard Student Center"
 ]
-# Add more buildings as needed...
 
 # Regex helpers
 HTML_TAG_RE = re.compile(r"<[^>]+>")
 BRACKET_CONTENT_RE = re.compile(r"[\(\[\{].*?[\)\]\}]")
 MULTI_SPACE_RE = re.compile(r"\s+")
-DELIMS_RE = re.compile(r"\s*[-–—:/|]\s*")
-COORD_SPLIT_RE = re.compile(r"\s*,\s*")
-ALL_CAPS_PHRASE_RE = re.compile(r"\b[A-Z]{2,}(?:\s+[A-Z]{2,})*\b")
 TRAILING_CAPS_RE = re.compile(r"\b[A-Z]{2,}(?:\s+[A-Z]{2,})*\s*$")
 
 # Used for stripping common label phrases from building names
@@ -123,6 +121,7 @@ LABEL_PATTERNS = {
     ),
 }
 
+# Used for stripping residual trailing labels from descriptions
 RESIDUAL_TRAILING_LABEL_RE = re.compile(
     r"\b(?:resident|residents|student|students|staff|public)\b\s*$",
     re.IGNORECASE
@@ -148,6 +147,9 @@ def _strip_trailing_allcaps(s):
     return TRAILING_CAPS_RE.sub("", s).strip()
 
 def _pre_clean_for_match(s: str) -> str:
+    """
+    Pre-clean a building name for matching against the canonical list.
+    """
     s = _norm(s)
     s = LABEL_PHRASES_RE.sub(" ", s)   # <— removes "Resident(s) only", "AA&P", etc.
     s = _strip_trailing_allcaps(s)
@@ -158,18 +160,25 @@ def _pre_clean_for_match(s: str) -> str:
     return s
 
 def _token_sort(s):
+    """
+    Tokenize a string, sort the tokens, and re-join them.
+    """
     tokens = s.lower().split()
     tokens.sort()
     return " ".join(tokens)
 
 def map_building(name, threshold=87):
+    """
+    Map a building name to a canonical building name using fuzzy matching.
+    """
     if not name:
         return None, 0
     
     query = _token_sort(_pre_clean_for_match(name))
     canon_token_list = [_token_sort(_pre_clean_for_match(c)) for c in CANONICAL_BUILDINGS]
 
-    best = get_close_matches(query, canon_token_list, n=1) # Returns a list of the (top-1) closest match to the cleaned name
+    # Returns a list of the (top-1) closest match to the cleaned name
+    best = get_close_matches(query, canon_token_list, n=1) 
 
     # If no matches (empty list), return the original name and 0
     if not best:
@@ -231,7 +240,7 @@ def scrape_printers():
         [raw_building, raw_location, raw_coordinates] = row
 
         # Map raw building name to canonical building name
-        building, score = map_building(raw_building)
+        building, _ = map_building(raw_building)
 
         # Map labels from description to canonical labels
         labels = []
