@@ -74,12 +74,7 @@ CANONICAL_BUILDINGS = [
     "White Hall",
     "Willard Student Center"
 ]
-
-CANONICAL_LABELS = [
-    "Residents Only",
-    "AA&P Students Only",
-    "Landscape Architecture Students Only"
-]
+# Add more buildings as needed...
 
 # Regex helpers
 HTML_TAG_RE = re.compile(r"<[^>]+>")
@@ -102,6 +97,7 @@ LABEL_PHRASES_RE = re.compile(
 
 # Used to identify common variants of labels
 LABEL_PATTERNS = {
+    # --- Access restrictions ---
     # Residents Only (singular/plural + optional hyphen + any case)
     "Residents Only": re.compile(r"\bresident[s]?[-\s]*only\b", re.IGNORECASE),
 
@@ -115,6 +111,15 @@ LABEL_PATTERNS = {
     "Landscape Architecture Students Only": re.compile(
         r"\blandscape\s+architecture\b.*\bstudent[s]?[-\s]*only\b",
         re.IGNORECASE
+    ),
+
+    # --- Printer capabilities ---
+    "Color": re.compile(r"\bcolor\b", re.IGNORECASE),
+    "Black & White": re.compile(
+        r"\b(?:black\s*(?:and|&)\s*white|b\s*&\s*w)\b", re.IGNORECASE
+    ),
+    "Color, Scan, & Copy": re.compile(
+        r"\bcolor[,/ &]*(scan|copy|print|copying)+\b", re.IGNORECASE
     ),
 }
 
@@ -198,7 +203,8 @@ def map_labels(text):
 
             # Remove the found label from the text to avoid duplicates
             cleaned = pattern.sub("", cleaned).strip()
-        
+    
+
     return sorted(set(found_labels))
 
 def fetch_printers_json():
@@ -234,7 +240,7 @@ def scrape_printers():
         labels.extend(map_labels(raw_location)) # Get labels from the location description (e.g., "Landscape Architecture Student ONLY")
         
         # Deduplicate and sort labels
-        labels = sorted(set(labels)) 
+        labels = sorted(set(labels))
 
         # TODO: Handle description (parse for room number, etc.)
         description = raw_location
