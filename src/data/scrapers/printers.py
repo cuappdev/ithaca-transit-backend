@@ -1,37 +1,225 @@
 import requests
 from bs4 import BeautifulSoup
+from difflib import get_close_matches # For data scraping
+from difflib import SequenceMatcher
+import re # For using regex
+import unicodedata # Handles text encoding at Unicode level
 
 # URL of the CU Print directory page
-URL = "https://www.cornell.edu/about/maps/directory/?layer=CUPrint&caption=%20CU%20Print%20Printers"  # Replace with the actual URL
+# URL = "https://www.cornell.edu/about/maps/directory/?layer=CUPrint&caption=%20CU%20Print%20Printers"  # Replace with the actual URL
+
+URL = 'https://www.cornell.edu/about/maps/directory/text-data.cfm?layer=CUPrint&caption=%20CU%20Print%20Printers'
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "Referer": 'https://www.cornell.edu/about/maps/directory/',
+    "X-Requested-With": 'XMLHttpRequest',
+    "Accept": 'application/json, text/javascript, */*',
+}
+
+# Canonical list of Cornell buildings; NOTE: This list is not exhaustive.
+CANONICAL_BUILDINGS = [
+    "Akwe:kon",
+    "Alice Cook House",
+    "Baker Lab",
+    "Barton Hall",
+    "Becker House",
+    "Breazzano Center",
+    "Catherwood Library",
+    "Clark Hall",
+    "College of Veterinary Medicine",
+    "Court-Kay-Bauer Hall",
+    "Dickson",
+    "Ecology House",
+    "Flora Rose House",
+    "Ganedago",
+    "Hans Bethe House",
+    "Hollister Hall",
+    "Ives Hall",
+    "John Henrik Clarke Africana Library",
+    "Keeton House",
+    "Kroch Library",
+    "Latino Living Center",
+    "Law Library",
+    "Lincoln Hall",
+    "Mann Library",
+    "Martha Van Rensselaer Hall",
+    "Mary Donlon Hall",
+    "Math Library",
+    "Mews Hall",
+    "Milstein Hall",
+    "Morrison Hall",
+    "Myron Taylor",
+    "Olin Library",
+    "Phillips Hall",
+    "Plant Science",
+    "RPCC",
+    "Rand Hall",
+    "Rhodes Hall",
+    "Risley Hall",
+    "Rockefeller Lab",
+    "Ruth Bader Ginsburg Hall",
+    "Sage Hall",
+    "Schwartz Center",
+    "Sibley Hall",
+    "Statler Hall",
+    "Stimson",
+    "Tjaden Hall",
+    "Toni Morrison",
+    "Ujamaa",
+    "Upson Hall",
+    "Uris Library",
+    "Vet Library",
+    "Warren Hall",
+    "White Hall",
+    "Willard Student Center"
+]
+
+CANONICAL_LABELS = [
+    "Residents Only",
+    "AA&P Students Only",
+    "Landscape Architecture Students Only"
+]
+
+# Regex helpers
+HTML_TAG_RE = re.compile(r"<[^>]+>")
+BRACKET_CONTENT_RE = re.compile(r"[\(\[\{].*?[\)\]\}]")
+MULTI_SPACE_RE = re.compile(r"\s+")
+DELIMS_RE = re.compile(r"\s*[-–—:/|]\s*")
+COORD_SPLIT_RE = re.compile(r"\s*,\s*")
+ALL_CAPS_PHRASE_RE = re.compile(r"\b[A-Z]{2,}(?:\s+[A-Z]{2,})*\b")
+TRAILING_CAPS_RE = re.compile(r"\b[A-Z]{2,}(?:\s+[A-Z]{2,})*\s*$")
+LABEL_PHRASES_RE = re.compile(
+    r"""
+    \bresidents?\s*only\b |
+    \bstudents?\s*only\b  |
+    \baa\s*&\s*p\b        |
+    \baap\b
+    """, re.IGNORECASE | re.VERBOSE
+)
+RESIDUAL_TRAILING_LABEL_RE = re.compile(
+    r"\b(?:resident|residents|student|students|staff|public)\b\s*$",
+    re.IGNORECASE
+)
+
+def _norm(s):
+    """
+    Unicode/HTML/whitespace normalization.
+    """
+    if s is None:
+        return ""
+    s = unicodedata.normalize('NFKC', s) # Normalizes unicode text
+    s = HTML_TAG_RE.sub(" ", s)
+    s = s.replace("*", " ")
+    s = BRACKET_CONTENT_RE.sub(" ", s)
+    s = MULTI_SPACE_RE.sub(" ", s).strip()
+    return s
+
+def _strip_trailing_allcaps(s):
+    """
+    Remove trailing ALL-CAPS qualifiers (e.g., RESIDENTS ONLY).
+    """
+    return TRAILING_CAPS_RE.sub("", s).strip()
+
+# def _title_clean(s: str) -> str:
+#     """
+#     Nice display casing: keep acronyms as-is, titlecase other words.
+#     """
+#     words = s.split()
+#     fixed = [w if w.isupper() else w.title() for w in words]
+#     return " ".join(fixed)
+
+def _pre_clean_for_match(s: str) -> str:
+    s = _norm(s)
+    s = LABEL_PHRASES_RE.sub(" ", s)   # <— removes "Resident(s) only", "AA&P", etc.
+    s = _strip_trailing_allcaps(s)
+    s = RESIDUAL_TRAILING_LABEL_RE.sub(" ", s) # <— removes "Resident", "Students", etc.
+    
+    s = re.sub(r"[^\w\s\-’']", " ", s) # punctuation noise
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+def _token_sort(s):
+    tokens = s.lower().split()
+    tokens.sort()
+    return " ".join(tokens)
+
+def map_building(name, threshold=87):
+    if not name:
+        return None, 0
+    
+    query = _token_sort(_pre_clean_for_match(name))
+    canon_token_list = [_token_sort(_pre_clean_for_match(c)) for c in CANONICAL_BUILDINGS]
+
+    best = get_close_matches(query, canon_token_list, n=1) # Returns a list of the (top-1) closest match to the cleaned name
+
+    # If no matches (empty list), return the original name and 0
+    if not best:
+        return name, 0
+
+    # Return the closest match and its similarity score
+    match = best[0]
+
+    # Calculate the similarity score of the match to the original name (for internal use, potential debugging purposes)
+    index = canon_token_list.index(match)
+    canon_raw = CANONICAL_BUILDINGS[index]
+    score = int(SequenceMatcher(None, query, match).ratio() * 100)
+
+    # If the score is below the threshold, return the original name instead of the canonical name
+    return (canon_raw, score) if score >= threshold else (name, score)
+
+def map_labels(description):
+    """
+    Extract label tokens from the description.
+    """
+    if not description:
+        return [], description
+
+    labels = LABEL_PHRASES_RE.findall(description)
+    labels = [label.title().replace("Aa&P", "AA&P").replace("Aap", "AA&P") for label in labels]
+    description = LABEL_PHRASES_RE.sub("", description).strip()
+    description = RESIDUAL_TRAILING_LABEL_RE.sub("", description).strip()
+    description = MULTI_SPACE_RE.sub(" ", description)
+
+    return labels, description
+
+def fetch_printers_json():
+    """
+    Fetch printer data in JSON format from the CU Print directory endpoint.
+    """
+    resp = requests.get(URL, headers=HEADERS, timeout=20)
+    resp.raise_for_status()
+    return resp.json()
 
 def scrape_printers():
-    # Send a GET request to fetch the HTML content
-    response = requests.get(URL)
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    # Locate the table
-    table = soup.find("table", {"id": "directoryTable"})
-    rows = table.find("tbody").find_all("tr")
-
-    # Extract data
+    """
+    Scrape CU Print printer locations from the Cornell directory page.
+    """
+    payload = fetch_printers_json()
     data = []
-    for row in rows:
-        cols = row.find_all("td")
-        if len(cols) < 3:  # Ensure row has enough columns
-            continue
-        
-        location_name = cols[0].text.strip()
-        description = cols[1].text.strip()
-        
-        # Extract coordinates from the hyperlink <a> tag inside <td>
-        coordinates_link = cols[2].find("a")
-        coordinates_string = coordinates_link.text.strip() if coordinates_link else ""
-        coordinates = [float(x) for x in coordinates_string.split(', ')]
 
+    # payload['rows'] is a list of lists, where each inner list represents a row of data
+    for row in payload['rows']:
+        if len(row) < 3:  # Ensure row has enough columns
+            continue # Skipping row with insufficient columns
+
+        # Each row is of the structure ["Building", "Equipment & Location", "Coordinates (Lat, Lng)"]
+        [raw_building, raw_location, raw_coordinates] = row
+
+        # Map raw building name to canonical building name
+        building, score = map_building(raw_building)
+
+        # Map labels from description to canonical labels
+        # TODO: Handle description (parse for room number, etc.)
+        description = raw_location
+
+        # Splits coordinates string into a list of floats
+        coordinates = [float(x) for x in raw_coordinates.split(', ')]
 
         data.append({
-            "Location": location_name,
+            "Location": building,
             "Description": description,
             "Coordinates": coordinates
         })
-    return data 
+    
+    return data
