@@ -191,7 +191,7 @@ def map_labels(text):
     Extract label tokens from the description.
     """
     if not text:
-        return []
+        return text, []
     
     cleaned = _norm(text)
     found_labels = []
@@ -204,8 +204,8 @@ def map_labels(text):
             # Remove the found label from the text to avoid duplicates
             cleaned = pattern.sub("", cleaned).strip()
     
-
-    return sorted(set(found_labels))
+    cleaned = re.sub(r"\s+", " ", cleaned).strip()
+    return cleaned, sorted(set(found_labels))
 
 def fetch_printers_json():
     """
@@ -236,14 +236,16 @@ def scrape_printers():
         # Map labels from description to canonical labels
         labels = []
         
-        labels.extend(map_labels(raw_building)) # Get labels from the building name (e.g., "Residents Only")
-        labels.extend(map_labels(raw_location)) # Get labels from the location description (e.g., "Landscape Architecture Student ONLY")
+        _, building_labels = map_labels(raw_building) # Get labels from the building name (e.g., "Residents Only")
+        remainder, location_labels = map_labels(raw_location) # Get labels from the location description (e.g., "Landscape Architecture Student ONLY")
         
         # Deduplicate and sort labels
+        labels += building_labels
+        labels += location_labels
         labels = sorted(set(labels))
-
-        # TODO: Handle description (parse for room number, etc.)
-        description = raw_location
+        
+        cleaned = re.sub(r"^[\s\-–—:/|]+", "", remainder).strip() # Remove leftover delimiters at the start (like " - ", " / ", ": ", etc.)
+        description = cleaned # Final cleaned description text (with labels removed) — essentially, remainder of the location description
 
         # Splits coordinates string into a list of floats
         coordinates = [float(x) for x in raw_coordinates.split(', ')]
