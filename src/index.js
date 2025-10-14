@@ -16,32 +16,35 @@ import RealtimeFeedUtilsV3 from "./utils/RealtimeFeedUtilsV3.js";
 
 import admin from "firebase-admin";
 import swaggerUi from "swagger-ui-express";
-import swaggerDoc from "./swagger.json" with { type: "json" };
+import fs from "fs";
+const swaggerDoc = JSON.parse(
+  fs.readFileSync(new URL("./swagger.json", import.meta.url))
+);
+
 import AlertsUtils from "./utils/AlertsUtils.js";
 import AllStopUtils from "./utils/AllStopUtils.js";
 import GTFSUtils from "./utils/GTFSUtils.js";
-
 
 const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
 
-app.use('/api/v1/', delayRoutes);
+app.use("/api/v1/", delayRoutes);
 
-app.use('/api/v3/', routeRoutes);
+app.use("/api/v3/", routeRoutes);
 
-app.use('/api/v3/', trackingRoutes);
+app.use("/api/v3/", trackingRoutes);
 
-app.use('/api/v2/', searchRoutes);
+app.use("/api/v3/", searchRoutes);
 
-app.use('/api/v1/', stopsRoutes);
+app.use("/api/v1/", stopsRoutes);
 
-app.use('/api/v1/', notifRoutes);
+app.use("/api/v1/", notifRoutes);
 
-app.use('/api/v1/', reportingRoutes);
+app.use("/api/v1/", reportingRoutes);
 
-app.use('/api/v1/', ecosystemRoutes);
+app.use("/api/v1/", ecosystemRoutes);
 
 // Setup Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));

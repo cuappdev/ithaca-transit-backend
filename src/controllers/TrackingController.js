@@ -16,8 +16,11 @@ router.post("/tracking", async (req, res) => {
     const trackingResponse = await RealtimeFeedUtilsV3.getTrackingResponse(
       data
     );
-
-    res.status(200).json(trackingResponse);
+    
+    res.status(200).json({
+      success: true,
+      data: trackingResponse,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
