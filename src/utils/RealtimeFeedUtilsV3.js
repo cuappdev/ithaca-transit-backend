@@ -201,22 +201,12 @@ function getVehicleInformation(routeId, tripId, vehicles) {
   // vehicles param ensures the vehicle tracking information doesn't update in
   // the middle of execution
   if (!routeId || !tripId || !vehicles) {
-    // LogUtils.log({
-    //   category: "getVehicleInformation NULL",
-    //   routeId,
-    //   tripId,
-    // });
     return null;
   }
   const vehicleData = Object.values(vehicles).find(
     (v) => v.routeId === routeId && v.tripId === tripId
   );
   if (!vehicleData) {
-    // LogUtils.log({
-    //   category: "getVehicleInformation no data",
-    //   routeId,
-    //   tripId,
-    // });
     return {
       case: "noData",
       latitude: 0,

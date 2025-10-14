@@ -116,7 +116,6 @@ async function sendNotification(deviceToken, notif) {
     },
   };
 
-  console.log(message);
   if (!message.token) {
     throw new Error("Invalid device token");
   }
@@ -152,7 +151,6 @@ function waitForDeparture(deviceToken, startTime) {
     departures[deviceToken] = {};
     departures[deviceToken][startDate] = job;
   }
-  console.log(departures);
 }
 
 function cancelDeparture(deviceToken, startTime) {
