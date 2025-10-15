@@ -32,7 +32,7 @@ def insert_library(location, address, latitude, longitude):
     conn.close()
 
 
-def insert_printer(location, description, latitude, longitude):
+def insert_printer(location, description, labels, latitude, longitude):
     """Insert a printer into the database."""
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -44,6 +44,44 @@ def insert_printer(location, description, latitude, longitude):
     """,
         (location, description, latitude, longitude),
     )
+    
+    # Insert labels into the labels table and get their IDs
+    label_ids = []
+    for label in labels:
+        cursor.execute(
+            """
+            INSERT OR IGNORE INTO labels (label)
+            VALUES (?)
+        """,
+            (label,),
+        )
+        cursor.execute(
+            """
+            SELECT id FROM labels WHERE label = ?
+        """,
+            (label,),
+        )
+        label_id = cursor.fetchone()[0]
+        label_ids.append(label_id)
+    
+    # Create entries in the junction table for printer-label relationships
+    cursor.execute(
+        """
+        SELECT id FROM printers WHERE location = ? AND description = ? AND latitude = ? AND longitude = ?
+    """,
+        (location, description, latitude, longitude),
+    )
+    printer_id = cursor.fetchone()[0]
+
+    # Insert into junction table
+    for label_id in label_ids:
+        cursor.execute(
+            """
+            INSERT OR IGNORE INTO printer_labels (printer_id, label_id)
+            VALUES (?, ?)
+        """,
+            (printer_id, label_id),
+        )
 
     conn.commit()
     conn.close()

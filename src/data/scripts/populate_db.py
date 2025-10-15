@@ -18,7 +18,7 @@ def populate_db():
     # Insert printers
     printers = scrape_printers()
     for printer in printers:
-        insert_printer(printer['Location'], printer['Description'], printer['Coordinates'][0], printer['Coordinates'][1])
+        insert_printer(printer['Location'], printer['Description'], printers['Labels'], printer['Coordinates'][0], printer['Coordinates'][1])
 
 if __name__ == "__main__":
     populate_db()
