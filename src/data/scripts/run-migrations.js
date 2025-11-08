@@ -1,10 +1,15 @@
 // Imports necessary for data migrations
-const fs = require('fs'); // Node's built-in file system module, which lets us read from disk 
-const path = require('path'); // Safer way to express file paths/path joining
-const crypto = require('crypto');
-const Database = require('better-sqlite3');
+import fs from 'fs' // Node's built-in file system module, which lets us read from disk 
+import path from 'path'; // Safer way to express file paths/path joining
+import crypto from 'crypto';
+import Database from 'better-sqlite3';
+import { fileURLToPath } from 'url';
 
-const DB_PATH = path.join(__dirname, "../transit.db"); // Finds db file from current file's directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// || path.join(__dirname, "../transit.db")
+const DB_PATH = process.env.DB_PATH; // Finds db file from current file's directory
 const MIGRATIONS_DIR = path.join(__dirname, "../migrations");
 
 /**
@@ -97,10 +102,11 @@ function runMigration() {
     }
 }
 
-module.exports = {
-    runMigration
-};
-
-if (require.main === module) {
+export function runMigrations() {
     runMigration();
 }
+
+import { pathToFileURL } from 'url';
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+    runMigrations();
+  }
