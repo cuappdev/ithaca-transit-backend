@@ -97,4 +97,10 @@ function runMigration() {
     }
 }
 
-runMigration();
+module.exports = {
+    runMigration
+};
+
+if (require.main === module) {
+    runMigration();
+}

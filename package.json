@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start:dev": "nodemon --ignore src/data/notifRequests.json src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "migrate": "node src/data/scripts/run-migrations.js",
+    "populate:db": "npm run migrate && python3 src/data/scripts/populate_db.py"
   },
   "keywords": [],
   "author": "",
