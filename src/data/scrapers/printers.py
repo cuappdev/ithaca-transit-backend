@@ -1,5 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
 from difflib import get_close_matches # For data scraping
 from difflib import SequenceMatcher
 import re # For using regex
@@ -112,13 +111,14 @@ LABEL_PATTERNS = {
     ),
 
     # --- Printer capabilities ---
-    "Color": re.compile(r"\bcolor\b", re.IGNORECASE),
+    "Color, Scan, & Copy": re.compile(
+        r"\bcolor\s*[,/&]?\s*(?:scan\s*[,/&]?\s*)?(?:and\s*)?\s*&?\s*(?:copy|print|copying)\b", re.IGNORECASE
+    ),
     "Black & White": re.compile(
         r"\b(?:black\s*(?:and|&)\s*white|b\s*&\s*w)\b", re.IGNORECASE
     ),
-    "Color, Scan, & Copy": re.compile(
-        r"\bcolor[,/ &]*(scan|copy|print|copying)+\b", re.IGNORECASE
-    ),
+    "Color": re.compile(r"\bcolor\b", re.IGNORECASE),
+    
 }
 
 # Used for stripping residual trailing labels from descriptions
@@ -209,11 +209,20 @@ def map_labels(text):
         # Search for the pattern in the cleaned text
         if pattern.search(cleaned):
             found_labels.append(canon)
-
-            # Remove the found label from the text to avoid duplicates
-            cleaned = pattern.sub("", cleaned).strip()
+            cleaned = pattern.sub("", cleaned, count=1).strip()
     
+    # Collapse runs of punctuation-delimiters to a single space
+    cleaned = re.sub(r"\s*[,;/|&\-–—:]+\s*", " ", cleaned)
+
+    # Remove any leftover leading delimiters/spaces (e.g., ", ", "- ")
+    cleaned = re.sub(r"^[\s,;/|&\-–—:]+", "", cleaned)
+    
+    # Remove standalone "Copy", "Print", or "Scan" at the start (leftover from partial label removal)
+    cleaned = re.sub(r"^(?:copy|print|scan)\s+", "", cleaned, flags=re.IGNORECASE)
+
+    # Final whitespace cleanup
     cleaned = re.sub(r"\s+", " ", cleaned).strip()
+
     return cleaned, sorted(set(found_labels))
 
 def fetch_printers_json():
@@ -242,12 +251,17 @@ def scrape_printers():
         # Map raw building name to canonical building name
         building, _ = map_building(raw_building)
 
+        # If we weren't able to map the building to a canonical building, skip this row
+        # NOTE: This should prevent us from getting "None" as the location, which was happening earlier
+        if building not in CANONICAL_BUILDINGS:
+            continue
+
         # Map labels from description to canonical labels
         labels = []
         
         _, building_labels = map_labels(raw_building) # Get labels from the building name (e.g., "Residents Only")
         remainder, location_labels = map_labels(raw_location) # Get labels from the location description (e.g., "Landscape Architecture Student ONLY")
-        
+
         # Deduplicate and sort labels
         labels += building_labels
         labels += location_labels
@@ -267,3 +281,12 @@ def scrape_printers():
         })
     
     return data
+
+if __name__ == "__main__":
+    results = scrape_printers()
+    print(f"Scraped {len(results)} printers.\n")
+
+    # Print a sample of the data
+    for row in results:
+        if row['Location'] == 'Vet Library':
+            print(row['Description'], row['Labels'])

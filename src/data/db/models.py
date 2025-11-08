@@ -15,7 +15,6 @@ def create_tables():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    #TODO: Remove UNIQUE constraint from location
     cursor.execute(
         """
         CREATE TABLE IF NOT EXISTS libraries (
@@ -32,7 +31,7 @@ def create_tables():
         """
         CREATE TABLE IF NOT EXISTS printers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            location TEXT UNIQUE,
+            location TEXT,
             description TEXT,
             latitude REAL,
             longitude REAL

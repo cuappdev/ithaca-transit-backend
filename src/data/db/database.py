@@ -37,14 +37,18 @@ def insert_printer(location, description, labels, latitude, longitude):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # We remove the "OR IGNORE" because we acknoledge that several printers may have the same location and description (i.e., same building and room), so we rely on the unique printer_id to identify the printer
     cursor.execute(
         """
-        INSERT OR IGNORE INTO printers (location, description, latitude, longitude)
+        INSERT INTO printers (location, description, latitude, longitude)
         VALUES (?, ?, ?, ?)
     """,
         (location, description, latitude, longitude),
     )
-    
+
+    # To get the printer_id, we do NOT rely on the location/description/coordinates, but rather on the printer_id that was just inserted (lastrowid), as several printers may have the same location and description (i.e., same building and room)
+    printer_id = cursor.lastrowid
+
     # Insert labels into the labels table and get their IDs
     label_ids = []
     for label in labels:
@@ -61,17 +65,11 @@ def insert_printer(location, description, labels, latitude, longitude):
         """,
             (label,),
         )
-        label_id = cursor.fetchone()[0]
+        result = cursor.fetchone()
+        if result is None:
+            raise ValueError(f"Failed to find label: {label}")
+        label_id = result[0]
         label_ids.append(label_id)
-    
-    # Create entries in the junction table for printer-label relationships
-    cursor.execute(
-        """
-        SELECT id FROM printers WHERE location = ? AND description = ? AND latitude = ? AND longitude = ?
-    """,
-        (location, description, latitude, longitude),
-    )
-    printer_id = cursor.fetchone()[0]
 
     # Insert into junction table
     for label_id in label_ids:
