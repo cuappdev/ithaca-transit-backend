@@ -45,7 +45,7 @@ function fetchAllPrinters() {
     });
 
     // Fetch printers
-    db.all("SELECT * FROM printers", (err, rows) => {
+    db.all("SELECT p.id, p.location, p.description, p.latitude, p.longitude, COALESCE(GROUP_CONCAT(DISTINCT l.label, ', '), '') AS labels FROM printers p LEFT JOIN printer_labels pl ON p.id = pl.printer_id LEFT JOIN labels l ON pl.label_id = l.id GROUP BY p.id", (err, rows) => {
       if (err) {
         console.error(err.message);
         return reject(err);

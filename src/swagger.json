@@ -66,7 +66,7 @@
         ],
         "responses": {
           "200": {
-            "description": "{\"success\": true, \"data\": [{\"id\": 1, \"location\": \"Akwe:kon\", \"description\": \"Color - Room 115\", \"latitude\": 42.4563, \"longitude\": -76.4806}]}",
+            "description": "{\"success\": true, \"data\": [{\"id\": 1, \"location\": \"Akwe:kon\", \"description\": \"Room 115\", \"latitude\": 42.4563, \"longitude\": -76.4806, \"labels\": [\"Color\"]}]}",
             "schema": {
               "$ref": "#/components/schemas/BusStop"
             }

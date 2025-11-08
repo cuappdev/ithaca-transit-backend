@@ -2,6 +2,7 @@
 build/
 logs/
 node_modules/
+__pycache__/
 
 # Specific Files
 config.json

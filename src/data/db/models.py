@@ -31,7 +31,7 @@ def create_tables():
         """
         CREATE TABLE IF NOT EXISTS printers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            location TEXT UNIQUE,
+            location TEXT,
             description TEXT,
             latitude REAL,
             longitude REAL
