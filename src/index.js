@@ -10,6 +10,7 @@ import notifRoutes from "./controllers/NotificationController.js";
 import reportingRoutes from "./controllers/RouteReportingController.js";
 import stopsRoutes from "./controllers/StopsController.js";
 import ecosystemRoutes from "./controllers/EcosystemController.js";
+import eventFormsRoutes from "./controllers/EventFormsController.js";
 
 import NotificationUtils from "./utils/NotificationUtils.js";
 import RealtimeFeedUtilsV3 from "./utils/RealtimeFeedUtilsV3.js";
@@ -42,6 +43,8 @@ app.use('/api/v1/', notifRoutes);
 app.use('/api/v1/', reportingRoutes);
 
 app.use('/api/v1/', ecosystemRoutes);
+
+app.use('/api/v1/', eventFormsRoutes);
 
 // Setup Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));

@@ -11,7 +11,7 @@ router.post("/create-event", async (req, res) => {
     res.status(201).json({ success: true, message: "Event request submitted successfully", data: eventForm });
   } catch (error) {
     console.error("Error creating event form:", error.message);
-    res.status(500).json({ success: false, message: "Error submitting event request:", error: error.message });
+    res.status(400).json({ success: false, message: "Error submitting event request", error: error.message });
   }
 });
 
@@ -22,7 +22,7 @@ router.get("/all-events", async (req, res) => {
     res.status(200).json({ success: true, message: "All event requests retrieved successfully", data: eventForms });
   } catch (error) {
     console.error("Error getting all event forms:", error.message);
-    res.status(500).json({ success: false, message: "Error getting all event requests:", error: error.message });
+    res.status(400).json({ success: false, message: "Error getting all event requests", error: error.message });
   }
 });
 
