@@ -1,0 +1,116 @@
+import sqlite3 from "sqlite3";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dbPath = path.join(__dirname, "..", "data", "event_forms.db");
+
+const ALLOWED_EVENT_TYPES = ['temporary', 'permanent'];
+
+/**
+ * Creates an event form in the database.
+ * 
+ * @param eventForm - The event form to create.
+ * @returns {Promise<Object>} - The created event form.
+ */
+
+function createEventForm({ netid, name, eventType, startDate = null, endDate = null, organizationName = null, location, about = null }) {
+  // Safety checks - make sure the event form is valid
+  if (!netid || !name || !eventType || !location) {
+    throw new Error("Invalid event form — netid, name, event type, and location are required");
+  };
+  
+  // Ensures event type is valid
+  if (!ALLOWED_EVENT_TYPES.includes(eventType)) {
+    throw new Error('Invalid event form — event type invalid');
+  }
+
+  // Handle event types
+  if (eventType == 'temporary') {
+    // If the event is temporary (e.g., tabling), then we require event's date(s) and times, and name of the hosting organization
+    if (!startDate || !endDate) {
+        // NOTE: The start and end dates are required for temporary events
+        throw new Error("Invalid event form — start and end dates are required for temporary events");
+    }
+    if (!organizationName) {
+      // NOTE: The organization name is required for temporary events
+      throw new Error("Invalid event form — organization name is required for temporary events");
+    }
+  }
+
+  // Create the event form
+  const eventForm = {
+    netid,
+    name,
+    eventType,
+    startDate,
+    endDate,
+    organizationName,
+    location,
+    about,
+    approvalStatus: 'pending',
+  };
+
+  return new Promise((resolve, reject) => {
+      // Open the database
+      const db = new sqlite3.Database(dbPath, (err) => {
+        if (err) {
+            console.error(err.message);
+            return reject(err);
+        }
+      });
+
+      // Prepare the query
+      const query = `INSERT INTO event_forms (netid, event_type, ${eventForm.startDate ? "start_date, " : ""}${eventForm.endDate ? "end_date, " : ""}organization_name, location, approval_status${eventForm.about ? ', about' : ''}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?${eventForm.about ? ', ?' : ''})`;
+      const values = [eventForm.netid, eventForm.eventType, eventForm.startDate ? eventForm.startDate : null, eventForm.endDate, eventForm.organizationName, eventForm.location, eventForm.approvalStatus, eventForm.about ? eventForm.about : null];
+
+      // Insert the event form into the database
+      db.run(query, values, function (err) {
+        if (err) {
+          console.error(err.message);
+          return reject(err);
+        }
+        resolve(eventForm);
+      });
+
+      // Close the database
+      db.close((err) => {
+        if (err) console.error(err.message);
+      });
+  });
+}
+
+/**
+ * Gets all event forms from the database.
+ * 
+ * @returns {Promise<Array<Object>>} - The event forms.
+ */
+function getAllEventForms() {
+  return new Promise((resolve, reject) => {
+    const db = new sqlite3.Database(dbPath, (err) => {
+      if (err) {
+        console.error(err.message);
+        return reject(err);
+      }
+    });
+
+    // Prepare the query
+    const query = `SELECT * FROM event_forms`;
+    db.all(query, (err, rows) => {
+      if (err) {
+        console.error(err.message);
+        return reject(err);
+      }
+      resolve(rows);
+    });
+
+    // Close the database
+    db.close((err) => {
+      if (err) console.error(err.message);
+    });
+  });
+}
+
+
+export default { createEventForm, getAllEventForms };
