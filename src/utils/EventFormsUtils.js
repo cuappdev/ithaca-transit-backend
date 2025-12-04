@@ -13,6 +13,8 @@ const ALLOWED_EVENT_TYPES = ['temporary', 'permanent'];
  * 
  * @param eventForm - The event form to create.
  * @returns {Promise<Object>} - The created event form.
+ * @throws {Error} - If the event form is invalid.
+ * @throws {Error} - If the database connection fails.
  */
 
 function createEventForm({ netid, name, eventType, startDate = null, endDate = null, organizationName = null, location, about = null }) {
@@ -85,6 +87,7 @@ function createEventForm({ netid, name, eventType, startDate = null, endDate = n
  * Gets all event forms from the database.
  * 
  * @returns {Promise<Array<Object>>} - The event forms.
+ * @throws {Error} - If the database connection fails.
  */
 function getAllEventForms() {
   return new Promise((resolve, reject) => {
@@ -112,5 +115,106 @@ function getAllEventForms() {
   });
 }
 
+/**
+ * Updates an event form in the database.
+ * 
+ * Allowed approval statuses are: 'pending', 'approved', 'rejected'.
+ * 
+ * @param {Object} payload - The payload containing the id and approval status of the event form to update.
+ * @param {string} payload.id - The id of the event form to update.
+ * @param {string} payload.approvalStatus - The approval status to update the event form to.
+ * @returns {Promise<Object>} - The updated event form.
+ * @throws {Error} - If the event form is invalid or the approval status is invalid.
+ * @throws {Error} - If the event form is not found.
+ */
+function updateEventForm(payload) {
+  const { id, approvalStatus } = payload;
 
-export default { createEventForm, getAllEventForms };
+  // Safety checks - make sure the event form is valid
+  if (!id || !approvalStatus) {
+    throw new Error("Invalid event form — id and approval status are required");
+  }
+
+  // Ensures approval status is valid
+  if (!ALLOWED_APPROVAL_STATUSES.includes(approvalStatus)) {
+    throw new Error('Invalid event form — approval status invalid');
+  }
+
+  return new Promise((resolve, reject) => {
+    const db = new sqlite3.Database(dbPath, (err) => {
+      if (err) {
+        console.error(err.message);
+        return reject(err);
+      }
+    });
+
+    // Prepare the query
+    const query = `UPDATE event_forms SET approval_status = ? WHERE id = ?`;
+    const values = [approvalStatus, id];
+
+    // Update the event form in the database
+    db.run(query, values, function (err) {
+      if (err) {
+        console.error(err.message);
+        return reject(err);
+      }
+      resolve(eventForm);
+    });
+
+    // Close the database
+    db.close((err) => {
+      if (err) console.error(err.message);
+    });
+  });
+}
+
+/**
+ * Gets all approved event forms from the database.
+ * 
+ * @returns {Promise<Array<Object>>} - The approved event forms.
+ * @throws {Error} - If the database connection fails.
+ */
+function getApprovedEventForms() {
+  return new Promise((resolve, reject) => {
+    const db = new sqlite3.Database(dbPath, (err) => {
+      if (err) {
+        console.error(err.message);
+        return reject(err);
+      }
+    });
+
+    // Prepare the query
+    const query = `SELECT * FROM event_forms WHERE approval_status = 'approved'`;
+    db.all(query, (err, rows) => {
+      if (err) {
+        console.error(err.message);
+        return reject(err);
+      }
+      resolve(rows);
+    });
+
+    // Close the database
+    db.close((err) => {
+      if (err) console.error(err.message);
+      });
+  });
+}
+
+/**
+ * Converts an event form to a public event object.
+ * 
+ * @param {Object} eventForm - The event form to convert.
+ * @returns {Object} - The public event object.
+ */
+function toPublicEvent(eventForm) {
+  return {
+    id: eventForm.id,
+    name: eventForm.name,
+    eventType: eventForm.eventType,
+    startDate: eventForm.startDate,
+    endDate: eventForm.endDate,
+    organizationName: eventForm.organizationName,
+  };
+}
+
+export default { createEventForm, getAllEventForms, updateEventForm, getApprovedEventForms, toPublicEvent };
