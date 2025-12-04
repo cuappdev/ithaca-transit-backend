@@ -74,10 +74,10 @@
         }
       }
     },
-    "/api/v1/all-events": {
+    "/api/v1/events/": {
       "get": {
-        "summary": "Returns a list of all event requests.",
-        "description": "Returns a list of all event requests with fields success, message, and data.",
+        "summary": "Returns an object containing a list of all event requests.",
+        "description": "Returns an object with fields success, message, and data, where data is a list of all event requests.",
         "produces": [
           "application/json"
         ],
@@ -134,7 +134,7 @@
         }
       }
     },
-    "/api/v1/create-event": {
+    "/api/v1/events/create-event": {
       "post": {
         "summary": "Submits an event request.",
         "description": "Takes in a list of objects with fields netid, name, eventType, startDate, endDate, organizationName, location, and about and returns a list of objects with fields success, message, and data.",
@@ -194,6 +194,134 @@
                     "error": {
                       "type": "string",
                       "example": "Invalid event form — netid, name, event type, and location are required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events/:id": {
+      "put": {
+        "summary": "Updates an event request.",
+        "description": "Takes in a list of objects with fields id and approvalStatus and returns a list of objects with fields success, message, and data.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "The id of the event request to update, as specified in the database.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns an object with fields success, message, and data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Event request updated successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/EventRequest"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returns an object with fields success, message, and error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error updating event request"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events/approved": {
+      "get": {
+        "summary": "Returns an object containing a list of all approved event requests.",
+        "description": "Returns an object with fields success, message, and data, where data is a list of all approved event requests.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns an object with fields success, message, and data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "All approved event requests retrieved successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/EventRequest"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Returns an object with fields success, message, and error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error getting all approved event requests"
+                    },
+                    "error": {
+                      "type": "string"
                     }
                   }
                 }
