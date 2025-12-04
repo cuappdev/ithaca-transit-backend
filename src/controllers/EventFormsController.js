@@ -1,5 +1,5 @@
 import express from "express";
-import { createEventForm, getAllEventForms, updateEventForm, getApprovedEventForms, toPublicEvent } from "../utils/EventFormsUtils.js";
+import { createEventForm, getAllEventForms, updateEventForm, getApprovedEventForms } from "../utils/EventFormsUtils.js";
 
 const router = express.Router();
 
@@ -12,9 +12,9 @@ router.post("/events/create-event", async (req, res) => {
     // Broadcast a notification to all clients that the event form has been created
     const io = req.app.get("io");
     io.to("admin").emit("eventForm:new", {message: "Event request submitted", event: eventForm});
-    io.to(`netid:${netid}`).emit("eventForm:new", {message: "Your event request has been submitted", event: toPublicEvent(eventForm)});
+    io.to(`netid:${netid}`).emit("eventForm:new", {message: "Your event request has been submitted", event: eventForm});
 
-    res.status(201).json({ success: true, message: "Event request submitted successfully", data: toPublicEvent(eventForm) });
+    res.status(201).json({ success: true, message: "Event request submitted successfully", data: eventForm });
   } catch (error) {
     console.error("Error creating event form:", error.message);
     res.status(400).json({ success: false, message: "Error submitting event request", error: error.message });
@@ -25,7 +25,7 @@ router.post("/events/create-event", async (req, res) => {
 router.get("/events/", async (req, res) => {
   try {
     const eventForms = await getAllEventForms();
-    res.status(200).json({ success: true, message: "All event requests retrieved successfully", data: eventForms.map(toPublicEvent) });
+    res.status(200).json({ success: true, message: "All event requests retrieved successfully", data: eventForms });
   } catch (error) {
     console.error("Error getting all event forms:", error.message);
     res.status(400).json({ success: false, message: "Error getting all event requests", error: error.message });
@@ -49,12 +49,12 @@ router.put("/events/:id", async (req, res) => {
     // Handle event approval
     if (approvalStatus === "approved") {
       // Send a notification to everyone (and the admin room)
-      io.to("public").emit("eventForm:update", {message: "Event approved", event: toPublicEvent(eventForm)});
+      io.to("public").emit("eventForm:update", {message: "Event approved", event: eventForm});
       io.to("admin").emit("eventForm:update", {message: "Event approved", event: eventForm});
-      io.to(`netid:${eventForm.netid}`).emit("eventForm:update", {message: "Your event request has been approved", event: toPublicEvent(eventForm)});
+      io.to(`netid:${eventForm.netid}`).emit("eventForm:update", {message: "Your event request has been approved", event: eventForm});
     } else {
       // Send a notification to only the submitting user that the event was rejected
-      io.to(`netid:${eventForm.netid}`).emit("eventForm:update", {message: "Your event request has been rejected", event: toPublicEvent(eventForm)});
+      io.to(`netid:${eventForm.netid}`).emit("eventForm:update", {message: "Your event request has been rejected", event: eventForm});
       io.to("admin").emit("eventForm:update", {message: "Event rejected", event: eventForm});
     }
     

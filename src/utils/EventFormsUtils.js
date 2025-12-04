@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename);
 const dbPath = path.join(__dirname, "..", "data", "event_forms.db");
 
 const ALLOWED_EVENT_TYPES = ['temporary', 'permanent'];
+const ALLOWED_APPROVAL_STATUSES = ['pending', 'approved', 'rejected'];
 
 /**
  * Creates an event form in the database.
@@ -200,21 +201,4 @@ function getApprovedEventForms() {
   });
 }
 
-/**
- * Converts an event form to a public event object.
- * 
- * @param {Object} eventForm - The event form to convert.
- * @returns {Object} - The public event object.
- */
-function toPublicEvent(eventForm) {
-  return {
-    id: eventForm.id,
-    name: eventForm.name,
-    eventType: eventForm.eventType,
-    startDate: eventForm.startDate,
-    endDate: eventForm.endDate,
-    organizationName: eventForm.organizationName,
-  };
-}
-
-export default { createEventForm, getAllEventForms, updateEventForm, getApprovedEventForms, toPublicEvent };
+export { createEventForm, getAllEventForms, updateEventForm, getApprovedEventForms };
