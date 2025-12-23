@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS event_forms (
     end_date DATETIME,
     organization_name TEXT,
     about TEXT,
-    location TEXT NOT NULL
-    approval_status TEXT NOT NULL DEFAULT 'pending' CHECK(approval_status IN ('pending', 'approved', 'rejected'))
+    location TEXT NOT NULL,
+    approval_status TEXT NOT NULL DEFAULT 'pending' CHECK(approval_status IN ('pending', 'approved', 'rejected')),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
