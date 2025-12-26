@@ -4,7 +4,7 @@ import path from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dbPath = path.join(__dirname, "..", "data", "event_forms.db");
+const dbPath = path.join(__dirname, "..", "data", "transit.db");
 
 const ALLOWED_EVENT_TYPES = ['temporary', 'permanent'];
 const ALLOWED_APPROVAL_STATUSES = ['pending', 'approved', 'rejected'];
@@ -65,21 +65,26 @@ function createEventForm({ netid, name, eventType, startDate = null, endDate = n
       });
 
       // Prepare the query
-      const query = `INSERT INTO event_forms (netid, event_type, ${eventForm.startDate ? "start_date, " : ""}${eventForm.endDate ? "end_date, " : ""}organization_name, location, approval_status${eventForm.about ? ', about' : ''}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?${eventForm.about ? ', ?' : ''})`;
-      const values = [eventForm.netid, eventForm.eventType, eventForm.startDate ? eventForm.startDate : null, eventForm.endDate, eventForm.organizationName, eventForm.location, eventForm.approvalStatus, eventForm.about ? eventForm.about : null];
+      const query = `INSERT INTO event_forms (name, netid, event_type, start_date, end_date, organization_name, location, approval_status, about) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const values = [eventForm.name, eventForm.netid, eventForm.eventType, eventForm.startDate, eventForm.endDate, eventForm.organizationName, eventForm.location, eventForm.approvalStatus, eventForm.about];
 
       // Insert the event form into the database
       db.run(query, values, function (err) {
         if (err) {
+          db.close();
           console.error(err.message);
           return reject(err);
         }
-        resolve(eventForm);
-      });
 
-      // Close the database
-      db.close((err) => {
-        if (err) console.error(err.message);
+        // Get the inserted event form
+        db.get(`SELECT * FROM event_forms WHERE id = ?`, [this.lastID], (err, row) => {
+          db.close();
+          if (err) {
+            console.error(err.message);
+            return reject(err);
+          }
+          return resolve(row);
+        });
       });
   });
 }
@@ -102,16 +107,12 @@ function getAllEventForms() {
     // Prepare the query
     const query = `SELECT * FROM event_forms`;
     db.all(query, (err, rows) => {
+      db.close();
       if (err) {
         console.error(err.message);
         return reject(err);
       }
-      resolve(rows);
-    });
-
-    // Close the database
-    db.close((err) => {
-      if (err) console.error(err.message);
+      return resolve(rows);
     });
   });
 }
@@ -121,21 +122,15 @@ function getAllEventForms() {
  * 
  * Allowed approval statuses are: 'pending', 'approved', 'rejected'.
  * 
- * @param {Object} payload - The payload containing the id and approval status of the event form to update.
- * @param {string} payload.id - The id of the event form to update.
- * @param {string} payload.approvalStatus - The approval status to update the event form to.
+ * @param integer id - The id of the event form to update.
+ * @param {Object} approvalStatus - The approval status to update the event form to.
  * @returns {Promise<Object>} - The updated event form.
  * @throws {Error} - If the event form is invalid or the approval status is invalid.
  * @throws {Error} - If the event form is not found.
  */
-function updateEventForm(payload) {
-  const { id, approvalStatus } = payload;
-
+function updateEventForm({ id, approvalStatus }) {
   // Safety checks - make sure the event form is valid
-  if (!id || !approvalStatus) {
-    throw new Error("Invalid event form — id and approval status are required");
-  }
-
+  if (!id || !approvalStatus) throw new Error("Invalid event form — id and approval status are required");
   // Ensures approval status is valid
   if (!ALLOWED_APPROVAL_STATUSES.includes(approvalStatus)) {
     throw new Error('Invalid event form — approval status invalid');
@@ -156,15 +151,26 @@ function updateEventForm(payload) {
     // Update the event form in the database
     db.run(query, values, function (err) {
       if (err) {
+        db.close();
         console.error(err.message);
         return reject(err);
       }
-      resolve(eventForm);
-    });
 
-    // Close the database
-    db.close((err) => {
-      if (err) console.error(err.message);
+      // Checks if there were no updates to the event form (in which case, there was an error)
+      if (this.changes === 0) {
+        db.close();
+        return reject(new Error("Event form not found"));
+      }
+
+      // Get the updated event form
+      db.get(`SELECT * FROM event_forms WHERE id = ?`, [id], (err, row) => {
+        db.close();
+        if (err) {
+          console.error(err.message);
+          return reject(err);
+        }
+        return resolve(row);
+      });
     });
   });
 }
@@ -201,4 +207,24 @@ function getApprovedEventForms() {
   });
 }
 
-export { createEventForm, getAllEventForms, updateEventForm, getApprovedEventForms };
+/**
+ * Converts an event form to a public event.
+ * 
+ * @param {Object} eventForm - The event form to convert.
+ * @returns {Object} - The public event.
+ */
+function toPublicEvent({ name, netid, eventType, startDate, endDate, organizationName, about, location, approvalStatus }) {
+  return {
+    name,
+    netid,
+    eventType,
+    startDate,
+    endDate,
+    organizationName,
+    about,
+    location,
+    approvalStatus,
+  }
+}
+
+export { createEventForm, getAllEventForms, updateEventForm, getApprovedEventForms, toPublicEvent };

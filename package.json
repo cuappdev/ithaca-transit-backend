@@ -27,6 +27,7 @@
     "node-schedule": "^2.1.1",
     "request": "^2.88.2",
     "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.3",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "swagger-ui-express": "^5.0.1",
