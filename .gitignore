@@ -9,6 +9,10 @@ config.json
 service-account-credentials.json
 *.pem
 
+# Database files
+*.db-shm
+*.db-wal
+
 # File Types
 *.env
 *.zip

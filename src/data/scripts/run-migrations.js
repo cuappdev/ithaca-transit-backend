@@ -8,8 +8,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// || path.join(__dirname, "../transit.db")
-const DB_PATH = process.env.DB_PATH; // Finds db file from current file's directory
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, "../transit.db"); // Finds db file from current file's directory
 const MIGRATIONS_DIR = path.join(__dirname, "../migrations");
 
 /**
