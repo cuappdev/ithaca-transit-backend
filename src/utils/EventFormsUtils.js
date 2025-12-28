@@ -145,7 +145,7 @@ function updateEventForm({ id, approvalStatus }) {
     });
 
     // Prepare the query
-    const query = `UPDATE event_forms SET approval_status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+    const query = `UPDATE event_forms SET approval_status = ? WHERE id = ?`;
     const values = [approvalStatus, id];
 
     // Update the event form in the database
