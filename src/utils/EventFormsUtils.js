@@ -213,7 +213,7 @@ function getApprovedEventForms() {
  * @param {Object} eventForm - The event form to convert.
  * @returns {Object} - The public event.
  */
-function toPublicEvent({ name, netid, eventType, startDate, endDate, organizationName, about, location, approvalStatus }) {
+function toPublicEvent({ name, netid, eventType, startDate, endDate, organizationName, about, location }) {
   return {
     name,
     netid,
@@ -223,7 +223,6 @@ function toPublicEvent({ name, netid, eventType, startDate, endDate, organizatio
     organizationName,
     about,
     location,
-    approvalStatus,
   }
 }
 

@@ -219,6 +219,21 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "in": "body",
+            "name": "approvalStatus",
+            "description": "The approval status to update the event request to. Allowed approval statuses are: 'pending', 'approved', 'rejected'.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "approved",
+                "rejected"
+              ],
+              "example": "approved"
+            }
           }
         ],
         "responses": {
@@ -238,7 +253,7 @@
                       "example": "Event request updated successfully"
                     },
                     "data": {
-                      "$ref": "#/components/schemas/EventRequest"
+                      "$ref": "#/components/schemas/PrivateEventRequest"
                     }
                   }
                 }
@@ -297,7 +312,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/EventRequest"
+                        "$ref": "#/components/schemas/PublicEventRequest"
                       }
                     }
                   }
@@ -1590,7 +1605,7 @@
           }
         }
       },
-      "EventRequest": {
+      "PublicEventRequest": {
         "type": "object",
         "properties": {
           "netid": {
@@ -1632,6 +1647,71 @@
             "type": "string",
             "description": "The about section of the event.",
             "example": "About the event."
+          }
+        }
+      },
+      "PrivateEventRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The id of the event request.",
+            "example": 1
+          },
+          "netid": {
+            "type": "string",
+            "description": "The netid of the user submitting the event request.",
+            "example": "jdoe123"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the event.",
+            "example": "Event Name"
+          },
+          "eventType": {
+            "type": "string",
+            "description": "The type of event.",
+            "example": "temporary"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "The start date of the event.",
+            "example": "2025-01-01 12:00:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "The end date of the event.",
+            "example": "2025-01-02 12:00:00"
+          },
+          "organizationName": {
+            "type": "string",
+            "description": "The name of the organization hosting the event.",
+            "example": "Organization Name"
+          },
+          "location": {
+            "type": "string",
+            "description": "The location of the event.",
+            "example": "Location Name"
+          },
+          "about": {
+            "type": "string",
+            "description": "The about section of the event.",
+            "example": "About the event."
+          },
+          "approvalStatus": {
+            "type": "string",
+            "description": "The approval status of the event request.",
+            "example": "pending"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The date and time the event request was created.",
+            "example": "2025-01-01 12:00:00"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The date and time the event request was last updated.",
+            "example": "2025-01-01 12:00:00"
           }
         }
       }

@@ -37,7 +37,7 @@ router.get("/events/", async (req, res) => {
 // NOTE: id is the event form's id, stored as the primary key in the database
 router.put("/events/:id", async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; // id is found in the url path
     const { approvalStatus } = req.body;
 
     // Initalize the io instance
