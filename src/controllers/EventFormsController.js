@@ -50,15 +50,13 @@ router.put("/events/:id", async (req, res) => {
     if (approvalStatus === "approved") {
       // Send a notification to everyone (and the admin room)
       io.to("public").emit("eventForm:update", {message: "Event approved", event: toPublicEvent(eventForm)});
-      io.to("admin").emit("eventForm:update", {message: "Event approved", event: eventForm});
     } else {
       // Send a notification to the submitting user (and the admin room) that the event was rejected
       io.to(`netid:${eventForm.netid}`).emit("eventForm:update", {message: "Your event request has been rejected", event: toPublicEvent(eventForm)});
-      io.to("admin").emit("eventForm:update", {message: "Event rejected", event: eventForm});
     }
     
     // Return the event form to the admin client that requested the update
-    res.status(200).json({ success: true, message: "Event request updated successfully", data: toPublicEvent(eventForm)});
+    res.status(200).json({ success: true, message: "Event request updated successfully", data: eventForm});
   } catch (error) {
     console.error("Error updating event form:", error.message);
     res.status(400).json({ success: false, message: "Error updating event request", error: error.message });
