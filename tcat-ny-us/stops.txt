@@ -9,8 +9,6 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 1113,1113,"University @ Lake",,42.449551,-76.49208,,,0,,0
 1119,1119,"Auden Ithaca",,42.450988,-76.493674,,,0,,0
 112,112,"Albany at Salvation Army",,42.439878,-76.501805,,,0,,0
-1120,1120,"Auden Ithaca",,42.451084,-76.493644,,,0,,0
-1121,1121,"Lake @ Falls",,42.452842,-76.494621,,,0,,0
 1122,1122,"Lake @ Lincoln",,42.45227,-76.494719,,,0,,0
 1123,1123,"Falls @ Lake",,42.452838,-76.494843,,,0,,0
 1124,1124,"Falls @ Lake",,42.452934,-76.494896,,,0,,0
@@ -230,7 +228,6 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 3309,3309,"Asbury @ Armstrong",,42.526838,-76.484113,,,0,,0
 3310,3310,"Asbury @ Armstrong",,42.52695,-76.48381,,,0,,0
 3312,3312,"Asbury @ Triphammer",,42.526787,-76.491691,,,0,,0
-3313,3313,"Triphammer @ Asbury Rd",,42.526585,-76.491776,,,0,,0
 3314,3314,"Triphammer @ Asbury",,42.526794,-76.491958,,,0,,0
 3315,3315,"Triphammer @ Peruville",,42.538321,-76.492561,,,0,,0
 3316,3316,"Triphammer @ Peruville",,42.538001,-76.492682,,,0,,0
@@ -274,13 +271,9 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 3587,3587,"Graham@Butler",,42.486082,-76.488363,,,0,,0
 3588,3588,"The Shops at Ithaca Mall",,42.482619,-76.489914,,,0,,0
 3593,3593,"Tops Supermarket (Lansing)",,42.482421,-76.486397,,,0,,0
-3601,3601,"Triphammer @ Graham",,42.486003,-76.487053,,,0,,0
-3605,3605,"Triphammer @ Craft",,42.490371,-76.489594,,,0,,0
 3606,3606,"Triphammer @ Craft",,42.490653,-76.489882,,,0,,0
-3609,3609,"Triphammer @ Horizon",,42.498305,-76.490303,,,0,,0
 361,361,"South Hill Business Park",,42.423557,-76.501975,,,0,,0
 3610,3610,"Triphammer @ Burdick Hill",,42.498566,-76.490517,,,0,,0
-3613,3613,"Triphammer @ Triphammer Terrace",,42.51596,-76.491187,,,0,,0
 3614,3614,"Triphammer @ Waterwagon",,42.516272,-76.491379,,,0,,0
 365,365,"Longview",,42.41575,-76.503976,,,0,,0
 368,368,"Terrace Apts South",,42.417398,-76.499296,,,0,,0
@@ -317,13 +310,10 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 3763,3763,"Village Solars South",,42.509343,-76.470815,,,0,,0
 3764,3764,"Village Solars North",,42.511528,-76.47081,,,0,,0
 3765,3765,"Village Solars North",,42.511448,-76.470795,,,0,,0
-3781,3781,"Thornwood @ Brown",,42.487253,-76.464893,,,0,,0
 3782,3782,"Brown @ Thornwood",,42.487275,-76.465139,,,0,,0
-3783,3783,"Brown @ Culligan",,42.487487,-76.46218,,,0,,0
 3784,3784,"Culligan @ Brown",,42.487784,-76.462501,,,0,,0
 3785,3785,"Airport",,42.490544,-76.464182,,,0,,0
-3790,3790,"Langmuir Lab",,42.485481,-76.458175,,,0,,0
-3794,3794,"20 Thornwood Dr",,42.484031,-76.463638,,,0,,0
+3788,3788,"County Health Department",,42.486077,-76.462477,,,0,,0
 3900,3900,"Warren @ Hanshaw",,42.467175,-76.466056,,,0,,0
 3901,3901,"Hanshaw @ Warren",,42.467075,-76.466278,,,0,,0
 3902,3902,"Hanshaw @ Warren",,42.46718,-76.465839,,,0,,0
@@ -483,11 +473,12 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 5712,5712,"Slaterville Rd @ Tower View",,42.426205,-76.467339,,,0,,0
 5715,5715,"Slaterville Rd @ Lois - Commonland",,42.424262,-76.464146,,,0,,0
 5716,5716,"Slaterville Rd @ Lois - Commonland",,42.424183,-76.464195,,,0,,0
+5718,5718,"Slaterville @ Pine Tree",,42.42245,-76.461845,,,0,,0
 5719,5719,"Pine Tree @ Slaterville Rd",,42.423243,-76.46151,,,0,,0
 572,572,"Elmira @ Buttermilk",,42.417769,-76.523398,,,0,,0
 5720,5720,"Pine Tree @ Slaterville Rd",,42.422577,-76.461584,,,0,,0
 5721,5721,"Slaterville Rd @ Park Ln WB",,42.417699,-76.453928,,,0,,0
-5722,5722,"Slaterville Rd @ Park Ln EB",,42.417829,-76.454518,,,0,,0
+5722,5722,"Slaterville Rd @ Park Ln EB",,42.417728,-76.454382,,,0,,0
 5729,5729,"Slaterville Rd @ German Cross",,42.405312,-76.429244,,,0,,0
 5730,5730,"Slaterville Rd @ German Cross",,42.405417,-76.429625,,,0,,0
 5733,5733,"Slaterville Rd @ Brooktondale Rd",,42.40277,-76.423897,,,0,,0
@@ -562,7 +553,12 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 6721,6721,"Elmira Rd @ Enfield Creek Overpass",,42.398052,-76.545938,,,0,,0
 673,673,"Buffalo @ Fulton",,42.440874,-76.511015,,,0,,0
 676,676,"Buffalo @ Taughannock",,42.440952,-76.513289,,,0,,0
+6760,6760,"Collegeview Park",,42.412946,-76.541698,,,0,,0
+6762,6762,"7 Mile @ Peachtree Lane",,42.417385,-76.541935,,,0,,0
+6766,6766,"7 Mile @ Bostwick Road",,42.42226,-76.537776,,,0,,0
 6767,6767,"Newfield Depot @ Mill",,42.363815,-76.585723,,,0,,0
+6770,6770,"Bostwick @ Five Mile Drive",,42.422281,-76.529541,,,0,,0
+6774,6774,"Five Mile @ Elmira Road",,42.416637,-76.531007,,,0,,0
 6775,6775,"Newfield-Town Hall",,42.362455,-76.589541,,,0,,0
 6779,6779,"Main @ Bridge",,42.362002,-76.590652,,,0,,0
 6781,6781,"Main @ Pearl",,42.36106,-76.592246,,,0,,0
@@ -603,6 +599,7 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 774,774,"Campbell @ Hopkins",,42.456421,-76.52455,,,0,,0
 779,779,"Cliff @ Vinegar Hill",,42.449738,-76.517723,,,0,,0
 780,780,"Cliff @ Vinegar Hill",,42.449829,-76.517882,,,0,,0
+781,781,"Cliff @ Williams Glen",,42.454664,-76.521477,,,0,,0
 786,786,"Trumansburg Rd @ Hopkins",,42.456894,-76.524384,,,0,,0
 900,900,"Cayuga @ Cascadilla",,42.444801,-76.499306,,,0,,0
 901,901,"Cayuga @ Cascadilla",,42.444496,-76.499206,,,0,,0
@@ -622,11 +619,8 @@ stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,locatio
 929,929,"Third @ Hancock",,42.446365,-76.505035,,,0,,0
 930,930,"Third @ Hancock",,42.446475,-76.505226,,,0,,0
 932,932,"Hancock @ Third",,42.446513,-76.505027,,,0,,0
-933,933,"Third @ Adams",,42.447295,-76.505797,,,0,,0
 934,934,"Third @ Adams",,42.447395,-76.50598,,,0,,0
-940,940,"Cayuga Park @ Marketview Apt",,42.448633,-76.508051,,,0,,0
-941,941,"Cayuga Park Ln @ 3rd St",,42.448875,-76.507244,,,0,,0
-946,946,"401 Cayuga Park Ln",,42.446524,-76.509705,,,0,,0
+944,944,"Third St @ Aldi's",,42.448917,-76.507,,,0,,0
 953,953,"Hancock @ First",,42.447285,-76.503089,,,0,,0
 954,954,"Hancock @ First",,42.447414,-76.502968,,,0,,0
 996,996,"Guthrie - Ithaca City Harbor",,42.452567,-76.505734,,,0,,0

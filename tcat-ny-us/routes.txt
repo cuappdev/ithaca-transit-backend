@@ -18,9 +18,9 @@ route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_
 52,0,"52","52","Caroline - Brooktondale - Commons",3,,2D3194,FFFFFF,56
 65,0,"65","65","Danby",3,,F5999D,000000,60
 67,0,"67","67","Newfield - Commons",3,,EB048E,FFFFFF,62
-77,0,"77","77","Mall Lansing-Etna",3,,91288F,FFFFFF,72
 81,0,"81","81","Cornell Daytime Campus Service",3,,f24040,ffffff,74
 82,0,"82","82","Cornell Campus Service - East Hill Offic",3,,00A99E,FFFFFF,75
 90,0,"90","90","Ithaca Commons - Cornell University",3,,400080,ffffff,90
 92,0,"92","92",,3,,4e048b,ffffff,92
+115,0,"115","11S","South Hill Shopper",3,,0d0d0d,ffffff,13
 145,0,"145","14S","West Hill - Shopping",3,,881407,ffffff,21
