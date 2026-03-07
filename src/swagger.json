@@ -6,6 +6,23 @@
     "description": "This is documentation for the ithaca-transit-backend API."
   },
   "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check.",
+        "description": "Returns the health status of the server and database connection.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "{\"status\": \"healthy\", \"database\": \"connected\"}"
+          },
+          "503": {
+            "description": "{\"status\": \"unhealthy\", \"database\": \"disconnected\"}"
+          }
+        }
+      }
+    },
     "/api/v1/alerts": {
       "get": {
         "summary": "Returns a list of official TCAT alerts and messages.",
